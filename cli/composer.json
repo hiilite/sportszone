@@ -1,0 +1,39 @@
+{
+	"name": "sportszone/wp-cli-sportszone",
+	"type": "wp-cli-package",
+	"description": "WP-CLI Community Package of SportsZone commands",
+	"keywords": [ "wp-cli", "sportszone", "community", "wordpress", "sz" ],
+	"homepage": "https://github.com/sportszone/wp-cli-sportszone",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "The BuddPress Contributors",
+			"homepage": "https://sportszone.org/"
+		}
+	],
+	"support": {
+		"issues": "https://github.com/sportszone/wp-cli-sportszone/issues",
+		"source": "https://github.com/sportszone/wp-cli-sportszone"
+	},
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "autoload": {
+        "files": [ "wp-cli-bp.php" ]
+    },
+    "require": {
+        "php": ">=5.3",
+        "wp-cli/wp-cli": ">=0.23.0"
+    },
+    "require-dev": {
+        "behat/behat": "~2.5"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.x-dev"
+        },
+        "bundled": true,
+        "commands": [
+            "sz"
+        ]
+    }
+}

@@ -1,0 +1,112 @@
+// SportsZone Tooltips
+// @version 3.0.0
+
+[data-sz-tooltip] {
+	position: relative;
+
+	// Removed :before
+	&:after {
+		background-color: $tooltip-background;
+		display: none;
+		opacity: 0;
+		position: absolute;
+		-webkit-transform: translate3d(0, 0, 0);
+		-ms-transform: translate3d(0, 0, 0);
+		transform: translate3d(0, 0, 0);
+		visibility: hidden;
+	}
+
+	// BP Tooltip body and text
+	&:after {
+		border: 1px solid $tooltip-border;
+		border-radius: $tooltip-border-radius;
+		box-shadow: $tooltip-box-shadow;
+		color: $tooltip-text-color;
+		content: attr(data-sz-tooltip);
+		font-family: $tooltip-font-family;
+		font-size: $tooltip-font-size;
+		font-weight: $tooltip-font-weight;
+		letter-spacing: normal;
+		line-height: 1.25;
+		max-width: $tooltip-max-width;
+		padding: $tooltip-padding-vert $tooltip-padding-hor;
+		pointer-events: none;
+		text-shadow: none;
+		text-transform: none;
+		-webkit-transition: all 1.5s ease;
+		-ms-transition: all 1.5s ease;
+		transition: all 1.5s ease;
+		white-space: nowrap;
+		word-wrap: break-word;
+		z-index: $tooltip-z-index;
+	}
+
+	// BP Tooltip arrow tip - removed :before
+
+	&:hover,
+	&:active,
+	&:focus {
+
+		// Removed :before
+		&:after {
+
+			display: block;
+			opacity: 1;
+			overflow: visible;
+			visibility: visible;
+		}
+	}
+}
+
+[data-sz-tooltip=""] {
+	display: none;
+	opacity: 0;
+	visibility: hidden;
+}
+
+// Bottom Centered Tooltip - Default
+
+.sz-tooltip {
+
+	@include sz-tooltip-default;
+}
+
+// Bottom Left Tooltip for mobile and Bottom Right Tooltip for tablet/desktop
+
+.user-list .sz-tooltip {
+
+	@include sz-tooltip-bottom-left;
+
+	@include medium-up() {
+
+		@include sz-tooltip-bottom-right;
+	}
+}
+
+// Bottom Left Tooltip
+
+.activity-list .sz-tooltip,
+.activity-meta-action .sz-tooltip,
+.notification-actions .sz-tooltip,
+.participants-list .sz-tooltip {
+
+	@include sz-tooltip-bottom-left;
+}
+
+// Bottom Right Tooltip
+
+.sz-invites-content .sz-tooltip,
+.message-metadata .actions .sz-tooltip,
+.single-message-thread-header .actions .sz-tooltip {
+
+	@include sz-tooltip-bottom-right;
+}
+
+.sz-invites-content #send-invites-editor .sz-tooltip {
+
+	// override .sz-invites-content .sz-tooltip
+	&:after {
+		left: 0;
+		right: auto;
+	}
+}

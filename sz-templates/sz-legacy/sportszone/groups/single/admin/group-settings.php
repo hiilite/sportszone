@@ -1,0 +1,111 @@
+<?php
+/**
+ * SportsZone - Groups Admin - Group Settings
+ *
+ * @package SportsZone
+ * @subpackage sz-legacy
+ * @version 3.0.0
+ */
+
+?>
+
+<h2 class="sz-screen-reader-text"><?php _e( 'Manage Group Settings', 'sportszone' ); ?></h2>
+
+<?php
+
+/**
+ * Fires before the group settings admin display.
+ *
+ * @since 1.1.0
+ */
+do_action( 'sz_before_group_settings_admin' ); ?>
+
+<fieldset class="group-create-privacy">
+
+	<legend><?php _e( 'Privacy Options', 'sportszone' ); ?></legend>
+
+	<div class="radio">
+
+		<label for="group-status-public"><input type="radio" name="group-status" id="group-status-public" value="public"<?php if ( 'public' == sz_get_new_group_status() || !sz_get_new_group_status() ) { ?> checked="checked"<?php } ?> aria-describedby="public-group-description" /> <?php _e( 'This is a public group', 'sportszone' ); ?></label>
+
+		<ul id="public-group-description">
+			<li><?php _e( 'Any site member can join this group.', 'sportszone' ); ?></li>
+			<li><?php _e( 'This group will be listed in the groups directory and in search results.', 'sportszone' ); ?></li>
+			<li><?php _e( 'Group content and activity will be visible to any site member.', 'sportszone' ); ?></li>
+		</ul>
+
+		<label for="group-status-private"><input type="radio" name="group-status" id="group-status-private" value="private"<?php if ( 'private' == sz_get_new_group_status() ) { ?> checked="checked"<?php } ?> aria-describedby="private-group-description" /> <?php _e( 'This is a private group', 'sportszone' ); ?></label>
+
+		<ul id="private-group-description">
+			<li><?php _e( 'Only users who request membership and are accepted can join the group.', 'sportszone' ); ?></li>
+			<li><?php _e( 'This group will be listed in the groups directory and in search results.', 'sportszone' ); ?></li>
+			<li><?php _e( 'Group content and activity will only be visible to members of the group.', 'sportszone' ); ?></li>
+		</ul>
+
+		<label for="group-status-hidden"><input type="radio" name="group-status" id="group-status-hidden" value="hidden"<?php if ( 'hidden' == sz_get_new_group_status() ) { ?> checked="checked"<?php } ?> aria-describedby="hidden-group-description" /> <?php _e('This is a hidden group', 'sportszone' ); ?></label>
+
+		<ul id="hidden-group-description">
+			<li><?php _e( 'Only users who are invited can join the group.', 'sportszone' ); ?></li>
+			<li><?php _e( 'This group will not be listed in the groups directory or search results.', 'sportszone' ); ?></li>
+			<li><?php _e( 'Group content and activity will only be visible to members of the group.', 'sportszone' ); ?></li>
+		</ul>
+
+	</div>
+
+</fieldset>
+
+<?php // Group type selection ?>
+<?php if ( $group_types = sz_groups_get_group_types( array( 'show_in_create_screen' => true ), 'objects' ) ): ?>
+
+	<fieldset class="group-create-types">
+		<legend><?php _e( 'Group Types', 'sportszone' ); ?></legend>
+
+		<p><?php _e( 'Select the types this group should be a part of.', 'sportszone' ); ?></p>
+
+		<?php foreach ( $group_types as $type ) : ?>
+			<div class="checkbox">
+				<label for="<?php printf( 'group-type-%s', $type->name ); ?>">
+					<input type="checkbox" name="group-types[]" id="<?php printf( 'group-type-%s', $type->name ); ?>" value="<?php echo esc_attr( $type->name ); ?>" <?php checked( sz_groups_has_group_type( sz_get_current_group_id(), $type->name ) ); ?>/> <?php echo esc_html( $type->labels['name'] ); ?>
+					<?php
+						if ( ! empty( $type->description ) ) {
+							printf( __( '&ndash; %s', 'sportszone' ), '<span class="sz-group-type-desc">' . esc_html( $type->description ) . '</span>' );
+						}
+					?>
+				</label>
+			</div>
+
+		<?php endforeach; ?>
+
+	</fieldset>
+
+<?php endif; ?>
+
+<fieldset class="group-create-invitations">
+
+	<legend><?php _e( 'Group Invitations', 'sportszone' ); ?></legend>
+
+	<p><?php _e( 'Which members of this group are allowed to invite others?', 'sportszone' ); ?></p>
+
+	<div class="radio">
+
+		<label for="group-invite-status-members"><input type="radio" name="group-invite-status" id="group-invite-status-members" value="members"<?php sz_group_show_invite_status_setting( 'members' ); ?> /> <?php _e( 'All group members', 'sportszone' ); ?></label>
+
+		<label for="group-invite-status-mods"><input type="radio" name="group-invite-status" id="group-invite-status-mods" value="mods"<?php sz_group_show_invite_status_setting( 'mods' ); ?> /> <?php _e( 'Group admins and mods only', 'sportszone' ); ?></label>
+
+		<label for="group-invite-status-admins"><input type="radio" name="group-invite-status" id="group-invite-status-admins" value="admins"<?php sz_group_show_invite_status_setting( 'admins' ); ?> /> <?php _e( 'Group admins only', 'sportszone' ); ?></label>
+
+	</div>
+
+</fieldset>
+
+<?php
+
+/**
+ * Fires after the group settings admin display.
+ *
+ * @since 1.1.0
+ */
+do_action( 'sz_after_group_settings_admin' ); ?>
+
+<p><input type="submit" value="<?php esc_attr_e( 'Save Changes', 'sportszone' ); ?>" id="save" name="save" /></p>
+<?php wp_nonce_field( 'groups_edit_group_settings' );

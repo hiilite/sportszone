@@ -1,0 +1,586 @@
+/*------------------------------------------------------------------------------
+
+This stylesheet is always loaded in wp-admin.
+
+@since 1.6.0
+@since 2.5.0
+
+--------------------------------------------------------------------------------
+TABLE OF CONTENTS:
+--------------------------------------------------------------------------------
+1.0 Welcome Screen
+	1.1 Version Badge
+	1.2 ---
+	1.3 Credits Panel
+2.0 Dashicons
+	2.1 Top level menus
+	2.2 Settings - Components
+	2.3 Tools
+	2.4 Tooltips
+3.0 Users
+	3.1 Users List
+	3.2 Site Notices
+4.0 Emails - Edit page
+5.0 Tools - SportsZone
+6.0 Plugins page
+------------------------------------------------------------------------------*/
+
+/*------------------------------------------------------------------------------
+ * 1.0 Welcome Screen
+ *----------------------------------------------------------------------------*/
+
+/*
+ * 1.1 Version Badge
+ */
+.sz-badge {
+	color: #d84800;
+	display: inline-block;
+	font: 400 150px/1 dashicons !important;
+}
+
+.sz-badge:before {
+	content: "\f448";
+}
+
+.settings_page_sz-credits code,
+.index_page_sz-about code {
+	background-color: #e0e0e0;
+	color: #636363;
+	font-size: 1em;
+}
+
+/*
+ * 1.3 Credits Panel
+ *
+ * Taken from WP 4.9.5.
+ */
+.sz-about-wrap {
+	position: relative;
+	max-width: 1050px;
+	font-size: 15px;
+}
+
+.sz-about-wrap img {
+	margin: 0;
+	max-width: 100%;
+	height: auto;
+	vertical-align: middle;
+}
+
+.sz-about-wrap p {
+	line-height: 1.5;
+	font-size: 14px;
+}
+
+.sz-about-wrap h2 {
+	margin: 40px 0 0.6em;
+	font-size: 2.7em;
+	line-height: 1.3;
+	font-weight: 300;
+	text-align: center;
+}
+
+.sz-about-wrap h3 {
+	margin: 1.25em 0 0.6em;
+	font-size: 1.4em;
+	line-height: 1.5;
+}
+
+.sz-about-wrap code {
+	font-size: 14px;
+	font-weight: 400;
+}
+
+.sz-about-wrap .about-description {
+	margin-top: 1.4em;
+	font-weight: 400;
+	line-height: 1.6;
+	font-size: 19px;
+}
+
+.sz-about-wrap h3.wp-people-group {
+	margin: 2.6em 0 1.33em;
+	padding: 0;
+	font-size: 16px;
+	line-height: inherit;
+}
+
+.sz-about-wrap .wp-people-group {
+	padding: 0 5px;
+	margin: 0 -15px 0 -5px;
+}
+
+.sz-about-wrap .compact {
+	margin-bottom: 0;
+}
+
+.sz-about-wrap .wp-person {
+	display: inline-block;
+	vertical-align: top;
+	margin-right: 10px;
+	padding-bottom: 15px;
+	height: 70px;
+	width: 280px;
+}
+
+.sz-about-wrap .compact .wp-person {
+	height: auto;
+	width: 180px;
+	padding-bottom: 0;
+	margin-bottom: 0;
+}
+
+.sz-about-wrap .wp-person .gravatar {
+	float: left;
+	margin: 0 10px 10px 0;
+	padding: 1px;
+	width: 60px;
+	height: 60px;
+}
+
+.sz-about-wrap .compact .wp-person .gravatar {
+	width: 30px;
+	height: 30px;
+}
+
+.sz-about-wrap .wp-person .web {
+	margin: 6px 0 2px;
+	font-size: 16px;
+	font-weight: 400;
+	line-height: 2;
+	text-decoration: none;
+}
+
+.sz-about-wrap .wp-person .title {
+	display: block;
+}
+
+.sz-about-wrap p.wp-credits-list a {
+	white-space: nowrap;
+}
+
+@media only screen and (max-width: 500px) {
+
+	.sz-about-wrap {
+		margin-right: 20px;
+		margin-left: 10px;
+	}
+
+	.sz-about-wrap .sz-about-wrap h1 {
+		margin-right: 0;
+	}
+}
+
+/*------------------------------------------------------------------------------
+ * 2.0 Dashicons
+ *----------------------------------------------------------------------------*/
+
+/*
+ * 2.1 Top level menus
+ */
+#adminmenu #toplevel_page_sz-activity .wp-menu-image:before,
+#adminmenu #toplevel_page_sz-activity_user .wp-menu-image:before,
+#adminmenu #toplevel_page_sz-activity_network .wp-menu-image:before {
+	content: "\f452";
+}
+
+#adminmenu #toplevel_page_sz-groups .wp-menu-image:before,
+#adminmenu #toplevel_page_sz-groups_user .wp-menu-image:before,
+#adminmenu #toplevel_page_sz-groups_network .wp-menu-image:before {
+	content: "\f456";
+}
+
+#adminmenu #toplevel_page_sz-notifications .wp-menu-image:before,
+#adminmenu #toplevel_page_sz-notifications_user .wp-menu-image:before,
+#adminmenu #toplevel_page_sz-notifications_network .wp-menu-image:before {
+	content: "\f439";
+}
+
+#adminmenu #toplevel_page_sz-messages .wp-menu-image:before,
+#adminmenu #toplevel_page_sz-messages_user .wp-menu-image:before,
+#adminmenu #toplevel_page_sz-messages_network .wp-menu-image:before {
+	content: "\f457";
+}
+
+#adminmenu #toplevel_page_sz-friends .wp-menu-image:before,
+#adminmenu #toplevel_page_sz-friends_user .wp-menu-image:before,
+#adminmenu #toplevel_page_sz-friends_network .wp-menu-image:before {
+	content: "\f454";
+}
+
+#adminmenu #toplevel_page_sz-settings .wp-menu-image:before,
+#adminmenu #toplevel_page_sz-settings_user .wp-menu-image:before,
+#adminmenu #toplevel_page_sz-settings_network .wp-menu-image:before {
+	content: "\f108";
+}
+
+#adminmenu li.toplevel_page_sz-components .wp-menu-image,
+#adminmenu li.toplevel_page_sz-general-settings .wp-menu-image {
+	content: "\f448";
+}
+
+/*
+ * 2.2 Settings - Components
+ */
+.settings_page_sz-components td.plugin-title span {
+	float: left;
+	width: 18px;
+	height: 18px;
+	margin-right: 5px;
+}
+
+.settings_page_sz-components td.plugin-title span:before {
+	font-family: dashicons;
+	font-size: 18px;
+}
+
+.settings_page_sz-components tr.activity td.plugin-title span:before {
+	content: "\f452";
+}
+
+.settings_page_sz-components tr.notifications td.plugin-title span:before {
+	content: "\f339";
+}
+
+.settings_page_sz-components tr.xprofile td.plugin-title span:before {
+	content: "\f336";
+}
+
+.settings_page_sz-components tr.settings td.plugin-title span:before {
+	content: "\f108";
+}
+
+.settings_page_sz-components tr.groups td.plugin-title span:before {
+	content: "\f456";
+}
+
+.settings_page_sz-components tr.messages td.plugin-title span:before {
+	content: "\f457";
+}
+
+.settings_page_sz-components tr.blogs td.plugin-title span:before {
+	content: "\f120";
+}
+
+.settings_page_sz-components tr.friends td.plugin-title span:before {
+	content: "\f454";
+}
+
+.settings_page_sz-components tr.core td.plugin-title span:before {
+	content: "\f448";
+}
+
+.settings_page_sz-components tr.members td.plugin-title span:before {
+	content: "\f307";
+}
+
+#sz-admin-component-form .wp-list-table.plugins .plugin-title {
+	width: 25%;
+}
+
+@media screen and ( max-width: 782px ) {
+
+	.settings_page_sz-components td.plugin-title span {
+		margin-top: 5px;
+	}
+
+	#sz-admin-component-form .wp-list-table.plugins .plugin-title {
+		display: block;
+		width: auto;
+	}
+
+	#sz-admin-component-form .subsubsub {
+		margin-bottom: 0;
+		padding-bottom: 35px;
+	}
+}
+
+/*
+ * 2.3 Tools
+ */
+#adminmenu .toplevel_page_network-tools div.wp-menu-image:before {
+	content: "";
+}
+
+/*
+ * 2.4 Tooltips
+ */
+.sz-tooltip {
+	position: relative;
+}
+
+.sz-tooltip:after {
+	background: #fff;
+	border: 1px solid #aaa;
+	border-collapse: separate;
+	border-radius: 1px;
+	box-shadow: 1px 1px 0 1px rgba(132, 132, 132, 0.3);
+	color: #000;
+	content: attr(data-sz-tooltip);
+	display: none;
+	font-family: sans-serif;
+	font-size: 11px;
+	font-weight: 400;
+	letter-spacing: normal;
+	line-height: 1.5;
+	margin-top: 10px;
+	max-width: 240px;
+	opacity: 0;
+	padding: 3px 6px;
+	position: absolute;
+	right: 50%;
+	text-align: center;
+	text-decoration: none;
+	text-shadow: none;
+	text-transform: none;
+	top: 100%;
+	-webkit-transform: translateX(50%);
+	-ms-transform: translateX(50%);
+	transform: translateX(50%);
+	-webkit-transition: opacity 2s ease-out;
+	-ms-transition: opacity 2s ease-out;
+	transition: opacity 2s ease-out;
+	white-space: pre;
+	word-wrap: break-word;
+	z-index: 998;
+}
+
+.sz-hello-close .sz-tooltip:after {
+	right: 0;
+	text-align: right;
+	-webkit-transform: translateX(0);
+	-ms-transform: translateX(0);
+	transform: translateX(0);
+}
+
+.sz-hello-social .sz-tooltip:after {
+	bottom: 120%;
+	margin-bottom: 20px;
+	margin-top: 0;
+	top: auto;
+	-webkit-transform: translateX(15%);
+	-ms-transform: translateX(15%);
+	transform: translateX(15%);
+}
+
+.sz-tooltip:hover:after,
+.sz-tooltip:active:after,
+.sz-tooltip:focus:after {
+	display: inline-block;
+	opacity: 1;
+	overflow: visible;
+	text-decoration: none;
+	z-index: 999;
+}
+
+/*------------------------------------------------------------------------------
+ * 3.0 Users
+ *----------------------------------------------------------------------------*/
+
+/*
+ * 3.1 Users List
+ */
+body.site-users-php th#role,
+body.users-php th#role,
+body.users_page_sz-signups th#count_sent {
+	width: 10%;
+}
+
+body.site-users-php th#name,
+body.site-users-php th#email,
+body.users-php th#name,
+body.users-php th#registered,
+body.users-php th#email,
+body.users_page_sz-signups th#name,
+body.users_page_sz-signups th#registered,
+body.users_page_sz-signups th#email,
+body.users_page_sz-signups th#date_sent {
+	width: 15%;
+}
+
+body.users-php th#blogs,
+body.users_page_sz-signups th#blogs {
+	width: 20%;
+}
+
+body.users_page_sz-signups th.column-count_sent,
+body.users_page_sz-signups td.count_sent {
+	text-align: center;
+}
+
+.sz-signups-list table {
+	margin: 1em 0;
+}
+
+.sz-signups-list .column-fields {
+	font-weight: 700;
+}
+
+/*
+ * 3.2 Site Notices
+ */
+.sz-new-notice-panel {
+	background: #fff;
+	border: 1px solid #e5e5e5;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+	font-size: 13px;
+	line-height: 2.1;
+	margin: 1.5em 0 3em;
+	overflow: auto;
+	padding: 10px 25px 25px;
+	position: relative;
+}
+
+.sz-new-notice-panel label {
+	clear: both;
+	float: left;
+	margin-right: 3%;
+	width: 20%;
+}
+
+.sz-new-notice-panel input,
+.sz-new-notice-panel textarea {
+	clear: none;
+	margin-bottom: 1em;
+	width: 75%;
+}
+
+.sz-new-notice-panel input[type="text"]:after,
+.sz-new-notice-panel textarea:after {
+	clear: both;
+	content: " ";
+	display: table;
+}
+
+.sz-new-notice-panel .button-primary {
+	margin-left: 23%;
+	width: auto;
+}
+
+.sz-notice-about {
+	font-size: 1em;
+	margin-bottom: 1em;
+}
+
+.sz-new-notice {
+	margin-bottom: 1em;
+	margin-top: 0;
+}
+
+.sz-notices-list {
+	margin-bottom: 0;
+}
+
+@media screen and (max-width: 782px) {
+
+	.sz-new-notice-panel {
+		margin-bottom: 1.5em;
+	}
+
+	.sz-new-notice-panel input,
+	.sz-new-notice-panel textarea {
+		margin-left: 0;
+		width: 100%;
+	}
+
+	.sz-new-notice-panel .button-primary {
+		margin-left: 0;
+		width: auto;
+	}
+
+	.sz-new-notice-panel .button {
+		max-width: 45%;
+		word-wrap: break-word;
+	}
+
+	.sz-notice-about {
+		margin-top: 0;
+		margin-bottom: 1em;
+	}
+
+	.sz-new-notice {
+		margin-bottom: 0.5em;
+	}
+}
+
+/*------------------------------------------------------------------------------
+ * 4.0 Emails - Edit Page
+ *----------------------------------------------------------------------------*/
+body.post-type-sz-email #excerpt {
+	height: auto;
+}
+
+body.post-type-sz-email th#situation {
+	width: 20%;
+}
+
+body.post-type-sz-email td.column-situation ul {
+	margin: 0;
+}
+
+body.post-type-sz-email .categorydiv label {
+	display: block;
+	float: left;
+	padding-left: 25px;
+	text-indent: -25px;
+}
+
+/*------------------------------------------------------------------------------
+ * 5.0 Tools - SportsZone
+ *----------------------------------------------------------------------------*/
+.tools_page_sz-tools .wrap {
+	max-width: 950px;
+}
+
+.tools_page_sz-tools p {
+	line-height: 2;
+}
+
+.tools_page_sz-tools fieldset {
+	margin: 2em 0 0;
+}
+
+.tools_page_sz-tools legend {
+	color: #23282d;
+	font-size: 1.3em;
+	font-weight: 600;
+	margin: 1em 0;
+}
+
+.tools_page_sz-tools label {
+	clear: left;
+	display: block;
+	line-height: 1.5;
+	margin: 0 0 1em;
+	vertical-align: middle;
+}
+
+@media screen and (max-width: 782px) {
+
+	.tools_page_sz-tools p {
+		line-height: 1.5;
+	}
+
+	.tools_page_sz-tools label {
+		margin-bottom: 1em;
+		padding-right: 25px;
+		text-indent: -33px;
+	}
+
+	.tools_page_sz-tools .checkbox {
+		padding: 0 0 0 30px;
+	}
+}
+
+
+/*------------------------------------------------------------------------------
+ * 6.0 Plugins page
+ *----------------------------------------------------------------------------*/
+#sportszone-update.not-shiny .update-message {
+	border-left: 0;
+	padding-left: 36px;
+}
+
+#sportszone-update.not-shiny .update-message:before {
+	content: "\f534";
+}

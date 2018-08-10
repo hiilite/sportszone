@@ -1,0 +1,33 @@
+{
+	"name": "sportszone/sportszone",
+	"description": "SportsZone adds community features to WordPress. Member Profiles, Activity Streams, Direct Messaging, Notifications, and more!",
+	"type": "wordpress-plugin",
+	"keywords": [
+		"activity",
+		"community",
+		"friends",
+		"groups",
+		"messaging",
+		"notifications",
+		"profiles",
+		"social network"
+	],
+	"homepage": "https://sportszone.org",
+	"license": "GPL-2.0+",
+	"authors": [ {
+		"name": "SportsZone Community",
+		"homepage": "https://sportszone.org/about/"
+	} ],
+	"support": {
+		"forum": "https://sportszone.org/support/",
+		"docs": "https://codex.sportszone.org/",
+		"issues": "https://sportszone.trac.wordpress.org/",
+		"rss": "https://sportszone.org/feed/",
+		"source": "https://sportszone.trac.wordpress.org/browser/",
+		"wiki": "https://codex.sportszone.org/"
+	},
+	"require": {
+		"composer/installers": "~1.0",
+		"php": ">=5.3.0"
+	}
+}
