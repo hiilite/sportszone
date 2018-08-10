@@ -4811,6 +4811,73 @@ function sz_new_group_avatar( $args = '' ) {
 		 */
 		return apply_filters( 'sz_get_new_group_avatar', $avatar, $r, $args );
 	}
+	
+	
+/**
+ * Output the cover_image for the group currently being created
+ *
+ * @since 1.1.0
+ *
+ * @see sz_core_fetch_cover_image() For more information on accepted arguments
+ *
+ * @param array|string $args See sz_core_fetch_cover_image().
+ */
+function sz_new_group_cover_image( $args = '' ) {
+	echo sz_get_new_group_cover_image( $args );
+}
+	/**
+	 * Return the cover_image for the group currently being created
+	 *
+	 * @since 1.1.0
+	 *
+	 * @see sz_core_fetch_cover_image() For a description of arguments and return values.
+	 *
+	 * @param array|string $args {
+	 *     Arguments are listed here with an explanation of their defaults.
+	 *     For more information about the arguments, see {@link sz_core_fetch_avatar()}.
+	 *
+	 *     @type string   $alt     Default: 'Group photo'.
+	 *     @type string   $class   Default: 'avatar'.
+	 *     @type string   $type    Default: 'full'.
+	 *     @type int|bool $width   Default: false.
+	 *     @type int|bool $height  Default: false.
+	 *     @type string   $id      Passed to $css_id parameter. Default: 'avatar-crop-preview'.
+	 * }
+	 * @return string       The cover_image for the group being created
+	 */
+	function sz_get_new_group_cover_image( $args = '' ) {
+
+		// Parse arguments.
+		$r = sz_parse_args( $args, array(
+			'type'    => 'full',
+			'width'   => false,
+			'height'  => false,
+			'class'   => 'cover-image',
+			'id'      => 'cover-image-crop-preview',
+			'alt'     => __( 'Group Cover Photo', 'sportszone' ),
+		), 'get_new_group_cover_image' );
+
+		// Merge parsed arguments with object specific data.
+		$r = array_merge( $r, array(
+			'item_id'    => sz_get_current_group_id(),
+			'object'     => 'group',
+			'cover_image_dir' => 'group-cover-images',
+		) );
+
+		// Get the avatar.
+		$cover_image = sz_core_fetch_cover_image( $r );
+
+		/**
+		 * Filters the new group avatar.
+		 *
+		 * @since 1.1.0
+		 *
+		 * @param string $avatar HTML markup for the new group avatar.
+		 * @param array  $r      Array of parsed arguments for the group avatar.
+		 * @param array  $args   Array of original arguments passed to the function.
+		 */
+		return apply_filters( 'sz_get_new_group_cover_image', $cover_image, $r, $args );
+	}
 
 /**
  * Escape & output the URL to the previous group creation step

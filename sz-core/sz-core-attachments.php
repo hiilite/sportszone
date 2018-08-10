@@ -669,7 +669,8 @@ function sz_attachments_get_plupload_l10n() {
 			'crunching'                 => __( 'Crunching&hellip;', 'sportszone' ),
 			'unique_file_warning'       => __( 'Make sure to upload a unique file', 'sportszone' ),
 			'error_uploading'           => __( '&#8220;%s&#8221; has failed to upload.', 'sportszone' ),
-			'has_avatar_warning'        => __( 'If you&#39;d like to delete the existing profile photo but not upload a new one, please use the delete tab.', 'sportszone' )
+			'has_avatar_warning'        => __( 'If you&#39;d like to delete the existing profile photo but not upload a new one, please use the delete tab.', 'sportszone' ),
+			'has_cover_image_warning'        => __( 'If you&#39;d like to delete the existing profile photo but not upload a new one, please use the delete tab.', 'sportszone' )
 	) );
 }
 
@@ -815,15 +816,30 @@ function sz_attachments_enqueue_scripts( $class = '' ) {
 
 	// Specific to SportsZone cover images.
 	} elseif ( 'sz_cover_image_upload' === $defaults['multipart_params']['action'] ) {
-
+		// Include the cropping informations for avatars.
+		$settings['crop'] = array(
+			'full_h'  => sz_core_cover_image_full_height(),
+			'full_w'  => sz_core_cover_image_full_width(),
+		);
 		// Cover images only need 1 file and 1 only!
 		$defaults['multi_selection'] = false;
+		
+		// Does the object already has an avatar set.
+		$has_cover_image = $defaults['multipart_params']['sz_params']['has_cover_image'];
 
 		// Default cover component is xprofile.
 		$cover_component = 'xprofile';
 
 		// Get the object we're editing the cover image of.
 		$object = $defaults['multipart_params']['sz_params']['object'];
+		
+		// Init the Avatar nav.
+		$cover_image_nav = array(
+			'upload' => array( 'id' => 'upload', 'caption' => __( 'Upload', 'sportszone' ), 'order' => 0  ),
+
+			// The delete view will only show if the object has an avatar.
+			'delete' => array( 'id' => 'delete', 'caption' => __( 'Delete', 'sportszone' ), 'order' => 100, 'hide' => (int) ! $has_cover_image ),
+		);
 
 		// Set the cover component according to the object.
 		if ( 'group' === $object ) {
@@ -842,6 +858,25 @@ function sz_attachments_enqueue_scripts( $class = '' ) {
 					(int) $cover_dimensions['height']
 				),
 		) );
+		
+		// Create the Camera Nav if the WebCam capture feature is enabled.
+		if ( sz_cover_image_use_webcam() && 'user' === $object ) {
+			$avatar_nav['camera'] = array( 'id' => 'camera', 'caption' => __( 'Take Photo', 'sportszone' ), 'order' => 10 );
+
+			// Set warning messages.
+			$strings['camera_warnings'] = array(
+				'requesting'  => __( 'Please allow us to access to your camera.', 'sportszone'),
+				'loading'     => __( 'Please wait as we access your camera.', 'sportszone' ),
+				'loaded'      => __( 'Camera loaded. Click on the "Capture" button to take your photo.', 'sportszone' ),
+				'noaccess'    => __( 'It looks like you do not have a webcam or we were unable to get permission to use your webcam. Please upload a photo instead.', 'sportszone' ),
+				'errormsg'    => __( 'Your browser is not supported. Please upload a photo instead.', 'sportszone' ),
+				'videoerror'  => __( 'Video error. Please upload a photo instead.', 'sportszone' ),
+				'ready'       => __( 'Your profile photo is ready. Click on the "Save" button to use this photo.', 'sportszone' ),
+				'nocapture'   => __( 'No photo was captured. Click on the "Capture" button to take your photo.', 'sportszone' ),
+			);
+		}
+		
+		$settings['nav'] = sz_sort_by_key( apply_filters( 'sz_attachments_cover_image_nav', $cover_image_nav, $object ), 'order', 'num' );
 	}
 
 	// Set Plupload settings.
@@ -1027,8 +1062,8 @@ function sz_attachments_get_cover_image_settings( $component = 'xprofile' ) {
 	 */
 	$settings = sz_parse_args( $args, array(
 		'components'    => array(),
-		'width'         => 1300,
-		'height'        => 225,
+		'width'         => 828,
+		'height'        => 315,
 		'callback'      => '',
 		'theme_handle'  => '',
 		'default_cover' => '',

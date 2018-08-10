@@ -64,7 +64,7 @@ function sz_core_register_common_scripts() {
 		'sz-webcam'   => array( 'file' => "{$url}webcam{$min}.js", 'dependencies' => array( 'sz-avatar' ), 'footer' => true ),
 
 		// Version 2.4.
-		'sz-cover-image' => array( 'file' => "{$url}cover-image{$min}.js", 'dependencies' => array(), 'footer' => true ),
+		'sz-cover-image' => array( 'file' => "{$url}cover-image{$min}.js", 'dependencies' => array('jcrop'), 'footer' => true ),
 
 		// Version 2.7.
 		'sz-moment'    => array( 'file' => "{$url}vendor/moment-js/moment{$min}.js", 'dependencies' => array(), 'footer' => true ),
@@ -133,6 +133,10 @@ function sz_core_register_common_styles() {
 		),
 		'sz-avatar' => array(
 			'file'         => "{$url}avatar{$min}.css",
+			'dependencies' => array( 'jcrop' )
+		),
+		'sz-cover-image' => array(
+			'file'         => "{$url}cover-image{$min}.css",
 			'dependencies' => array( 'jcrop' )
 		),
 	) );

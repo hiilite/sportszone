@@ -58,33 +58,6 @@
 
 	</fieldset>
 
-<?php
-// Group type selection
-$group_types = sz_groups_get_group_types( array( 'show_in_create_screen' => true ), 'objects' );
-if ( $group_types ) : ?>
-
-	<fieldset class="group-create-types">
-		<legend><?php esc_html_e( 'Group Types', 'sportszone' ); ?></legend>
-
-		<p tabindex="0"><?php esc_html_e( 'Select the types this group should be a part of.', 'sportszone' ); ?></p>
-
-		<?php foreach ( $group_types as $type ) : ?>
-			<div class="checkbox">
-				<label for="<?php printf( 'group-type-%s', $type->name ); ?>">
-					<input type="checkbox" name="group-types[]" id="<?php printf( 'group-type-%s', $type->name ); ?>" value="<?php echo esc_attr( $type->name ); ?>" <?php checked( sz_groups_has_group_type( sz_get_current_group_id(), $type->name ) ); ?>/> <?php echo esc_html( $type->labels['name'] ); ?>
-					<?php
-					if ( ! empty( $type->description ) ) {
-						printf( '&ndash; %s', '<span class="sz-group-type-desc">' . esc_html( $type->description ) . '</span>' );
-					}
-					?>
-				</label>
-			</div>
-
-		<?php endforeach; ?>
-
-	</fieldset>
-
-<?php endif; ?>
 
 	<fieldset class="radio group-invitations">
 		<legend><?php esc_html_e( 'Group Invitations', 'sportszone' ); ?></legend>

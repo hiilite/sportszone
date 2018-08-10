@@ -478,6 +478,7 @@ class SportsZone {
 		require( $this->plugin_dir . 'sz-core/sz-core-filters.php'          );
 		require( $this->plugin_dir . 'sz-core/sz-core-attachments.php'      );
 		require( $this->plugin_dir . 'sz-core/sz-core-avatars.php'          );
+		require( $this->plugin_dir . 'sz-core/sz-core-cover-images.php'     );
 		require( $this->plugin_dir . 'sz-core/sz-core-widgets.php'          );
 		require( $this->plugin_dir . 'sz-core/sz-core-template.php'         );
 		require( $this->plugin_dir . 'sz-core/sz-core-adminbar.php'         );

@@ -82,6 +82,10 @@ window.bp = window.bp || {};
 			if ( 'sz_avatar_upload' ===  uploader.settings.multipart_params.action ) {
 				 uploader.settings.multipart_params.sz_params.ui_available_width = container.width();
 			}
+			
+			if ( 'sz_cover_image_upload' ===  uploader.settings.multipart_params.action ) {
+				 uploader.settings.multipart_params.sz_params.ui_available_width = container.width();
+			}
 
 			if ( uploader.features.dragdrop && ! self.params.browser.mobile ) {
 				container.addClass( 'drag-drop' );

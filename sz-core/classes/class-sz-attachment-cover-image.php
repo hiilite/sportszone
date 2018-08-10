@@ -25,7 +25,7 @@ class SZ_Attachment_Cover_Image extends SZ_Attachment {
 	 */
 	public function __construct() {
 		// Allowed cover image types & upload size.
-		$allowed_types        = sz_attachments_get_allowed_types( 'cover_image' );
+		$allowed_types        = sz_attachments_get_allowed_types();
 		$max_upload_file_size = sz_attachments_get_max_upload_file_size( 'cover_image' );
 
 		parent::__construct( array(
@@ -55,6 +55,21 @@ class SZ_Attachment_Cover_Image extends SZ_Attachment {
 		$types = array_map( 'strtoupper', $allowed_types );
 		$comma = _x( ',', 'cover image types separator', 'sportszone' );
 		return join( $comma . ' ', $types );
+	}
+	
+	/**
+	 * Set Upload Dir data for cover_images.
+	 *
+	 * @since 2.3.0
+	 */
+	public function set_upload_dir() {
+		if ( sz_core_cover_image_upload_path() && sz_core_cover_image_url() ) {
+			$this->upload_path = sz_core_cover_image_upload_path();
+			$this->url         = sz_core_cover_image_url();
+			$this->upload_dir  = sz_upload_dir();
+		} else {
+			parent::set_upload_dir();
+		}
 	}
 
 	/**
@@ -86,7 +101,202 @@ class SZ_Attachment_Cover_Image extends SZ_Attachment {
 		// Return with error code attached.
 		return $file;
 	}
+	
+	/**
+	 * Maybe shrink the attachment to fit maximum allowed width.
+	 *
+	 * @since 2.3.0
+	 * @since 2.4.0 Add the $ui_available_width parameter, to inform about the Avatar UI width.
+	 *
+	 * @param string $file               The absolute path to the file.
+	 * @param int    $ui_available_width Available width for the UI.
+	 * @return false|string|WP_Image_Editor|WP_Error
+	 */
+	public static function shrink( $file = '', $ui_available_width = 0 ) {
+		// Get image size.
+		$cover_image_data = parent::get_image_data( $file );
 
+		// Init the edit args.
+		$edit_args = array();
+
+		// Defaults to the Avatar original max width constant.
+		$original_max_width = sz_core_cover_image_original_max_width();
+
+		// The ui_available_width is defined and it's smaller than the Avatar original max width.
+		if ( ! empty( $ui_available_width ) && $ui_available_width < $original_max_width ) {
+			/**
+			 * In this case, to make sure the content of the image will be fully displayed
+			 * during the cropping step, let's use the Avatar UI Available width.
+			 */
+			$original_max_width = $ui_available_width;
+
+			// $original_max_width has to be larger than the cover_image's full width
+			if ( $original_max_width < sz_core_cover_image_full_width() ) {
+				$original_max_width = sz_core_cover_image_full_width();
+			}
+		}
+
+		// Do we need to resize the image?
+		if ( isset( $cover_image_data['width'] ) && $cover_image_data['width'] > $original_max_width ) {
+			$edit_args = array(
+				'max_w' => $original_max_width,
+				'max_h' => $original_max_width,
+			);
+		}
+
+		// Do we need to rotate the image?
+		$angles = array(
+			3 => 180,
+			6 => -90,
+			8 =>  90,
+		);
+
+		if ( isset( $cover_image_data['meta']['orientation'] ) && isset( $angles[ $cover_image_data['meta']['orientation'] ] ) ) {
+			$edit_args['rotate'] = $angles[ $cover_image_data['meta']['orientation'] ];
+		}
+
+		// No need to edit the cover_image, original file will be used.
+		if ( empty( $edit_args ) ) {
+			return false;
+
+		// Add the file to the edit arguments.
+		} else {
+			$edit_args['file'] = $file;
+		}
+
+		return parent::edit_image( 'cover_image', $edit_args );
+	}
+	
+	/**
+	 * Check if the image dimensions are smaller than full cover_image dimensions.
+	 *
+	 * @since 2.3.0
+	 *
+	 *
+	 * @param string $file the absolute path to the file.
+	 * @return bool
+	 */
+	public static function is_too_small( $file = '' ) {
+		$uploaded_image = @getimagesize( $file );
+		$full_width     = sz_core_cover_image_full_width();
+		$full_height    = sz_core_cover_image_full_height();
+
+		if ( isset( $uploaded_image[0] ) && $uploaded_image[0] < $full_width || $uploaded_image[1] < $full_height ) {
+			return true;
+		}
+
+		return false;
+	}
+	
+	/**
+	 * Crop the cover_image.
+	 *
+	 * @since 2.3.0
+	 *
+	 * @see  SZ_Attachment::crop for the list of parameters
+	 *
+	 * @param array $args Array of arguments for the cropping.
+	 * @return array The cropped cover_images (full and thumb).
+	 */
+	public function crop( $args = array() ) {
+		// Bail if the original file is missing.
+		if ( empty( $args['original_file'] ) ) {
+			return false;
+		}
+
+		if ( ! sz_attachments_current_user_can( 'edit_cover_image', $args ) ) {
+			return false;
+		}
+
+		if ( 'user' === $args['object'] ) {
+			$cover_image_dir = 'cover_images';
+		} else {
+			$cover_image_dir = sanitize_key( $args['object'] ) . '-cover-images';
+		}
+
+		$args['item_id'] = (int) $args['item_id'];
+
+		/**
+		 * Original file is a relative path to the image
+		 * eg: /cover-images/1/cover_image.jpg
+		 */
+		$relative_path = sprintf( '/%s/%s/%s', $cover_image_dir, $args['item_id'], basename( $args['original_file'] ) );
+		$absolute_path = $this->upload_path . $relative_path;
+
+		// Bail if the cover_image is not available.
+		if ( ! file_exists( $absolute_path ) )  {
+			return false;
+		}
+
+		if ( empty( $args['item_id'] ) ) {
+
+			/** This filter is documented in sz-core/sz-core-cover-images.php */
+			$cover_image_folder_dir = apply_filters( 'sz_core_cover_image_folder_dir', dirname( $absolute_path ), $args['item_id'], $args['object'], $args['cover_image_dir'] );
+		} else {
+
+			/** This filter is documented in sz-core/sz-core-cover-images.php */
+			$cover_image_folder_dir = apply_filters( 'sz_core_cover_image_folder_dir', $this->upload_path . '/' . $args['cover_image_dir'] . '/' . $args['item_id'], $args['item_id'], $args['object'], $args['cover_image_dir'] );
+		}
+
+		// Bail if the cover_image folder is missing for this item_id.
+		if ( ! file_exists( $cover_image_folder_dir ) ) {
+			return false;
+		}
+
+		// Delete the existing cover_image files for the object.
+		$existing_cover_image = sz_core_fetch_cover_image( array(
+			'object'  => $args['object'],
+			'item_id' => $args['item_id'],
+			'html' => false,
+		) );
+
+		/**
+		 * Check that the new cover_image doesn't have the same name as the
+		 * old one before deleting
+		 */
+		if ( ! empty( $existing_cover_image ) && $existing_cover_image !== $this->url . $relative_path ) {
+			sz_core_delete_existing_cover_image( array( 'object' => $args['object'], 'item_id' => $args['item_id'], 'cover_image_path' => $cover_image_folder_dir ) );
+		}
+
+		// Make sure we at least have minimal data for cropping.
+		if ( empty( $args['crop_w'] ) ) {
+			$args['crop_w'] = sz_core_cover_image_full_width();
+		}
+
+		if ( empty( $args['crop_h'] ) ) {
+			$args['crop_h'] = sz_core_cover_image_full_height();
+		}
+
+		// Get the file extension.
+		$data = @getimagesize( $absolute_path );
+		$ext  = $data['mime'] == 'image/png' ? 'png' : 'jpg';
+
+		$args['original_file'] = $absolute_path;
+		$args['src_abs']       = false;
+		$cover_image_types = array( 'full' => '', 'thumb' => '' );
+
+		foreach ( $cover_image_types as $key_type => $type ) {
+			if ( 'thumb' === $key_type ) {
+				$args['dst_w'] = sz_core_cover_image_thumb_width();
+				$args['dst_h'] = sz_core_cover_image_thumb_height();
+			} else {
+				$args['dst_w'] = sz_core_cover_image_full_width();
+				$args['dst_h'] = sz_core_cover_image_full_height();
+			}
+
+			$filename         = wp_unique_filename( $cover_image_folder_dir, uniqid() . "-sz{$key_type}.{$ext}" );
+			$args['dst_file'] = $cover_image_folder_dir . '/' . $filename;
+
+			$cover_image_types[ $key_type ] = parent::crop( $args );
+		}
+
+		// Remove the original.
+		@unlink( $absolute_path );
+
+		// Return the full and thumb cropped cover_images.
+		return $cover_image_types;
+	}
+	
 	/**
 	 * Set the directory when uploading a file.
 	 *
@@ -140,7 +350,7 @@ class SZ_Attachment_Cover_Image extends SZ_Attachment {
 			$edit_args['rotate'] = $angles[ $cover_data['meta']['orientation'] ];
 		}
 
-		// No need to edit the avatar, original file will be used.
+		// No need to edit the cover_image, original file will be used.
 		if ( empty( $edit_args ) ) {
 			return false;
 
@@ -244,7 +454,7 @@ class SZ_Attachment_Cover_Image extends SZ_Attachment {
 
 		// Include our specific js & css.
 		$script_data['extra_js']  = array( 'sz-cover-image' );
-		$script_data['extra_css'] = array( 'sz-avatar' );
+		$script_data['extra_css'] = array( 'sz-cover-image' );
 
 		/**
 		 * Filters the cover image script data.

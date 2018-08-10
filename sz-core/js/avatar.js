@@ -161,7 +161,7 @@ window.bp = window.bp || {};
 			} );
 
 			this.nav = new bp.Views.Nav( { collection: this.navItems } );
-			this.nav.inject( '.sz-avatar-nav' );
+	this.nav.inject( '.sz-avatar-nav' );
 
 			// Activate the initial view (uploader)
 			this.setView( initView );
@@ -421,7 +421,7 @@ window.bp = window.bp || {};
 
 		initialize: function() {
 			var hasAvatar = _.findWhere( this.collection.models, { id: 'delete' } );
-
+			console.log(hasAvatar);
 			// Display a message to inform about the delete tab
 			if ( 1 !== hasAvatar.get( 'hide' ) ) {
 				bp.Avatar.displayWarning( SZ_Uploader.strings.has_avatar_warning );

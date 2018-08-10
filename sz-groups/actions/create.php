@@ -288,6 +288,57 @@ function groups_action_create_group() {
 			}
 		}
 	}
+	
+	// Group cover image is handled separately.
+	if ( 'group-cover-image' == sz_get_groups_current_create_step() && isset( $_POST['upload'] ) ) {
+		if ( ! isset( $sz->avatar_admin ) ) {
+			$sz->cover_image_admin = new stdClass();
+		}
+
+		if ( !empty( $_FILES ) && isset( $_POST['upload'] ) ) {
+			// Normally we would check a nonce here, but the group save nonce is used instead.
+			// Pass the file to the avatar upload handler.
+			if ( sz_core_cover_image_handle_upload( $_FILES, 'groups_cover_image_upload_dir' ) ) {
+				$sz->cover_image_admin->step = 'crop-image';
+
+				// Make sure we include the jQuery jCrop file for image cropping.
+				add_action( 'wp_print_scripts', 'sz_core_add_jquery_cropper' );
+			}
+		}
+
+		// If the image cropping is done, crop the image and save a full/thumb version.
+		if ( isset( $_POST['cover-image-crop-submit'] ) && isset( $_POST['upload'] ) ) {
+
+			// Normally we would check a nonce here, but the group save nonce is used instead.
+			$args = array(
+				'object'        => 'group',
+				'avatar_dir'    => 'group-cover-images',
+				'item_id'       => $sz->groups->current_group->id,
+				'original_file' => $_POST['image_src'],
+				'crop_x'        => $_POST['x'],
+				'crop_y'        => $_POST['y'],
+				'crop_w'        => $_POST['w'],
+				'crop_h'        => $_POST['h']
+			);
+
+			if ( ! sz_core_avatar_handle_crop( $args ) ) {
+				sz_core_add_message( __( 'There was an error saving the group profile photo, please try uploading again.', 'sportszone' ), 'error' );
+			} else {
+				/**
+				 * Fires after a group avatar is uploaded.
+				 *
+				 * @since 2.8.0
+				 *
+				 * @param int    $group_id ID of the group.
+				 * @param string $type     Avatar type. 'crop' or 'full'.
+				 * @param array  $args     Array of parameters passed to the avatar handler.
+				 */
+				do_action( 'groups_avatar_uploaded', sz_get_current_group_id(), 'crop', $args );
+
+				sz_core_add_message( __( 'The group profile photo was uploaded successfully.', 'sportszone' ) );
+			}
+		}
+	}
 
 	/**
 	 * Filters the template to load for the group creation screen.

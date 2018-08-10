@@ -129,7 +129,8 @@ class SZ_Groups_Component extends SZ_Component {
 			'adminbar',
 			'functions',
 			'notifications',
-			'hierarchy'
+			'hierarchy',
+			'types'
 		);
 
 		// Conditional includes.

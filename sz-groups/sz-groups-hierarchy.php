@@ -2,11 +2,11 @@
 /*
 Based on Plugin: BP Group Hierarchy
 Plugin URI: http://www.generalthreat.com/projects/sportszone-group-hierarchy/
-Description: Allows BuddyPress groups to belong to other groups
+Description: Allows SportsZone groups to belong to other groups
 Version: 1.4.3
 Revision Date: 04/09/2014
-Requires at least: PHP 5, WP 3.2, BuddyPress 1.6
-Tested up to: WP 3.8.2, BuddyPress 2.0-beta2
+Requires at least: PHP 5, WP 3.2, SportsZone 1.6
+Tested up to: WP 3.8.2, SportsZone 2.0-beta2
 License: Example: GNU General Public License 2.0 (GPL) http://www.gnu.org/licenses/gpl.html
 Author: David Dean
 Author URI: http://www.generalthreat.com/

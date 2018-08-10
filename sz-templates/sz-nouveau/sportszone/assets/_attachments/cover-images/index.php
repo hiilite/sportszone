@@ -11,13 +11,23 @@
  * @version 3.1.0
  */
 
+do_action( 'sz_attachments_cover_image_check_template' );
 ?>
-
+<div class="sz-cover-image-nav"></div>
 <div class="sz-cover-image"></div>
 <div class="sz-cover-image-status"></div>
-<div class="sz-cover-image-manage"></div>
+
+
+<script type="text/html" id="tmpl-sz-cover-image-nav">
+	<a href="{{data.href}}" class="sz-cover-image-nav-item" data-nav="{{data.id}}">{{data.name}}</a>
+</script>
 
 <?php sz_attachments_get_template_part( 'uploader' ); ?>
+
+<?php sz_attachments_get_template_part( 'cover-images/crop' ); ?>
+
+<?php sz_attachments_get_template_part( 'cover-images/camera' ); ?>
+
 
 <script id="tmpl-sz-cover-image-delete" type="text/html">
 	<# if ( 'user' === data.object ) { #>

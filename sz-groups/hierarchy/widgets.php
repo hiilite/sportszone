@@ -11,7 +11,7 @@ function sz_group_hierarchy_init_widgets() {
 /*** TOPLEVEL GROUPS WIDGET *****************/
 class SZ_Toplevel_Groups_Widget extends WP_Widget {
 	function __construct() {
-		parent::__construct( false, $name = __( 'Toplevel Groups', 'sportszone' ), array( 'description' => __( 'A list of top-level BuddyPress groups', 'sportszone' ) ) );
+		parent::__construct( false, $name = __( 'Toplevel Groups', 'sportszone' ), array( 'description' => __( 'A list of top-level SportsZone groups', 'sportszone' ) ) );
 	}
 
 	function widget($args, $instance) {

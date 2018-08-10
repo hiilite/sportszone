@@ -329,6 +329,115 @@ function sz_avatar_cropper() {
 <?php
 }
 
+
+/**
+ * Output the current cover image upload step.
+ *
+ * @since 1.1.0
+ */
+function sz_cover_image_admin_step() {
+	echo sz_get_cover_image_admin_step();
+}
+	/**
+	 * Return the current avatar upload step.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @return string The current cover image upload step. Returns 'upload-image'
+	 *         if none is found.
+	 */
+	function sz_get_cover_image_admin_step() {
+		$sz   = sportszone();
+		$step = isset( $sz->cover_image_admin->step )
+			? $step = $sz->cover_image_admin->step
+			: 'upload-image';
+
+		/**
+		 * Filters the current avatar upload step.
+		 *
+		 * @since 1.1.0
+		 *
+		 * @param string $step The current avatar upload step.
+		 */
+		return apply_filters( 'sz_get_cover_image_admin_step', $step );
+	}
+
+/**
+ * Output the URL of the cover image to crop.
+ *
+ * @since 1.1.0
+ */
+function sz_cover_image_to_crop() {
+	echo sz_get_cover_image_to_crop();
+}
+	/**
+	 * Return the URL of the cover image to crop.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @return string URL of the cover image awaiting cropping.
+	 */
+	function sz_get_cover_image_to_crop() {
+		$sz  = sportszone();
+		$url = isset( $sz->cover_image_admin->image->url )
+			? $sz->cover_image_admin->image->url
+			: '';
+
+		/**
+		 * Filters the URL of the cover image to crop.
+		 *
+		 * @since 1.1.0
+		 *
+		 * @param string $url URL for the cover image.
+		 */
+		return apply_filters( 'sz_get_cover_image_to_crop', $url );
+	}
+
+/**
+ * Output the relative file path to the cover image to crop.
+ *
+ * @since 1.1.0
+ */
+function sz_cover_image_to_crop_src() {
+	echo sz_get_cover_image_to_crop_src();
+}
+	/**
+	 * Return the relative file path to the cover image to crop.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @return string Relative file path to the cover image.
+	 */
+	function sz_get_cover_image_to_crop_src() {
+		$sz  = sportszone();
+		$src = isset( $sz->cover_image_admin->image->dir )
+			? str_replace( WP_CONTENT_DIR, '', $sz->cover_admin->image->dir )
+			: '';
+
+		/**
+		 * Filters the relative file path to the avatar to crop.
+		 *
+		 * @since 1.1.0
+		 *
+		 * @param string $src Relative file path for the avatar.
+		 */
+		return apply_filters( 'sz_get_cover_image_to_crop_src', $src );
+	}
+
+/**
+ * Output the avatar cropper <img> markup.
+ *
+ * No longer used in SportsZone.
+ *
+ * @todo Deprecate.
+ */
+function sz_cover_image_cropper() {
+?>
+	<img id="cover-to-crop" class="cover" src="<?php echo esc_url( sportszone()->cover_image_admin->image ); ?>" />
+<?php
+}
+
+
 /**
  * Output the name of the BP site. Used in RSS headers.
  *

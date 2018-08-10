@@ -377,7 +377,7 @@ class SZ_Groups_Hierarchy_Extension extends SZ_Group_Extension {
 			$page = (int)$page;
 		}
 		
-		/** Respect BuddyPress group creation restriction */
+		/** Respect SportsZone group creation restriction */
 		if(function_exists('sz_user_can_create_groups')) {
 			$hide_button = !sz_user_can_create_groups();
 		}

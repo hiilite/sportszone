@@ -41,7 +41,7 @@ function groups_screen_group_admin_avatar() {
 	}
 
 	$sz->avatar_admin->step = 'upload-image';
-
+	
 	if ( !empty( $_FILES ) ) {
 
 		// Check the nonce.

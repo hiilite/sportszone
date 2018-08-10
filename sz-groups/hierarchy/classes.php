@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Groups class for BuddyPress 1.9+
+ * Groups class for SportsZone 1.9+
  */
 
 define( 'SZ_GROUPS_HIERARCHY_ANY_PARENT', -1 );

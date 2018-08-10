@@ -61,6 +61,8 @@ do_action( 'sz_before_create_group_page' ); ?>
 					/* translators: accessibility text */
 					_e( 'Group Details', 'sportszone' );
 				?></h2>
+				
+				
 
 				<?php
 
@@ -70,6 +72,32 @@ do_action( 'sz_before_create_group_page' ); ?>
 				 * @since 1.1.0
 				 */
 				do_action( 'sz_before_group_details_creation_step' ); ?>
+				
+				<?php // Group type selection ?>
+				<?php if ( $group_types = sz_groups_get_group_types( array( 'show_in_create_screen' => true ), 'objects' ) ): ?>
+
+					<fieldset class="group-create-types">
+						<legend><?php _e( 'Group Types', 'sportszone' ); ?></legend>
+
+						<p><?php _e( 'Select the types this group should be a part of.', 'sportszone' ); ?></p>
+
+						<?php foreach ( $group_types as $type ) : ?>
+							<div class="checkbox">
+								<label for="<?php printf( 'group-type-%s', $type->name ); ?>"><input type="checkbox" name="group-types[]" id="<?php printf( 'group-type-%s', $type->name ); ?>" value="<?php echo esc_attr( $type->name ); ?>" <?php checked( true, ! empty( $type->create_screen_checked ) ); ?> /> <?php echo esc_html( $type->labels['name'] ); ?>
+									<?php
+										if ( ! empty( $type->description ) ) {
+											/* translators: Group type description shown when creating a group. */
+											printf( __( '&ndash; %s', 'sportszone' ), '<span class="sz-group-type-desc">' . esc_html( $type->description ) . '</span>' );
+										}
+									?>
+								</label>
+							</div>
+
+						<?php endforeach; ?>
+
+					</fieldset>
+
+				<?php endif; ?>
 
 				<div>
 					<label for="group-name"><?php _e( 'Group Name (required)', 'sportszone' ); ?></label>
@@ -145,32 +173,6 @@ do_action( 'sz_before_create_group_page' ); ?>
 					</div>
 
 				</fieldset>
-
-				<?php // Group type selection ?>
-				<?php if ( $group_types = sz_groups_get_group_types( array( 'show_in_create_screen' => true ), 'objects' ) ): ?>
-
-					<fieldset class="group-create-types">
-						<legend><?php _e( 'Group Types', 'sportszone' ); ?></legend>
-
-						<p><?php _e( 'Select the types this group should be a part of.', 'sportszone' ); ?></p>
-
-						<?php foreach ( $group_types as $type ) : ?>
-							<div class="checkbox">
-								<label for="<?php printf( 'group-type-%s', $type->name ); ?>"><input type="checkbox" name="group-types[]" id="<?php printf( 'group-type-%s', $type->name ); ?>" value="<?php echo esc_attr( $type->name ); ?>" <?php checked( true, ! empty( $type->create_screen_checked ) ); ?> /> <?php echo esc_html( $type->labels['name'] ); ?>
-									<?php
-										if ( ! empty( $type->description ) ) {
-											/* translators: Group type description shown when creating a group. */
-											printf( __( '&ndash; %s', 'sportszone' ), '<span class="sz-group-type-desc">' . esc_html( $type->description ) . '</span>' );
-										}
-									?>
-								</label>
-							</div>
-
-						<?php endforeach; ?>
-
-					</fieldset>
-
-				<?php endif; ?>
 
 				<fieldset class="group-create-invitations">
 

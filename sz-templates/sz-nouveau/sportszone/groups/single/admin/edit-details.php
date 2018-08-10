@@ -20,6 +20,34 @@
 	</h2>
 
 <?php endif; ?>
+<?php
+// Group type selection
+$group_types = sz_groups_get_group_types( array( 'show_in_create_screen' => true ), 'objects' );
+if ( $group_types ) : ?>
+
+	<fieldset class="group-create-types">
+		<legend><?php esc_html_e( 'Group Type', 'sportszone' ); ?></legend>
+
+		<p tabindex="0"><?php esc_html_e( 'Select the type of Group you are creating.', 'sportszone' ); ?></p>
+
+		<?php foreach ( $group_types as $type ) : ?>
+			<div class="radiogroup">
+				<label for="<?php printf( 'group-type-%s', $type->name ); ?>">
+					<input type="radio" name="group-types[]" id="<?php printf( 'group-type-%s', $type->name ); ?>" value="<?php echo esc_attr( $type->name ); ?>" <?php checked( sz_groups_has_group_type( sz_get_current_group_id(), $type->name ) ); ?>/> <?php echo esc_html( $type->labels['name'] ); ?>
+					<?php
+					if ( ! empty( $type->description ) ) {
+						printf( '&ndash; %s', '<span class="sz-group-type-desc">' . esc_html( $type->description ) . '</span>' );
+					}
+					?>
+				</label>
+			</div>
+
+		<?php endforeach; ?>
+
+	</fieldset>
+
+<?php endif; ?>
+
 
 <label for="group-name"><?php esc_html_e( 'Group Name (required)', 'sportszone' ); ?></label>
 <input type="text" name="group-name" id="group-name" value="<?php sz_is_group_create() ? sz_new_group_name() : sz_group_name(); ?>" aria-required="true" />
