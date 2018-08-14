@@ -139,6 +139,7 @@ window.bp = window.bp || {};
 		 * @param {Array}             files    Array of file objects that were added to queue by the user.
 		 */
 		this.uploader.bind( 'FilesAdded', function( uploader, files ) {
+			console.log(uploader);
 			var hundredmb = 100 * 1024 * 1024, max = parseInt( uploader.settings.max_file_size, 10 ),
 			    _this = this;
 
@@ -205,6 +206,7 @@ window.bp = window.bp || {};
 		 * @return {mixed}
 		 */
 		this.uploader.bind( 'FileUploaded', function( uploader, file, response ) {
+			console.log(uploader);
 			var message = self.strings.default_error;
 
 			try {
@@ -266,7 +268,7 @@ window.bp = window.bp || {};
 		 * @param {plupload.Uploader} uploader Uploader instance.
 		 * @param {Object}            pluploadError Plupload error
 		 */
-		this.uploader.bind( 'Error', function( uploader, pluploadError ) {
+this.uploader.bind( 'Error', function( uploader, pluploadError ) {
 			var message = self.strings.default_error,
 				key,
 				errors = {

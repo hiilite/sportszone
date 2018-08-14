@@ -20,6 +20,14 @@ if ( sz_has_groups() ) :
 		</div><!-- #item-header -->
  
 		<div class="sz-wrap">
+			<?php 
+				/*$group_id = sz_get_group_id();
+				
+				$group_type = (array) sz_groups_get_group_type( $group_id, false );
+				var_dump($group_type);
+				var_dump( sz_groups_get_group_type( sz_get_group_id(), true ) );
+				var_dump( sz_get_current_group_directory_type() );*/
+				 ?>
 
 				<?php sz_get_template_part( 'groups/single/parts/item-nav' ); ?>
 

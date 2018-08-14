@@ -8,7 +8,9 @@
 ?>
 
 <div id="cover-image-container">
-	<div id="header-cover-image"></div>
+	<div id="header-cover-image">
+		<?php sz_group_cover_image(); ?>
+	</div>
 
 	<div id="item-header-cover-image">
 		<?php if ( ! sz_disable_group_avatar_uploads() ) : ?>

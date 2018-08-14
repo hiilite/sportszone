@@ -138,7 +138,7 @@ class SZ_Nouveau extends SZ_Theme_Compat {
 
 		/** This filter is documented in sz-core/sz-core-avatars.php. */
 		$avatar_height = apply_filters( 'sz_core_avatar_full_height', $top_offset );
-
+		$cover_image_height = apply_filters( 'sz_core_cover_image_full_height', 315 );
 		if ( $avatar_height > $top_offset ) {
 			$top_offset = $avatar_height;
 		}
@@ -148,7 +148,7 @@ class SZ_Nouveau extends SZ_Theme_Compat {
 			'settings' => array(
 				'components'   => array( 'xprofile', 'groups' ),
 				'width'        => $width,
-				'height'       => $top_offset + round( $avatar_height / 2 ),
+				'height'       => $cover_image_height,
 				'callback'     => 'sz_nouveau_theme_cover_image',
 				'theme_handle' => 'sz-nouveau',
 			),

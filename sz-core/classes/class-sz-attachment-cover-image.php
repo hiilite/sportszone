@@ -26,13 +26,13 @@ class SZ_Attachment_Cover_Image extends SZ_Attachment {
 	public function __construct() {
 		// Allowed cover image types & upload size.
 		$allowed_types        = sz_attachments_get_allowed_types();
-		$max_upload_file_size = sz_attachments_get_max_upload_file_size( 'cover_image' );
+		$max_upload_file_size = sz_attachments_get_max_upload_file_size('cover_image');
 
 		parent::__construct( array(
 			'action'                => 'sz_cover_image_upload',
 			'file_input'            => 'file',
-			'original_max_filesize' => $max_upload_file_size,
-			'base_dir'              => sz_attachments_uploads_dir_get( 'dir' ),
+			'original_max_filesize' => sz_core_cover_image_original_max_filesize(),
+			//'base_dir'              => sz_attachments_uploads_dir_get( 'dir' ),
 			'required_wp_files'     => array( 'file', 'image' ),
 
 			// Specific errors for cover images.
@@ -90,13 +90,14 @@ class SZ_Attachment_Cover_Image extends SZ_Attachment {
 		}
 
 		// File size is too big.
-		if ( $file['size'] > $this->original_max_filesize ) {
-			$file['error'] = 11;
+		if ( ! sz_core_check_cover_image_size( array( 'file' => $file ) ) ) {
+			$file['error'] = 9;
 
 		// File is of invalid type.
-		} elseif ( ! sz_attachments_check_filetype( $file['tmp_name'], $file['name'], sz_attachments_get_allowed_mimes( 'cover_image' ) ) ) {
-			$file['error'] = 12;
+		} elseif ( ! sz_core_check_cover_image_type( array( 'file' => $file ) ) ) {
+			$file['error'] = 10;
 		}
+
 
 		// Return with error code attached.
 		return $file;
@@ -106,7 +107,7 @@ class SZ_Attachment_Cover_Image extends SZ_Attachment {
 	 * Maybe shrink the attachment to fit maximum allowed width.
 	 *
 	 * @since 2.3.0
-	 * @since 2.4.0 Add the $ui_available_width parameter, to inform about the Avatar UI width.
+	 * @since 2.4.0 Add the $ui_available_width parameter, to inform about the Cover Image UI width.
 	 *
 	 * @param string $file               The absolute path to the file.
 	 * @param int    $ui_available_width Available width for the UI.
@@ -119,14 +120,14 @@ class SZ_Attachment_Cover_Image extends SZ_Attachment {
 		// Init the edit args.
 		$edit_args = array();
 
-		// Defaults to the Avatar original max width constant.
+		// Defaults to the Cover Image original max width constant.
 		$original_max_width = sz_core_cover_image_original_max_width();
 
-		// The ui_available_width is defined and it's smaller than the Avatar original max width.
+		// The ui_available_width is defined and it's smaller than the Cover Image original max width.
 		if ( ! empty( $ui_available_width ) && $ui_available_width < $original_max_width ) {
 			/**
 			 * In this case, to make sure the content of the image will be fully displayed
-			 * during the cropping step, let's use the Avatar UI Available width.
+			 * during the cropping step, let's use the Cover Image UI Available width.
 			 */
 			$original_max_width = $ui_available_width;
 
@@ -200,34 +201,35 @@ class SZ_Attachment_Cover_Image extends SZ_Attachment {
 	 */
 	public function crop( $args = array() ) {
 		// Bail if the original file is missing.
+		
+		
 		if ( empty( $args['original_file'] ) ) {
 			return false;
 		}
-
+		
 		if ( ! sz_attachments_current_user_can( 'edit_cover_image', $args ) ) {
 			return false;
 		}
-
+		
 		if ( 'user' === $args['object'] ) {
-			$cover_image_dir = 'cover_images';
+			$cover_image_dir = 'cover-images';
 		} else {
 			$cover_image_dir = sanitize_key( $args['object'] ) . '-cover-images';
 		}
-
+		
 		$args['item_id'] = (int) $args['item_id'];
-
+		
 		/**
 		 * Original file is a relative path to the image
 		 * eg: /cover-images/1/cover_image.jpg
 		 */
 		$relative_path = sprintf( '/%s/%s/%s', $cover_image_dir, $args['item_id'], basename( $args['original_file'] ) );
 		$absolute_path = $this->upload_path . $relative_path;
-
 		// Bail if the cover_image is not available.
 		if ( ! file_exists( $absolute_path ) )  {
 			return false;
 		}
-
+		
 		if ( empty( $args['item_id'] ) ) {
 
 			/** This filter is documented in sz-core/sz-core-cover-images.php */
@@ -242,7 +244,7 @@ class SZ_Attachment_Cover_Image extends SZ_Attachment {
 		if ( ! file_exists( $cover_image_folder_dir ) ) {
 			return false;
 		}
-
+		
 		// Delete the existing cover_image files for the object.
 		$existing_cover_image = sz_core_fetch_cover_image( array(
 			'object'  => $args['object'],
@@ -266,7 +268,7 @@ class SZ_Attachment_Cover_Image extends SZ_Attachment {
 		if ( empty( $args['crop_h'] ) ) {
 			$args['crop_h'] = sz_core_cover_image_full_height();
 		}
-
+	
 		// Get the file extension.
 		$data = @getimagesize( $absolute_path );
 		$ext  = $data['mime'] == 'image/png' ? 'png' : 'jpg';
@@ -284,7 +286,7 @@ class SZ_Attachment_Cover_Image extends SZ_Attachment {
 				$args['dst_h'] = sz_core_cover_image_full_height();
 			}
 
-			$filename         = wp_unique_filename( $cover_image_folder_dir, uniqid() . "-sz{$key_type}.{$ext}" );
+			$filename         = wp_unique_filename( $cover_image_folder_dir, uniqid() . "-bp{$key_type}.{$ext}" );
 			$args['dst_file'] = $cover_image_folder_dir . '/' . $filename;
 
 			$cover_image_types[ $key_type ] = parent::crop( $args );
@@ -292,7 +294,7 @@ class SZ_Attachment_Cover_Image extends SZ_Attachment {
 
 		// Remove the original.
 		@unlink( $absolute_path );
-
+		
 		// Return the full and thumb cropped cover_images.
 		return $cover_image_types;
 	}
@@ -411,6 +413,7 @@ class SZ_Attachment_Cover_Image extends SZ_Attachment {
 				'item_id'         => $item_id,
 				'has_cover_image' => sz_attachments_get_user_has_cover_image( $item_id ),
 				'nonces'  => array(
+					'set'    => wp_create_nonce( 'sz_cover_image_cropstore' ),
 					'remove' => wp_create_nonce( 'sz_delete_cover_image' ),
 				),
 			);
@@ -429,6 +432,7 @@ class SZ_Attachment_Cover_Image extends SZ_Attachment {
 				'item_id'         => sz_get_current_group_id(),
 				'has_cover_image' => sz_attachments_get_group_has_cover_image( $item_id ),
 				'nonces'  => array(
+					'set'    => wp_create_nonce( 'sz_cover_image_cropstore' ),
 					'remove' => wp_create_nonce( 'sz_delete_cover_image' ),
 				),
 			);

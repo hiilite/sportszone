@@ -365,7 +365,7 @@ function sz_attachments_create_item_type( $type = 'avatar', $args = array() ) {
 			$attachment_data = call_user_func_array( $r['component'] . '_avatar_upload_dir', $dir_args );
 		}
 	} elseif ( 'cover_image' === $type ) {
-		$attachment_data = sz_attachments_cover_image_upload_dir();
+		/*$attachment_data = sz_attachments_cover_image_upload_dir();
 
 		// The BP Attachments Uploads Dir is not set, stop.
 		if ( ! $attachment_data ) {
@@ -384,6 +384,29 @@ function sz_attachments_create_item_type( $type = 'avatar', $args = array() ) {
 
 		// Set Path.
 		$attachment_data['path'] = trailingslashit( $attachment_data['basedir'] ) . $attachment_data['subdir'];
+		*/
+		
+		// Set crop width for the avatar if not given.
+		if ( empty( $r['crop_w'] ) ) {
+			$r['crop_w'] = sz_core_cover_image_full_width();
+		}
+
+		// Set crop height for the avatar if not given.
+		if ( empty( $r['crop_h'] ) ) {
+			$r['crop_h'] = sz_core_cover_image_full_height();
+		}
+
+		if ( is_callable( $r['component'] . '_cover_image_upload_dir' ) ) {
+			$dir_args = array( $r['item_id'] );
+
+			// In case  of xprofile, we need an extra argument.
+			if ( 'xprofile' === $r['component'] ) {
+				$dir_args = array( false, $r['item_id'] );
+			}
+
+			$attachment_data = call_user_func_array( $r['component'] . '_cover_image_upload_dir', $dir_args );
+		}
+		
 	}
 
 	if ( ! isset( $attachment_data['path'] ) || ! isset( $attachment_data['subdir'] ) ) {
@@ -424,13 +447,24 @@ function sz_attachments_create_item_type( $type = 'avatar', $args = array() ) {
 
 	// It's a cover image we need to fit it to feature's dimensions.
 	} elseif ( 'cover_image' === $type ) {
-		$cover_image = sz_attachments_cover_image_generate_file( array(
+		/*$cover_image = sz_attachments_cover_image_generate_file( array(
 			'file'            => $image_file_path,
 			'component'       => $r['component'],
 			'cover_image_dir' => $attachment_data['path']
 		) );
 
-		$created = ! empty( $cover_image['cover_file'] );
+		$created = ! empty( $cover_image['cover_file'] );*/
+		
+		$created = sz_core_avatar_handle_crop( array(
+			'object'        => $r['object'],
+			'cover_image_dir'    => trim( dirname( $attachment_data['subdir'] ), '/' ),
+			'item_id'       => (int) $r['item_id'],
+			'original_file' => trailingslashit( $attachment_data['subdir'] ) . $image_file_name,
+			'crop_w'        => $r['crop_w'],
+			'crop_h'        => $r['crop_h'],
+			'crop_x'        => $r['crop_x'],
+			'crop_y'        => $r['crop_y']
+		) );
 	}
 
 	// Remove copied file if it fails.
@@ -828,7 +862,7 @@ function sz_attachments_enqueue_scripts( $class = '' ) {
 		$has_cover_image = $defaults['multipart_params']['sz_params']['has_cover_image'];
 
 		// Default cover component is xprofile.
-		$cover_component = 'xprofile';
+		//$cover_component = 'xprofile';
 
 		// Get the object we're editing the cover image of.
 		$object = $defaults['multipart_params']['sz_params']['object'];
@@ -842,7 +876,7 @@ function sz_attachments_enqueue_scripts( $class = '' ) {
 		);
 
 		// Set the cover component according to the object.
-		if ( 'group' === $object ) {
+		/*if ( 'group' === $object ) {
 			$cover_component = 'groups';
 		} elseif ( 'user' !== $object ) {
 			$cover_component = apply_filters( 'sz_attachments_cover_image_ui_component', $cover_component );
@@ -857,11 +891,11 @@ function sz_attachments_enqueue_scripts( $class = '' ) {
 					(int) $cover_dimensions['width'],
 					(int) $cover_dimensions['height']
 				),
-		) );
+		) );*/
 		
 		// Create the Camera Nav if the WebCam capture feature is enabled.
 		if ( sz_cover_image_use_webcam() && 'user' === $object ) {
-			$avatar_nav['camera'] = array( 'id' => 'camera', 'caption' => __( 'Take Photo', 'sportszone' ), 'order' => 10 );
+			$cover_image_nav['camera'] = array( 'id' => 'camera', 'caption' => __( 'Take Photo', 'sportszone' ), 'order' => 10 );
 
 			// Set warning messages.
 			$strings['camera_warnings'] = array(
@@ -1387,6 +1421,7 @@ function sz_attachments_cover_image_ajax_upload() {
 		sz_attachments_json_response( false, $is_html4, array(
 			'type'    => 'upload_error',
 			'message' => $error_message,
+			'more'	  => $cover_image_attachment,
 		) );
 	}
 
@@ -1398,6 +1433,7 @@ function sz_attachments_cover_image_ajax_upload() {
 		sz_attachments_json_response( false, $is_html4, array(
 			'type'    => 'upload_error',
 			'message' => $error_message,
+			'more2'	  => $cover_dir,
 		) );
 	}
 
@@ -1418,6 +1454,7 @@ function sz_attachments_cover_image_ajax_upload() {
 		sz_attachments_json_response( false, $is_html4, array(
 			'type'    => 'upload_error',
 			'message' => $error_message,
+			'more3'	  => $cover_dir,
 		) );
 	}
 
@@ -1467,7 +1504,7 @@ function sz_attachments_cover_image_ajax_upload() {
 		'feedback_code' => $feedback_code,
 	) );
 }
-add_action( 'wp_ajax_sz_cover_image_upload', 'sz_attachments_cover_image_ajax_upload' );
+//add_action( 'wp_ajax_sz_cover_image_upload', 'sz_attachments_cover_image_ajax_upload' );
 
 /**
  * Ajax delete a cover image for a given object and item id.

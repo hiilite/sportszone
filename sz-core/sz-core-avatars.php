@@ -895,8 +895,8 @@ function sz_core_avatar_handle_upload( $file, $upload_dir_filter ) {
 
 	// Upload the file.
 	$avatar_attachment = new SZ_Attachment_Avatar();
+	
 	$sz->avatar_admin->original = $avatar_attachment->upload( $file, $upload_dir_filter );
-
 	// In case of an error, stop the process and display a feedback to the user.
 	if ( ! empty( $sz->avatar_admin->original['error'] ) ) {
 		sz_core_add_message( sprintf( __( 'Upload Failed! Error was: %s', 'sportszone' ), $sz->avatar_admin->original['error'] ), 'error' );
@@ -1067,6 +1067,7 @@ function sz_avatar_ajax_upload() {
 		sz_attachments_json_response( false, $is_html4, array(
 			'type'    => 'upload_error',
 			'message' => $message,
+			'more'	  => $cover_image,
 		) );
 	}
 
@@ -1217,7 +1218,6 @@ function sz_core_avatar_handle_crop( $args = '' ) {
 	// Crop the file.
 	$avatar_attachment = new SZ_Attachment_Avatar();
 	$cropped           = $avatar_attachment->crop( $r );
-
 	// Check for errors.
 	if ( empty( $cropped['full'] ) || empty( $cropped['thumb'] ) || is_wp_error( $cropped['full'] ) || is_wp_error( $cropped['thumb'] ) ) {
 		return false;

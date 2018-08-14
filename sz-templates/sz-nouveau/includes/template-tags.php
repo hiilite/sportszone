@@ -384,6 +384,8 @@ function sz_nouveau_after_loop() {
  */
 function sz_nouveau_pagination( $position ) {
 	$screen          = 'dir';
+	$pag_count		 = null;
+	$pag_links		 = null;
 	$pagination_type = sz_current_component();
 
 	if ( sz_is_user() ) {

@@ -2230,8 +2230,15 @@ body.no-js .single-item-header .js-self-profile-button {
 	top: 0;
 	width: 100%;
 	z-index: 1;
+	overflow:hidden;
 }
-
+#header-cover-image img {
+	max-width: none;
+	width: auto;
+	min-height: 100%;
+	min-width: 100%;
+	height: auto;
+}
 #item-header-cover-image {
 	position: relative;
 	z-index: 2;

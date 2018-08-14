@@ -726,14 +726,12 @@ function sz_nouveau_theme_cover_image( $params = array() ) {
 	if ( empty( $params ) ) {
 		return '';
 	}
-
 	// Avatar height - padding - 1/2 avatar height.
 	$avatar_offset = $params['height'] - 5 - round( (int) sz_core_avatar_full_height() / 2 );
 
 	// Header content offset + spacing.
 	$top_offset  = sz_core_avatar_full_height() - 10;
 	$left_offset = sz_core_avatar_full_width() + 20;
-
 	$cover_image = isset( $params['cover_image'] ) ? 'background-image: url( ' . $params['cover_image'] . ' );' : '';
 	$hide_avatar_style = '';
 

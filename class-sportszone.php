@@ -534,6 +534,7 @@ class SportsZone {
 			'core',
 			'friends',
 			'groups',
+			'events',
 			'members',
 			'messages',
 			'notifications',
@@ -572,6 +573,8 @@ class SportsZone {
 
 			'SZ_Group_Extension'    => 'groups',
 			'SZ_Group_Member_Query' => 'groups',
+			'SZ_Event_Extension'    => 'events',
+			'SZ_Event_Member_Query' => 'events',
 
 			'SZ_Core_Members_Template'       => 'members',
 			'SZ_Core_Members_Widget'         => 'members',

@@ -26,13 +26,13 @@ function sz_core_set_cover_image_constants() {
 		define( 'SZ_COVER_IMAGE_THUMB_HEIGHT', 155 );
 
 	if ( !defined( 'SZ_COVER_IMAGE_FULL_WIDTH' ) )
-		define( 'SZ_COVER_IMAGE_FULL_WIDTH', 828 );
+		define( 'SZ_COVER_IMAGE_FULL_WIDTH', 1300 );
 
 	if ( !defined( 'SZ_COVER_IMAGE_FULL_HEIGHT' ) )
 		define( 'SZ_COVER_IMAGE_FULL_HEIGHT', 315 );
 
 	if ( !defined( 'SZ_COVER_IMAGE_ORIGINAL_MAX_WIDTH' ) )
-		define( 'SZ_COVER_IMAGE_ORIGINAL_MAX_WIDTH', 828 );
+		define( 'SZ_COVER_IMAGE_ORIGINAL_MAX_WIDTH', 1300 );
 
 	if ( !defined( 'SZ_COVER_IMAGE_ORIGINAL_MAX_FILESIZE' ) ) {
 		define( 'SZ_COVER_IMAGE_ORIGINAL_MAX_FILESIZE', sz_attachments_get_max_upload_file_size( 'cover_image' ) );
@@ -191,12 +191,11 @@ add_action( 'sz_setup_globals', 'sz_core_set_cover_image_globals' );
  */
 function sz_core_fetch_cover_image( $args = '' ) {
 	$sz = sportszone();
-
+	
 	// If cover_images are disabled for the root site, obey that request and bail.
-	if ( ! $sz->cover_image->show_cover_images ) {
+	/*if ( ! $sz->cover_image->show_cover_images ) {
 		return;
-	}
-
+	}*/
 	global $current_blog;
 
 	// Set the default variables array and parse it against incoming $args array.
@@ -282,7 +281,7 @@ function sz_core_fetch_cover_image( $args = '' ) {
 
 			case 'user'  :
 			default      :
-				$params['cover_image_dir'] = 'cover_images';
+				$params['cover_image_dir'] = 'cover-images';
 				break;
 		}
 
@@ -772,7 +771,6 @@ add_action( 'wp_ajax_sz_cover_image_delete', 'sz_cover_image_ajax_delete' );
  * @return bool True on success, false on failure.
  */
 function sz_core_cover_image_handle_upload( $file, $upload_dir_filter ) {
-
 	/**
 	 * Filters whether or not to handle uploading.
 	 *
@@ -791,11 +789,11 @@ function sz_core_cover_image_handle_upload( $file, $upload_dir_filter ) {
 	// Setup some variables.
 	$sz          = sportszone();
 	$upload_path = sz_core_cover_image_upload_path();
-
+	
 	// Upload the file.
-	$cover_image_attachment = new SZ_Attachment_Avatar();
+	$cover_image_attachment = new SZ_Attachment_Cover_Image();
+	
 	$sz->cover_image_admin->original = $cover_image_attachment->upload( $file, $upload_dir_filter );
-
 	// In case of an error, stop the process and display a feedback to the user.
 	if ( ! empty( $sz->cover_image_admin->original['error'] ) ) {
 		sz_core_add_message( sprintf( __( 'Upload Failed! Error was: %s', 'sportszone' ), $sz->cover_image_admin->original['error'] ), 'error' );
@@ -804,16 +802,15 @@ function sz_core_cover_image_handle_upload( $file, $upload_dir_filter ) {
 
 	// The Avatar UI available width.
 	$ui_available_width = 0;
-
 	// Try to set the ui_available_width using the cover_image_admin global.
 	if ( isset( $sz->cover_image_admin->ui_available_width ) ) {
 		$ui_available_width = $sz->cover_image_admin->ui_available_width;
 	}
-
+	
 	// Maybe resize.
 	$sz->cover_image_admin->resized = $cover_image_attachment->shrink( $sz->cover_image_admin->original['file'], $ui_available_width );
 	$sz->cover_image_admin->image   = new stdClass();
-
+	
 	// We only want to handle one image after resize.
 	if ( empty( $sz->cover_image_admin->resized ) ) {
 		$sz->cover_image_admin->image->file = $sz->cover_image_admin->original['file'];
@@ -823,7 +820,7 @@ function sz_core_cover_image_handle_upload( $file, $upload_dir_filter ) {
 		$sz->cover_image_admin->image->dir  = str_replace( $upload_path, '', $sz->cover_image_admin->resized['path'] );
 		@unlink( $sz->cover_image_admin->original['file'] );
 	}
-
+	
 	// Check for WP_Error on what should be an image.
 	if ( is_wp_error( $sz->cover_image_admin->image->dir ) ) {
 		sz_core_add_message( sprintf( __( 'Upload failed! Error was: %s', 'sportszone' ), $sz->cover_image_admin->image->dir->get_error_message() ), 'error' );
@@ -966,6 +963,7 @@ function sz_cover_image_ajax_upload() {
 		sz_attachments_json_response( false, $is_html4, array(
 			'type'    => 'upload_error',
 			'message' => $message,
+			'more'	  => $cover_image,
 		) );
 	}
 
@@ -1020,7 +1018,7 @@ function sz_cover_image_handle_capture( $data = '', $item_id = 0 ) {
 		return true;
 	}
 
-	$cover_image_dir = sz_core_cover_image_upload_path() . '/cover_images';
+	$cover_image_dir = sz_core_cover_image_upload_path() . '/cover-images';
 
 	// It's not a regular upload, we may need to create this folder.
 	if ( ! file_exists( $cover_image_dir ) ) {
@@ -1039,7 +1037,7 @@ function sz_cover_image_handle_capture( $data = '', $item_id = 0 ) {
 	 * @param string $value      Avatar type.
 	 * @param string $value      Cover Images word.
 	 */
-	$cover_image_folder_dir = apply_filters( 'sz_core_cover_image_folder_dir', $cover_image_dir . '/' . $item_id, $item_id, 'user', 'cover_images' );
+	$cover_image_folder_dir = apply_filters( 'sz_core_cover_image_folder_dir', $cover_image_dir . '/' . $item_id, $item_id, 'user', 'cover-images' );
 
 	// It's not a regular upload, we may need to create this folder.
 	if( ! is_dir( $cover_image_folder_dir ) ) {
@@ -1112,11 +1110,11 @@ function sz_core_cover_image_handle_crop( $args = '' ) {
 	if ( ! apply_filters( 'sz_core_pre_cover_image_handle_crop', true, $r ) ) {
 		return true;
 	}
-
+	
 	// Crop the file.
-	$cover_image_attachment = new SZ_Attachment_Avatar();
+	$cover_image_attachment = new SZ_Attachment_Cover_Image();
 	$cropped           = $cover_image_attachment->crop( $r );
-
+	
 	// Check for errors.
 	if ( empty( $cropped['full'] ) || empty( $cropped['thumb'] ) || is_wp_error( $cropped['full'] ) || is_wp_error( $cropped['thumb'] ) ) {
 		return false;
@@ -1188,7 +1186,7 @@ function sz_cover_image_ajax_set() {
 			 * @since 1.1.0 Used to inform the cover_image was successfully cropped
 			 * @since 2.3.4 Add two new parameters to inform about the user id and
 			 *              about the way the cover_image was set (eg: 'crop' or 'camera')
-			 *              Move the action at the right place, once the cover_image is set
+		 *              Move the action at the right place, once the cover_image is set
 			 * @since 2.8.0 Added the `$cover_image_data` parameter.
 			 *
 			 * @param string $item_id     Inform about the user id the cover_image was set for.
@@ -1251,6 +1249,8 @@ function sz_cover_image_ajax_set() {
 	} else {
 		wp_send_json_error( array(
 			'feedback_code' => 1,
+			'args'			=> $r,
+			'return'		=> sz_core_cover_image_handle_crop( $r )
 		) );
 	}
 }
@@ -1396,6 +1396,83 @@ function sz_core_check_cover_image_type( $file ) {
 }
 
 /**
+ * Fetch data from the BP root blog's upload directory.
+ *
+ * @since 1.8.0
+ *
+ * @param string $type The variable we want to return from the $sz->avatars object.
+ *                     Only 'upload_path' and 'url' are supported. Default: 'upload_path'.
+ * @return string The avatar upload directory path.
+ */
+function sz_core_get_cover_image_upload_dir( $type = 'upload_path' ) {
+	$sz = sportszone();
+
+	switch ( $type ) {
+		case 'upload_path' :
+			$constant = 'SZ_COVER_IMAGE_UPLOAD_PATH';
+			$key      = 'basedir';
+
+			break;
+
+		case 'url' :
+			$constant = 'SZ_COVER_IMAGE_URL';
+			$key      = 'baseurl';
+
+			break;
+
+		default :
+			return false;
+
+			break;
+	}
+
+	// See if the value has already been calculated and stashed in the $sz global.
+	if ( isset( $sz->cover_image->$type ) ) {
+		$retval = $sz->cover_image->$type;
+	} else {
+		// If this value has been set in a constant, just use that.
+		if ( defined( $constant ) ) {
+			$retval = constant( $constant );
+		} else {
+
+			// Use cached upload dir data if available.
+			if ( ! empty( $sz->cover_image->upload_dir ) ) {
+				$upload_dir = $sz->cover_image->upload_dir;
+
+			// No cache, so query for it.
+			} else {
+
+				// Get upload directory information from current site.
+				$upload_dir = sz_upload_dir();
+
+				// Stash upload directory data for later use.
+				$sz->cover_image->upload_dir = $upload_dir;
+			}
+
+			// Directory does not exist and cannot be created.
+			if ( ! empty( $upload_dir['error'] ) ) {
+				$retval = '';
+
+			} else {
+				$retval = $upload_dir[$key];
+
+				// If $key is 'baseurl', check to see if we're on SSL
+				// Workaround for WP13941, WP15928, WP19037.
+				if ( $key == 'baseurl' && is_ssl() ) {
+					$retval = str_replace( 'http://', 'https://', $retval );
+				}
+			}
+
+		}
+
+		// Stash in $sz for later use.
+		$sz->cover_image->$type = $retval;
+	}
+
+	return $retval;
+}
+
+/**
  * Get the absolute upload path for the WP installation.
  *
  * @since 1.2.0
@@ -1411,7 +1488,7 @@ function sz_core_cover_image_upload_path() {
 	 *
 	 * @param string $value Absolute upload path for the WP installation.
 	 */
-	return apply_filters( 'sz_core_cover_image_upload_path', sz_core_get_upload_dir() );
+	return apply_filters( 'sz_core_cover_image_upload_path', sz_core_get_cover_image_upload_dir() );
 }
 
 /**
@@ -1430,7 +1507,8 @@ function sz_core_cover_image_url() {
 	 *
 	 * @param string $value Raw base URL for the root site upload location.
 	 */
-	return apply_filters( 'sz_core_cover_image_url', sz_core_get_upload_dir( 'url' ) );
+	
+	return apply_filters( 'sz_core_cover_image_url', sz_core_get_cover_image_upload_dir( 'url' ) );
 }
 
 /**

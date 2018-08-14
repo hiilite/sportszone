@@ -197,16 +197,15 @@ window.bp = window.bp || {};
 
 		uploadProgress: function() {
 			// Create the Uploader status view
-			var coverImageUploadProgress = new bp.Views.coverImageUploadProgress( { collection: bp.Uploader.filesQueue } );
-
+			var coverImageStatus = new bp.Views.uploaderStatus( { collection: bp.Uploader.filesQueue } );
 			if ( ! _.isUndefined( this.views.get( 'status' ) ) ) {
-				this.views.set( { id: 'status', view: coverImageUploadProgress } );
+				this.views.set( { id: 'status', view: coverImageStatus } );
 			} else {
-				this.views.add( { id: 'status', view: coverImageUploadProgress } );
+				this.views.add( { id: 'status', view: coverImageStatus } );
 			}
 
 			// Display it
-			coverImageUploadProgress.inject( '.sz-cover-image-status' );
+			coverImageStatus.inject( '.sz-cover-image-status' );
 		},
 		
 		cropView: function() {
@@ -234,7 +233,6 @@ window.bp = window.bp || {};
 		setCoverImage: function( cover_image ) {
 			var self = this,
 				crop;
-
 			// Remove the crop view
 			if ( ! _.isUndefined( this.views.get( 'crop' ) ) ) {
 				// Remove the JCrop API
@@ -271,7 +269,8 @@ window.bp = window.bp || {};
 				} );
 
 				coverImageStatus.inject( '.sz-cover-image-status' );
-
+				
+				
 				// Update each cover_images of the page
 				$( '.' + cover_image.get( 'object' ) + '-' + response.item_id + '-cover-image' ).each( function() {
 					$(this).prop( 'src', response.cover_image );
@@ -436,7 +435,6 @@ window.bp = window.bp || {};
 
 		initialize: function() {
 			var hasCoverImage = _.findWhere( this.collection.models, { id: 'delete' } );
-			console.log(hasCoverImage);
 			// Display a message to inform about the delete tab
 			if ( 1 !== hasCoverImage.get( 'hide' ) ) {
 				bp.CoverImage.displayWarning( SZ_Uploader.strings.has_cover_image_warning );
@@ -525,7 +523,7 @@ window.bp = window.bp || {};
 		}
 	} );
 	
-	// Avatars view
+	// Cover Images view
 	bp.Views.CoverImages = bp.View.extend( {
 		className: 'items',
 

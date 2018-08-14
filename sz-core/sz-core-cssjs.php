@@ -69,6 +69,10 @@ function sz_core_register_common_scripts() {
 		// Version 2.7.
 		'sz-moment'    => array( 'file' => "{$url}vendor/moment-js/moment{$min}.js", 'dependencies' => array(), 'footer' => true ),
 		'sz-livestamp' => array( 'file' => "{$url}vendor/livestamp{$min}.js", 'dependencies' => array( 'jquery', 'sz-moment' ), 'footer' => true ),
+		
+		// Version 3.1.0
+		//'sz-jquery-crs' => array( 'file' => "{$url}vendor/jquery.crs{$min}.js", 'dependencies' => array( 'jquery' ), 'footer' => true ),
+		'sz-crs' => array( 'file' => "{$url}vendor/crs{$min}.js", 'dependencies' => array( 'jquery' ), 'footer' => true ),
 	);
 
 	// Version 2.7 - Add Moment.js locale to our $scripts array if we found one.
@@ -199,6 +203,7 @@ add_action( 'sz_enqueue_scripts', 'sz_core_avatar_scripts' );
  * @since 2.4.0
  */
 function sz_core_cover_image_scripts() {
+	
 	if ( ! sz_attachments_cover_image_is_edit() ) {
 		return false;
 	}
@@ -221,6 +226,18 @@ function sz_core_add_jquery_cropper() {
 }
 
 /**
+ * Enqueues jCrop library and hooks BP's custom cropper JS.
+ *
+ * @since 1.1.0
+ */
+function sz_core_add_cover_image_jquery_cropper() {
+	wp_enqueue_style( 'jcrop' );
+	wp_enqueue_script( 'jcrop', array( 'jquery' ) );
+	add_action( 'wp_head', 'sz_core_add_cover_image_cropper_inline_js' );
+	add_action( 'wp_head', 'sz_core_add_cover_image_cropper_inline_css' );
+}
+
+/**
  * Output the inline JS needed for the cropper to work on a per-page basis.
  *
  * @since 1.1.0
@@ -238,7 +255,7 @@ function sz_core_add_cropper_inline_js() {
 	if ( empty( $image ) ) {
 		return;
 	}
-
+	
 	// Get avatar full width and height.
 	$full_height = sz_core_avatar_full_height();
 	$full_width  = sz_core_avatar_full_width();
@@ -317,8 +334,121 @@ function sz_core_add_cropper_inline_js() {
 					marginLeft: '-' + Math.round(rx * coords.x) + 'px',
 					marginTop: '-' + Math.round(ry * coords.y) + 'px'
 				});
+				
+				
 			}
 		}
+	
+	</script>
+
+<?php
+}
+
+/**
+ * Output the inline JS needed for the cropper to work on a per-page basis.
+ *
+ * @since 1.1.0
+ */
+function sz_core_add_cover_image_cropper_inline_js() {
+	
+	/**
+	 * Filters the return value of getimagesize to determine if an image was uploaded.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param array $value Array of data found by getimagesize.
+	 */
+	$image = apply_filters( 'sz_inline_cropper_image', getimagesize( sz_core_cover_image_upload_path() . sportszone()->cover_image_admin->image->dir ) );
+	if ( empty( $image ) ) {
+		return;
+	}
+	
+	
+	
+	// Get avatar full width and height.
+	$full_height = sz_core_cover_image_full_height();
+	$full_width  = sz_core_cover_image_full_width();
+
+	// Calculate Aspect Ratio.
+	if ( !empty( $full_height ) && ( $full_width != $full_height ) ) {
+		$aspect_ratio = $full_width / $full_height;
+	} else {
+		$aspect_ratio = 1;
+	}
+
+	// Default cropper coordinates.
+	// Smaller than full-width: cropper defaults to entire image.
+	if ( $image[0] < $full_width ) {
+		$crop_left  = 0;
+		$crop_right = $image[0];
+
+	// Less than 2x full-width: cropper defaults to full-width.
+	} elseif ( $image[0] < ( $full_width * 2 ) ) {
+		$padding_w  = round( ( $image[0] - $full_width ) / 2 );
+		$crop_left  = $padding_w;
+		$crop_right = $image[0] - $padding_w;
+
+	// Larger than 2x full-width: cropper defaults to 1/2 image width.
+	} else {
+		$crop_left  = round( $image[0] / 4 );
+		$crop_right = $image[0] - $crop_left;
+	}
+
+	// Smaller than full-height: cropper defaults to entire image.
+	if ( $image[1] < $full_height ) {
+		$crop_top    = 0;
+		$crop_bottom = $image[1];
+
+	// Less than double full-height: cropper defaults to full-height.
+	} elseif ( $image[1] < ( $full_height * 2 ) ) {
+		$padding_h   = round( ( $image[1] - $full_height ) / 2 );
+		$crop_top    = $padding_h;
+		$crop_bottom = $image[1] - $padding_h;
+
+	// Larger than 2x full-height: cropper defaults to 1/2 image height.
+	} else {
+		$crop_top    = round( $image[1] / 4 );
+		$crop_bottom = $image[1] - $crop_top;
+	}
+
+	?>
+
+	<script type="text/javascript">
+		jQuery(window).load( function(){
+			jQuery('#cover-image-to-crop').Jcrop({
+				onChange: showPreview,
+				onSelect: updateCoords,
+				aspectRatio: <?php echo (int) $aspect_ratio; ?>,
+				setSelect: [ <?php echo (int) $crop_left; ?>, <?php echo (int) $crop_top; ?>, <?php echo (int) $crop_right; ?>, <?php echo (int) $crop_bottom; ?> ]
+			});
+			
+		});
+
+		function updateCoords(c) {
+			jQuery('#x').val(c.x);
+			jQuery('#y').val(c.y);
+			jQuery('#w').val(c.w);
+			jQuery('#h').val(c.h);
+		}
+
+		function showPreview(coords) {
+			if ( parseInt(coords.w) > 0 ) {
+				var fw = <?php echo (int) $full_width; ?>;
+				var fh = <?php echo (int) $full_height; ?>;
+				var rx = fw / coords.w;
+				var ry = fh / coords.h;
+
+				jQuery( '#cover-image-crop-preview' ).css({
+					width: Math.round(rx * <?php echo (int) $image[0]; ?>) + 'px',
+					height: Math.round(ry * <?php echo (int) $image[1]; ?>) + 'px',
+					marginLeft: '-' + Math.round(rx * coords.x) + 'px',
+					marginTop: '-' + Math.round(ry * coords.y) + 'px'
+				});
+				
+				
+			}
+		}
+		
 	</script>
 
 <?php
@@ -339,6 +469,28 @@ function sz_core_add_cropper_inline_css() {
 		.jcrop-holder img,
 		#avatar-crop-pane img,
 		#avatar-upload-form img,
+		#create-group-form img,
+		#group-settings-form img { border: none !important; max-width: none !important; }
+	</style>
+
+<?php
+}
+
+/**
+ * Output the inline CSS for the BP image cropper.
+ *
+ * @since 1.1.0
+ */
+function sz_core_add_cover_image_cropper_inline_css() {
+?>
+
+	<style type="text/css">
+		.jcrop-holder { float: left; margin: 0 20px 20px 0; text-align: left; }
+		#cover-image-crop-pane { width: <?php echo sz_core_cover_image_full_width() ?>px; height: <?php echo sz_core_cover_image_full_height() ?>px; overflow: hidden; }
+		#cover-image-crop-submit { margin: 20px 0; }
+		.jcrop-holder img,
+		#cover-image-crop-pane img,
+		#cover-image-upload-form img,
 		#create-group-form img,
 		#group-settings-form img { border: none !important; max-width: none !important; }
 	</style>
@@ -371,7 +523,7 @@ add_action( 'wp_head', 'sz_core_add_ajax_url_js' );
  * @return string AJAX endpoint URL.
  */
 function sz_core_ajax_url() {
-
+	
 	/**
 	 * Filters the proper value for SportsZone' ajaxurl.
 	 *
@@ -404,7 +556,8 @@ function sz_core_get_js_dependencies() {
 		'sz-widget-members',
 		'sz-jquery-query',
 		'sz-jquery-cookie',
-		'sz-jquery-scroll-to'
+		'sz-jquery-scroll-to',
+		'sz-crs'
 	) );
 }
 

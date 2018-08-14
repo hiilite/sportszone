@@ -456,7 +456,7 @@ function sz_register_theme_compat_default_features() {
 
 	$top_offset    = 150;
 	$avatar_height = apply_filters( 'sz_core_avatar_full_height', $top_offset );
-
+	$cover_image_height = apply_filters( 'sz_core_cover_image_full_height', $top_offset );
 	if ( $avatar_height > $top_offset ) {
 		$top_offset = $avatar_height;
 	}
@@ -466,7 +466,7 @@ function sz_register_theme_compat_default_features() {
 		'settings' => array(
 			'components'   => array( 'xprofile', 'groups' ),
 			'width'        => $sz_content_width,
-			'height'       => $top_offset + round( $avatar_height / 2 ),
+			'height'       => $cover_image_height,
 			'callback'     => 'sz_legacy_theme_cover_image',
 			'theme_handle' => $sz_handle,
 		),

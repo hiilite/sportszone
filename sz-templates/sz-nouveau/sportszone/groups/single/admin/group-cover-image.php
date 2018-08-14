@@ -9,11 +9,9 @@
 
 <?php if ( sz_is_group_create() ) : ?>
 
-	<h2 class="sz-screen-title creation-step-name">
+	<h3 class="sz-screen-title creation-step-name">
 		<?php esc_html_e( 'Upload Cover Image', 'sportszone' ); ?>
-	</h2>
-
-	<div id="header-cover-image"></div>
+	</h3>
 
 <?php else : ?>
 
@@ -58,7 +56,7 @@
 		</div><!-- .main-column -->
 
 	<?php elseif ( sz_get_group_has_cover_image() ) : ?>
-
+		
 		<p><?php esc_html_e( "If you'd like to remove the existing group cover photo but not upload a new one, please use the delete group cover photo button.", 'sportszone' ); ?></p>
 
 		<?php
