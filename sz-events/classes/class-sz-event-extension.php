@@ -1,9 +1,9 @@
 <?php
 /**
- * SportsZone Groups Classes.
+ * SportsZone Events Classes.
  *
  * @package SportsZone
- * @subpackage GroupsClasses
+ * @subpackage EventsClasses
  * @since 1.1.0
  */
 
@@ -11,7 +11,7 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * API for creating group extensions without having to hardcode the content into
+ * API for creating event extensions without having to hardcode the content into
  * the theme.
  *
  * To implement, extend this class. In your constructor, pass an optional array
@@ -24,27 +24,27 @@ defined( 'ABSPATH' ) || exit;
  *     edit/create tabs.
  *   - 'visibility' Set to 'public' (default) for your extension (the main tab
  *     as well as the widget) to be available to anyone who can access the
- *     group, 'private' otherwise.
+ *     event, 'private' otherwise.
  *   - 'nav_item_position' An integer explaining where the nav item should
  *     appear in the tab list.
  *   - 'enable_nav_item' Set to true for your extension's main tab to be
- *     available to anyone who can access the group.
+ *     available to anyone who can access the event.
  *   - 'nav_item_name' The translatable text you want to appear in the nav tab.
  *     Defaults to the value of 'name'.
  *   - 'display_hook' The WordPress action that the widget_display() method is
  *     hooked to.
  *   - 'template_file' The template file that will be used to load the content
- *     of your main extension tab. Defaults to 'groups/single/plugins.php'.
+ *     of your main extension tab. Defaults to 'events/single/plugins.php'.
  *   - 'screens' A multi-dimensional array, described below.
  *   - 'access' Which users can visit the plugin's tab.
  *   - 'show_tab' Which users can see the plugin's navigation tab.
  *
- * SZ_Group_Extension uses the concept of "settings screens". There are three
+ * SZ_Event_Extension uses the concept of "settings screens". There are three
  * contexts for settings screens:
- *   - 'create', which inserts a new step into the group creation process
+ *   - 'create', which inserts a new step into the event creation process
  *   - 'edit', which adds a tab for your extension into the Admin section of
- *     a group
- *   - 'admin', which adds a metabox to the Groups administration panel in the
+ *     a event
+ *   - 'admin', which adds a metabox to the Events administration panel in the
  *     WordPress Dashboard
  * Each of these settings screens is populated by a pair of methods: one that
  * creates the markup for the screen, and one that processes form data
@@ -57,7 +57,7 @@ defined( 'ABSPATH' ) || exit;
  * context-specific methods, for example:
  *   function edit_screen() {}
  *   function edit_screen_save() {}
- * SZ_Group_Extension will use the more specific methods if they are available.
+ * SZ_Event_Extension will use the more specific methods if they are available.
  *
  * You can further customize the settings screens (tab names, etc) by passing
  * an optional 'screens' parameter to the init array. The format is as follows:
@@ -72,7 +72,7 @@ defined( 'ABSPATH' ) || exit;
  *   'edit' => array( // ...
  *   ),
  * Only provide those arguments that you actually want to change from the
- * default configuration. SZ_Group_Extension will do the rest.
+ * default configuration. SZ_Event_Extension will do the rest.
  *
  * Note that the 'edit' screen accepts an additional parameter: 'submit_text',
  * which defines the text of the Submit button automatically added to the Edit
@@ -81,12 +81,12 @@ defined( 'ABSPATH' ) || exit;
  * 'metabox_context'. See the docs for add_meta_box() for more details on these
  * arguments.
  *
- * Prior to SportsZone 1.7, group extension configurations were set slightly
+ * Prior to SportsZone 1.7, event extension configurations were set slightly
  * differently. The legacy method is still supported, though deprecated.
  *
  * @since 1.1.0
  */
-class SZ_Group_Extension {
+class SZ_Event_Extension {
 
 	/** Public ************************************************************/
 
@@ -131,12 +131,12 @@ class SZ_Group_Extension {
 	public $params_raw = array();
 
 	/**
-	 * The ID of the current group.
+	 * The ID of the current event.
 	 *
 	 * @since 1.8.0
 	 * @var int
 	 */
-	public $group_id = 0;
+	public $event_id = 0;
 
 	/**
 	 * The slug of the current extension.
@@ -205,22 +205,22 @@ class SZ_Group_Extension {
 	/**
 	 * The WP action that self::widget_display() is attached to.
 	 *
-	 * Default: 'groups_custom_group_boxes'.
+	 * Default: 'events_custom_event_boxes'.
 	 *
 	 * @since 1.1.0
 	 * @var string
 	 */
-	public $display_hook = 'groups_custom_group_boxes';
+	public $display_hook = 'events_custom_event_boxes';
 
 	/**
 	 * The template file used to load the plugin content.
 	 *
-	 * Default: 'groups/single/plugins'.
+	 * Default: 'events/single/plugins'.
 	 *
 	 * @since 1.1.0
 	 * @var string
 	 */
-	public $template_file = 'groups/single/plugins';
+	public $template_file = 'events/single/plugins';
 
 	/** Protected *********************************************************/
 
@@ -276,13 +276,13 @@ class SZ_Group_Extension {
 	 */
 
 	/**
-	 * The content of the group tab.
+	 * The content of the event tab.
 	 *
 	 * @since 1.1.0
 	 *
-	 * @param int|null $group_id ID of the group to display.
+	 * @param int|null $event_id ID of the event to display.
 	 */
-	public function display( $group_id = null ) {}
+	public function display( $event_id = null ) {}
 
 	/**
 	 * Content displayed in a widget sidebar, if applicable.
@@ -298,14 +298,14 @@ class SZ_Group_Extension {
 	 * be overridden by the more specific edit_*, create_*, and admin_*
 	 * versions.
 	 */
-	public function settings_screen( $group_id = null ) {}
-	public function settings_screen_save( $group_id = null ) {}
-	public function edit_screen( $group_id = null ) {}
-	public function edit_screen_save( $group_id = null ) {}
-	public function create_screen( $group_id = null ) {}
-	public function create_screen_save( $group_id = null ) {}
-	public function admin_screen( $group_id = null ) {}
-	public function admin_screen_save( $group_id = null ) {}
+	public function settings_screen( $event_id = null ) {}
+	public function settings_screen_save( $event_id = null ) {}
+	public function edit_screen( $event_id = null ) {}
+	public function edit_screen_save( $event_id = null ) {}
+	public function create_screen( $event_id = null ) {}
+	public function create_screen_save( $event_id = null ) {}
+	public function admin_screen( $event_id = null ) {}
+	public function admin_screen_save( $event_id = null ) {}
 
 	/** Setup *************************************************************/
 
@@ -317,8 +317,8 @@ class SZ_Group_Extension {
 	 *
 	 *   public function __construct() {
 	 *       $args = array(
-	 *           'slug' => 'my-group-extension',
-	 *           'name' => 'My Group Extension',
+	 *           'slug' => 'my-event-extension',
+	 *           'name' => 'My Event Extension',
 	 *           // ...
 	 *       );
 	 *
@@ -334,35 +334,35 @@ class SZ_Group_Extension {
 	 *     @type string       $name              Translatable name for your extension. Used to populate
 	 *                                           navigation items.
 	 *     @type string       $visibility        Optional. Set to 'public' for your extension (the main tab as well
-	 *                                           as the widget) to be available to anyone who can access the group;
+	 *                                           as the widget) to be available to anyone who can access the event;
 	 *                                           set to 'private' otherwise. Default: 'public'.
 	 *     @type int          $nav_item_position Optional. Location of the nav item in the tab list.
 	 *                                           Default: 81.
 	 *     @type bool         $enable_nav_item   Optional. Whether the extension's tab should be accessible to
-	 *                                           anyone who can view the group. Default: true.
+	 *                                           anyone who can view the event. Default: true.
 	 *     @type string       $nav_item_name     Optional. The translatable text you want to appear in the nav tab.
 	 *                                           Default: the value of `$name`.
 	 *     @type string       $display_hook      Optional. The WordPress action that the widget_display() method is
-	 *                                           hooked to. Default: 'groups_custom_group_boxes'.
+	 *                                           hooked to. Default: 'events_custom_event_boxes'.
 	 *     @type string       $template_file     Optional. Theme-relative path to the template file BP should use
 	 *                                           to load the content of your main extension tab.
-	 *                                           Default: 'groups/single/plugins.php'.
+	 *                                           Default: 'events/single/plugins.php'.
 	 *     @type array        $screens           A multi-dimensional array of configuration information for the
-	 *                                           extension screens. See docblock of {@link SZ_Group_Extension}
+	 *                                           extension screens. See docblock of {@link SZ_Event_Extension}
 	 *                                           for more details.
 	 *     @type string|array $access            Which users can visit the plugin's tab. Possible values: 'anyone',
 	 *                                           'loggedin', 'member', 'mod', 'admin' or 'noone'. ('member', 'mod',
-	 *                                           'admin' refer to user's role in group.) Note that 'mod' targets
-	 *                                           only group moderators. If you want to allow access to group moderators
+	 *                                           'admin' refer to user's role in event.) Note that 'mod' targets
+	 *                                           only event moderators. If you want to allow access to event moderators
 	 *                                           and admins, specify `array( 'mod', 'admin' )`. Defaults to 'anyone'
-	 *                                           for public groups and 'member' for private groups.
+	 *                                           for public events and 'member' for private events.
 	 *     @type string|array $show_tab          Which users can see the plugin's navigation tab. Possible values:
 	 *                                           'anyone', 'loggedin', 'member', 'mod', 'admin' or 'noone'.
-	 *                                           ('member', 'mod', 'admin' refer to user's role in group.) Note
-	 *                                           that 'mod' targets only group moderators. If you want to show the
-	 *                                           tab to group moderators and admins, specify
-	 *                                           `array( 'mod', 'admin' )`. Defaults to 'anyone' for public groups
-	 *                                           and 'member' for private groups.
+	 *                                           ('member', 'mod', 'admin' refer to user's role in event.) Note
+	 *                                           that 'mod' targets only event moderators. If you want to show the
+	 *                                           tab to event moderators and admins, specify
+	 *                                           `array( 'mod', 'admin' )`. Defaults to 'anyone' for public events
+	 *                                           and 'member' for private events.
 	 * }
 	 */
 	public function init( $args = array() ) {
@@ -405,7 +405,7 @@ class SZ_Group_Extension {
 	 * Marked 'public' because it must be accessible to add_action().
 	 * However, you should never need to invoke this method yourself - it
 	 * is called automatically at the right point in the load order by
-	 * sz_register_group_extension().
+	 * sz_register_event_extension().
 	 *
 	 * @since 1.1.0
 	 */
@@ -421,7 +421,7 @@ class SZ_Group_Extension {
 		}
 
 		// Set some config values, based on the parsed params.
-		$this->group_id          = $this->get_group_id();
+		$this->event_id          = $this->get_event_id();
 		$this->slug              = $this->params['slug'];
 		$this->name              = $this->params['name'];
 		$this->visibility        = $this->params['visibility'];
@@ -467,41 +467,41 @@ class SZ_Group_Extension {
 	}
 
 	/**
-	 * Get the current group ID.
+	 * Get the current event ID.
 	 *
 	 * Check for:
-	 *   - current group
-	 *   - new group
-	 *   - group admin
+	 *   - current event
+	 *   - new event
+	 *   - event admin
 	 *
 	 * @since 1.8.0
 	 *
 	 * @return int
 	 */
-	public static function get_group_id() {
+	public static function get_event_id() {
 
 		// Usually this will work.
-		$group_id = sz_get_current_group_id();
+		$event_id = sz_get_current_event_id();
 
-		// On the admin, get the group id out of the $_GET params.
-		if ( empty( $group_id ) && is_admin() && ( isset( $_GET['page'] ) && ( 'sz-groups' === $_GET['page'] ) ) && ! empty( $_GET['gid'] ) ) {
-			$group_id = (int) $_GET['gid'];
+		// On the admin, get the event id out of the $_GET params.
+		if ( empty( $event_id ) && is_admin() && ( isset( $_GET['page'] ) && ( 'sz-events' === $_GET['page'] ) ) && ! empty( $_GET['gid'] ) ) {
+			$event_id = (int) $_GET['gid'];
 		}
 
 		// This fallback will only be hit when the create step is very
 		// early.
-		if ( empty( $group_id ) && sz_get_new_group_id() ) {
-			$group_id = sz_get_new_group_id();
+		if ( empty( $event_id ) && sz_get_new_event_id() ) {
+			$event_id = sz_get_new_event_id();
 		}
 
-		// On some setups, the group id has to be fetched out of the
+		// On some setups, the event id has to be fetched out of the
 		// $_POST array
-		// @todo Figure out why this is happening during group creation.
-		if ( empty( $group_id ) && isset( $_POST['group_id'] ) ) {
-			$group_id = (int) $_POST['group_id'];
+		// @todo Figure out why this is happening during event creation.
+		if ( empty( $event_id ) && isset( $_POST['event_id'] ) ) {
+			$event_id = (int) $_POST['event_id'];
 		}
 
-		return $group_id;
+		return $event_id;
 	}
 
 	/**
@@ -565,8 +565,8 @@ class SZ_Group_Extension {
 	 */
 	protected function setup_access_settings() {
 
-		// Bail if no group ID is available.
-		if ( empty( $this->group_id ) ) {
+		// Bail if no event ID is available.
+		if ( empty( $this->event_id ) ) {
 			return;
 		}
 
@@ -584,13 +584,13 @@ class SZ_Group_Extension {
 			if ( false === $this->params['enable_nav_item'] ) {
 				$this->params['access'] = 'noone';
 			} else {
-				$group = groups_get_group( $this->group_id );
+				$event = events_get_event( $this->event_id );
 
-				if ( ! empty( $group->status ) && 'public' === $group->status ) {
-					// Tabs in public groups are accessible to anyone by default.
+				if ( ! empty( $event->status ) && 'public' === $event->status ) {
+					// Tabs in public events are accessible to anyone by default.
 					$this->params['access'] = 'anyone';
 				} else {
-					// All other groups have members-only as the default.
+					// All other events have members-only as the default.
 					$this->params['access'] = 'member';
 				}
 			}
@@ -670,15 +670,15 @@ class SZ_Group_Extension {
 
 		switch ( $access_condition ) {
 			case 'admin' :
-				$meets_condition = groups_is_user_admin( sz_loggedin_user_id(), $this->group_id );
+				$meets_condition = events_is_user_admin( sz_loggedin_user_id(), $this->event_id );
 				break;
 
 			case 'mod' :
-				$meets_condition = groups_is_user_mod( sz_loggedin_user_id(), $this->group_id );
+				$meets_condition = events_is_user_mod( sz_loggedin_user_id(), $this->event_id );
 				break;
 
 			case 'member' :
-				$meets_condition = groups_is_user_member( sz_loggedin_user_id(), $this->group_id );
+				$meets_condition = events_is_user_member( sz_loggedin_user_id(), $this->event_id );
 				break;
 
 			case 'loggedin' :
@@ -701,19 +701,19 @@ class SZ_Group_Extension {
 	/** Display ***********************************************************/
 
 	/**
-	 * Hook this extension's group tab into SportsZone, if necessary.
+	 * Hook this extension's event tab into SportsZone, if necessary.
 	 *
 	 * @since 1.8.0
 	 */
 	protected function setup_display_hooks() {
 
-		// Bail if not a group.
-		if ( ! sz_is_group() ) {
+		// Bail if not a event.
+		if ( ! sz_is_event() ) {
 			return;
 		}
 
 		// Backward compatibility only.
-		if ( ( 'public' !== $this->visibility ) && ! sportszone()->groups->current_group->user_has_access ) {
+		if ( ( 'public' !== $this->visibility ) && ! sportszone()->events->current_event->user_has_access ) {
 			return;
 		}
 
@@ -721,38 +721,38 @@ class SZ_Group_Extension {
 		$user_can_see_nav_item = $this->user_can_see_nav_item();
 
 		if ( $user_can_see_nav_item ) {
-			$group_permalink = sz_get_group_permalink( groups_get_current_group() );
+			$event_permalink = sz_get_event_permalink( events_get_current_event() );
 
 			sz_core_create_subnav_link( array(
 				'name'            => ! $this->nav_item_name ? $this->name : $this->nav_item_name,
 				'slug'            => $this->slug,
-				'parent_slug'     => sz_get_current_group_slug(),
-				'parent_url'      => $group_permalink,
+				'parent_slug'     => sz_get_current_event_slug(),
+				'parent_url'      => $event_permalink,
 				'position'        => $this->nav_item_position,
 				'item_css_id'     => 'nav-' . $this->slug,
 				'screen_function' => array( &$this, '_display_hook' ),
 				'user_has_access' => $user_can_see_nav_item,
-				'no_access_url'   => $group_permalink,
-			), 'groups' );
+				'no_access_url'   => $event_permalink,
+			), 'events' );
 		}
 
 		// If the user can visit the screen, we register it.
 		$user_can_visit = $this->user_can_visit();
 
 		if ( $user_can_visit ) {
-			$group_permalink = sz_get_group_permalink( groups_get_current_group() );
+			$event_permalink = sz_get_event_permalink( events_get_current_event() );
 
 			sz_core_register_subnav_screen_function( array(
 				'slug'            => $this->slug,
-				'parent_slug'     => sz_get_current_group_slug(),
+				'parent_slug'     => sz_get_current_event_slug(),
 				'screen_function' => array( &$this, '_display_hook' ),
 				'user_has_access' => $user_can_visit,
-				'no_access_url'   => $group_permalink,
-			), 'groups' );
+				'no_access_url'   => $event_permalink,
+			), 'events' );
 
 			// When we are viewing the extension display page, set the title and options title.
 			if ( sz_is_current_action( $this->slug ) ) {
-				add_filter( 'sz_group_user_has_access',   array( $this, 'group_access_protection' ), 10, 2 );
+				add_filter( 'sz_event_user_has_access',   array( $this, 'event_access_protection' ), 10, 2 );
 
 				$extension_name = $this->name;
 				add_action( 'sz_template_content_header', function() use ( $extension_name ) {
@@ -764,8 +764,8 @@ class SZ_Group_Extension {
 			}
 		}
 
-		// Hook the group home widget.
-		if ( sz_is_group_home() ) {
+		// Hook the event home widget.
+		if ( sz_is_event_home() ) {
 			add_action( $this->display_hook, array( &$this, 'widget_display' ) );
 		}
 	}
@@ -791,13 +791,13 @@ class SZ_Group_Extension {
 	/**
 	 * Call the display() method.
 	 *
-	 * We use this wrapper so that we can pass the group_id to the
+	 * We use this wrapper so that we can pass the event_id to the
 	 * display() callback.
 	 *
 	 * @since 2.1.1
 	 */
 	public function call_display() {
-		$this->display( $this->group_id );
+		$this->display( $this->event_id );
 	}
 
 	/**
@@ -843,7 +843,7 @@ class SZ_Group_Extension {
 	}
 
 	/**
-	 * Filter the access check in sz_groups_group_access_protection() for this extension.
+	 * Filter the access check in sz_events_event_access_protection() for this extension.
 	 *
 	 * Note that $no_access_args is passed by reference, as there are some
 	 * circumstances where the sz_core_no_access() arguments need to be
@@ -855,14 +855,14 @@ class SZ_Group_Extension {
 	 * @param array $no_access_args Array of args to help determine access.
 	 * @return bool
 	 */
-	public function group_access_protection( $user_can_visit, &$no_access_args ) {
+	public function event_access_protection( $user_can_visit, &$no_access_args ) {
 		$user_can_visit = $this->user_can_visit();
 
 		if ( ! $user_can_visit && is_user_logged_in() ) {
-			$current_group = groups_get_group( $this->group_id );
+			$current_event = events_get_event( $this->event_id );
 
 			$no_access_args['message'] = __( 'You do not have access to this content.', 'sportszone' );
-			$no_access_args['root'] = sz_get_group_permalink( $current_group ) . 'home/';
+			$no_access_args['root'] = sz_get_event_permalink( $current_event ) . 'home/';
 			$no_access_args['redirect'] = false;
 		}
 
@@ -884,8 +884,8 @@ class SZ_Group_Extension {
 
 		$screen = $this->screens['create'];
 
-		// Insert the group creation step for the new group extension.
-		sportszone()->groups->group_creation_steps[ $screen['slug'] ] = array(
+		// Insert the event creation step for the new event extension.
+		sportszone()->events->event_creation_steps[ $screen['slug'] ] = array(
 			'name'     => $screen['name'],
 			'slug'     => $screen['slug'],
 			'position' => $screen['position'],
@@ -893,11 +893,11 @@ class SZ_Group_Extension {
 
 		// The maybe_ methods check to see whether the create_*
 		// callbacks should be invoked (ie, are we on the
-		// correct group creation step). Hooked in separate
+		// correct event creation step). Hooked in separate
 		// methods because current creation step info not yet
 		// available at this point.
-		add_action( 'groups_custom_create_steps', array( $this, 'maybe_create_screen' ) );
-		add_action( 'groups_create_group_step_save_' . $screen['slug'], array( $this, 'maybe_create_screen_save' ) );
+		add_action( 'events_custom_create_steps', array( $this, 'maybe_create_screen' ) );
+		add_action( 'events_create_event_step_save_' . $screen['slug'], array( $this, 'maybe_create_screen_save' ) );
 	}
 
 	/**
@@ -906,16 +906,16 @@ class SZ_Group_Extension {
 	 * @since 1.8.0
 	 */
 	public function maybe_create_screen() {
-		if ( ! sz_is_group_creation_step( $this->screens['create']['slug'] ) ) {
+		if ( ! sz_is_event_creation_step( $this->screens['create']['slug'] ) ) {
 			return;
 		}
 
-		call_user_func( $this->screens['create']['screen_callback'], $this->group_id );
+		call_user_func( $this->screens['create']['screen_callback'], $this->event_id );
 		$this->nonce_field( 'create' );
 
 		// The create screen requires an additional nonce field
 		// due to a quirk in the way the templates are built.
-		wp_nonce_field( 'groups_create_save_' . sz_get_groups_current_create_step(), '_wpnonce', false );
+		wp_nonce_field( 'events_create_save_' . sz_get_events_current_create_step(), '_wpnonce', false );
 	}
 
 	/**
@@ -924,12 +924,12 @@ class SZ_Group_Extension {
 	 * @since 1.8.0
 	 */
 	public function maybe_create_screen_save() {
-		if ( ! sz_is_group_creation_step( $this->screens['create']['slug'] ) ) {
+		if ( ! sz_is_event_creation_step( $this->screens['create']['slug'] ) ) {
 			return;
 		}
 
 		$this->check_nonce( 'create' );
-		call_user_func( $this->screens['create']['screen_save_callback'], $this->group_id );
+		call_user_func( $this->screens['create']['screen_save_callback'], $this->event_id );
 	}
 
 	/** Edit **************************************************************/
@@ -940,8 +940,8 @@ class SZ_Group_Extension {
 	 * @since 1.8.0
 	 */
 	protected function setup_edit_hooks() {
-		// Bail if not in a group.
-		if ( ! sz_is_group() ) {
+		// Bail if not in a event.
+		if ( ! sz_is_event() ) {
 			return;
 		}
 
@@ -955,45 +955,45 @@ class SZ_Group_Extension {
 		$position = isset( $screen['position'] ) ? (int) $screen['position'] : 10;
 		$position += 40;
 
-		$current_group = groups_get_current_group();
-		$admin_link    = trailingslashit( sz_get_group_permalink( $current_group ) . 'admin' );
+		$current_event = events_get_current_event();
+		$admin_link    = trailingslashit( sz_get_event_permalink( $current_event ) . 'admin' );
 
 		$subnav_args = array(
 			'name'            => $screen['name'],
 			'slug'            => $screen['slug'],
-			'parent_slug'     => $current_group->slug . '_manage',
+			'parent_slug'     => $current_event->slug . '_manage',
 			'parent_url'      => $admin_link,
 			'user_has_access' => sz_is_item_admin(),
 			'position'        => $position,
-			'screen_function' => 'groups_screen_group_admin',
+			'screen_function' => 'events_screen_event_admin',
 		);
 
-		// Should we add a menu to the Group's WP Admin Bar.
+		// Should we add a menu to the Event's WP Admin Bar.
 		if ( ! empty( $screen['show_in_admin_bar'] ) ) {
 			$subnav_args['show_in_admin_bar'] = true;
 		}
 
 		// Add the tab to the manage navigation.
-		sz_core_new_subnav_item( $subnav_args, 'groups' );
+		sz_core_new_subnav_item( $subnav_args, 'events' );
 
 		// Catch the edit screen and forward it to the plugin template.
-		if ( sz_is_groups_component() && sz_is_current_action( 'admin' ) && sz_is_action_variable( $screen['slug'], 0 ) ) {
-			$this->call_edit_screen_save( $this->group_id );
+		if ( sz_is_events_component() && sz_is_current_action( 'admin' ) && sz_is_action_variable( $screen['slug'], 0 ) ) {
+			$this->call_edit_screen_save( $this->event_id );
 
-			add_action( 'groups_custom_edit_steps', array( &$this, 'call_edit_screen' ) );
+			add_action( 'events_custom_edit_steps', array( &$this, 'call_edit_screen' ) );
 
 			// Determine the proper template and save for later
 			// loading.
-			if ( '' !== sz_locate_template( array( 'groups/single/home.php' ), false ) ) {
-				$this->edit_screen_template = '/groups/single/home';
+			if ( '' !== sz_locate_template( array( 'events/single/home.php' ), false ) ) {
+				$this->edit_screen_template = '/events/single/home';
 			} else {
 				add_action( 'sz_template_content_header', function() {
 					echo '<ul class="content-header-nav">';
-					sz_group_admin_tabs();
+					sz_event_admin_tabs();
 					echo '</ul>';
 				} );
 				add_action( 'sz_template_content', array( &$this, 'call_edit_screen' ) );
-				$this->edit_screen_template = '/groups/single/plugins';
+				$this->edit_screen_template = '/events/single/plugins';
 			}
 
 			// We load the template at sz_screens, to give all
@@ -1005,9 +1005,9 @@ class SZ_Group_Extension {
 	/**
 	 * Call the edit_screen() method.
 	 *
-	 * Previous versions of SZ_Group_Extension required plugins to provide
+	 * Previous versions of SZ_Event_Extension required plugins to provide
 	 * their own Submit button and nonce fields when building markup. In
-	 * BP 1.8, this requirement was lifted - SZ_Group_Extension now handles
+	 * BP 1.8, this requirement was lifted - SZ_Event_Extension now handles
 	 * all required submit buttons and nonces.
 	 *
 	 * We put the edit screen markup into an output buffer before echoing.
@@ -1019,7 +1019,7 @@ class SZ_Group_Extension {
 	 */
 	public function call_edit_screen() {
 		ob_start();
-		call_user_func( $this->screens['edit']['screen_callback'], $this->group_id );
+		call_user_func( $this->screens['edit']['screen_callback'], $this->event_id );
 		$screen = ob_get_contents();
 		ob_end_clean();
 
@@ -1051,7 +1051,7 @@ class SZ_Group_Extension {
 		add_filter( 'wp_redirect', array( $this, 'detect_post_save_redirect' ) );
 
 		// Call the extension's save routine.
-		call_user_func( $this->screens['edit']['screen_save_callback'], $this->group_id );
+		call_user_func( $this->screens['edit']['screen_save_callback'], $this->event_id );
 
 		// Clean up detection filters.
 		remove_filter( 'wp_redirect', array( $this, 'detect_post_save_redirect' ) );
@@ -1060,7 +1060,7 @@ class SZ_Group_Extension {
 		if ( empty( $this->post_save_redirect ) ) {
 
 			/**
-			 * Filters the URL to redirect to after group edit screen save.
+			 * Filters the URL to redirect to after event edit screen save.
 			 *
 			 * Only runs if a redirect has not already occurred.
 			 *
@@ -1068,7 +1068,7 @@ class SZ_Group_Extension {
 			 *
 			 * @param string $value URL to redirect to.
 			 */
-			$redirect_to = apply_filters( 'sz_group_extension_edit_screen_save_redirect', sz_get_requested_url( ) );
+			$redirect_to = apply_filters( 'sz_event_extension_edit_screen_save_redirect', sz_get_requested_url( ) );
 
 			sz_core_redirect( $redirect_to );
 			die();
@@ -1079,14 +1079,14 @@ class SZ_Group_Extension {
 	 * Load the template that houses the Edit screen.
 	 *
 	 * Separated out into a callback so that it can run after all other
-	 * Group Extensions have had a chance to register their navigation, to
+	 * Event Extensions have had a chance to register their navigation, to
 	 * avoid missing tabs.
 	 *
 	 * Hooked to 'sz_screens'.
 	 *
 	 * @since 1.8.0
 	 *
-	 * @see SZ_Group_Extension::setup_edit_hooks()
+	 * @see SZ_Event_Extension::setup_edit_hooks()
 	 */
 	public function call_edit_screen_template_loader() {
 		sz_core_load_template( $this->edit_screen_template );
@@ -1095,7 +1095,7 @@ class SZ_Group_Extension {
 	/**
 	 * Add a submit button to the edit form, if it needs one.
 	 *
-	 * There's an inconsistency in the way that the group Edit and Create
+	 * There's an inconsistency in the way that the event Edit and Create
 	 * screens are rendered: the Create screen has a submit button built
 	 * in, but the Edit screen does not. This function allows plugin
 	 * authors to write markup that does not contain the submit button for
@@ -1115,9 +1115,9 @@ class SZ_Group_Extension {
 
 		return $screen . sprintf(
 			'<div id="%s"><input type="submit" name="save" value="%s" id="%s"></div>',
-			'sz-group-edit-' . $this->slug . '-submit-wrapper',
+			'sz-event-edit-' . $this->slug . '-submit-wrapper',
 			$this->screens['edit']['submit_text'],
-			'sz-group-edit-' . $this->slug . '-submit'
+			'sz-event-edit-' . $this->slug . '-submit'
 		);
 	}
 
@@ -1164,13 +1164,13 @@ class SZ_Group_Extension {
 		}
 
 		// Hook the admin screen markup function to the content hook.
-		add_action( 'sz_groups_admin_meta_box_content_' . $this->slug, array( $this, 'call_admin_screen' ) );
+		add_action( 'sz_events_admin_meta_box_content_' . $this->slug, array( $this, 'call_admin_screen' ) );
 
 		// Initialize the metabox.
-		add_action( 'sz_groups_admin_meta_boxes', array( $this, '_meta_box_display_callback' ) );
+		add_action( 'sz_events_admin_meta_boxes', array( $this, '_meta_box_display_callback' ) );
 
 		// Catch the metabox save.
-		add_action( 'sz_group_admin_edit_after', array( $this, 'call_admin_screen_save' ), 10 );
+		add_action( 'sz_event_admin_edit_after', array( $this, 'call_admin_screen_save' ), 10 );
 	}
 
 	/**
@@ -1179,7 +1179,7 @@ class SZ_Group_Extension {
 	 * @since 1.8.0
 	 */
 	public function call_admin_screen() {
-		call_user_func( $this->screens['admin']['screen_callback'], $this->group_id );
+		call_user_func( $this->screens['admin']['screen_callback'], $this->event_id );
 		$this->nonce_field( 'admin' );
 	}
 
@@ -1190,7 +1190,7 @@ class SZ_Group_Extension {
 	 */
 	public function call_admin_screen_save() {
 		$this->check_nonce( 'admin' );
-		call_user_func( $this->screens['admin']['screen_save_callback'], $this->group_id );
+		call_user_func( $this->screens['admin']['screen_save_callback'], $this->event_id );
 	}
 
 	/**
@@ -1199,12 +1199,12 @@ class SZ_Group_Extension {
 	 * @since 1.7.0
 	 */
 	public function _meta_box_display_callback() {
-		$group_id = isset( $_GET['gid'] ) ? (int) $_GET['gid'] : 0;
+		$event_id = isset( $_GET['gid'] ) ? (int) $_GET['gid'] : 0;
 		$screen   = $this->screens['admin'];
 
 		$extension_slug = $this->slug;
-		$callback = function() use ( $extension_slug, $group_id ) {
-			do_action( 'sz_groups_admin_meta_box_content_' . $extension_slug, $group_id );
+		$callback = function() use ( $extension_slug, $event_id ) {
+			do_action( 'sz_events_admin_meta_box_content_' . $extension_slug, $event_id );
 		};
 
 		add_meta_box(
@@ -1234,7 +1234,7 @@ class SZ_Group_Extension {
 	 * @param string $context Screen context. 'create', 'edit', or 'admin'.
 	 */
 	public function nonce_field( $context = '' ) {
-		wp_nonce_field( 'sz_group_extension_' . $this->slug . '_' . $context, '_sz_group_' . $context . '_nonce_' . $this->slug );
+		wp_nonce_field( 'sz_event_extension_' . $this->slug . '_' . $context, '_sz_event_' . $context . '_nonce_' . $this->slug );
 	}
 
 	/**
@@ -1245,7 +1245,7 @@ class SZ_Group_Extension {
 	 * @param string $context Screen context. 'create', 'edit', or 'admin'.
 	 */
 	public function check_nonce( $context = '' ) {
-		check_admin_referer( 'sz_group_extension_' . $this->slug . '_' . $context, '_sz_group_' . $context . '_nonce_' . $this->slug );
+		check_admin_referer( 'sz_event_extension_' . $this->slug . '_' . $context, '_sz_event_' . $context . '_nonce_' . $this->slug );
 	}
 
 	/**
@@ -1273,9 +1273,9 @@ class SZ_Group_Extension {
 	/**
 	 * Get the appropriate screen callback for the specified context/type.
 	 *
-	 * BP Group Extensions have three special "screen contexts": create,
+	 * BP Event Extensions have three special "screen contexts": create,
 	 * admin, and edit. Each of these contexts has a corresponding
-	 * _screen() and _screen_save() method, which allow group extension
+	 * _screen() and _screen_save() method, which allow event extension
 	 * plugins to define different markup and logic for each context.
 	 *
 	 * BP also supports fallback settings_screen() and
@@ -1284,17 +1284,17 @@ class SZ_Group_Extension {
 	 * either provide context-specific methods, or you can let BP fall back
 	 * on the shared settings_* callbacks.
 	 *
-	 * For example, consider a SZ_Group_Extension implementation that looks
+	 * For example, consider a SZ_Event_Extension implementation that looks
 	 * like this:
 	 *
 	 *   // ...
-	 *   function create_screen( $group_id ) { ... }
-	 *   function create_screen_save( $group_id ) { ... }
-	 *   function settings_screen( $group_id ) { ... }
-	 *   function settings_screen_save( $group_id ) { ... }
+	 *   function create_screen( $event_id ) { ... }
+	 *   function create_screen_save( $event_id ) { ... }
+	 *   function settings_screen( $event_id ) { ... }
+	 *   function settings_screen_save( $event_id ) { ... }
 	 *   // ...
 	 *
-	 * SZ_Group_Extension will use your create_* methods for the Create
+	 * SZ_Event_Extension will use your create_* methods for the Create
 	 * steps, and will use your generic settings_* methods for the Edit
 	 * and Admin contexts. This schema allows plugin authors maximum
 	 * flexibility without having to repeat themselves.
@@ -1345,7 +1345,7 @@ class SZ_Group_Extension {
 	 * than overwriting the b array with the a array.
 	 *
 	 * The implementation of this function is specific to the needs of
-	 * SZ_Group_Extension, where we know that arrays will always be
+	 * SZ_Event_Extension, where we know that arrays will always be
 	 * associative, and that an argument under a given key in one array
 	 * will be matched by a value of identical depth in the other one. The
 	 * function is NOT designed for general use, and will probably result
@@ -1439,7 +1439,7 @@ class SZ_Group_Extension {
 	 * Allow plugins to set otherwise unavailable object properties.
 	 *
 	 * This magic method is here for backward compatibility with plugins
-	 * that may attempt to modify the group extension by manually assigning
+	 * that may attempt to modify the event extension by manually assigning
 	 * a value to an object property that no longer exists, such as
 	 * $this->enable_create_step.
 	 *
@@ -1505,7 +1505,7 @@ class SZ_Group_Extension {
 	/**
 	 * Return a list of legacy properties.
 	 *
-	 * The legacy implementation of SZ_Group_Extension used all of these
+	 * The legacy implementation of SZ_Event_Extension used all of these
 	 * object properties for configuration. Some have been moved.
 	 *
 	 * @since 1.8.0
@@ -1538,7 +1538,7 @@ class SZ_Group_Extension {
 	/**
 	 * Parse legacy properties.
 	 *
-	 * The old standard for SZ_Group_Extension was for plugins to register
+	 * The old standard for SZ_Event_Extension was for plugins to register
 	 * their settings as properties in their constructor. The new method is
 	 * to pass a config array to the init() method. In order to support
 	 * legacy plugins, we slurp up legacy properties, and later on we'll
@@ -1627,7 +1627,7 @@ class SZ_Group_Extension {
 	 *
 	 * @since 1.8.0
 	 *
-	 * @see SZ_Group_Extension::__get()
+	 * @see SZ_Event_Extension::__get()
 	 */
 	protected function setup_legacy_properties() {
 
@@ -1697,23 +1697,23 @@ class SZ_Group_Extension {
 }
 
 /**
- * Register a new Group Extension.
+ * Register a new Event Extension.
  *
  * @since 1.1.0
  *
- * @param string $group_extension_class Name of the Extension class.
+ * @param string $event_extension_class Name of the Extension class.
  * @return false|null Returns false on failure, otherwise null.
  */
-function sz_register_group_extension( $group_extension_class = '' ) {
+function sz_register_event_extension( $event_extension_class = '' ) {
 
-	if ( ! class_exists( $group_extension_class ) ) {
+	if ( ! class_exists( $event_extension_class ) ) {
 		return false;
 	}
 
-	// Register the group extension on the sz_init action so we have access
+	// Register the event extension on the sz_init action so we have access
 	// to all plugins.
-	add_action( 'sz_init', function() use ( $group_extension_class ) {
-		$extension = new $group_extension_class;
+	add_action( 'sz_init', function() use ( $event_extension_class ) {
+		$extension = new $event_extension_class;
 		add_action( 'sz_actions', array( &$extension, '_register' ), 8 );
 		add_action( 'admin_init', array( &$extension, '_register' ) );
 	}, 11 );

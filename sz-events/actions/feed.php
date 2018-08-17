@@ -1,47 +1,47 @@
 <?php
 /**
- * Groups: RSS feed action
+ * Events: RSS feed action
  *
  * @package SportsZone
- * @subpackage GroupActions
+ * @subpackage EventActions
  * @since 3.0.0
  */
 
 /**
- * Load the activity feed for the current group.
+ * Load the activity feed for the current event.
  *
  * @since 1.2.0
  *
  * @return false|null False on failure.
  */
-function groups_action_group_feed() {
+function events_action_event_feed() {
 
-	// Get current group.
-	$group = groups_get_current_group();
+	// Get current event.
+	$event = events_get_current_event();
 
-	if ( ! sz_is_active( 'activity' ) || ! sz_is_groups_component() || ! $group || ! sz_is_current_action( 'feed' ) )
+	if ( ! sz_is_active( 'activity' ) || ! sz_is_events_component() || ! $event || ! sz_is_current_action( 'feed' ) )
 		return false;
 
-	// If group isn't public or if logged-in user is not a member of the group, do
-	// not output the group activity feed.
-	if ( ! sz_group_is_visible( $group ) ) {
+	// If event isn't public or if logged-in user is not a member of the event, do
+	// not output the event activity feed.
+	if ( ! sz_event_is_visible( $event ) ) {
 		return false;
 	}
 
 	// Set up the feed.
 	sportszone()->activity->feed = new SZ_Activity_Feed( array(
-		'id'            => 'group',
+		'id'            => 'event',
 
-		/* translators: Group activity RSS title - "[Site Name] | [Group Name] | Activity" */
-		'title'         => sprintf( __( '%1$s | %2$s | Activity', 'sportszone' ), sz_get_site_name(), sz_get_current_group_name() ),
+		/* translators: Event activity RSS title - "[Site Name] | [Event Name] | Activity" */
+		'title'         => sprintf( __( '%1$s | %2$s | Activity', 'sportszone' ), sz_get_site_name(), sz_get_current_event_name() ),
 
-		'link'          => sz_get_group_permalink( $group ),
-		'description'   => sprintf( __( "Activity feed for the group, %s.", 'sportszone' ), sz_get_current_group_name() ),
+		'link'          => sz_get_event_permalink( $event ),
+		'description'   => sprintf( __( "Activity feed for the event, %s.", 'sportszone' ), sz_get_current_event_name() ),
 		'activity_args' => array(
-			'object'           => sportszone()->groups->id,
-			'primary_id'       => sz_get_current_group_id(),
+			'object'           => sportszone()->events->id,
+			'primary_id'       => sz_get_current_event_id(),
 			'display_comments' => 'threaded'
 		)
 	) );
 }
-add_action( 'sz_actions', 'groups_action_group_feed' );
+add_action( 'sz_actions', 'events_action_event_feed' );

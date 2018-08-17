@@ -168,6 +168,7 @@ function sz_nouveau_ajax_button( $output = '', $button = null, $before = '', $af
 	$reset_ids = array(
 		'member_friendship' => true,
 		'group_membership'  => true,
+		'event_membership'  => true,
 	);
 
 	if ( ! empty( $reset_ids[ $button->id ] ) )  {
@@ -182,6 +183,8 @@ function sz_nouveau_ajax_button( $output = '', $button = null, $before = '', $af
 			'not_friends',
 			'leave-group',
 			'join-group',
+			'leave-event',
+			'join-event',
 			'accept-invite',
 			'membership-requested',
 			'request-membership',
@@ -196,7 +199,10 @@ function sz_nouveau_ajax_button( $output = '', $button = null, $before = '', $af
 			$data_attribute = str_replace( '_friend', '', $data_attribute );
 		} elseif ( 'group_membership' === $button->id ) {
 			$data_attribute = str_replace( '-', '_', $data_attribute );
+		} elseif ( 'event_membership' === $button->id ) {
+			$data_attribute = str_replace( '-', '_', $data_attribute );
 		}
+		
 
 		$r['button_attr']['data-sz-btn-action'] = $data_attribute;
 	}
@@ -236,7 +242,7 @@ function sz_nouveau_wrapper( $args = array() ) {
 	*/
 	$current_component_class = sz_current_component() . '-meta';
 
-	if ( sz_is_group_activity() ) {
+	if ( sz_is_group_activity() || sz_is_event_activity() ) {
 		$generic_class = ' activity-meta ';
 	} else {
 		$generic_class = '';
@@ -292,7 +298,9 @@ function sz_nouveau_register_sidebars() {
 	$default_fronts      = sz_nouveau_get_appearance_settings();
 	$default_user_front  = 0;
 	$default_group_front = 0;
+	$default_event_front = 0;
 	$is_active_groups    = sz_is_active( 'groups' );
+	$is_active_events    = sz_is_active( 'events' );
 
 	if ( isset( $default_fronts['user_front_page'] ) ) {
 		$default_user_front = $default_fronts['user_front_page'];
@@ -302,6 +310,10 @@ function sz_nouveau_register_sidebars() {
 		if ( isset( $default_fronts['group_front_page'] ) ) {
 			$default_group_front = $default_fronts['group_front_page'];
 		}
+	} else if ( $is_active_events ) {
+		if ( isset( $default_fronts['event_front_page'] ) ) {
+			$default_event_front = $default_fronts['event_front_page'];
+		}
 	}
 
 	// Setting the front template happens too early, so we need this!
@@ -310,6 +322,8 @@ function sz_nouveau_register_sidebars() {
 
 		if ( $is_active_groups ) {
 			$default_group_front = sz_nouveau_get_temporary_setting( 'group_front_page', $default_group_front );
+		} else if ( $is_active_events ) {
+			$default_event_front = sz_nouveau_get_temporary_setting( 'event_front_page', $default_event_front );
 		}
 	}
 
@@ -331,6 +345,18 @@ function sz_nouveau_register_sidebars() {
 			'name'          => __( 'SportsZone Group\'s Home', 'sportszone' ),
 			'id'            => 'sidebar-sportszone-groups',
 			'description'   => __( 'Add widgets here to appear in the front page of each group of your community.', 'sportszone' ),
+			'before_widget' => '<div id="%1$s" class="widget %2$s">',
+			'after_widget'  => '</div>',
+			'before_title'  => '<h2 class="widget-title">',
+			'after_title'   => '</h2>',
+		);
+	}
+	
+	if ( $default_event_front ) {
+		$sidebars[] = array(
+			'name'          => __( 'SportsZone Event\'s Home', 'sportszone' ),
+			'id'            => 'sidebar-sportszone-events',
+			'description'   => __( 'Add widgets here to appear in the front page of each event of your community.', 'sportszone' ),
 			'before_widget' => '<div id="%1$s" class="widget %2$s">',
 			'after_widget'  => '</div>',
 			'before_title'  => '<h2 class="widget-title">',
@@ -531,6 +557,10 @@ function sz_nouveau_get_component_filters( $context = '', $component = '' ) {
 			$component = 'activity';
 		} elseif ( 'group' === $context && sz_is_group_members() ) {
 			$component = 'members';
+		} elseif ( 'event' === $context && sz_is_event_activity() ) {
+			$component = 'activity';
+		} elseif ( 'event' === $context && sz_is_event_members() ) {
+			$component = 'members';
 		}
 	}
 
@@ -547,6 +577,8 @@ function sz_nouveau_get_component_filters( $context = '', $component = '' ) {
 		$filters = array_merge( array( '-1' => __( '&mdash; Everything &mdash;', 'sportszone' ) ), $filters );
 	} elseif ( 'groups' === $component ) {
 		$filters = sz_nouveau_get_groups_filters( $context );
+	} elseif ( 'events' === $component ) {
+		$filters = sz_nouveau_get_events_filters( $context );
 	} elseif ( 'blogs' === $component ) {
 		$filters = sz_nouveau_get_blogs_filters( $context );
 	}
@@ -647,6 +679,23 @@ function sz_nouveau_get_appearance_settings( $option = '' ) {
 			'members_group_layout'    => 1,
 			'groups_dir_layout'       => 0,
 			'groups_dir_tabs'         => 0,
+		) );
+	}
+	
+	if ( sz_is_active( 'events' ) ) {
+		$default_args = array_merge( $default_args, array(
+			'event_front_page'        => 1,
+			'event_front_boxes'       => 1,
+			'event_front_description' => 0,
+			'event_nav_display'       => 0,       // O is default (horizontally). 1 is vertically.
+			'event_nav_order'         => array(),
+			'event_nav_tabs'          => 0,
+			'event_subnav_tabs'       => 0,
+			'events_create_tabs'      => 1,
+			'events_layout'           => 1,
+			'members_event_layout'    => 1,
+			'events_dir_layout'       => 0,
+			'events_dir_tabs'         => 0,
 		) );
 	}
 
@@ -962,6 +1011,7 @@ function sz_nouveau_get_user_feedback( $feedback_id = '' ) {
 			'type'    => 'loading',
 			'message' => __( 'Loading the groups of the community. Please wait.', 'sportszone' ),
 		),
+		
 		'groups-loop-none' => array(
 			'type'    => 'info',
 			'message' => __( 'Sorry, there were no groups found.', 'sportszone' ),
@@ -1001,6 +1051,50 @@ function sz_nouveau_get_user_feedback( $feedback_id = '' ) {
 		'group-avatar-delete-info' => array(
 			'type'    => 'info',
 			'message' => __( 'If you\'d like to remove the existing group profile photo but not upload a new one, please use the delete group profile photo button.', 'sportszone' ),
+		),
+		'directory-events-loading' => array(
+			'type'    => 'loading',
+			'message' => __( 'Loading the events of the community. Please wait.', 'sportszone' ),
+		),
+		'events-loop-none' => array(
+			'type'    => 'info',
+			'message' => __( 'Sorry, there were no events found.', 'sportszone' ),
+		),
+		'event-activity-loading' => array(
+			'type'    => 'loading',
+			'message' => __( 'Loading the event updates. Please wait.', 'sportszone' ),
+		),
+		'event-members-loading' => array(
+			'type'    => 'loading',
+			'message' => __( 'Requesting the event members. Please wait.', 'sportszone' ),
+		),
+		'event-members-none' => array(
+			'type'    => 'info',
+			'message' => __( 'Sorry, there were no event members found.', 'sportszone' ),
+		),
+		'event-members-search-none' => array(
+			'type'    => 'info',
+			'message' => __( 'Sorry, there was no member of that name found in this event.', 'sportszone' ),
+		),
+		'event-manage-members-none' => array(
+			'type'    => 'info',
+			'message' => __( 'This event has no members.', 'sportszone' ),
+		),
+		'event-requests-none' => array(
+			'type'    => 'info',
+			'message' => __( 'There are no pending membership requests.', 'sportszone' ),
+		),
+		'event-requests-loading' => array(
+			'type'    => 'loading',
+			'message' => __( 'Loading the members who requested to join the event. Please wait.', 'sportszone' ),
+		),
+		'event-delete-warning' => array(
+			'type'    => 'warning',
+			'message' => __( 'WARNING: Deleting this event will completely remove ALL content associated with it. There is no way back. Please be careful with this option.', 'sportszone' ),
+		),
+		'event-avatar-delete-info' => array(
+			'type'    => 'info',
+			'message' => __( 'If you\'d like to remove the existing event profile photo but not upload a new one, please use the delete event profile photo button.', 'sportszone' ),
 		),
 		'directory-members-loading' => array(
 			'type'    => 'loading',

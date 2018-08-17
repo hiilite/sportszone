@@ -1,12 +1,12 @@
 <?php
 /**
- * @package   HierarchicalGroupsForSZ
+ * @package   HierarchicalEventsForSZ
  * @author    dcavins
  * @license   GPL-2.0+
  * @copyright 2016 David Cavins
  */
 
-class Hierarchical_Groups_for_SZ extends SZ_Group_Extension {
+class Hierarchical_Events_for_SZ extends SZ_Event_Extension {
 
 	function __construct() {
 		$nav_item_visibility = $this->nav_item_visibility();
@@ -17,16 +17,16 @@ class Hierarchical_Groups_for_SZ extends SZ_Group_Extension {
 			'nav_item_position' => 61,
 			'access'            => $nav_item_visibility,
 			'show_tab'          => $nav_item_visibility,
-			'screens'           => apply_filters( 'hgsz_group_extension_screens_param', array(
+			'screens'           => apply_filters( 'hgsz_event_extension_screens_param', array(
 				'create' => array(
-					'name' => _x( 'Hierarchy', 'Label for group management tab', 'hierarchical-groups-for-sz' ),
+					'name' => _x( 'Hierarchy', 'Label for event management tab', 'hierarchical-events-for-sz' ),
 				),
 				'edit' => array(
-					'name' => _x( 'Hierarchy', 'Label for group management tab', 'hierarchical-groups-for-sz' ),
+					'name' => _x( 'Hierarchy', 'Label for event management tab', 'hierarchical-events-for-sz' ),
 				),
 				'admin' => array(
 					'metabox_context' => 'side',
-					'name' => _x( 'Hierarchy', 'Label for group management tab', 'hierarchical-groups-for-sz' ),
+					'name' => _x( 'Hierarchy', 'Label for event management tab', 'hierarchical-events-for-sz' ),
 				),
 			) ),
 		);
@@ -34,74 +34,74 @@ class Hierarchical_Groups_for_SZ extends SZ_Group_Extension {
 	}
 
 	/**
-	 * Output the code for the front-end screen for a single group.
+	 * Output the code for the front-end screen for a single event.
 	 *
 	 * @since 1.0.0
 	 */
-	function display( $group_id = null ) {
-		global $groups_template;
-		$parent_groups_template = $groups_template;
+	function display( $event_id = null ) {
+		global $events_template;
+		$parent_events_template = $events_template;
 
 		/*
-		 * groups/single/subgroups-loop is a shell that calls groups-loop,
-		 * to make it possible to override the subgroups loop using the
+		 * events/single/subevents-loop is a shell that calls events-loop,
+		 * to make it possible to override the subevents loop using the
 		 * SportsZone template hierarchy.
-		 * Note that groups-loop will load groups-loop-tree if
+		 * Note that events-loop will load events-loop-tree if
 		 * 'use hierarchical template' is set to true.
 		 */
-		sz_get_template_part( 'groups/single/subgroups-loop' );
+		sz_get_template_part( 'events/single/subevents-loop' );
 
 		/*
-		 * Reset the $groups_template global, so that the wrapper group
-		 * is restored after the has_groups() loop is completed.
+		 * Reset the $events_template global, so that the wrapper event
+		 * is restored after the has_events() loop is completed.
 		 */
-		$groups_template = $parent_groups_template;
+		$events_template = $parent_events_template;
 	}
 
 	/**
 	 * Output the code for the settings screen, the create step form
-	 * and the wp-admin single group edit screen meta box.
+	 * and the wp-admin single event edit screen meta box.
 	 *
 	 * @since 1.0.0
 	 */
-	function settings_screen( $group_id = null ) {
-		// On the create screen, the group_id isn't passed reliably.
-		if ( empty( $group_id ) && ! empty( $_COOKIE['sz_new_group_id'] ) ) {
-			$group_id = (int) $_COOKIE['sz_new_group_id'];
+	function settings_screen( $event_id = null ) {
+		// On the create screen, the event_id isn't passed reliably.
+		if ( empty( $event_id ) && ! empty( $_COOKIE['sz_new_event_id'] ) ) {
+			$event_id = (int) $_COOKIE['sz_new_event_id'];
 		}
 		?>
-		<label class="emphatic" for="parent-id"><?php _ex( 'Parent Group', 'Label for the parent group select on a single group manage screen', 'hierarchical-groups-for-sz' ); ?></label>
+		<label class="emphatic" for="parent-id"><?php _ex( 'Parent Event', 'Label for the parent event select on a single event manage screen', 'hierarchical-events-for-sz' ); ?></label>
 		<?php
-		$current_parent_group_id = hgsz_get_parent_group_id( $group_id );
-		$possible_parent_groups = hgsz_get_possible_parent_groups( $group_id, sz_loggedin_user_id() );
+		$current_parent_event_id = hgsz_get_parent_event_id( $event_id );
+		$possible_parent_events = hgsz_get_possible_parent_events( $event_id, sz_loggedin_user_id() );
 
-		if ( ! $current_parent_group_id ) :
+		if ( ! $current_parent_event_id ) :
 			?>
-			<p class="info"><?php _e( 'This group is currently a top-level group.', 'hierarchical-groups-for-sz' ); ?></p>
+			<p class="info"><?php _e( 'This event is currently a top-level event.', 'hierarchical-events-for-sz' ); ?></p>
 			<?php
 		else :
-			$parent_group = groups_get_group( $current_parent_group_id );
-			// The parent group could be a hidden group, so the current user may not be able to know about it. :\
-			if ( 'hidden' == sz_get_group_status( $parent_group ) && ! groups_is_user_member( sz_loggedin_user_id(), $parent_group->id ) ) :
-				$current_parent_group_id = 'hidden-from-user';
+			$parent_event = events_get_event( $current_parent_event_id );
+			// The parent event could be a hidden event, so the current user may not be able to know about it. :\
+			if ( 'hidden' == sz_get_event_status( $parent_event ) && ! events_is_user_member( sz_loggedin_user_id(), $parent_event->id ) ) :
+				$current_parent_event_id = 'hidden-from-user';
 				?>
-				<p class="info"><?php _e( 'This group&rsquo;s current parent group is a hidden group, and you are not a member of that group.', 'hierarchical-groups-for-sz' ); ?></p>
+				<p class="info"><?php _e( 'This event&rsquo;s current parent event is a hidden event, and you are not a member of that event.', 'hierarchical-events-for-sz' ); ?></p>
 				<?php
 			else :
 				?>
-				<p class="info"><?php esc_html( printf( __( 'This group&rsquo;s current parent group is %s.', 'hierarchical-groups-for-sz' ), sz_get_group_name( $parent_group ) ) ); ?></p>
+				<p class="info"><?php esc_html( printf( __( 'This event&rsquo;s current parent event is %s.', 'hierarchical-events-for-sz' ), sz_get_event_name( $parent_event ) ) ); ?></p>
 				<?php
 			endif;
 		endif; ?>
 			<select id="parent-id" name="parent-id" autocomplete="off">
-				<option value="no-change" <?php selected( 'hidden-from-user', $current_parent_group_id ); ?>><?php echo _x( 'Keep current parent group', 'The option to keep the current parent.', 'hierarchical-groups-for-sz' ); ?></option>
-				<option value="0" <?php selected( 0, $current_parent_group_id ); ?>><?php echo _x( 'No parent group', 'The option that sets a group to be a top-level group and have no parent.', 'hierarchical-groups-for-sz' ); ?></option>
+				<option value="no-change" <?php selected( 'hidden-from-user', $current_parent_event_id ); ?>><?php echo _x( 'Keep current parent event', 'The option to keep the current parent.', 'hierarchical-events-for-sz' ); ?></option>
+				<option value="0" <?php selected( 0, $current_parent_event_id ); ?>><?php echo _x( 'No parent event', 'The option that sets a event to be a top-level event and have no parent.', 'hierarchical-events-for-sz' ); ?></option>
 			<?php
-			if ( $possible_parent_groups ) {
+			if ( $possible_parent_events ) {
 
-				foreach ( $possible_parent_groups as $possible_parent_group ) {
+				foreach ( $possible_parent_events as $possible_parent_event ) {
 					?>
-					<option value="<?php echo $possible_parent_group->id; ?>" <?php selected( $current_parent_group_id, $possible_parent_group->id ); ?>><?php echo esc_html( $possible_parent_group->name ); ?></option>
+					<option value="<?php echo $possible_parent_event->id; ?>" <?php selected( $current_parent_event_id, $possible_parent_event->id ); ?>><?php echo esc_html( $possible_parent_event->name ); ?></option>
 					<?php
 				}
 			}
@@ -110,104 +110,104 @@ class Hierarchical_Groups_for_SZ extends SZ_Group_Extension {
 			<?php
 		?>
 
-		<fieldset class="hierarchy-allowed-subgroup-creators radio">
+		<fieldset class="hierarchy-allowed-subevent-creators radio">
 
-			<legend><?php _e( 'Who is allowed to select this group as the parent group of another group?', 'hierarchical-groups-for-sz' ); ?></legend>
+			<legend><?php _e( 'Who is allowed to select this event as the parent event of another event?', 'hierarchical-events-for-sz' ); ?></legend>
 
 			<?php
-			$subgroup_creators = hgsz_get_allowed_subgroup_creators( $group_id );
+			$subevent_creators = hgsz_get_allowed_subevent_creators( $event_id );
 			/*
-			 * Don't include the loggedin option if this group is hidden--
-			 * you have to be a member to even know about hidden groups.
+			 * Don't include the loggedin option if this event is hidden--
+			 * you have to be a member to even know about hidden events.
 			 */
-			if ( 'hidden' != sz_get_group_status( groups_get_group( $group_id ) ) ) : ?>
-				<label for="allowed-subgroup-creators-loggedin"><input type="radio" name="allowed-subgroup-creators" id="allowed-subgroup-creators-loggedin" value="loggedin" <?php checked( $subgroup_creators, 'loggedin' ); ?> /> <?php _e( 'Any logged-in site member', 'hierarchical-groups-for-sz' ); ?></label>
+			if ( 'hidden' != sz_get_event_status( events_get_event( $event_id ) ) ) : ?>
+				<label for="allowed-subevent-creators-loggedin"><input type="radio" name="allowed-subevent-creators" id="allowed-subevent-creators-loggedin" value="loggedin" <?php checked( $subevent_creators, 'loggedin' ); ?> /> <?php _e( 'Any logged-in site member', 'hierarchical-events-for-sz' ); ?></label>
 			<?php endif; ?>
 
-			<label for="allowed-subgroup-creators-members"><input type="radio" name="allowed-subgroup-creators" id="allowed-subgroup-creators-members" value="member" <?php checked( $subgroup_creators, 'member' ); ?> /> <?php _e( 'All group members', 'hierarchical-groups-for-sz' ); ?></label>
+			<label for="allowed-subevent-creators-members"><input type="radio" name="allowed-subevent-creators" id="allowed-subevent-creators-members" value="member" <?php checked( $subevent_creators, 'member' ); ?> /> <?php _e( 'All event members', 'hierarchical-events-for-sz' ); ?></label>
 
-			<label for="allowed-subgroup-creators-mods"><input type="radio" name="allowed-subgroup-creators" id="allowed-subgroup-creators-mods" value="mod" <?php checked( $subgroup_creators, 'mod' ); ?> /> <?php _e( 'Group admins and mods only', 'hierarchical-groups-for-sz' ); ?></label>
+			<label for="allowed-subevent-creators-mods"><input type="radio" name="allowed-subevent-creators" id="allowed-subevent-creators-mods" value="mod" <?php checked( $subevent_creators, 'mod' ); ?> /> <?php _e( 'Event admins and mods only', 'hierarchical-events-for-sz' ); ?></label>
 
-			<label for="allowed-subgroup-creators-admins"><input type="radio" name="allowed-subgroup-creators" id="allowed-subgroup-creators-admins" value="admin" <?php checked( $subgroup_creators, 'admin' ); ?> /> <?php _e( 'Group admins only', 'hierarchical-groups-for-sz' ); ?></label>
+			<label for="allowed-subevent-creators-admins"><input type="radio" name="allowed-subevent-creators" id="allowed-subevent-creators-admins" value="admin" <?php checked( $subevent_creators, 'admin' ); ?> /> <?php _e( 'Event admins only', 'hierarchical-events-for-sz' ); ?></label>
 
-			<label for="allowed-subgroup-creators-noone"><input type="radio" name="allowed-subgroup-creators" id="allowed-subgroup-creators-noone" value="noone" <?php checked( $subgroup_creators, 'noone' ); ?> /> <?php _e( 'No one', 'hierarchical-groups-for-sz' ); ?></label>
+			<label for="allowed-subevent-creators-noone"><input type="radio" name="allowed-subevent-creators" id="allowed-subevent-creators-noone" value="noone" <?php checked( $subevent_creators, 'noone' ); ?> /> <?php _e( 'No one', 'hierarchical-events-for-sz' ); ?></label>
 		</fieldset>
 
 			<?php
 			// Only display the syndication sections if the current user can change it.
 			if ( sz_current_user_can( 'hgsz_change_include_activity' ) ) :
-				$setting = groups_get_groupmeta( $group_id, 'hgsz-include-activity-from-relatives' );
+				$setting = events_get_eventmeta( $event_id, 'hgsz-include-activity-from-relatives' );
 				if ( ! $setting ) {
 					$setting = 'inherit';
 				}
 			?>
 				<fieldset class="hierarchy-syndicate-activity radio">
-					<legend><?php _e( 'Include activity from parent and child groups in this group&rsquo;s activity stream.', 'hierarchical-groups-for-sz' ); ?></legend>
+					<legend><?php _e( 'Include activity from parent and child events in this event&rsquo;s activity stream.', 'hierarchical-events-for-sz' ); ?></legend>
 
-					<label for="include-activity-from-parents"><input type="radio" id="include-activity-from-parents" name="hgsz-include-activity-from-relatives" value="include-from-parents"<?php checked( 'include-from-parents', $setting ); ?>> <?php _e( 'Include parent group activity.', 'hierarchical-groups-for-sz' ); ?></label>
+					<label for="include-activity-from-parents"><input type="radio" id="include-activity-from-parents" name="hgsz-include-activity-from-relatives" value="include-from-parents"<?php checked( 'include-from-parents', $setting ); ?>> <?php _e( 'Include parent event activity.', 'hierarchical-events-for-sz' ); ?></label>
 
-					<label for="include-activity-from-children"><input type="radio" id="include-activity-from-children" name="hgsz-include-activity-from-relatives" value="include-from-children"<?php checked( 'include-from-children', $setting ); ?>> <?php _e( 'Include child group activity.', 'hierarchical-groups-for-sz' ); ?></label>
+					<label for="include-activity-from-children"><input type="radio" id="include-activity-from-children" name="hgsz-include-activity-from-relatives" value="include-from-children"<?php checked( 'include-from-children', $setting ); ?>> <?php _e( 'Include child event activity.', 'hierarchical-events-for-sz' ); ?></label>
 
-					<label for="include-activity-from-both"><input type="radio" id="include-activity-from-both" name="hgsz-include-activity-from-relatives" value="include-from-both"<?php checked( 'include-from-both', $setting ); ?>> <?php _e( 'Include parent and child group activity.', 'hierarchical-groups-for-sz' ); ?></label>
+					<label for="include-activity-from-both"><input type="radio" id="include-activity-from-both" name="hgsz-include-activity-from-relatives" value="include-from-both"<?php checked( 'include-from-both', $setting ); ?>> <?php _e( 'Include parent and child event activity.', 'hierarchical-events-for-sz' ); ?></label>
 
-					<label for="include-activity-from-none"><input type="radio" id="include-activity-from-none" name="hgsz-include-activity-from-relatives" value="include-from-none"<?php checked( 'include-from-none', $setting ); ?>> <?php _e( 'Do not include related group activity.', 'hierarchical-groups-for-sz' ); ?></label>
+					<label for="include-activity-from-none"><input type="radio" id="include-activity-from-none" name="hgsz-include-activity-from-relatives" value="include-from-none"<?php checked( 'include-from-none', $setting ); ?>> <?php _e( 'Do not include related event activity.', 'hierarchical-events-for-sz' ); ?></label>
 
-					<label for="hgsz-include-activity-from-relatives-inherit"><input type="radio" name="hgsz-include-activity-from-relatives" id="hgsz-include-activity-from-relatives-inherit" value="inherit" <?php checked( 'inherit', $setting ); ?> /> <?php _e( 'Inherit global setting.', 'hierarchical-groups-for-sz' ); ?></label>
+					<label for="hgsz-include-activity-from-relatives-inherit"><input type="radio" name="hgsz-include-activity-from-relatives" id="hgsz-include-activity-from-relatives-inherit" value="inherit" <?php checked( 'inherit', $setting ); ?> /> <?php _e( 'Inherit global setting.', 'hierarchical-events-for-sz' ); ?></label>
 				</fieldset>
 			<?php endif; ?>
 	<?php
 	}
 
 	/**
-	 * Save parent association and subgroup creators set on settings screen.
+	 * Save parent association and subevent creators set on settings screen.
 	 *
 	 * @since 1.0.0
 	 */
-	function settings_screen_save( $group_id = null ) {
-		$group_object = groups_get_group( $group_id );
+	function settings_screen_save( $event_id = null ) {
+		$event_object = events_get_event( $event_id );
 
 		// Save parent ID. Do nothing if value passed is "no-change".
 		if ( isset( $_POST['parent-id'] ) && 'no-change' != $_POST['parent-id'] ) {
 			$parent_id = $_POST['parent-id'] ? (int) $_POST['parent-id'] : 0;
 
-			if ( $group_object->parent_id != $parent_id ) {
-				$group_object->parent_id = $parent_id;
-				$group_object->save();
+			if ( $event_object->parent_id != $parent_id ) {
+				$event_object->parent_id = $parent_id;
+				$event_object->save();
 			}
 		}
 
-		$allowed_creators = isset( $_POST['allowed-subgroup-creators'] ) ? $_POST['allowed-subgroup-creators'] : '';
-		$allowed_creators = hgsz_sanitize_subgroup_creators_setting( $allowed_creators );
-		$subgroup_creators = groups_update_groupmeta( $group_id, 'hgsz-allowed-subgroup-creators', $allowed_creators );
+		$allowed_creators = isset( $_POST['allowed-subevent-creators'] ) ? $_POST['allowed-subevent-creators'] : '';
+		$allowed_creators = hgsz_sanitize_subevent_creators_setting( $allowed_creators );
+		$subevent_creators = events_update_eventmeta( $event_id, 'hgsz-allowed-subevent-creators', $allowed_creators );
 
 		// Syndication settings.
 		if ( isset( $_POST['hgsz-include-activity-from-relatives'] ) ) {
 			if ( 'inherit' == $_POST['hgsz-include-activity-from-relatives'] ) {
-				// If "inherit", delete the group meta.
-				$success = groups_delete_groupmeta( $group_id, 'hgsz-include-activity-from-relatives' );
+				// If "inherit", delete the event meta.
+				$success = events_delete_eventmeta( $event_id, 'hgsz-include-activity-from-relatives' );
 			} else {
 				$setting = hgsz_sanitize_include_setting( $_POST['hgsz-include-activity-from-relatives'] );
-				$success = groups_update_groupmeta( $group_id, 'hgsz-include-activity-from-relatives', $setting );
+				$success = events_update_eventmeta( $event_id, 'hgsz-include-activity-from-relatives', $setting );
 			}
 		}
 	}
 
 	/**
-	 * Determine whether the group nav item should show up for the current user.
+	 * Determine whether the event nav item should show up for the current user.
 	 *
 	 * @since 1.0.0
 	 */
 	function nav_item_visibility() {
 		$nav_item_vis = 'noone';
-		$group_id     = sz_get_current_group_id();
+		$event_id     = sz_get_current_event_id();
 
-		// The nav item should only be enabled when the groups loop would return subgroups.
-		if ( $group_id && ( hgsz_group_has_children( $group_id, sz_loggedin_user_id(), 'exclude_hidden' ) || hgsz_get_parent_group_id( $group_id, sz_loggedin_user_id(), 'normal' ) ) ) {
-			// If this group is hidden, make the tab visible to members only.
-			if ( 'hidden' == sz_get_group_status( groups_get_group( $group_id ) ) ) {
+		// The nav item should only be enabled when the events loop would return subevents.
+		if ( $event_id && ( hgsz_event_has_children( $event_id, sz_loggedin_user_id(), 'exclude_hidden' ) || hgsz_get_parent_event_id( $event_id, sz_loggedin_user_id(), 'normal' ) ) ) {
+			// If this event is hidden, make the tab visible to members only.
+			if ( 'hidden' == sz_get_event_status( events_get_event( $event_id ) ) ) {
 				$nav_item_vis = 'member';
 			} else {
-				// Else, anyone can see how public and private groups are related.
+				// Else, anyone can see how public and private events are related.
 				$nav_item_vis = 'anyone';
 			}
 		}
@@ -218,10 +218,10 @@ class Hierarchical_Groups_for_SZ extends SZ_Group_Extension {
 		 * @since 1.0.0
 		 *
 		 * @param string $nav_item_vis Access and visibility level.
-		 * @param int    $group_id     ID of the current group.
+		 * @param int    $event_id     ID of the current event.
 		 */
-		return apply_filters( 'hgsz_nav_item_visibility', $nav_item_vis, $group_id );
+		return apply_filters( 'hgsz_nav_item_visibility', $nav_item_vis, $event_id );
 	}
 
 }
-sz_register_group_extension( 'Hierarchical_Groups_for_SZ' );
+sz_register_event_extension( 'Hierarchical_Events_for_SZ' );

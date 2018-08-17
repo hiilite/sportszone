@@ -1,9 +1,9 @@
 <?php
 /**
- * SportsZone Groups Classes.
+ * SportsZone Events Classes.
  *
  * @package SportsZone
- * @subpackage GroupsClasses
+ * @subpackage EventsClasses
  * @since 1.8.0
  */
 
@@ -11,9 +11,9 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Query for the members of a group.
+ * Query for the members of a event.
  *
- * Special notes about the group members data schema:
+ * Special notes about the event members data schema:
  * - *Members* are entries with is_confirmed = 1.
  * - *Pending requests* are entries with is_confirmed = 0 and inviter_id = 0.
  * - *Pending and sent invitations* are entries with is_confirmed = 0 and
@@ -24,30 +24,30 @@ defined( 'ABSPATH' ) || exit;
  *   inviter_id = 0 (and invite_sent = 0).
  *
  * @since 1.8.0
- * @since 3.0.0 $group_id now supports multiple values.
+ * @since 3.0.0 $event_id now supports multiple values.
  *
  * @param array $args  {
  *     Array of arguments. Accepts all arguments from
  *     {@link SZ_User_Query}, with the following additions:
  *
- *     @type int|array|string $group_id     ID of the group to limit results to. Also accepts multiple values
+ *     @type int|array|string $event_id     ID of the event to limit results to. Also accepts multiple values
  *                                          either as an array or as a comma-delimited string.
- *     @type array            $group_role   Array of group roles to match ('member', 'mod', 'admin', 'banned').
+ *     @type array            $event_role   Array of event roles to match ('member', 'mod', 'admin', 'banned').
  *                                          Default: array( 'member' ).
  *     @type bool             $is_confirmed Whether to limit to confirmed members. Default: true.
  *     @type string           $type         Sort order. Accepts any value supported by {@link SZ_User_Query}, in
  *                                          addition to 'last_joined' and 'first_joined'. Default: 'last_joined'.
  * }
  */
-class SZ_Group_Member_Query extends SZ_User_Query {
+class SZ_Event_Member_Query extends SZ_User_Query {
 
 	/**
-	 * Array of group member ids, cached to prevent redundant lookups.
+	 * Array of event member ids, cached to prevent redundant lookups.
 	 *
 	 * @since 1.8.1
 	 * @var null|array Null if not yet defined, otherwise an array of ints.
 	 */
-	protected $group_member_ids;
+	protected $event_member_ids;
 
 	/**
 	 * Set up action hooks.
@@ -66,68 +66,68 @@ class SZ_Group_Member_Query extends SZ_User_Query {
 		add_action( 'sz_pre_user_query', array( $this, 'set_orderby' ) );
 
 		// Set up our populate_extras method.
-		add_action( 'sz_user_query_populate_extras', array( $this, 'populate_group_member_extras' ), 10, 2 );
+		add_action( 'sz_user_query_populate_extras', array( $this, 'populate_event_member_extras' ), 10, 2 );
 	}
 
 	/**
 	 * Get a list of user_ids to include in the IN clause of the main query.
 	 *
 	 * Overrides SZ_User_Query::get_include_ids(), adding our additional
-	 * group-member logic.
+	 * event-member logic.
 	 *
 	 * @since 1.8.0
 	 *
-	 * @param array $include Existing group IDs in the $include parameter,
+	 * @param array $include Existing event IDs in the $include parameter,
 	 *                       as calculated in SZ_User_Query.
 	 * @return array
 	 */
 	public function get_include_ids( $include = array() ) {
-		// The following args are specific to group member queries, and
+		// The following args are specific to event member queries, and
 		// are not present in the query_vars of a normal SZ_User_Query.
 		// We loop through to make sure that defaults are set (though
 		// values passed to the constructor will, as usual, override
 		// these defaults).
 		$this->query_vars = sz_parse_args( $this->query_vars, array(
-			'group_id'     => 0,
-			'group_role'   => array( 'member' ),
+			'event_id'     => 0,
+			'event_role'   => array( 'member' ),
 			'is_confirmed' => true,
 			'invite_sent'  => null,
 			'inviter_id'   => null,
 			'type'         => 'last_joined',
-		), 'sz_group_member_query_get_include_ids' );
+		), 'sz_event_member_query_get_include_ids' );
 
-		$group_member_ids = $this->get_group_member_ids();
+		$event_member_ids = $this->get_event_member_ids();
 
-		// If the group member query returned no users, bail with an
+		// If the event member query returned no users, bail with an
 		// array that will guarantee no matches for SZ_User_Query.
-		if ( empty( $group_member_ids ) ) {
+		if ( empty( $event_member_ids ) ) {
 			return array( 0 );
 		}
 
 		if ( ! empty( $include ) ) {
-			$group_member_ids = array_intersect( $include, $group_member_ids );
+			$event_member_ids = array_intersect( $include, $event_member_ids );
 		}
 
-		return $group_member_ids;
+		return $event_member_ids;
 	}
 
 	/**
-	 * Get the members of the queried group.
+	 * Get the members of the queried event.
 	 *
 	 * @since 1.8.0
 	 *
-	 * @return array $ids User IDs of relevant group member ids.
+	 * @return array $ids User IDs of relevant event member ids.
 	 */
-	protected function get_group_member_ids() {
+	protected function get_event_member_ids() {
 		global $wpdb;
 
-		if ( is_array( $this->group_member_ids ) ) {
-			return $this->group_member_ids;
+		if ( is_array( $this->event_member_ids ) ) {
+			return $this->event_member_ids;
 		}
 
 		$sz  = sportszone();
 		$sql = array(
-			'select'  => "SELECT user_id FROM {$sz->groups->table_name_members}",
+			'select'  => "SELECT user_id FROM {$sz->events->table_name_members}",
 			'where'   => array(),
 			'orderby' => '',
 			'order'   => '',
@@ -135,10 +135,10 @@ class SZ_Group_Member_Query extends SZ_User_Query {
 
 		/* WHERE clauses *****************************************************/
 
-		// Group id.
-		$group_ids = wp_parse_id_list( $this->query_vars['group_id'] );
-		$group_ids = implode( ',', $group_ids );
-		$sql['where'][] = "group_id IN ({$group_ids})";
+		// Event id.
+		$event_ids = wp_parse_id_list( $this->query_vars['event_id'] );
+		$event_ids = implode( ',', $event_ids );
+		$sql['where'][] = "event_id IN ({$event_ids})";
 
 		// If is_confirmed.
 		$is_confirmed = ! empty( $this->query_vars['is_confirmed'] ) ? 1 : 0;
@@ -176,7 +176,7 @@ class SZ_Group_Member_Query extends SZ_User_Query {
 		// Role information is stored as follows: admins have
 		// is_admin = 1, mods have is_mod = 1, banned have is_banned =
 		// 1, and members have all three set to 0.
-		$roles = !empty( $this->query_vars['group_role'] ) ? $this->query_vars['group_role'] : array();
+		$roles = !empty( $this->query_vars['event_role'] ) ? $this->query_vars['event_role'] : array();
 		if ( is_string( $roles ) ) {
 			$roles = explode( ',', $roles );
 		}
@@ -224,29 +224,29 @@ class SZ_Group_Member_Query extends SZ_User_Query {
 
 		$sql['where'] = ! empty( $sql['where'] ) ? 'WHERE ' . implode( ' AND ', $sql['where'] ) : '';
 
-		// We fetch group members in order of last_joined, regardless
+		// We fetch event members in order of last_joined, regardless
 		// of 'type'. If the 'type' value is not 'last_joined' or
 		// 'first_joined', the order will be overridden in
-		// SZ_Group_Member_Query::set_orderby().
+		// SZ_Event_Member_Query::set_orderby().
 		$sql['orderby'] = "ORDER BY date_modified";
 		$sql['order']   = 'first_joined' === $this->query_vars['type'] ? 'ASC' : 'DESC';
 
-		$this->group_member_ids = $wpdb->get_col( "{$sql['select']} {$sql['where']} {$sql['orderby']} {$sql['order']}" );
+		$this->event_member_ids = $wpdb->get_col( "{$sql['select']} {$sql['where']} {$sql['orderby']} {$sql['order']}" );
 
 		/**
-		 * Filters the member IDs for the current group member query.
+		 * Filters the member IDs for the current event member query.
 		 *
 		 * Use this filter to build a custom query (such as when you've
 		 * defined a custom 'type').
 		 *
 		 * @since 2.0.0
 		 *
-		 * @param array                 $group_member_ids Array of associated member IDs.
-		 * @param SZ_Group_Member_Query $this             Current SZ_Group_Member_Query instance.
+		 * @param array                 $event_member_ids Array of associated member IDs.
+		 * @param SZ_Event_Member_Query $this             Current SZ_Event_Member_Query instance.
 		 */
-		$this->group_member_ids = apply_filters( 'sz_group_member_query_group_member_ids', $this->group_member_ids, $this );
+		$this->event_member_ids = apply_filters( 'sz_event_member_query_event_member_ids', $this->event_member_ids, $this );
 
-		return $this->group_member_ids;
+		return $this->event_member_ids;
 	}
 
 	/**
@@ -260,23 +260,23 @@ class SZ_Group_Member_Query extends SZ_User_Query {
 	 * @param SZ_User_Query $query SZ_User_Query object.
 	 */
 	public function set_orderby( $query ) {
-		$gm_ids = $this->get_group_member_ids();
+		$gm_ids = $this->get_event_member_ids();
 		if ( empty( $gm_ids ) ) {
 			$gm_ids = array( 0 );
 		}
 
-		// For 'last_joined', 'first_joined', and 'group_activity'
+		// For 'last_joined', 'first_joined', and 'event_activity'
 		// types, we override the default orderby clause of
-		// SZ_User_Query. In the case of 'group_activity', we perform
+		// SZ_User_Query. In the case of 'event_activity', we perform
 		// a separate query to get the necessary order. In the case of
 		// 'last_joined' and 'first_joined', we can trust the order of
-		// results from  SZ_Group_Member_Query::get_group_members().
+		// results from  SZ_Event_Member_Query::get_event_members().
 		// In all other cases, we fall through and let SZ_User_Query
-		// do its own (non-group-specific) ordering.
-		if ( in_array( $query->query_vars['type'], array( 'last_joined', 'first_joined', 'group_activity' ) ) ) {
+		// do its own (non-event-specific) ordering.
+		if ( in_array( $query->query_vars['type'], array( 'last_joined', 'first_joined', 'event_activity' ) ) ) {
 
-			// Group Activity DESC.
-			if ( 'group_activity' == $query->query_vars['type'] ) {
+			// Event Activity DESC.
+			if ( 'event_activity' == $query->query_vars['type'] ) {
 				$gm_ids = $this->get_gm_ids_ordered_by_activity( $query, $gm_ids );
 			}
 
@@ -293,7 +293,7 @@ class SZ_Group_Member_Query extends SZ_User_Query {
 	}
 
 	/**
-	 * Fetch additional data required in sz_group_has_members() loops.
+	 * Fetch additional data required in sz_event_has_members() loops.
 	 *
 	 * Additional data fetched:
 	 *      - is_banned
@@ -307,11 +307,11 @@ class SZ_Group_Member_Query extends SZ_User_Query {
 	 * @param string        $user_ids_sql Sanitized, comma-separated string of
 	 *                                    the user ids returned by the main query.
 	 */
-	public function populate_group_member_extras( $query, $user_ids_sql ) {
+	public function populate_event_member_extras( $query, $user_ids_sql ) {
 		global $wpdb;
 
 		$sz     = sportszone();
-		$extras = $wpdb->get_results( $wpdb->prepare( "SELECT id, user_id, date_modified, is_admin, is_mod, comments, user_title, invite_sent, is_confirmed, inviter_id, is_banned FROM {$sz->groups->table_name_members} WHERE user_id IN ({$user_ids_sql}) AND group_id = %d", $this->query_vars['group_id'] ) );
+		$extras = $wpdb->get_results( $wpdb->prepare( "SELECT id, user_id, date_modified, is_admin, is_mod, comments, user_title, invite_sent, is_confirmed, inviter_id, is_banned FROM {$sz->events->table_name_members} WHERE user_id IN ({$user_ids_sql}) AND event_id = %d", $this->query_vars['event_id'] ) );
 
 		foreach ( (array) $extras as $extra ) {
 			if ( isset( $this->results[ $extra->user_id ] ) ) {
@@ -331,16 +331,16 @@ class SZ_Group_Member_Query extends SZ_User_Query {
 		}
 
 		// Don't filter other SZ_User_Query objects on the same page.
-		remove_action( 'sz_user_query_populate_extras', array( $this, 'populate_group_member_extras' ), 10 );
+		remove_action( 'sz_user_query_populate_extras', array( $this, 'populate_event_member_extras' ), 10 );
 	}
 
 	/**
-	 * Sort user IDs by how recently they have generated activity within a given group.
+	 * Sort user IDs by how recently they have generated activity within a given event.
 	 *
 	 * @since 2.1.0
 	 *
 	 * @param SZ_User_Query $query  SZ_User_Query object.
-	 * @param array         $gm_ids array of group member ids.
+	 * @param array         $gm_ids array of event member ids.
 	 * @return array
 	 */
 	public function get_gm_ids_ordered_by_activity( $query, $gm_ids = array() ) {
@@ -359,21 +359,21 @@ class SZ_Group_Member_Query extends SZ_User_Query {
 		$sql = array(
 			'select'  => "SELECT user_id, max( date_recorded ) as date_recorded FROM {$activity_table}",
 			'where'   => array(),
-			'groupby' => 'GROUP BY user_id',
+			'eventby' => 'EVENT BY user_id',
 			'orderby' => 'ORDER BY date_recorded',
 			'order'   => 'DESC',
 		);
 
 		$sql['where'] = array(
 			'user_id IN (' . implode( ',', wp_parse_id_list( $gm_ids ) ) . ')',
-			'item_id = ' . absint( $query->query_vars['group_id'] ),
-			$wpdb->prepare( "component = %s", sportszone()->groups->id ),
+			'item_id = ' . absint( $query->query_vars['event_id'] ),
+			$wpdb->prepare( "component = %s", sportszone()->events->id ),
 		);
 
 		$sql['where'] = 'WHERE ' . implode( ' AND ', $sql['where'] );
 
-		$group_user_ids = $wpdb->get_results( "{$sql['select']} {$sql['where']} {$sql['groupby']} {$sql['orderby']} {$sql['order']}" );
+		$event_user_ids = $wpdb->get_results( "{$sql['select']} {$sql['where']} {$sql['eventby']} {$sql['orderby']} {$sql['order']}" );
 
-		return wp_list_pluck( $group_user_ids, 'user_id' );
+		return wp_list_pluck( $event_user_ids, 'user_id' );
 	}
 }

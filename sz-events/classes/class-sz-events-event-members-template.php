@@ -1,6 +1,6 @@
 <?php
 /**
- * SportsZone Groups group members loop template class.
+ * SportsZone Events event members loop template class.
  *
  * @package SportsZone
  * @since 1.1.0
@@ -10,11 +10,11 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Group Members Loop template class.
+ * Event Members Loop template class.
  *
  * @since 1.0.0
  */
-class SZ_Groups_Group_Members_Template {
+class SZ_Events_Event_Members_Template {
 
 	/**
 	 * @since 1.0.0
@@ -68,7 +68,7 @@ class SZ_Groups_Group_Members_Template {
 	 * @since 1.0.0
 	 * @var int
 	 */
-	public $total_group_count;
+	public $total_event_count;
 
 	/**
 	 * Constructor.
@@ -77,8 +77,8 @@ class SZ_Groups_Group_Members_Template {
 	 *
 	 * @param array $args {
 	 *     An array of optional arguments.
-	 *     @type int      $group_id           ID of the group whose members are being
-	 *                                        queried. Default: current group ID.
+	 *     @type int      $event_id           ID of the event whose members are being
+	 *                                        queried. Default: current event ID.
 	 *     @type int      $page               Page of results to be queried. Default: 1.
 	 *     @type int      $per_page           Number of items to return per page of
 	 *                                        results. Default: 20.
@@ -88,7 +88,7 @@ class SZ_Groups_Group_Members_Template {
 	 *                                        results. Default: 1.
 	 *     @type bool|int $exclude_banned     True (or 1) to exclude banned users from results.
 	 *                                        Default: 1.
-	 *     @type array    $group_role         Optional. Array of group roles to include.
+	 *     @type array    $event_role         Optional. Array of event roles to include.
 	 *     @type string   $search_terms       Optional. Search terms to match.
 	 * }
 	 */
@@ -99,20 +99,20 @@ class SZ_Groups_Group_Members_Template {
 			_deprecated_argument( __METHOD__, '2.0.0', sprintf( __( 'Arguments passed to %1$s should be in an associative array. See the inline documentation at %2$s for more details.', 'sportszone' ), __METHOD__, __FILE__ ) );
 
 			$old_args_keys = array(
-				0 => 'group_id',
+				0 => 'event_id',
 				1 => 'per_page',
 				2 => 'max',
 				3 => 'exclude_admins_mods',
 				4 => 'exclude_banned',
 				5 => 'exclude',
-				6 => 'group_role',
+				6 => 'event_role',
 			);
 
 			$args = sz_core_parse_args_array( $old_args_keys, func_get_args() );
 		}
 
 		$r = sz_parse_args( $args, array(
-			'group_id'            => sz_get_current_group_id(),
+			'event_id'            => sz_get_current_event_id(),
 			'page'                => 1,
 			'per_page'            => 20,
 			'page_arg'            => 'mlpage',
@@ -120,26 +120,26 @@ class SZ_Groups_Group_Members_Template {
 			'exclude'             => false,
 			'exclude_admins_mods' => 1,
 			'exclude_banned'      => 1,
-			'group_role'          => false,
+			'event_role'          => false,
 			'search_terms'        => false,
 			'type'                => 'last_joined',
-		), 'group_members_template' );
+		), 'event_members_template' );
 
 		$this->pag_arg  = sanitize_key( $r['page_arg'] );
 		$this->pag_page = sz_sanitize_pagination_arg( $this->pag_arg, $r['page']     );
 		$this->pag_num  = sz_sanitize_pagination_arg( 'num',          $r['per_page'] );
 
 		/**
-		 * Check the current group is the same as the supplied group ID.
-		 * It can differ when using {@link sz_group_has_members()} outside the Groups screens.
+		 * Check the current event is the same as the supplied event ID.
+		 * It can differ when using {@link sz_event_has_members()} outside the Events screens.
 		 */
-		$current_group = groups_get_current_group();
-		if ( empty( $current_group ) || ( $current_group && $current_group->id !== sz_get_current_group_id() ) ) {
-			$current_group = groups_get_group( $r['group_id'] );
+		$current_event = events_get_current_event();
+		if ( empty( $current_event ) || ( $current_event && $current_event->id !== sz_get_current_event_id() ) ) {
+			$current_event = events_get_event( $r['event_id'] );
 		}
 
 		// Assemble the base URL for pagination.
-		$base_url = trailingslashit( sz_get_group_permalink( $current_group ) . sz_current_action() );
+		$base_url = trailingslashit( sz_get_event_permalink( $current_event ) . sz_current_action() );
 		if ( sz_action_variable() ) {
 			$base_url = trailingslashit( $base_url . sz_action_variable() );
 		}
@@ -149,8 +149,8 @@ class SZ_Groups_Group_Members_Template {
 		$members_args['page']     = $this->pag_page;
 		$members_args['per_page'] = $this->pag_num;
 
-		// Get group members for this loop.
-		$this->members = groups_get_group_members( $members_args );
+		// Get event members for this loop.
+		$this->members = events_get_event_members( $members_args );
 
 		if ( empty( $r['max'] ) || ( $r['max'] >= (int) $this->members['count'] ) ) {
 			$this->total_member_count = (int) $this->members['count'];
@@ -240,9 +240,9 @@ class SZ_Groups_Group_Members_Template {
 			 * @since 2.3.0 `$this` parameter added.
 			 * @since 2.7.0 Action renamed from `loop_end`.
 			 *
-			 * @param SZ_Groups_Group_Members_Template $this Instance of the current Members template.
+			 * @param SZ_Events_Event_Members_Template $this Instance of the current Members template.
 			 */
-			do_action( 'group_members_loop_end', $this );
+			do_action( 'event_members_loop_end', $this );
 
 			// Do some cleaning up after the loop.
 			$this->rewind_members();
@@ -271,9 +271,9 @@ class SZ_Groups_Group_Members_Template {
 			 * @since 2.3.0 `$this` parameter added.
 			 * @since 2.7.0 Action renamed from `loop_start`.
 			 *
-			 * @param SZ_Groups_Group_Members_Template $this Instance of the current Members template.
+			 * @param SZ_Events_Event_Members_Template $this Instance of the current Members template.
 			 */
-			do_action( 'group_members_loop_start', $this );
+			do_action( 'event_members_loop_start', $this );
 		}
 	}
 }

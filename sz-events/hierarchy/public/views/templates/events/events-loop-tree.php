@@ -1,6 +1,6 @@
 <?php
 /**
- * SportsZone - Groups Loop
+ * SportsZone - Events Loop
  *
  * Querystring is set via AJAX in _inc/ajax.php - sz_legacy_theme_object_filter().
  *
@@ -9,67 +9,62 @@
  */
 
 /**
- * Fires before the display of groups from the groups loop.
+ * Fires before the display of events from the events loop.
  *
  * @since 1.2.0 (SportsZone)
  */
-do_action( 'sz_before_groups_loop' ); ?>
+do_action( 'sz_before_events_loop' ); ?>
 
-<?php if ( sz_get_current_group_directory_type() ) : ?>
-	<p class="current-group-type"><?php sz_current_group_directory_type_message() ?></p>
+<?php if ( sz_get_current_event_directory_type() ) : ?>
+	<p class="current-event-type"><?php sz_current_event_directory_type_message() ?></p>
 <?php endif; ?>
 
 <?php
-	// Fire an action outside of the has groups loop, but after the directory type message.
-	do_action( 'hgsz_before_groups_loop' );
+	// Fire an action outside of the has events loop, but after the directory type message.
+	do_action( 'hgsz_before_events_loop' );
 ?>
 
-<?php if ( sz_has_groups( sz_ajax_querystring( 'groups' ) ) ) : ?>
+<?php if ( sz_has_events( sz_ajax_querystring( 'events' ) ) ) : ?>
 
 	<?php
 
 	/**
-	 * Fires before the listing of the groups tree.
-	 * Specific to the Hierarchical Groups for SZ plugin.
+	 * Fires before the listing of the events tree.
+	 * Specific to the Hierarchical Events for SZ plugin.
 	 *
 	 * @since 1.0.0
 	 */
-	do_action( 'hgsz_before_directory_groups_list_tree' ); ?>
+	do_action( 'hgsz_before_directory_events_list_tree' ); ?>
 
 	<?php
 
 	/**
-	 * Fires before the listing of the groups list.
+	 * Fires before the listing of the events list.
 	 *
 	 * @since 1.1.0 (SportsZone)
 	 */
-	do_action( 'sz_before_directory_groups_list' ); ?>
+	do_action( 'sz_before_directory_events_list' ); ?>
 
-	<ul id="groups-list" class="item-list" aria-live="assertive" aria-atomic="true" aria-relevant="all">
+	<ul id="events-list" class="item-list" aria-live="assertive" aria-atomic="true" aria-relevant="all">
 
-	<?php while ( sz_groups() ) : sz_the_group(); ?>
+	<?php while ( sz_events() ) : sz_the_event(); ?>
 
-		<li <?php sz_group_class(); ?>>
-			<?php if ( ! sz_disable_group_avatar_uploads() ) : ?>
-				<div class="item-avatar">
-					<a href="<?php sz_group_permalink(); ?>"><?php sz_group_avatar( 'type=thumb&width=50&height=50' ); ?></a>
-				</div>
-			<?php endif; ?>
+		<li <?php sz_event_class(); ?>>
 
 			<div class="item">
-				<div class="item-title"><a href="<?php sz_group_permalink(); ?>"><?php sz_group_name(); ?></a></div>
-				<div class="item-meta"><span class="activity" data-livestamp="<?php sz_core_iso8601_date( sz_get_group_last_active( 0, array( 'relative' => false ) ) ); ?>"><?php printf( __( 'active %s', 'sportszone' ), sz_get_group_last_active() ); ?></span></div>
+				<div class="item-title"><a href="<?php sz_event_permalink(); ?>"><?php sz_event_name(); ?></a></div>
+				<div class="item-meta"><span class="activity" data-livestamp="<?php sz_core_iso8601_date( sz_get_event_last_active( 0, array( 'relative' => false ) ) ); ?>"><?php printf( __( 'active %s', 'sportszone' ), sz_get_event_last_active() ); ?></span></div>
 
-				<div class="item-desc"><?php sz_group_description_excerpt(); ?></div>
+				<div class="item-desc"><?php sz_event_description_excerpt(); ?></div>
 
 				<?php
 
 				/**
-				 * Fires inside the listing of an individual group listing item.
+				 * Fires inside the listing of an individual event listing item.
 				 *
 				 * @since 1.1.0 (SportsZone)
 				 */
-				do_action( 'sz_directory_groups_item' ); ?>
+				do_action( 'sz_directory_events_item' ); ?>
 
 			</div>
 
@@ -78,21 +73,21 @@ do_action( 'sz_before_groups_loop' ); ?>
 				<?php
 
 				/**
-				 * Fires inside the action section of an individual group listing item.
+				 * Fires inside the action section of an individual event listing item.
 				 *
 				 * @since 1.1.0 (SportsZone)
 				 */
-				do_action( 'sz_directory_groups_actions' ); ?>
+				do_action( 'sz_directory_events_actions' ); ?>
 
 				<div class="meta">
 
-					<?php sz_group_type(); ?> / <?php sz_group_member_count(); ?>
+					<?php sz_event_type(); ?> / <?php sz_event_member_count(); ?>
 
 				</div>
 
 			</div>
 
-			<?php hgsz_child_group_section(); ?>
+			<?php hgsz_child_event_section(); ?>
 
 			<div class="clear"></div>
 		</li>
@@ -104,26 +99,26 @@ do_action( 'sz_before_groups_loop' ); ?>
 	<?php
 
 	/**
-	 * Fires after the listing of the groups list.
+	 * Fires after the listing of the events list.
 	 *
 	 * @since 1.1.0 (SportsZone)
 	 */
-	do_action( 'sz_after_directory_groups_list' ); ?>
+	do_action( 'sz_after_directory_events_list' ); ?>
 
 	<?php
 
 	/**
-	 * Fires before the listing of the groups tree.
-	 * Specific to the Hierarchical Groups for SZ plugin.
+	 * Fires before the listing of the events tree.
+	 * Specific to the Hierarchical Events for SZ plugin.
 	 *
 	 * @since 1.0.0
 	 */
-	do_action( 'hgsz_after_directory_groups_list_tree' ); ?>
+	do_action( 'hgsz_after_directory_events_list_tree' ); ?>
 
 <?php else: ?>
 
 	<div id="message" class="info">
-		<p><?php _e( 'There were no groups found.', 'sportszone' ); ?></p>
+		<p><?php _e( 'There were no events found.', 'sportszone' ); ?></p>
 	</div>
 
 <?php endif; ?>
@@ -131,8 +126,8 @@ do_action( 'sz_before_groups_loop' ); ?>
 <?php
 
 /**
- * Fires after the display of groups from the groups loop.
+ * Fires after the display of events from the events loop.
  *
  * @since 1.2.0 (SportsZone)
  */
-do_action( 'sz_after_groups_loop' ); ?>
+do_action( 'sz_after_events_loop' ); ?>

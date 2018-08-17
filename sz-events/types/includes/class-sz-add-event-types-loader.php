@@ -5,8 +5,8 @@
  * @link       https://wbcomdesigns.com/
  * @since      1.0.0
  *
- * @package    SZ_Add_Group_Types
- * @subpackage SZ_Add_Group_Types/includes
+ * @package    SZ_Add_Event_Types
+ * @subpackage SZ_Add_Event_Types/includes
  */
 
 /**
@@ -16,11 +16,11 @@
  * the plugin, and register them with the WordPress API. Call the
  * run function to execute the list of actions and filters.
  *
- * @package    SZ_Add_Group_Types
- * @subpackage SZ_Add_Group_Types/includes
+ * @package    SZ_Add_Event_Types
+ * @subpackage SZ_Add_Event_Types/includes
  * @author     Wbcom Designs <admin@wbcomdesigns.com>
  */
-class SZ_Add_Group_Types_Loader {
+class SZ_Add_Event_Types_Loader {
 
 	/**
 	 * The array of actions registered with WordPress.

@@ -247,6 +247,33 @@ function sz_admin_setting_callback_group_cover_image_uploads() {
 <?php
 }
 
+/** Events Section ************************************************************/
+
+/**
+ * Events settings section description for the settings page.
+ *
+ * @since 3.1.0
+ */
+function sz_admin_setting_callback_events_section() { }
+
+/**
+ * Allow all users to create groups field.
+ *
+ * @since 1.6.0
+ *
+ */
+function sz_admin_setting_callback_event_creation() {
+?>
+
+	<input id="sz_restrict_event_creation" name="sz_restrict_event_creation" type="checkbox" aria-describedby="sz_event_creation_description" value="1" <?php checked( !sz_restrict_event_creation( false ) ); ?> />
+	<label for="sz_restrict_event_creation"><?php _e( 'Enable event creation for all users', 'sportszone' ); ?></label>
+	<p class="description" id="sz_event_creation_description"><?php _e( 'Administrators can always create events, regardless of this setting.', 'sportszone' ); ?></p>
+
+<?php
+}
+
+
+
 /** Settings Page *************************************************************/
 
 /**

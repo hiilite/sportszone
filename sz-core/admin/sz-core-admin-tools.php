@@ -128,6 +128,16 @@ function sz_admin_repair_list() {
 			'sz_admin_repair_group_count',
 		);
 	}
+	
+	// Events:
+	// - user event count.
+	if ( sz_is_active( 'events' ) ) {
+		$repair_list[10] = array(
+			'sz-event-count',
+			__( 'Repair total events count for each member.', 'sportszone' ),
+			'sz_admin_repair_event_count',
+		);
+	}
 
 	// Blogs:
 	// - user blog count.
@@ -263,6 +273,54 @@ function sz_admin_repair_group_count() {
 
 	return array( 0, sprintf( $statement, __( 'Complete!', 'sportszone' ) ) );
 }
+
+/**
+ * Recalculate group counts for each user.
+ *
+ * @since 2.0.0
+ *
+ * @return array
+ */
+function sz_admin_repair_event_count() {
+	global $wpdb;
+
+	if ( ! sz_is_active( 'events' ) ) {
+		return;
+	}
+
+	$statement = __( 'Counting the number of events for each user&hellip; %s', 'sportszone' );
+	$result    = __( 'Failed!', 'sportszone' );
+
+	$sql_delete = "DELETE FROM {$wpdb->usermeta} WHERE meta_key IN ( 'total_event_count' );";
+	if ( is_wp_error( $wpdb->query( $sql_delete ) ) ) {
+		return array( 1, sprintf( $statement, $result ) );
+	}
+
+	$sz = sportszone();
+
+	// Walk through all users on the site.
+	$total_users = $wpdb->get_row( "SELECT count(ID) as c FROM {$wpdb->users}" )->c;
+
+	if ( $total_users > 0 ) {
+		$per_query = 500;
+		$offset = 0;
+		while ( $offset < $total_users ) {
+			// But only bother to update counts for users that have groups.
+			$users = $wpdb->get_col( $wpdb->prepare( "SELECT user_id FROM {$sz->events->table_name_members} WHERE is_confirmed = 1 AND is_banned = 0 AND user_id > %d AND user_id <= %d", $offset, $offset + $per_query ) );
+
+			foreach ( $users as $user ) {
+				SZ_Events_Member::refresh_total_event_count_for_user( $user );
+			}
+
+			$offset += $per_query;
+		}
+	} else {
+		return array( 2, sprintf( $statement, $result ) );
+	}
+
+	return array( 0, sprintf( $statement, __( 'Complete!', 'sportszone' ) ) );
+}
+
 
 /**
  * Recalculate user-to-blog relationships and useful blog meta data.

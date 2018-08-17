@@ -1,9 +1,9 @@
 <?php
 /**
- * SportsZone Groups Classes.
+ * SportsZone Events Classes.
  *
  * @package SportsZone
- * @subpackage GroupsClasses
+ * @subpackage EventsClasses
  * @since 2.1.0
  */
 
@@ -11,19 +11,19 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Adds support for user at-mentions (for users in a specific Group) to the Suggestions API.
+ * Adds support for user at-mentions (for users in a specific Event) to the Suggestions API.
  *
  * @since 2.1.0
  */
-class SZ_Groups_Member_Suggestions extends SZ_Members_Suggestions {
+class SZ_Events_Member_Suggestions extends SZ_Members_Suggestions {
 
 	/**
 	 * Default arguments for this suggestions service.
 	 *
 	 * @since 2.1.0
 	 * @var array $args {
-	 *     @type int    $group_id     Positive integers will restrict the search to members in that group.
-	 *                                Negative integers will restrict the search to members in every other group.
+	 *     @type int    $event_id     Positive integers will restrict the search to members in that event.
+	 *                                Negative integers will restrict the search to members in every other event.
 	 *     @type int    $limit        Maximum number of results to display. Default: 16.
 	 *     @type bool   $only_friends If true, only match the current user's friends. Default: false.
 	 *     @type string $term         The suggestion service will try to find results that contain this string.
@@ -31,7 +31,7 @@ class SZ_Groups_Member_Suggestions extends SZ_Members_Suggestions {
 	 * }
 	 */
 	protected $default_args = array(
-		'group_id'     => 0,
+		'event_id'     => 0,
 		'limit'        => 16,
 		'only_friends' => false,
 		'term'         => '',
@@ -47,7 +47,7 @@ class SZ_Groups_Member_Suggestions extends SZ_Members_Suggestions {
 	 * @return true|WP_Error If validation fails, return a WP_Error object. On success, return true (bool).
 	 */
 	public function validate() {
-		$this->args['group_id'] = (int) $this->args['group_id'];
+		$this->args['event_id'] = (int) $this->args['event_id'];
 
 		/**
 		 * Filters the arguments used to validate and sanitize suggestion service query.
@@ -55,19 +55,19 @@ class SZ_Groups_Member_Suggestions extends SZ_Members_Suggestions {
 		 * @since 2.1.0
 		 *
 		 * @param array                        $args  Array of arguments for the suggestion service query.
-		 * @param SZ_Groups_Member_Suggestions $this  Instance of the current suggestion class.
+		 * @param SZ_Events_Member_Suggestions $this  Instance of the current suggestion class.
 		 */
-		$this->args             = apply_filters( 'sz_groups_member_suggestions_args', $this->args, $this );
+		$this->args             = apply_filters( 'sz_events_member_suggestions_args', $this->args, $this );
 
 		// Check for invalid or missing mandatory parameters.
-		if ( ! $this->args['group_id'] || ! sz_is_active( 'groups' ) ) {
+		if ( ! $this->args['event_id'] || ! sz_is_active( 'events' ) ) {
 			return new WP_Error( 'missing_requirement' );
 		}
 
-		// Check that the specified group_id exists, and that the current user can access it.
-		$the_group = groups_get_group( absint( $this->args['group_id'] ) );
+		// Check that the specified event_id exists, and that the current user can access it.
+		$the_event = events_get_event( absint( $this->args['event_id'] ) );
 
-		if ( $the_group->id === 0 || ! $the_group->user_has_access ) {
+		if ( $the_event->id === 0 || ! $the_event->user_has_access ) {
 			return new WP_Error( 'access_denied' );
 		}
 
@@ -77,9 +77,9 @@ class SZ_Groups_Member_Suggestions extends SZ_Members_Suggestions {
 		 * @since 2.1.0
 		 *
 		 * @param bool|WP_Error                $value True if valid, WP_Error if not.
-		 * @param SZ_Groups_Member_Suggestions $this  Instance of the current suggestion class.
+		 * @param SZ_Events_Member_Suggestions $this  Instance of the current suggestion class.
 		 */
-		return apply_filters( 'sz_groups_member_suggestions_validate_args', parent::validate(), $this );
+		return apply_filters( 'sz_events_member_suggestions_validate_args', parent::validate(), $this );
 	}
 
 	/**
@@ -94,7 +94,7 @@ class SZ_Groups_Member_Suggestions extends SZ_Members_Suggestions {
 			'count_total'     => '',  // Prevents total count.
 			'type'            => 'alphabetical',
 
-			'group_role'      => array( 'admin', 'member', 'mod' ),
+			'event_role'      => array( 'admin', 'member', 'mod' ),
 			'page'            => 1,
 			'per_page'        => $this->args['limit'],
 			'search_terms'    => $this->args['term'],
@@ -106,24 +106,24 @@ class SZ_Groups_Member_Suggestions extends SZ_Members_Suggestions {
 			$user_query['user_id'] = get_current_user_id();
 		}
 
-		// Positive Group IDs will restrict the search to members in that group.
-		if ( $this->args['group_id'] > 0 ) {
-			$user_query['group_id'] = $this->args['group_id'];
+		// Positive Event IDs will restrict the search to members in that event.
+		if ( $this->args['event_id'] > 0 ) {
+			$user_query['event_id'] = $this->args['event_id'];
 
-		// Negative Group IDs will restrict the search to members in every other group.
+		// Negative Event IDs will restrict the search to members in every other event.
 		} else {
-			$group_query = array(
+			$event_query = array(
 				'count_total'     => '',  // Prevents total count.
 				'type'            => 'alphabetical',
 
-				'group_id'        => absint( $this->args['group_id'] ),
-				'group_role'      => array( 'admin', 'member', 'mod' ),
+				'event_id'        => absint( $this->args['event_id'] ),
+				'event_role'      => array( 'admin', 'member', 'mod' ),
 				'page'            => 1,
 			);
-			$group_users = new SZ_Group_Member_Query( $group_query );
+			$event_users = new SZ_Event_Member_Query( $event_query );
 
-			if ( $group_users->results ) {
-				$user_query['exclude'] = wp_list_pluck( $group_users->results, 'ID' );
+			if ( $event_users->results ) {
+				$user_query['exclude'] = wp_list_pluck( $event_users->results, 'ID' );
 			} else {
 				$user_query['include'] = array( 0 );
 			}
@@ -135,16 +135,16 @@ class SZ_Groups_Member_Suggestions extends SZ_Members_Suggestions {
 		 * @since 2.1.0
 		 *
 		 * @param array                        $user_query Array of arguments for the query.
-		 * @param SZ_Groups_Member_Suggestions $this       Instance of the current suggestion class.
+		 * @param SZ_Events_Member_Suggestions $this       Instance of the current suggestion class.
 		 */
-		$user_query = apply_filters( 'sz_groups_member_suggestions_query_args', $user_query, $this );
+		$user_query = apply_filters( 'sz_events_member_suggestions_query_args', $user_query, $this );
 		if ( is_wp_error( $user_query ) ) {
 			return $user_query;
 		}
 
 
-		if ( isset( $user_query['group_id'] ) ) {
-			$user_query = new SZ_Group_Member_Query( $user_query );
+		if ( isset( $user_query['event_id'] ) ) {
+			$user_query = new SZ_Event_Member_Query( $user_query );
 		} else {
 			$user_query = new SZ_User_Query( $user_query );
 		}
@@ -166,8 +166,8 @@ class SZ_Groups_Member_Suggestions extends SZ_Members_Suggestions {
 		 * @since 2.1.0
 		 *
 		 * @param array                        $results Array of member suggestions.
-		 * @param SZ_Groups_Member_Suggestions $this    Instance of the current suggestion class.
+		 * @param SZ_Events_Member_Suggestions $this    Instance of the current suggestion class.
 		 */
-		return apply_filters( 'sz_groups_member_suggestions_get_suggestions', $results, $this );
+		return apply_filters( 'sz_events_member_suggestions_get_suggestions', $results, $this );
 	}
 }

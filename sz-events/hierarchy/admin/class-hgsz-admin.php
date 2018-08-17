@@ -1,8 +1,8 @@
 <?php
 /**
- * Hierarchical Groups for SZ
+ * Hierarchical Events for SZ
  *
- * @package   HierarchicalGroupsForSZ
+ * @package   HierarchicalEventsForSZ
  * @author    dcavins
  * @license   GPL-2.0+
  * @copyright 2016 David Cavins
@@ -15,7 +15,7 @@
  * If you're interested in introducing public-facing
  * functionality, then refer to `public/class-hgsz.php`
  *
- * @package   HierarchicalGroupsForSZ_Admin
+ * @package   HierarchicalEventsForSZ_Admin
  * @author  dcavins
  */
 class HGSZ_Admin extends HGSZ_Public {
@@ -55,9 +55,9 @@ class HGSZ_Admin extends HGSZ_Public {
 		 */
 		add_action( 'sz_admin_init', array( $this, 'settings_save' ) );
 
-		// Add "Parent Group" column to the WP Groups List table.
-		add_filter( 'sz_groups_list_table_get_columns', array( $this, 'add_parent_group_column' ) );
-		add_filter( 'sz_groups_admin_get_group_custom_column', array( $this, 'column_content_parent_group' ), 10, 3 );
+		// Add "Parent Event" column to the WP Events List table.
+		add_filter( 'sz_events_list_table_get_columns', array( $this, 'add_parent_event_column' ) );
+		add_filter( 'sz_events_admin_get_event_custom_column', array( $this, 'column_content_parent_event' ), 10, 3 );
 
 	}
 
@@ -78,7 +78,7 @@ class HGSZ_Admin extends HGSZ_Public {
 		$target_screens = array(
 			$this->plugin_screen_hook_suffix, // Single site settings screen
 			$this->plugin_screen_hook_suffix . '-network', // Network admin settings screen
-			'toplevel_page_sz-groups' // Groups and single group screens
+			'toplevel_page_sz-events' // Events and single event screens
 			);
 		if ( isset( $screen->id ) && in_array( $screen->id, $target_screens ) ) {
 			if ( is_rtl() ) {
@@ -97,9 +97,9 @@ class HGSZ_Admin extends HGSZ_Public {
 	 */
 	public function add_plugin_admin_menu() {
 		$this->plugin_screen_hook_suffix = add_submenu_page(
-			'sz-groups',
-			__( 'Hierarchy Options', 'hierarchical-groups-for-sz' ),
-			__( 'Hierarchy Options', 'hierarchical-groups-for-sz' ),
+			'sz-events',
+			__( 'Hierarchy Options', 'hierarchical-events-for-sz' ),
+			__( 'Hierarchy Options', 'hierarchical-events-for-sz' ),
 			'sz_moderate',
 			$this->plugin_slug,
 			array( $this, 'display_plugin_admin_page' )
@@ -114,7 +114,7 @@ class HGSZ_Admin extends HGSZ_Public {
 	public function add_action_links( $links ) {
 		return array_merge(
 			array(
-				'settings' => '<a href="' . admin_url( 'admin.php?page=' . $this->plugin_slug ) . '">' . __( 'Settings', 'hierarchical-groups-for-sz' ) . '</a>'
+				'settings' => '<a href="' . admin_url( 'admin.php?page=' . $this->plugin_slug ) . '">' . __( 'Settings', 'hierarchical-events-for-sz' ) . '</a>'
 			),
 			$links
 		);
@@ -128,27 +128,27 @@ class HGSZ_Admin extends HGSZ_Public {
 	 */
 	public function settings_init() {
 
-		// Setting for showing groups directory as tree.
+		// Setting for showing events directory as tree.
 		add_settings_section(
 			'hgsz_use_tree_directory_template',
-			__( 'Show the groups directories as a hierarchical tree.', 'hierarchical-groups-for-sz' ),
-			array( $this, 'group_tree_section_callback' ),
+			__( 'Show the events directories as a hierarchical tree.', 'hierarchical-events-for-sz' ),
+			array( $this, 'event_tree_section_callback' ),
 			$this->plugin_slug
 		);
 
-		register_setting( $this->plugin_slug, 'hgsz-groups-directory-show-tree', 'absint' );
+		register_setting( $this->plugin_slug, 'hgsz-events-directory-show-tree', 'absint' );
 		add_settings_field(
-			'hgsz-groups-directory-show-tree',
-			__( 'Replace the flat groups directory with a hierarchical directory.', 'hierarchical-groups-for-sz' ),
-			array( $this, 'render_groups_directory_show_tree' ),
+			'hgsz-events-directory-show-tree',
+			__( 'Replace the flat events directory with a hierarchical directory.', 'hierarchical-events-for-sz' ),
+			array( $this, 'render_events_directory_show_tree' ),
 			$this->plugin_slug,
 			'hgsz_use_tree_directory_template'
 		);
 
-		// Setting for including activity in related groups.
+		// Setting for including activity in related events.
 		add_settings_section(
 			'hgsz_activity_syndication',
-			__( 'Group Activity Syndication', 'hierarchical-groups-for-sz' ),
+			__( 'Event Activity Syndication', 'hierarchical-events-for-sz' ),
 			array( $this, 'activity_syndication_section_callback' ),
 			$this->plugin_slug
 		);
@@ -156,7 +156,7 @@ class HGSZ_Admin extends HGSZ_Public {
 		register_setting( $this->plugin_slug, 'hgsz-include-activity-from-relatives', 'hgsz_sanitize_include_setting' );
 		add_settings_field(
 			'hgsz-include-activity-from-relatives',
-			__( 'Include related group activity in group activity streams.', 'hierarchical-groups-for-sz' ),
+			__( 'Include related event activity in event activity streams.', 'hierarchical-events-for-sz' ),
 			array( $this, 'render_include_activity_input' ),
 			$this->plugin_slug,
 			'hgsz_activity_syndication'
@@ -165,7 +165,7 @@ class HGSZ_Admin extends HGSZ_Public {
 		register_setting( $this->plugin_slug, 'hgsz-include-activity-enforce', 'hgsz_sanitize_include_setting_enforce' );
 		add_settings_field(
 			'hgsz-include-activity-enforce',
-			__( 'Who can override this setting for each group?', 'hierarchical-groups-for-sz' ),
+			__( 'Who can override this setting for each event?', 'hierarchical-events-for-sz' ),
 			array( $this, 'render_include_activity_enforce_input' ),
 			$this->plugin_slug,
 			'hgsz_activity_syndication'
@@ -174,7 +174,7 @@ class HGSZ_Admin extends HGSZ_Public {
 		// Tools for importing settings from previous plugins.
 		add_settings_section(
 			'hgsz_labels',
-			__( 'Customize labels', 'hierarchical-groups-for-sz' ),
+			__( 'Customize labels', 'hierarchical-events-for-sz' ),
 			array( $this, 'labels_section_callback' ),
 			$this->plugin_slug
 		);
@@ -188,29 +188,29 @@ class HGSZ_Admin extends HGSZ_Public {
 			'hgsz_labels'
 		);
 
-		register_setting( $this->plugin_slug, 'hgsz-directory-child-group-section-label', 'sanitize_text_field' );
+		register_setting( $this->plugin_slug, 'hgsz-directory-child-event-section-label', 'sanitize_text_field' );
 		add_settings_field(
-			'hgsz-directory-child-group-section-label',
+			'hgsz-directory-child-event-section-label',
 			'',
-			array( $this, 'render_hgsz_directory_child_group_section_label_section' ),
+			array( $this, 'render_hgsz_directory_child_event_section_label_section' ),
 			$this->plugin_slug,
 			'hgsz_labels'
 		);
 
-		register_setting( $this->plugin_slug, 'hgsz-directory-child-group-view-all-link', 'sanitize_text_field' );
+		register_setting( $this->plugin_slug, 'hgsz-directory-child-event-view-all-link', 'sanitize_text_field' );
 		add_settings_field(
-			'hgsz-directory-child-group-view-all-link',
+			'hgsz-directory-child-event-view-all-link',
 			'',
-			array( $this, 'render_hgsz_directory_child_group_view_all_link_section' ),
+			array( $this, 'render_hgsz_directory_child_event_view_all_link_section' ),
 			$this->plugin_slug,
 			'hgsz_labels'
 		);
 
-		register_setting( $this->plugin_slug, 'hgsz-group-tab-label', 'sanitize_text_field' );
+		register_setting( $this->plugin_slug, 'hgsz-event-tab-label', 'sanitize_text_field' );
 		add_settings_field(
-			'hgsz-group-tab-label',
+			'hgsz-event-tab-label',
 			'',
-			array( $this, 'render_group_tab_label_section' ),
+			array( $this, 'render_event_tab_label_section' ),
 			$this->plugin_slug,
 			'hgsz_labels'
 		);
@@ -218,7 +218,7 @@ class HGSZ_Admin extends HGSZ_Public {
 		// Tools for importing settings from previous plugins.
 		add_settings_section(
 			'hgsz_import_tools',
-			__( 'Import Data from Other Plugins', 'hierarchical-groups-for-sz' ),
+			__( 'Import Data from Other Plugins', 'hierarchical-events-for-sz' ),
 			array( $this, 'import_tools_section_callback' ),
 			$this->plugin_slug
 		);
@@ -226,7 +226,7 @@ class HGSZ_Admin extends HGSZ_Public {
 		register_setting( $this->plugin_slug, 'hgsz-run-import-tools', array( $this, 'maybe_run_import_tools' ) );
 		add_settings_field(
 			'hgsz-include-activity-from-relatives',
-			__( 'Select an import tool to run.', 'hierarchical-groups-for-sz' ),
+			__( 'Select an import tool to run.', 'hierarchical-events-for-sz' ),
 			array( $this, 'render_import_tools_selection' ),
 			$this->plugin_slug,
 			'hgsz_import_tools'
@@ -240,7 +240,7 @@ class HGSZ_Admin extends HGSZ_Public {
 	 * @since    1.0.0
 	 */
 	public function activity_syndication_section_callback() {
-		_e( 'Hierarchy settings can be set per-group or globally. Set global defaults here. Note that users will not see activity from groups they cannot visit.', 'hierarchical-groups-for-sz' );
+		_e( 'Hierarchy settings can be set per-event or globally. Set global defaults here. Note that users will not see activity from events they cannot visit.', 'hierarchical-events-for-sz' );
 	}
 
 	/**
@@ -251,13 +251,13 @@ class HGSZ_Admin extends HGSZ_Public {
 	public function render_include_activity_input() {
 		$setting  = hgsz_get_global_activity_setting();
 		?>
-		<label for="include-activity-from-parents"><input type="radio" id="include-activity-from-parents" name="hgsz-include-activity-from-relatives" value="include-from-parents"<?php checked( 'include-from-parents', $setting ); ?>> <?php _e( '<strong>Include parent group activity</strong> in every group activity stream.', 'hierarchical-groups-for-sz' ); ?></label>
+		<label for="include-activity-from-parents"><input type="radio" id="include-activity-from-parents" name="hgsz-include-activity-from-relatives" value="include-from-parents"<?php checked( 'include-from-parents', $setting ); ?>> <?php _e( '<strong>Include parent event activity</strong> in every event activity stream.', 'hierarchical-events-for-sz' ); ?></label>
 
-		<label for="include-activity-from-children"><input type="radio" id="include-activity-from-children" name="hgsz-include-activity-from-relatives" value="include-from-children"<?php checked( 'include-from-children', $setting ); ?>> <?php _e( '<strong>Include child group activity</strong> in every group activity stream.', 'hierarchical-groups-for-sz' ); ?></label>
+		<label for="include-activity-from-children"><input type="radio" id="include-activity-from-children" name="hgsz-include-activity-from-relatives" value="include-from-children"<?php checked( 'include-from-children', $setting ); ?>> <?php _e( '<strong>Include child event activity</strong> in every event activity stream.', 'hierarchical-events-for-sz' ); ?></label>
 
-		<label for="include-activity-from-both"><input type="radio" id="include-activity-from-both" name="hgsz-include-activity-from-relatives" value="include-from-both"<?php checked( 'include-from-both', $setting ); ?>> <?php _e( '<strong>Include parent and child group activity</strong> in every group activity stream.', 'hierarchical-groups-for-sz' ); ?></label>
+		<label for="include-activity-from-both"><input type="radio" id="include-activity-from-both" name="hgsz-include-activity-from-relatives" value="include-from-both"<?php checked( 'include-from-both', $setting ); ?>> <?php _e( '<strong>Include parent and child event activity</strong> in every event activity stream.', 'hierarchical-events-for-sz' ); ?></label>
 
-		<label for="include-activity-from-none"><input type="radio" id="include-activity-from-none" name="hgsz-include-activity-from-relatives" value="include-from-none"<?php checked( 'include-from-none', $setting ); ?>> <?php _e( '<strong>Do not include related group activity</strong> in any group activity stream.', 'hierarchical-groups-for-sz' ); ?></label>
+		<label for="include-activity-from-none"><input type="radio" id="include-activity-from-none" name="hgsz-include-activity-from-relatives" value="include-from-none"<?php checked( 'include-from-none', $setting ); ?>> <?php _e( '<strong>Do not include related event activity</strong> in any event activity stream.', 'hierarchical-events-for-sz' ); ?></label>
 
 		<?php
 	}
@@ -270,11 +270,11 @@ class HGSZ_Admin extends HGSZ_Public {
 	public function render_include_activity_enforce_input() {
 		$setting = hgsz_get_global_activity_enforce_setting();
 		?>
-		<label for="hgsz-include-activity-enforce-group-admins"><input type="radio" id="hgsz-include-activity-enforce-group-admins" name="hgsz-include-activity-enforce" value="group-admins"<?php checked( 'group-admins', $setting ); ?>> <?php _ex( '<strong>Group administrators</strong> can choose a setting for their group.', 'Response for allow overrides of include group activity global setting', 'hierarchical-groups-for-sz' ); ?></label>
+		<label for="hgsz-include-activity-enforce-event-admins"><input type="radio" id="hgsz-include-activity-enforce-event-admins" name="hgsz-include-activity-enforce" value="event-admins"<?php checked( 'event-admins', $setting ); ?>> <?php _ex( '<strong>Event administrators</strong> can choose a setting for their event.', 'Response for allow overrides of include event activity global setting', 'hierarchical-events-for-sz' ); ?></label>
 
-		<label for="hgsz-include-activity-enforce-site-admins"><input type="radio" id="hgsz-include-activity-enforce-site-admins" name="hgsz-include-activity-enforce" value="site-admins"<?php checked( 'site-admins', $setting ); ?>> <?php _ex( '<strong>Site administrators</strong> can choose a setting for each group.', 'Response for allow overrides of include group activity global setting', 'hierarchical-groups-for-sz' ); ?></label>
+		<label for="hgsz-include-activity-enforce-site-admins"><input type="radio" id="hgsz-include-activity-enforce-site-admins" name="hgsz-include-activity-enforce" value="site-admins"<?php checked( 'site-admins', $setting ); ?>> <?php _ex( '<strong>Site administrators</strong> can choose a setting for each event.', 'Response for allow overrides of include event activity global setting', 'hierarchical-events-for-sz' ); ?></label>
 
-		<label for="hgsz-include-activity-enforce-strict"><input type="radio" id="hgsz-include-activity-enforce-strict" name="hgsz-include-activity-enforce" value="strict"<?php checked( 'strict', $setting ); ?>> <?php _ex( '<strong>Enforce global setting</strong> for all groups.', 'Response for allow overrides of include group activity global setting', 'hierarchical-groups-for-sz' ); ?></label>
+		<label for="hgsz-include-activity-enforce-strict"><input type="radio" id="hgsz-include-activity-enforce-strict" name="hgsz-include-activity-enforce" value="strict"<?php checked( 'strict', $setting ); ?>> <?php _ex( '<strong>Enforce global setting</strong> for all events.', 'Response for allow overrides of include event activity global setting', 'hierarchical-events-for-sz' ); ?></label>
 		<?php
 	}
 
@@ -283,17 +283,17 @@ class HGSZ_Admin extends HGSZ_Public {
 	 *
 	 * @since    1.0.0
 	 */
-	public function group_tree_section_callback() {}
+	public function event_tree_section_callback() {}
 
 	/**
 	 * Set up the fields for the global settings screen.
 	 *
 	 * @since    1.0.0
 	 */
-	public function render_groups_directory_show_tree() {
+	public function render_events_directory_show_tree() {
 		$setting = hgsz_get_directory_as_tree_setting();
 		?>
-		<label for="hgsz-groups-directory-show-tree"><input type="checkbox" id="hgsz-groups-directory-show-tree" name="hgsz-groups-directory-show-tree" value="1"<?php checked( $setting ); ?>> <?php _ex( 'Show a hierarchical directory.', 'Response for use directory tree global setting', 'hierarchical-groups-for-sz' ); ?></label>
+		<label for="hgsz-events-directory-show-tree"><input type="checkbox" id="hgsz-events-directory-show-tree" name="hgsz-events-directory-show-tree" value="1"<?php checked( $setting ); ?>> <?php _ex( 'Show a hierarchical directory.', 'Response for use directory tree global setting', 'hierarchical-events-for-sz' ); ?></label>
 		<?php
 	}
 
@@ -312,11 +312,11 @@ class HGSZ_Admin extends HGSZ_Public {
 	public function render_hgsz_directory_enable_tree_view_label_section() {
 		$label = sz_get_option( 'hgsz-directory-enable-tree-view-label' );
 		?>
-		<label for="hgsz-directory-enable-tree-view-label"><?php _ex( 'Group directory &ldquo;use tree view&rdquo; toggle label:', 'Label for label setting on site hierarchy options screen', 'hierarchical-groups-for-sz' ); ?></label>&emsp;<input type="text" id="hhgsz-directory-enable-tree-view-label" name="hgsz-directory-enable-tree-view-label" value="<?php echo esc_textarea( $label ); ?>"> <a href="#TB_inline?width=650&height=630&inlineId=modal-hgsz-directory-enable-tree-view-label-location" class="thickbox"><?php _e( 'Where is this label used?', 'hierarchical-groups-for-sz' ); ?></a>
-		<p class="description"><?php _e( 'Change the label of the &ldquo;use tree view&rdquo; toggle on the main group directory.', 'hierarchical-groups-for-sz' ); ?></p>
+		<label for="hgsz-directory-enable-tree-view-label"><?php _ex( 'Event directory &ldquo;use tree view&rdquo; toggle label:', 'Label for label setting on site hierarchy options screen', 'hierarchical-events-for-sz' ); ?></label>&emsp;<input type="text" id="hhgsz-directory-enable-tree-view-label" name="hgsz-directory-enable-tree-view-label" value="<?php echo esc_textarea( $label ); ?>"> <a href="#TB_inline?width=650&height=630&inlineId=modal-hgsz-directory-enable-tree-view-label-location" class="thickbox"><?php _e( 'Where is this label used?', 'hierarchical-events-for-sz' ); ?></a>
+		<p class="description"><?php _e( 'Change the label of the &ldquo;use tree view&rdquo; toggle on the main event directory.', 'hierarchical-events-for-sz' ); ?></p>
 
 		<div id="modal-hgsz-directory-enable-tree-view-label-location" style="display:none;">
-			<img src="<?php echo hgsz_get_plugin_base_uri() . 'admin/images/directory-enable-tree-view-label-location.png'; ?>" alt="<?php _e( 'Graphic showing where this label is used', 'hierarchical-groups-for-sz' ); ?>">
+			<img src="<?php echo hgsz_get_plugin_base_uri() . 'admin/images/directory-enable-tree-view-label-location.png'; ?>" alt="<?php _e( 'Graphic showing where this label is used', 'hierarchical-events-for-sz' ); ?>">
 		</div>
 		<?php
 	}
@@ -326,14 +326,14 @@ class HGSZ_Admin extends HGSZ_Public {
 	 *
 	 * @since    1.0.0
 	 */
-	public function render_hgsz_directory_child_group_section_label_section() {
-		$label = sz_get_option( 'hgsz-directory-child-group-section-label' );
+	public function render_hgsz_directory_child_event_section_label_section() {
+		$label = sz_get_option( 'hgsz-directory-child-event-section-label' );
 		?>
-		<label for="hgsz-directory-child-group-section-label"><?php _ex( 'Group directory child group section label:', 'Label for label setting on site hierarchy options screen', 'hierarchical-groups-for-sz' ); ?></label>&emsp;<input type="text" id="hgsz-directory-child-group-section-label" name="hgsz-directory-child-group-section-label" value="<?php echo esc_textarea( $label ); ?>"> <a href="#TB_inline?width=650&height=630&inlineId=modal-directory-child-group-section-label-location" class="thickbox"><?php _e( 'Where is this label used?', 'hierarchical-groups-for-sz' ); ?></a>
-		<p class="description"><?php _e( 'Change the child groups section header that appears on the hierarchical version of the SportsZone groups directory. To show the number of child groups in the label, include the string <code>%s</code> in your new label, like <code>Subgroups %s</code>.', 'hierarchical-groups-for-sz' ); ?></p>
+		<label for="hgsz-directory-child-event-section-label"><?php _ex( 'Event directory child event section label:', 'Label for label setting on site hierarchy options screen', 'hierarchical-events-for-sz' ); ?></label>&emsp;<input type="text" id="hgsz-directory-child-event-section-label" name="hgsz-directory-child-event-section-label" value="<?php echo esc_textarea( $label ); ?>"> <a href="#TB_inline?width=650&height=630&inlineId=modal-directory-child-event-section-label-location" class="thickbox"><?php _e( 'Where is this label used?', 'hierarchical-events-for-sz' ); ?></a>
+		<p class="description"><?php _e( 'Change the child events section header that appears on the hierarchical version of the SportsZone events directory. To show the number of child events in the label, include the string <code>%s</code> in your new label, like <code>Subevents %s</code>.', 'hierarchical-events-for-sz' ); ?></p>
 
-		<div id="modal-directory-child-group-section-label-location" style="display:none;">
-			<img src="<?php echo hgsz_get_plugin_base_uri() . 'admin/images/directory-child-group-section-label-location.png'; ?>" alt="<?php _e( 'Graphic showing where this label is used', 'hierarchical-groups-for-sz' ); ?>">
+		<div id="modal-directory-child-event-section-label-location" style="display:none;">
+			<img src="<?php echo hgsz_get_plugin_base_uri() . 'admin/images/directory-child-event-section-label-location.png'; ?>" alt="<?php _e( 'Graphic showing where this label is used', 'hierarchical-events-for-sz' ); ?>">
 		</div>
 		<?php
 	}
@@ -343,14 +343,14 @@ class HGSZ_Admin extends HGSZ_Public {
 	 *
 	 * @since    1.0.0
 	 */
-	public function render_hgsz_directory_child_group_view_all_link_section() {
-		$label = sz_get_option( 'hgsz-directory-child-group-view-all-link' );
+	public function render_hgsz_directory_child_event_view_all_link_section() {
+		$label = sz_get_option( 'hgsz-directory-child-event-view-all-link' );
 		?>
-		<label for="hgsz-directory-child-group-view-all-link"><?php _ex( 'Group directory child group &ldquo;view all&rdquo; link text:', 'Label for label setting on site hierarchy options screen', 'hierarchical-groups-for-sz' ); ?></label>&emsp;<input type="text" id="hgsz-directory-child-group-view-all-link" name="hgsz-directory-child-group-view-all-link" value="<?php echo esc_textarea( $label ); ?>"> <a href="#TB_inline?width=650&height=630&inlineId=modal-directory-child-group-view-all-link-location" class="thickbox"><?php _e( 'Where is this label used?', 'hierarchical-groups-for-sz' ); ?></a>
-		<p class="description"><?php _e( 'Change the text of the &ldquo;view all&rdquo; link that appears on the hierarchical version of the SportsZone groups directory. To include the name of the parent group in the linked text, include the string <code>%s</code> in your new string, like <code>View all subgroups of %s.</code>.', 'hierarchical-groups-for-sz' ); ?></p>
+		<label for="hgsz-directory-child-event-view-all-link"><?php _ex( 'Event directory child event &ldquo;view all&rdquo; link text:', 'Label for label setting on site hierarchy options screen', 'hierarchical-events-for-sz' ); ?></label>&emsp;<input type="text" id="hgsz-directory-child-event-view-all-link" name="hgsz-directory-child-event-view-all-link" value="<?php echo esc_textarea( $label ); ?>"> <a href="#TB_inline?width=650&height=630&inlineId=modal-directory-child-event-view-all-link-location" class="thickbox"><?php _e( 'Where is this label used?', 'hierarchical-events-for-sz' ); ?></a>
+		<p class="description"><?php _e( 'Change the text of the &ldquo;view all&rdquo; link that appears on the hierarchical version of the SportsZone events directory. To include the name of the parent event in the linked text, include the string <code>%s</code> in your new string, like <code>View all subevents of %s.</code>.', 'hierarchical-events-for-sz' ); ?></p>
 
-		<div id="modal-directory-child-group-view-all-link-location" style="display:none;">
-			<img src="<?php echo hgsz_get_plugin_base_uri() . 'admin/images/directory-child-group-view-all-link-location.png'; ?>" alt="<?php _e( 'Graphic showing where this label is used', 'hierarchical-groups-for-sz' ); ?>">
+		<div id="modal-directory-child-event-view-all-link-location" style="display:none;">
+			<img src="<?php echo hgsz_get_plugin_base_uri() . 'admin/images/directory-child-event-view-all-link-location.png'; ?>" alt="<?php _e( 'Graphic showing where this label is used', 'hierarchical-events-for-sz' ); ?>">
 		</div>
 		<?php
 	}
@@ -360,14 +360,14 @@ class HGSZ_Admin extends HGSZ_Public {
 	 *
 	 * @since    1.0.0
 	 */
-	public function render_group_tab_label_section() {
-		$label = sz_get_option( 'hgsz-group-tab-label' );
+	public function render_event_tab_label_section() {
+		$label = sz_get_option( 'hgsz-event-tab-label' );
 		?>
-		<label for="hgsz-group-tab-label"><?php _ex( 'Group navigation tab label:', 'Label for label setting on site hierarchy options screen', 'hierarchical-groups-for-sz' ); ?></label>&emsp;<input type="text" id="hgsz-group-tab-label" name="hgsz-group-tab-label" value="<?php echo esc_textarea( $label ); ?>"> <a href="#TB_inline?width=650&height=630&inlineId=modal-tab-label-location" class="thickbox"><?php _e( 'Where is this label used?', 'hierarchical-groups-for-sz' ); ?></a>
-		<p class="description"><?php _e( 'Change the word on the SportsZone group tab from &ldquo;Hierarchy&rdquo; to whatever you&rsquo;d like. To show the number of child groups in the label, include the string <code>%s</code> in your new label, like <code>Subgroups %s</code>.', 'hierarchical-groups-for-sz' ); ?></p>
+		<label for="hgsz-event-tab-label"><?php _ex( 'Event navigation tab label:', 'Label for label setting on site hierarchy options screen', 'hierarchical-events-for-sz' ); ?></label>&emsp;<input type="text" id="hgsz-event-tab-label" name="hgsz-event-tab-label" value="<?php echo esc_textarea( $label ); ?>"> <a href="#TB_inline?width=650&height=630&inlineId=modal-tab-label-location" class="thickbox"><?php _e( 'Where is this label used?', 'hierarchical-events-for-sz' ); ?></a>
+		<p class="description"><?php _e( 'Change the word on the SportsZone event tab from &ldquo;Hierarchy&rdquo; to whatever you&rsquo;d like. To show the number of child events in the label, include the string <code>%s</code> in your new label, like <code>Subevents %s</code>.', 'hierarchical-events-for-sz' ); ?></p>
 
 		<div id="modal-tab-label-location" style="display:none;">
-			<img src="<?php echo hgsz_get_plugin_base_uri() . 'admin/images/tab-label-location.png'; ?>" alt="<?php _e( 'Graphic showing where this label is used', 'hierarchical-groups-for-sz' ); ?>">
+			<img src="<?php echo hgsz_get_plugin_base_uri() . 'admin/images/tab-label-location.png'; ?>" alt="<?php _e( 'Graphic showing where this label is used', 'hierarchical-events-for-sz' ); ?>">
 		</div>
 		<?php
 	}
@@ -386,9 +386,9 @@ class HGSZ_Admin extends HGSZ_Public {
 	 */
 	public function render_import_tools_selection() {
 		?>
-		<label for="hgsz-run-import-tools-do-nothing"><input type="radio" id="hgsz-run-import-tools-do-nothing" name="hgsz-run-import-tools" value="do-nothing" checked="checked"> <?php _e( 'Don\'t import anything right now.', 'hierarchical-groups-for-sz' ); ?></label>
+		<label for="hgsz-run-import-tools-do-nothing"><input type="radio" id="hgsz-run-import-tools-do-nothing" name="hgsz-run-import-tools" value="do-nothing" checked="checked"> <?php _e( 'Don\'t import anything right now.', 'hierarchical-events-for-sz' ); ?></label>
 
-		<label for="hgsz-run-import-tools-szgh-subgroup-creators"><input type="radio" id="hgsz-run-import-tools-szgh-subgroup-creators" name="hgsz-run-import-tools" value="szgh-subgroup-creators"> <?php _e( 'Import the "subgroup creators" setting for each group as set by SZ Group Hierarchy.', 'hierarchical-groups-for-sz' ); ?></label>
+		<label for="hgsz-run-import-tools-szgh-subevent-creators"><input type="radio" id="hgsz-run-import-tools-szgh-subevent-creators" name="hgsz-run-import-tools" value="szgh-subevent-creators"> <?php _e( 'Import the "subevent creators" setting for each event as set by SZ Event Hierarchy.', 'hierarchical-events-for-sz' ); ?></label>
 		<?php
 	}
 
@@ -420,13 +420,13 @@ class HGSZ_Admin extends HGSZ_Public {
 
 		// Clean up the passed values and update the stored values.
 		$fields = array(
-			'hgsz-groups-directory-show-tree'           => 'absint',
+			'hgsz-events-directory-show-tree'           => 'absint',
 			'hgsz-include-activity-from-relatives'      => 'hgsz_sanitize_include_setting',
 			'hgsz-include-activity-enforce'             => 'hgsz_sanitize_include_setting_enforce',
 			'hgsz-directory-enable-tree-view-label'     => 'sanitize_text_field',
-			'hgsz-directory-child-group-section-label'  => 'sanitize_text_field',
-			'hgsz-directory-child-group-view-all-link'  => 'sanitize_text_field',
-			'hgsz-group-tab-label'                      => 'sanitize_text_field',
+			'hgsz-directory-child-event-section-label'  => 'sanitize_text_field',
+			'hgsz-directory-child-event-view-all-link'  => 'sanitize_text_field',
+			'hgsz-event-tab-label'                      => 'sanitize_text_field',
 		);
 		foreach ( $fields as $key => $sanitize_callback ) {
 			$value = isset( $_POST[ $key ] ) ? $_POST[ $key ] : '';
@@ -435,7 +435,7 @@ class HGSZ_Admin extends HGSZ_Public {
 		}
 
 		// Run import tools if needed.
-		if ( isset( $_POST['hgsz-run-import-tools'] ) && 'szgh-subgroup-creators' == $_POST['hgsz-run-import-tools'] ) {
+		if ( isset( $_POST['hgsz-run-import-tools'] ) && 'szgh-subevent-creators' == $_POST['hgsz-run-import-tools'] ) {
 			$this->run_import_tools();
 		}
 
@@ -446,37 +446,37 @@ class HGSZ_Admin extends HGSZ_Public {
 	}
 
 	/**
-	 * Maybe run an import tool to migrate data from the old SZ Group Hierarchy plugin.
+	 * Maybe run an import tool to migrate data from the old SZ Event Hierarchy plugin.
 	 *
 	 * @since 1.0.0
 	 */
 	public function run_import_tools() {
-		// Fetch all of the groups that have the relevant metadata.
-		$group_args = array(
+		// Fetch all of the events that have the relevant metadata.
+		$event_args = array(
 			'meta_query'  => array(
 				array(
-					'key'      => 'sz_group_hierarchy_subgroup_creators',
+					'key'      => 'sz_event_hierarchy_subevent_creators',
 					'compare'  => 'exists'
 				)
 			),
 			'show_hidden' => true,
 			'per_page'    => null,
 		);
-		$groups = groups_get_groups( $group_args );
+		$events = events_get_events( $event_args );
 
-		foreach ( $groups[ 'groups' ] as $group ) {
-			$old_setting = groups_get_groupmeta( $group->id, 'sz_group_hierarchy_subgroup_creators' );
+		foreach ( $events[ 'events' ] as $event ) {
+			$old_setting = events_get_eventmeta( $event->id, 'sz_event_hierarchy_subevent_creators' );
 
 			switch ( $old_setting ) {
 				case 'anyone':
 					$new_setting = 'loggedin';
 					break;
 
-				case 'group_members':
+				case 'event_members':
 					$new_setting = 'member';
 					break;
 
-				case 'group_admins':
+				case 'event_admins':
 					$new_setting = 'admin';
 					break;
 
@@ -486,7 +486,7 @@ class HGSZ_Admin extends HGSZ_Public {
 					break;
 			}
 
-			groups_update_groupmeta( $group->id, 'hgsz-allowed-subgroup-creators', $new_setting );
+			events_update_eventmeta( $event->id, 'hgsz-allowed-subevent-creators', $new_setting );
 		}
 	}
 
@@ -506,7 +506,7 @@ class HGSZ_Admin extends HGSZ_Public {
 			if ( ! empty( $_REQUEST[ 'updated' ] ) ) {
 				?>
 				<div id="message" class="updated notice notice-success">
-					<p><?php _e( 'Settings updated.', 'hierarchical-groups-for-sz' ); ?></p>
+					<p><?php _e( 'Settings updated.', 'hierarchical-events-for-sz' ); ?></p>
 				</div>
 				<?php
 			}
@@ -523,52 +523,52 @@ class HGSZ_Admin extends HGSZ_Public {
 	}
 
 	/**
-	 * Add Parent Group column to the WordPress admin groups list table.
+	 * Add Parent Event column to the WordPress admin events list table.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param array $columns Groups table columns.
+	 * @param array $columns Events table columns.
 	 *
 	 * @return array $columns
 	 */
-	public function add_parent_group_column( $columns = array() ) {
-		$columns['hgsz_parent_group'] = _x( 'Parent Group', 'Label for the WP groups table parent group column', 'hierarchical-groups-for-sz' );
+	public function add_parent_event_column( $columns = array() ) {
+		$columns['hgsz_parent_event'] = _x( 'Parent Event', 'Label for the WP events table parent event column', 'hierarchical-events-for-sz' );
 
 		return $columns;
 	}
 
 	/**
-	 * Markup for the Parent Group column.
+	 * Markup for the Parent Event column.
 	 *
 	 * @since 1.0.0
 	 *
 	 * @param string $value       Empty string.
 	 * @param string $column_name Name of the column being rendered.
-	 * @param array  $item        The current group item in the loop.
+	 * @param array  $item        The current event item in the loop.
 	 */
-	public function column_content_parent_group( $retval = '', $column_name, $item ) {
-		if ( 'hgsz_parent_group' !== $column_name ) {
+	public function column_content_parent_event( $retval = '', $column_name, $item ) {
+		if ( 'hgsz_parent_event' !== $column_name ) {
 			return $retval;
 		}
 
 		if ( 0 != $item[ 'parent_id' ] ) {
-			$parent_group    = groups_get_group( $item[ 'parent_id' ] );
+			$parent_event    = events_get_event( $item[ 'parent_id' ] );
 			$parent_edit_url = esc_url( add_query_arg( array(
-				'page'   => 'sz-groups',
+				'page'   => 'sz-events',
 				'gid'    => $item['parent_id'],
 				'action' => 'edit',
 			), sz_get_admin_url( 'admin.php' ) ) );
-			$retval = '<a href="' . $parent_edit_url . '">' . esc_html( sz_get_group_name( $parent_group ) ) . '</a>';
+			$retval = '<a href="' . $parent_edit_url . '">' . esc_html( sz_get_event_name( $parent_event ) ) . '</a>';
 		}
 
 		/**
-		 * Filters the markup for the Parent Group column.
+		 * Filters the markup for the Parent Event column.
 		 *
 		 * @since 1.0.0
 		 *
-		 * @param string $retval Markup for the Parent Group column.
-		 * @param array  $item   The current group item in the loop.
+		 * @param string $retval Markup for the Parent Event column.
+		 * @param array  $item   The current event item in the loop.
 		 */
-		echo apply_filters_ref_array( 'hgsz_groups_admin_get_parent_group_column', array( $retval, $item ) );
+		echo apply_filters_ref_array( 'hgsz_events_admin_get_parent_event_column', array( $retval, $item ) );
 	}
 }

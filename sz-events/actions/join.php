@@ -1,57 +1,57 @@
 <?php
 /**
- * Groups: Join action
+ * Events: Join action
  *
  * @package SportsZone
- * @subpackage GroupActions
+ * @subpackage EventActions
  * @since 3.0.0
  */
 
 /**
- * Catch and process "Join Group" button clicks.
+ * Catch and process "Join Event" button clicks.
  *
  * @since 1.0.0
  *
  * @return bool
  */
-function groups_action_join_group() {
+function events_action_join_event() {
 
-	if ( !sz_is_single_item() || !sz_is_groups_component() || !sz_is_current_action( 'join' ) )
+	if ( !sz_is_single_item() || !sz_is_events_component() || !sz_is_current_action( 'join' ) )
 		return false;
 
 	// Nonce check.
-	if ( !check_admin_referer( 'groups_join_group' ) )
+	if ( !check_admin_referer( 'events_join_event' ) )
 		return false;
 
 	$sz = sportszone();
 
 	// Skip if banned or already a member.
-	if ( !groups_is_user_member( sz_loggedin_user_id(), $sz->groups->current_group->id ) && !groups_is_user_banned( sz_loggedin_user_id(), $sz->groups->current_group->id ) ) {
+	if ( !events_is_user_member( sz_loggedin_user_id(), $sz->events->current_event->id ) && !events_is_user_banned( sz_loggedin_user_id(), $sz->events->current_event->id ) ) {
 
-		// User wants to join a group that requires an invitation to join.
-		if ( ! sz_current_user_can( 'groups_join_group', array( 'group_id' => $sz->groups->current_group->id ) ) ) {
-			if ( !groups_check_user_has_invite( sz_loggedin_user_id(), $sz->groups->current_group->id ) ) {
-				sz_core_add_message( __( 'There was an error joining the group.', 'sportszone' ), 'error' );
-				sz_core_redirect( sz_get_group_permalink( $sz->groups->current_group ) );
+		// User wants to join a event that requires an invitation to join.
+		if ( ! sz_current_user_can( 'events_join_event', array( 'event_id' => $sz->events->current_event->id ) ) ) {
+			if ( !events_check_user_has_invite( sz_loggedin_user_id(), $sz->events->current_event->id ) ) {
+				sz_core_add_message( __( 'There was an error joining the event.', 'sportszone' ), 'error' );
+				sz_core_redirect( sz_get_event_permalink( $sz->events->current_event ) );
 			}
 		}
 
-		// User wants to join any group.
-		if ( !groups_join_group( $sz->groups->current_group->id ) )
-			sz_core_add_message( __( 'There was an error joining the group.', 'sportszone' ), 'error' );
+		// User wants to join any event.
+		if ( !events_join_event( $sz->events->current_event->id ) )
+			sz_core_add_message( __( 'There was an error joining the event.', 'sportszone' ), 'error' );
 		else
-			sz_core_add_message( __( 'You joined the group!', 'sportszone' ) );
+			sz_core_add_message( __( 'You joined the event!', 'sportszone' ) );
 
-		sz_core_redirect( sz_get_group_permalink( $sz->groups->current_group ) );
+		sz_core_redirect( sz_get_event_permalink( $sz->events->current_event ) );
 	}
 
 	/**
-	 * Filters the template to load for the single group screen.
+	 * Filters the template to load for the single event screen.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string $value Path to the single group template to load.
+	 * @param string $value Path to the single event template to load.
 	 */
-	sz_core_load_template( apply_filters( 'groups_template_group_home', 'groups/single/home' ) );
+	sz_core_load_template( apply_filters( 'events_template_event_home', 'events/single/home' ) );
 }
-add_action( 'sz_actions', 'groups_action_join_group' );
+add_action( 'sz_actions', 'events_action_join_event' );

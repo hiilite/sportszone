@@ -2,7 +2,7 @@
  * All of the CSS for your public-facing functionality should be
  * included in this file.
  */
-select#szgt-groups-search-group-type{
+select#szgt-events-search-event-type{
 	background-color: transparent;
 	border-style: solid;
 	border-width: 1px;
@@ -18,7 +18,7 @@ select#szgt-groups-search-group-type{
 	margin-top:8px;
 	margin-right: 5px;
 }
- #szgt-groups-search-submit{
+ #szgt-events-search-submit{
 	background-color: transparent !important;
 	border-style: solid !important;
 	border-width: 1px !important;
@@ -33,11 +33,11 @@ select#szgt-groups-search-group-type{
 	transition: all 0.4s ease-in-out 0s !important;
 	margin-top:8px;
  }
- group-dir-search #search-groups-form #groups_search {
+ event-dir-search #search-events-form #events_search {
 	width:100%;
  }
 
-.widget-area div#group-types-list {
+.widget-area div#event-types-list {
 	padding: 30px;
 	box-sizing: border-box;
 	border-bottom: 1px solid rgba(0,0,0,0.11);
@@ -45,10 +45,10 @@ select#szgt-groups-search-group-type{
 	line-height: 1.4;
 }
 
-.widget-area p.sz-group-type-list {
+.widget-area p.sz-event-type-list {
 	padding-top: 30px;
 }
-.widget-area div#group-types-list h3{
+.widget-area div#event-types-list h3{
  font-size: 18px;
  margin-bottom: 24px;
  text-transform: uppercase;
@@ -57,13 +57,13 @@ select#szgt-groups-search-group-type{
 /**
  * Added support for Boss theme & Kleo
  */
-body.is-desktop form#search-groups-form {
+body.is-desktop form#search-events-form {
     display: inline-block;
 	float: left;
 }
-#page:not(#hfeed).szgt-groups-search-group-type {
+#page:not(#hfeed).szgt-events-search-event-type {
     float: right;
 }
-#main-container .article-content .szgt-groups-search-group-type {
+#main-container .article-content .szgt-events-search-event-type {
     float: right;
 }

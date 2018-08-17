@@ -79,6 +79,12 @@ function sz_get_default_options() {
 		// @todo Move this into the groups component
 		// Restrict group creation to super admins.
 		'sz_restrict_group_creation'           => false,
+		
+		/* Events ************************************************************/
+
+		// @todo Move this into the events component
+		// Restrict event creation to super admins.
+		'sz_restrict_event_creation'           => false,
 
 		/* Akismet ***********************************************************/
 
@@ -109,6 +115,7 @@ function sz_get_default_options() {
 		'widget_sz_core_whos_online_widget'          => false,
 		'widget_sz_core_recently_active_widget'      => false,
 		'widget_sz_groups_widget'                    => false,
+		'widget_sz_events_widget'                    => false,
 		'widget_sz_messages_sitewide_notices_widget' => false,
 	);
 
@@ -665,6 +672,29 @@ function sz_restrict_group_creation( $default = true ) {
 	 * @param bool $value Whether or not group creation is turned off.
 	 */
 	return (bool) apply_filters( 'sz_restrict_group_creation', (bool) sz_get_option( 'sz_restrict_group_creation', $default ) );
+}
+
+/**
+ * Is event creation turned off?
+ *
+ * @since 1.6.0
+ *
+ * @todo Move into event component.
+ *
+ * @param bool $default Optional. Fallback value if not found in the database.
+ *                      Default: true.
+ * @return bool True if group creation is restricted, otherwise false.
+ */
+function sz_restrict_event_creation( $default = true ) {
+
+	/**
+	 * Filters whether or not event creation is turned off.
+	 *
+	 * @since 1.6.0
+	 *
+	 * @param bool $value Whether or not event creation is turned off.
+	 */
+	return (bool) apply_filters( 'sz_restrict_event_creation', (bool) sz_get_option( 'sz_restrict_event_creation', $default ) );
 }
 
 /**

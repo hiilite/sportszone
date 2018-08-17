@@ -1,23 +1,23 @@
 <?php
 /**
- * Groups: Single group "Manage" screen handler
+ * Events: Single event "Manage" screen handler
  *
  * @package SportsZone
- * @subpackage GroupsScreens
+ * @subpackage EventsScreens
  * @since 3.0.0
  */
 
 /**
- * Handle the display of a group's Admin pages.
+ * Handle the display of a event's Admin pages.
  *
  * @since 1.0.0
  */
-function groups_screen_group_admin() {
-	if ( !sz_is_groups_component() || !sz_is_current_action( 'admin' ) )
+function events_screen_event_admin() {
+	if ( !sz_is_events_component() || !sz_is_current_action( 'admin' ) )
 		return false;
 
 	if ( sz_action_variables() )
 		return false;
 
-	sz_core_redirect( sz_get_group_permalink( groups_get_current_group() ) . 'admin/edit-details/' );
+	sz_core_redirect( sz_get_event_permalink( events_get_current_event() ) . 'admin/edit-details/' );
 }

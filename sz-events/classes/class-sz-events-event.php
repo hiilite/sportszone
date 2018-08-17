@@ -1,9 +1,9 @@
 <?php
 /**
- * SportsZone Groups Classes.
+ * SportsZone Events Classes.
  *
  * @package SportsZone
- * @subpackage GroupsClasses
+ * @subpackage EventsClasses
  * @since 1.0.0
  */
 
@@ -11,14 +11,14 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * SportsZone Group object.
+ * SportsZone Event object.
  *
  * @since 1.6.0
  */
-class SZ_Groups_Group {
+class SZ_Events_Event {
 
 	/**
-	 * ID of the group.
+	 * ID of the event.
 	 *
 	 * @since 1.6.0
 	 * @var int
@@ -26,7 +26,7 @@ class SZ_Groups_Group {
 	public $id;
 
 	/**
-	 * User ID of the group's creator.
+	 * User ID of the event's creator.
 	 *
 	 * @since 1.6.0
 	 * @var int
@@ -34,7 +34,7 @@ class SZ_Groups_Group {
 	public $creator_id;
 
 	/**
-	 * Name of the group.
+	 * Name of the event.
 	 *
 	 * @since 1.6.0
 	 * @var string
@@ -42,7 +42,7 @@ class SZ_Groups_Group {
 	public $name;
 
 	/**
-	 * Group slug.
+	 * Event slug.
 	 *
 	 * @since 1.6.0
 	 * @var string
@@ -50,7 +50,7 @@ class SZ_Groups_Group {
 	public $slug;
 
 	/**
-	 * Group description.
+	 * Event description.
 	 *
 	 * @since 1.6.0
 	 * @var string
@@ -58,7 +58,7 @@ class SZ_Groups_Group {
 	public $description;
 
 	/**
-	 * Group status.
+	 * Event status.
 	 *
 	 * Core statuses are 'public', 'private', and 'hidden'.
 	 *
@@ -70,7 +70,7 @@ class SZ_Groups_Group {
 	/**
 	 * Parent ID.
 	 *
-	 * ID of parent group, if applicable.
+	 * ID of parent event, if applicable.
 	 *
 	 * @since 2.7.0
 	 * @var int
@@ -78,7 +78,7 @@ class SZ_Groups_Group {
 	public $parent_id;
 
 	/**
-	 * Controls whether the group has a forum enabled.
+	 * Controls whether the event has a forum enabled.
 	 *
 	 * @since 1.6.0
 	 * @since 3.0.0 Previously, this referred to Legacy Forums. It's still used by bbPress 2 for integration.
@@ -88,7 +88,7 @@ class SZ_Groups_Group {
 	public $enable_forum;
 
 	/**
-	 * Date the group was created.
+	 * Date the event was created.
 	 *
 	 * @since 1.6.0
 	 * @var string
@@ -96,7 +96,7 @@ class SZ_Groups_Group {
 	public $date_created;
 
 	/**
-	 * Data about the group's admins.
+	 * Data about the event's admins.
 	 *
 	 * @since 1.6.0
 	 * @var array
@@ -104,7 +104,7 @@ class SZ_Groups_Group {
 	protected $admins;
 
 	/**
-	 * Data about the group's moderators.
+	 * Data about the event's moderators.
 	 *
 	 * @since 1.6.0
 	 * @var array
@@ -112,7 +112,7 @@ class SZ_Groups_Group {
 	protected $mods;
 
 	/**
-	 * Total count of group members.
+	 * Total count of event members.
 	 *
 	 * @since 1.6.0
 	 * @var int
@@ -120,7 +120,7 @@ class SZ_Groups_Group {
 	protected $total_member_count;
 
 	/**
-	 * Is the current user a member of this group?
+	 * Is the current user a member of this event?
 	 *
 	 * @since 1.2.0
 	 * @var bool
@@ -128,7 +128,7 @@ class SZ_Groups_Group {
 	protected $is_member;
 
 	/**
-	 * Is the current user a member of this group?
+	 * Is the current user a member of this event?
 	 * Alias of $is_member for backward compatibility.
 	 *
 	 * @since 2.9.0
@@ -137,7 +137,7 @@ class SZ_Groups_Group {
 	protected $is_user_member;
 
 	/**
-	 * Does the current user have an outstanding invitation to this group?
+	 * Does the current user have an outstanding invitation to this event?
 	 *
 	 * @since 1.9.0
 	 * @var bool
@@ -145,7 +145,7 @@ class SZ_Groups_Group {
 	protected $is_invited;
 
 	/**
-	 * Does the current user have a pending membership request to this group?
+	 * Does the current user have a pending membership request to this event?
 	 *
 	 * @since 1.9.0
 	 * @var bool
@@ -153,7 +153,7 @@ class SZ_Groups_Group {
 	protected $is_pending;
 
 	/**
-	 * Timestamp of the last activity that happened in this group.
+	 * Timestamp of the last activity that happened in this event.
 	 *
 	 * @since 1.2.0
 	 * @var string
@@ -161,7 +161,7 @@ class SZ_Groups_Group {
 	protected $last_activity;
 
 	/**
-	 * If this is a private or hidden group, does the current user have access?
+	 * If this is a private or hidden event, does the current user have access?
 	 *
 	 * @since 1.6.0
 	 * @var bool
@@ -169,7 +169,7 @@ class SZ_Groups_Group {
 	protected $user_has_access;
 
 	/**
-	 * Can the current user know that this group exists?
+	 * Can the current user know that this event exists?
 	 *
 	 * @since 2.9.0
 	 * @var bool
@@ -189,8 +189,8 @@ class SZ_Groups_Group {
 	 *
 	 * @since 1.6.0
 	 *
-	 * @param int|null $id   Optional. If the ID of an existing group is provided,
-	 *                       the object will be pre-populated with info about that group.
+	 * @param int|null $id   Optional. If the ID of an existing event is provided,
+	 *                       the object will be pre-populated with info about that event.
 	 * @param array    $args {
 	 *     Array of optional arguments.
 	 *     @type bool $populate_extras Deprecated.
@@ -204,7 +204,7 @@ class SZ_Groups_Group {
 	}
 
 	/**
-	 * Set up data about the current group.
+	 * Set up data about the current event.
 	 *
 	 * @since 1.6.0
 	 */
@@ -214,36 +214,36 @@ class SZ_Groups_Group {
 		// Get SportsZone.
 		$sz    = sportszone();
 
-		// Check cache for group data.
-		$group = wp_cache_get( $this->id, 'sz_groups' );
+		// Check cache for event data.
+		$event = wp_cache_get( $this->id, 'sz_events' );
 
 		// Cache missed, so query the DB.
-		if ( false === $group ) {
-			$group = $wpdb->get_row( $wpdb->prepare( "SELECT g.* FROM {$sz->groups->table_name} g WHERE g.id = %d", $this->id ) );
+		if ( false === $event ) {
+			$event = $wpdb->get_row( $wpdb->prepare( "SELECT g.* FROM {$sz->events->table_name} g WHERE g.id = %d", $this->id ) );
 
-			wp_cache_set( $this->id, $group, 'sz_groups' );
+			wp_cache_set( $this->id, $event, 'sz_events' );
 		}
 
-		// No group found so set the ID and bail.
-		if ( empty( $group ) || is_wp_error( $group ) ) {
+		// No event found so set the ID and bail.
+		if ( empty( $event ) || is_wp_error( $event ) ) {
 			$this->id = 0;
 			return;
 		}
 
-		// Group found so setup the object variables.
-		$this->id           = (int) $group->id;
-		$this->creator_id   = (int) $group->creator_id;
-		$this->name         = stripslashes( $group->name );
-		$this->slug         = $group->slug;
-		$this->description  = stripslashes( $group->description );
-		$this->status       = $group->status;
-		$this->parent_id    = (int) $group->parent_id;
-		$this->enable_forum = (int) $group->enable_forum;
-		$this->date_created = $group->date_created;
+		// Event found so setup the object variables.
+		$this->id           = (int) $event->id;
+		$this->creator_id   = (int) $event->creator_id;
+		$this->name         = stripslashes( $event->name );
+		$this->slug         = $event->slug;
+		$this->description  = stripslashes( $event->description );
+		$this->status       = $event->status;
+		$this->parent_id    = (int) $event->parent_id;
+		$this->enable_forum = (int) $event->enable_forum;
+		$this->date_created = $event->date_created;
 	}
 
 	/**
-	 * Save the current group to the database.
+	 * Save the current event to the database.
 	 *
 	 * @since 1.6.0
 	 *
@@ -254,32 +254,32 @@ class SZ_Groups_Group {
 
 		$sz = sportszone();
 
-		$this->creator_id   = apply_filters( 'groups_group_creator_id_before_save',   $this->creator_id,   $this->id );
-		$this->name         = apply_filters( 'groups_group_name_before_save',         $this->name,         $this->id );
-		$this->slug         = apply_filters( 'groups_group_slug_before_save',         $this->slug,         $this->id );
-		$this->description  = apply_filters( 'groups_group_description_before_save',  $this->description,  $this->id );
-		$this->status       = apply_filters( 'groups_group_status_before_save',       $this->status,       $this->id );
-		$this->parent_id    = apply_filters( 'groups_group_parent_id_before_save',    $this->parent_id,    $this->id );
-		$this->enable_forum = apply_filters( 'groups_group_enable_forum_before_save', $this->enable_forum, $this->id );
-		$this->date_created = apply_filters( 'groups_group_date_created_before_save', $this->date_created, $this->id );
+		$this->creator_id   = apply_filters( 'events_event_creator_id_before_save',   $this->creator_id,   $this->id );
+		$this->name         = apply_filters( 'events_event_name_before_save',         $this->name,         $this->id );
+		$this->slug         = apply_filters( 'events_event_slug_before_save',         $this->slug,         $this->id );
+		$this->description  = apply_filters( 'events_event_description_before_save',  $this->description,  $this->id );
+		$this->status       = apply_filters( 'events_event_status_before_save',       $this->status,       $this->id );
+		$this->parent_id    = apply_filters( 'events_event_parent_id_before_save',    $this->parent_id,    $this->id );
+		$this->enable_forum = apply_filters( 'events_event_enable_forum_before_save', $this->enable_forum, $this->id );
+		$this->date_created = apply_filters( 'events_event_date_created_before_save', $this->date_created, $this->id );
 
 		/**
-		 * Fires before the current group item gets saved.
+		 * Fires before the current event item gets saved.
 		 *
 		 * Please use this hook to filter the properties above. Each part will be passed in.
 		 *
 		 * @since 1.0.0
 		 *
-		 * @param SZ_Groups_Group $this Current instance of the group item being saved. Passed by reference.
+		 * @param SZ_Events_Event $this Current instance of the event item being saved. Passed by reference.
 		 */
-		do_action_ref_array( 'groups_group_before_save', array( &$this ) );
+		do_action_ref_array( 'events_event_before_save', array( &$this ) );
 
-		// Groups need at least a name.
+		// Events need at least a name.
 		if ( empty( $this->name ) ) {
 			return false;
 		}
 
-		// Set slug with group title if not passed.
+		// Set slug with event title if not passed.
 		if ( empty( $this->slug ) ) {
 			$this->slug = sanitize_title( $this->name );
 		}
@@ -289,14 +289,14 @@ class SZ_Groups_Group {
 			return false;
 		}
 
-		// Check for slug conflicts if creating new group.
+		// Check for slug conflicts if creating new event.
 		if ( empty( $this->id ) ) {
-			$this->slug = groups_check_slug( $this->slug );
+			$this->slug = events_check_slug( $this->slug );
 		}
 
 		if ( !empty( $this->id ) ) {
 			$sql = $wpdb->prepare(
-				"UPDATE {$sz->groups->table_name} SET
+				"UPDATE {$sz->events->table_name} SET
 					creator_id = %d,
 					name = %s,
 					slug = %s,
@@ -320,7 +320,7 @@ class SZ_Groups_Group {
 			);
 		} else {
 			$sql = $wpdb->prepare(
-				"INSERT INTO {$sz->groups->table_name} (
+				"INSERT INTO {$sz->events->table_name} (
 					creator_id,
 					name,
 					slug,
@@ -350,21 +350,21 @@ class SZ_Groups_Group {
 			$this->id = $wpdb->insert_id;
 
 		/**
-		 * Fires after the current group item has been saved.
+		 * Fires after the current event item has been saved.
 		 *
 		 * @since 1.0.0
 		 *
-		 * @param SZ_Groups_Group $this Current instance of the group item that was saved. Passed by reference.
+		 * @param SZ_Events_Event $this Current instance of the event item that was saved. Passed by reference.
 		 */
-		do_action_ref_array( 'groups_group_after_save', array( &$this ) );
+		do_action_ref_array( 'events_event_after_save', array( &$this ) );
 
-		wp_cache_delete( $this->id, 'sz_groups' );
+		wp_cache_delete( $this->id, 'sz_events' );
 
 		return true;
 	}
 
 	/**
-	 * Delete the current group.
+	 * Delete the current event.
 	 *
 	 * @since 1.6.0
 	 *
@@ -373,35 +373,35 @@ class SZ_Groups_Group {
 	public function delete() {
 		global $wpdb;
 
-		// Delete groupmeta for the group.
-		groups_delete_groupmeta( $this->id );
+		// Delete eventmeta for the event.
+		events_delete_eventmeta( $this->id );
 
-		// Fetch the user IDs of all the members of the group.
-		$user_ids    = SZ_Groups_Member::get_group_member_ids( $this->id );
+		// Fetch the user IDs of all the members of the event.
+		$user_ids    = SZ_Events_Member::get_event_member_ids( $this->id );
 		$user_id_str = esc_sql( implode( ',', wp_parse_id_list( $user_ids ) ) );
 
-		// Modify group count usermeta for members.
-		$wpdb->query( "UPDATE {$wpdb->usermeta} SET meta_value = meta_value - 1 WHERE meta_key = 'total_group_count' AND user_id IN ( {$user_id_str} )" );
+		// Modify event count usermeta for members.
+		$wpdb->query( "UPDATE {$wpdb->usermeta} SET meta_value = meta_value - 1 WHERE meta_key = 'total_event_count' AND user_id IN ( {$user_id_str} )" );
 
-		// Now delete all group member entries.
-		SZ_Groups_Member::delete_all( $this->id );
+		// Now delete all event member entries.
+		SZ_Events_Member::delete_all( $this->id );
 
 		/**
-		 * Fires before the deletion of a group.
+		 * Fires before the deletion of a event.
 		 *
 		 * @since 1.2.0
 		 *
-		 * @param SZ_Groups_Group $this     Current instance of the group item being deleted. Passed by reference.
-		 * @param array           $user_ids Array of user IDs that were members of the group.
+		 * @param SZ_Events_Event $this     Current instance of the event item being deleted. Passed by reference.
+		 * @param array           $user_ids Array of user IDs that were members of the event.
 		 */
-		do_action_ref_array( 'sz_groups_delete_group', array( &$this, $user_ids ) );
+		do_action_ref_array( 'sz_events_delete_event', array( &$this, $user_ids ) );
 
-		wp_cache_delete( $this->id, 'sz_groups' );
+		wp_cache_delete( $this->id, 'sz_events' );
 
 		$sz = sportszone();
 
-		// Finally remove the group entry from the DB.
-		if ( !$wpdb->query( $wpdb->prepare( "DELETE FROM {$sz->groups->table_name} WHERE id = %d", $this->id ) ) )
+		// Finally remove the event entry from the DB.
+		if ( !$wpdb->query( $wpdb->prepare( "DELETE FROM {$sz->events->table_name} WHERE id = %d", $this->id ) ) )
 			return false;
 
 		return true;
@@ -420,7 +420,7 @@ class SZ_Groups_Group {
 			case 'last_activity' :
 			case 'total_member_count' :
 			case 'forum_id' :
-				$retval = groups_get_groupmeta( $this->id, $key );
+				$retval = events_get_eventmeta( $this->id, $key );
 
 				if ( 'last_activity' !== $key ) {
 					$retval = (int) $retval;
@@ -439,10 +439,10 @@ class SZ_Groups_Group {
 				return $this->get_is_member();
 
 			case 'is_invited' :
-				return groups_check_user_has_invite( sz_loggedin_user_id(), $this->id );
+				return events_check_user_has_invite( sz_loggedin_user_id(), $this->id );
 
 			case 'is_pending' :
-				return groups_check_for_membership_request( sz_loggedin_user_id(), $this->id );
+				return events_check_for_membership_request( sz_loggedin_user_id(), $this->id );
 
 			case 'user_has_access' :
 				return $this->get_user_has_access();
@@ -509,10 +509,10 @@ class SZ_Groups_Group {
 	}
 
 	/**
-	 * Get a list of the group's admins.
+	 * Get a list of the event's admins.
 	 *
 	 * Used to provide cache-friendly access to the 'admins' property of
-	 * the group object.
+	 * the event object.
 	 *
 	 * @since 2.7.0
 	 *
@@ -528,10 +528,10 @@ class SZ_Groups_Group {
 	}
 
 	/**
-	 * Get a list of the group's mods.
+	 * Get a list of the event's mods.
 	 *
 	 * Used to provide cache-friendly access to the 'mods' property of
-	 * the group object.
+	 * the event object.
 	 *
 	 * @since 2.7.0
 	 *
@@ -547,17 +547,17 @@ class SZ_Groups_Group {
 	}
 
 	/**
-	 * Set up admins and mods for the current group object.
+	 * Set up admins and mods for the current event object.
 	 *
 	 * Called only when the 'admins' or 'mods' property is accessed.
 	 *
 	 * @since 2.7.0
 	 */
 	protected function set_up_admins_and_mods() {
-		$admin_ids = SZ_Groups_Member::get_group_administrator_ids( $this->id );
+		$admin_ids = SZ_Events_Member::get_event_administrator_ids( $this->id );
 		$admin_ids_plucked = wp_list_pluck( $admin_ids, 'user_id' );
 
-		$mod_ids = SZ_Groups_Member::get_group_moderator_ids( $this->id );
+		$mod_ids = SZ_Events_Member::get_event_moderator_ids( $this->id );
 		$mod_ids_plucked = wp_list_pluck( $mod_ids, 'user_id' );
 
 		$admin_mod_ids = array_merge( $admin_ids_plucked, $mod_ids_plucked );
@@ -594,7 +594,7 @@ class SZ_Groups_Group {
 	}
 
 	/**
-	 * Checks whether the logged-in user is a member of the group.
+	 * Checks whether the logged-in user is a member of the event.
 	 *
 	 * @since 2.7.0
 	 *
@@ -605,12 +605,12 @@ class SZ_Groups_Group {
 			return $this->is_member;
 		}
 
-		$this->is_member = groups_is_user_member( sz_loggedin_user_id(), $this->id );
+		$this->is_member = events_is_user_member( sz_loggedin_user_id(), $this->id );
 		return $this->is_member;
 	}
 
 	/**
-	 * Checks whether the logged-in user has access to the group.
+	 * Checks whether the logged-in user has access to the event.
 	 *
 	 * @since 2.7.0
 	 *
@@ -623,10 +623,10 @@ class SZ_Groups_Group {
 
 		if ( ( 'private' === $this->status ) || ( 'hidden' === $this->status ) ) {
 
-			// Assume user does not have access to hidden/private groups.
+			// Assume user does not have access to hidden/private events.
 			$this->user_has_access = false;
 
-			// Group members or community moderators have access.
+			// Event members or community moderators have access.
 			if ( ( is_user_logged_in() && $this->get_is_member() ) || sz_current_user_can( 'sz_moderate' ) ) {
 				$this->user_has_access = true;
 			}
@@ -638,7 +638,7 @@ class SZ_Groups_Group {
 	}
 
 	/**
-	 * Checks whether the current user can know the group exists.
+	 * Checks whether the current user can know the event exists.
 	 *
 	 * @since 2.9.0
 	 *
@@ -651,10 +651,10 @@ class SZ_Groups_Group {
 
 		if ( 'hidden' === $this->status ) {
 
-			// Assume user can not know about hidden groups.
+			// Assume user can not know about hidden events.
 			$this->is_visible = false;
 
-			// Group members or community moderators have access.
+			// Event members or community moderators have access.
 			if ( ( is_user_logged_in() && $this->get_is_member() ) || sz_current_user_can( 'sz_moderate' ) ) {
 				$this->is_visible = true;
 			}
@@ -668,15 +668,15 @@ class SZ_Groups_Group {
 	/** Static Methods ****************************************************/
 
 	/**
-	 * Get whether a group exists for a given slug.
+	 * Get whether a event exists for a given slug.
 	 *
 	 * @since 1.6.0
 	 *
 	 * @param string      $slug       Slug to check.
 	 * @param string|bool $table_name Deprecated.
-	 * @return int|null Group ID if found; null if not.
+	 * @return int|null Event ID if found; null if not.
 	 */
-	public static function group_exists( $slug, $table_name = false ) {
+	public static function event_exists( $slug, $table_name = false ) {
 		global $wpdb;
 
 		if ( empty( $slug ) ) {
@@ -691,38 +691,38 @@ class SZ_Groups_Group {
 			'show_hidden'        => true,
 		);
 
-		$groups = SZ_Groups_Group::get( $args );
+		$events = SZ_Events_Event::get( $args );
 
-		$group_id = null;
-		if ( $groups['groups'] ) {
-			$group_id = current( $groups['groups'] )->id;
+		$event_id = null;
+		if ( $events['events'] ) {
+			$event_id = current( $events['events'] )->id;
 		}
 
-		return $group_id;
+		return $event_id;
 	}
 
 	/**
-	 * Get the ID of a group by the group's slug.
+	 * Get the ID of a event by the event's slug.
 	 *
-	 * Alias of {@link SZ_Groups_Group::group_exists()}.
+	 * Alias of {@link SZ_Events_Event::event_exists()}.
 	 *
 	 * @since 1.6.0
 	 *
-	 * @param string $slug See {@link SZ_Groups_Group::group_exists()}.
-	 * @return int|null See {@link SZ_Groups_Group::group_exists()}.
+	 * @param string $slug See {@link SZ_Events_Event::event_exists()}.
+	 * @return int|null See {@link SZ_Events_Event::event_exists()}.
 	 */
 	public static function get_id_from_slug( $slug ) {
-		return SZ_Groups_Group::group_exists( $slug );
+		return SZ_Events_Event::event_exists( $slug );
 	}
 
 	/**
-	 * Get whether a group exists for an old slug.
+	 * Get whether a event exists for an old slug.
 	 *
 	 * @since 2.9.0
 	 *
 	 * @param string      $slug       Slug to check.
 	 *
-	 * @return int|null|false Group ID if found; null if not; false if missing parameters.
+	 * @return int|null|false Event ID if found; null if not; false if missing parameters.
 	 */
 	public static function get_id_by_previous_slug( $slug ) {
 		global $wpdb;
@@ -745,36 +745,36 @@ class SZ_Groups_Group {
 			'update_meta_cache'  => false,
 			'show_hidden'        => true,
 		);
-		$groups = SZ_Groups_Group::get( $args );
+		$events = SZ_Events_Event::get( $args );
 
-		$group_id = null;
-		if ( $groups['groups'] ) {
-			$group_id = current( $groups['groups'] )->id;
+		$event_id = null;
+		if ( $events['events'] ) {
+			$event_id = current( $events['events'] )->id;
 		}
 
-		return $group_id;
+		return $event_id;
 	}
 
 	/**
-	 * Get IDs of users with outstanding invites to a given group from a specified user.
+	 * Get IDs of users with outstanding invites to a given event from a specified user.
 	 *
 	 * @since 1.6.0
 	 * @since 2.9.0 Added $sent as a parameter.
 	 *
 	 * @param  int      $user_id  ID of the inviting user.
-	 * @param  int      $group_id ID of the group.
+	 * @param  int      $event_id ID of the event.
 	 * @param  int|null $sent     Query for a specific invite sent status. If 0, this will query for users
 	 *                            that haven't had an invite sent to them yet. If 1, this will query for
 	 *                            users that have had an invite sent to them. If null, no invite status will
 	 *                            queried. Default: null.
-	 * @return array    IDs of users who have been invited to the group by the user but have not
+	 * @return array    IDs of users who have been invited to the event by the user but have not
 	 *                  yet accepted.
 	 */
-	public static function get_invites( $user_id, $group_id, $sent = null ) {
+	public static function get_invites( $user_id, $event_id, $sent = null ) {
 		global $wpdb;
 
 		$sz  = sportszone();
-		$sql = $wpdb->prepare( "SELECT user_id FROM {$sz->groups->table_name_members} WHERE group_id = %d and is_confirmed = 0 AND inviter_id = %d", $group_id, $user_id );
+		$sql = $wpdb->prepare( "SELECT user_id FROM {$sz->events->table_name_members} WHERE event_id = %d and is_confirmed = 0 AND inviter_id = %d", $event_id, $user_id );
 
 		// Query for a specific invite sent status.
 		if ( ! is_null( $sent ) ) {
@@ -785,13 +785,13 @@ class SZ_Groups_Group {
 	}
 
 	/**
-	 * Get a list of a user's groups, filtered by a search string.
+	 * Get a list of a user's events, filtered by a search string.
 	 *
 	 * @since 1.6.0
 	 *
 	 * @param string   $filter  Search term. Matches against 'name' and
 	 *                          'description' fields.
-	 * @param int      $user_id ID of the user whose groups are being searched.
+	 * @param int      $user_id ID of the user whose events are being searched.
 	 *                          Default: the displayed user.
 	 * @param mixed    $order   Not used.
 	 * @param int|null $limit   Optional. The max number of results to return.
@@ -799,11 +799,11 @@ class SZ_Groups_Group {
 	 * @param int|null $page    Optional. The page offset of results to return.
 	 *                          Default: null (no limit).
 	 * @return false|array {
-	 *     @type array $groups Array of matched and paginated group IDs.
-	 *     @type int   $total  Total count of groups matching the query.
+	 *     @type array $events Array of matched and paginated event IDs.
+	 *     @type int   $total  Total count of events matching the query.
 	 * }
 	 */
-	public static function filter_user_groups( $filter, $user_id = 0, $order = false, $limit = null, $page = null ) {
+	public static function filter_user_events( $filter, $user_id = 0, $order = false, $limit = null, $page = null ) {
 		if ( empty( $user_id ) ) {
 			$user_id = sz_displayed_user_id();
 		}
@@ -816,22 +816,22 @@ class SZ_Groups_Group {
 			'order'        => $order,
 		);
 
-		$groups = SZ_Groups_Group::get( $args );
+		$events = SZ_Events_Event::get( $args );
 
 		// Modify the results to match the old format.
-		$paged_groups = array();
+		$paged_events = array();
 		$i = 0;
-		foreach ( $groups['groups'] as $group ) {
-			$paged_groups[ $i ] = new stdClass;
-			$paged_groups[ $i ]->group_id = $group->id;
+		foreach ( $events['events'] as $event ) {
+			$paged_events[ $i ] = new stdClass;
+			$paged_events[ $i ]->event_id = $event->id;
 			$i++;
 		}
 
-		return array( 'groups' => $paged_groups, 'total' => $groups['total'] );
+		return array( 'events' => $paged_events, 'total' => $events['total'] );
 	}
 
 	/**
-	 * Get a list of groups, filtered by a search string.
+	 * Get a list of events, filtered by a search string.
 	 *
 	 * @since 1.6.0
 	 *
@@ -845,11 +845,11 @@ class SZ_Groups_Group {
 	 *        sort).
 	 * @param string|bool $order   ASC or DESC. Default: false (default sort).
 	 * @return array {
-	 *     @type array $groups Array of matched and paginated group IDs.
-	 *     @type int   $total  Total count of groups matching the query.
+	 *     @type array $events Array of matched and paginated event IDs.
+	 *     @type int   $total  Total count of events matching the query.
 	 * }
 	 */
-	public static function search_groups( $filter, $limit = null, $page = null, $sort_by = false, $order = false ) {
+	public static function search_events( $filter, $limit = null, $page = null, $sort_by = false, $order = false ) {
 		$args = array(
 			'search_terms' => $filter,
 			'per_page'     => $limit,
@@ -858,18 +858,18 @@ class SZ_Groups_Group {
 			'order'        => $order,
 		);
 
-		$groups = SZ_Groups_Group::get( $args );
+		$events = SZ_Events_Event::get( $args );
 
 		// Modify the results to match the old format.
-		$paged_groups = array();
+		$paged_events = array();
 		$i = 0;
-		foreach ( $groups['groups'] as $group ) {
-			$paged_groups[ $i ] = new stdClass;
-			$paged_groups[ $i ]->group_id = $group->id;
+		foreach ( $events['events'] as $event ) {
+			$paged_events[ $i ] = new stdClass;
+			$paged_events[ $i ]->event_id = $event->id;
 			$i++;
 		}
 
-		return array( 'groups' => $paged_groups, 'total' => $groups['total'] );
+		return array( 'events' => $paged_events, 'total' => $events['total'] );
 	}
 
 	/**
@@ -885,39 +885,39 @@ class SZ_Groups_Group {
 
 		$sz = sportszone();
 
-		return $wpdb->get_var( $wpdb->prepare( "SELECT slug FROM {$sz->groups->table_name} WHERE slug = %s", $slug ) );
+		return $wpdb->get_var( $wpdb->prepare( "SELECT slug FROM {$sz->events->table_name} WHERE slug = %s", $slug ) );
 	}
 
 	/**
-	 * Get the slug for a given group ID.
+	 * Get the slug for a given event ID.
 	 *
 	 * @since 1.6.0
 	 *
-	 * @param int $group_id ID of the group.
+	 * @param int $event_id ID of the event.
 	 * @return string|null The slug, if found. Otherwise null.
 	 */
-	public static function get_slug( $group_id ) {
+	public static function get_slug( $event_id ) {
 		global $wpdb;
 
 		$sz = sportszone();
 
-		return $wpdb->get_var( $wpdb->prepare( "SELECT slug FROM {$sz->groups->table_name} WHERE id = %d", $group_id ) );
+		return $wpdb->get_var( $wpdb->prepare( "SELECT slug FROM {$sz->events->table_name} WHERE id = %d", $event_id ) );
 	}
 
 	/**
-	 * Check whether a given group has any members.
+	 * Check whether a given event has any members.
 	 *
 	 * @since 1.6.0
 	 *
-	 * @param int $group_id ID of the group.
-	 * @return bool True if the group has members, otherwise false.
+	 * @param int $event_id ID of the event.
+	 * @return bool True if the event has members, otherwise false.
 	 */
-	public static function has_members( $group_id ) {
+	public static function has_members( $event_id ) {
 		global $wpdb;
 
 		$sz = sportszone();
 
-		$members = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(id) FROM {$sz->groups->table_name_members} WHERE group_id = %d", $group_id ) );
+		$members = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(id) FROM {$sz->events->table_name_members} WHERE event_id = %d", $event_id ) );
 
 		if ( empty( $members ) )
 			return false;
@@ -926,28 +926,28 @@ class SZ_Groups_Group {
 	}
 
 	/**
-	 * Check whether a group has outstanding membership requests.
+	 * Check whether a event has outstanding membership requests.
 	 *
 	 * @since 1.6.0
 	 *
-	 * @param int $group_id ID of the group.
+	 * @param int $event_id ID of the event.
 	 * @return int|null The number of outstanding requests, or null if
 	 *                  none are found.
 	 */
-	public static function has_membership_requests( $group_id ) {
+	public static function has_membership_requests( $event_id ) {
 		global $wpdb;
 
 		$sz = sportszone();
 
-		return $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(id) FROM {$sz->groups->table_name_members} WHERE group_id = %d AND is_confirmed = 0", $group_id ) );
+		return $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(id) FROM {$sz->events->table_name_members} WHERE event_id = %d AND is_confirmed = 0", $event_id ) );
 	}
 
 	/**
-	 * Get outstanding membership requests for a group.
+	 * Get outstanding membership requests for a event.
 	 *
 	 * @since 1.6.0
 	 *
-	 * @param int      $group_id ID of the group.
+	 * @param int      $event_id ID of the event.
 	 * @param int|null $limit    Optional. Max number of results to return.
 	 *                           Default: null (no limit).
 	 * @param int|null $page     Optional. Page offset of results returned. Default:
@@ -955,10 +955,10 @@ class SZ_Groups_Group {
 	 * @return array {
 	 *     @type array $requests The requested page of located requests.
 	 *     @type int   $total    Total number of requests outstanding for the
-	 *                           group.
+	 *                           event.
 	 * }
 	 */
-	public static function get_membership_requests( $group_id, $limit = null, $page = null ) {
+	public static function get_membership_requests( $event_id, $limit = null, $page = null ) {
 		global $wpdb;
 
 		if ( !empty( $limit ) && !empty( $page ) ) {
@@ -967,20 +967,20 @@ class SZ_Groups_Group {
 
 		$sz = sportszone();
 
-		$paged_requests = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$sz->groups->table_name_members} WHERE group_id = %d AND is_confirmed = 0 AND inviter_id = 0{$pag_sql}", $group_id ) );
-		$total_requests = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(id) FROM {$sz->groups->table_name_members} WHERE group_id = %d AND is_confirmed = 0 AND inviter_id = 0", $group_id ) );
+		$paged_requests = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$sz->events->table_name_members} WHERE event_id = %d AND is_confirmed = 0 AND inviter_id = 0{$pag_sql}", $event_id ) );
+		$total_requests = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(id) FROM {$sz->events->table_name_members} WHERE event_id = %d AND is_confirmed = 0 AND inviter_id = 0", $event_id ) );
 
 		return array( 'requests' => $paged_requests, 'total' => $total_requests );
 	}
 
 	/**
-	 * Query for groups.
+	 * Query for events.
 	 *
 	 * @see WP_Meta_Query::queries for a description of the 'meta_query'
 	 *      parameter format.
 	 *
 	 * @since 1.6.0
-	 * @since 2.6.0 Added `$group_type`, `$group_type__in`, and `$group_type__not_in` parameters.
+	 * @since 2.6.0 Added `$event_type`, `$event_type__in`, and `$event_type__not_in` parameters.
 	 * @since 2.7.0 Added `$update_admin_cache` and `$parent_id` parameters.
 	 * @since 2.8.0 Changed `$search_terms` parameter handling and added `$search_columns` parameter.
 	 * @since 2.9.0 Added `$slug` parameter.
@@ -999,12 +999,12 @@ class SZ_Groups_Group {
 	 *                                            Default: null (no limit).
 	 *     @type int          $page               Optional. Page offset of results to return.
 	 *                                            Default: null (no limit).
-	 *     @type int          $user_id            Optional. If provided, results will be limited to groups
+	 *     @type int          $user_id            Optional. If provided, results will be limited to events
 	 *                                            of which the specified user is a member. Default: null.
- 	 *     @type array|string $slug               Optional. Array or comma-separated list of group slugs to limit
+ 	 *     @type array|string $slug               Optional. Array or comma-separated list of event slugs to limit
  	 *                                            results to.
 	 *                                            Default: false.
-	 *     @type string       $search_terms       Optional. If provided, only groups whose names or descriptions
+	 *     @type string       $search_terms       Optional. If provided, only events whose names or descriptions
 	 *                                            match the search terms will be returned. Allows specifying the
 	 *                                            wildcard position using a '*' character before or after the
 	 *                                            string or both. Works in concert with $search_columns.
@@ -1012,34 +1012,34 @@ class SZ_Groups_Group {
   	 *     @type string       $search_columns     Optional. If provided, only apply the search terms to the
   	 *                                            specified columns. Works in concert with $search_terms.
   	 *                                            Default: empty array.
-	 *     @type array|string $group_type         Array or comma-separated list of group types to limit results to.
-	 *     @type array|string $group_type__in     Array or comma-separated list of group types to limit results to.
-	 *     @type array|string $group_type__not_in Array or comma-separated list of group types that will be
+	 *     @type array|string $event_type         Array or comma-separated list of event types to limit results to.
+	 *     @type array|string $event_type__in     Array or comma-separated list of event types to limit results to.
+	 *     @type array|string $event_type__not_in Array or comma-separated list of event types that will be
 	 *                                            excluded from results.
 	 *     @type array        $meta_query         Optional. An array of meta_query conditions.
 	 *                                            See {@link WP_Meta_Query::queries} for description.
-	 *     @type array|string $value              Optional. Array or comma-separated list of group IDs. Results
-	 *                                            will be limited to groups within the list. Default: false.
-	 *     @type array|string $parent_id          Optional. Array or comma-separated list of group IDs. Results
-	 *                                            will be limited to children of the specified groups. Default: null.
-	 *     @type array|string $exclude            Optional. Array or comma-separated list of group IDs.
-	 *                                            Results will exclude the listed groups. Default: false.
-	 *     @type bool         $update_meta_cache  Whether to pre-fetch groupmeta for the returned groups.
+	 *     @type array|string $value              Optional. Array or comma-separated list of event IDs. Results
+	 *                                            will be limited to events within the list. Default: false.
+	 *     @type array|string $parent_id          Optional. Array or comma-separated list of event IDs. Results
+	 *                                            will be limited to children of the specified events. Default: null.
+	 *     @type array|string $exclude            Optional. Array or comma-separated list of event IDs.
+	 *                                            Results will exclude the listed events. Default: false.
+	 *     @type bool         $update_meta_cache  Whether to pre-fetch eventmeta for the returned events.
 	 *                                            Default: true.
 	 *     @type bool         $update_admin_cache Whether to pre-fetch administrator IDs for the returned
-	 *                                            groups. Default: false.
-	 *     @type bool         $show_hidden        Whether to include hidden groups in results. Default: false.
- 	 *     @type array|string $status             Optional. Array or comma-separated list of group statuses to limit
+	 *                                            events. Default: false.
+	 *     @type bool         $show_hidden        Whether to include hidden events in results. Default: false.
+ 	 *     @type array|string $status             Optional. Array or comma-separated list of event statuses to limit
  	 *                                            results to. If specified, $show_hidden is ignored.
 	 *                                            Default: empty array.
  	 *     @type string       $fields             Which fields to return. Specify 'ids' to fetch a list of IDs.
- 	 *                                            Default: 'all' (return SZ_Groups_Group objects).
+ 	 *                                            Default: 'all' (return SZ_Events_Event objects).
  	 *                                            If set, meta and admin caches will not be prefetched.
 	 * }
 	 * @return array {
-	 *     @type array $groups Array of group objects returned by the
+	 *     @type array $events Array of event objects returned by the
 	 *                         paginated query. (IDs only if `fields` is set to `ids`.)
-	 *     @type int   $total  Total count of all groups matching non-
+	 *     @type int   $total  Total count of all events matching non-
 	 *                         paginated query params.
 	 * }
 	 */
@@ -1075,9 +1075,9 @@ class SZ_Groups_Group {
 			'slug'               => array(),
 			'search_terms'       => false,
 			'search_columns'     => array(),
-			'group_type'         => '',
-			'group_type__in'     => '',
-			'group_type__not_in' => '',
+			'event_type'         => '',
+			'event_type__in'     => '',
+			'event_type__not_in' => '',
 			'meta_query'         => false,
 			'include'            => false,
 			'parent_id'          => null,
@@ -1089,20 +1089,20 @@ class SZ_Groups_Group {
 			'fields'             => 'all',
 		);
 
-		$r = sz_parse_args( $args, $defaults, 'sz_groups_group_get' );
+		$r = sz_parse_args( $args, $defaults, 'sz_events_event_get' );
 
 		$sz = sportszone();
 
 		$sql = array(
 			'select'     => "SELECT DISTINCT g.id",
-			'from'       => "{$sz->groups->table_name} g",
+			'from'       => "{$sz->events->table_name} g",
 			'where'      => '',
 			'orderby'    => '',
 			'pagination' => '',
 		);
 
 		if ( ! empty( $r['user_id'] ) ) {
-			$sql['from'] .= " JOIN {$sz->groups->table_name_members} m ON ( g.id = m.group_id )";
+			$sql['from'] .= " JOIN {$sz->events->table_name_members} m ON ( g.id = m.event_id )";
 		}
 
 		$where_conditions = array();
@@ -1174,22 +1174,22 @@ class SZ_Groups_Group {
 			$where_conditions['meta'] = $meta_query_sql['where'];
 		}
 
-		// Only use 'group_type__in', if 'group_type' is not set.
-		if ( empty( $r['group_type'] ) && ! empty( $r['group_type__in']) ) {
-			$r['group_type'] = $r['group_type__in'];
+		// Only use 'event_type__in', if 'event_type' is not set.
+		if ( empty( $r['event_type'] ) && ! empty( $r['event_type__in']) ) {
+			$r['event_type'] = $r['event_type__in'];
 		}
 
-		// Group types to exclude. This has priority over inclusions.
-		if ( ! empty( $r['group_type__not_in'] ) ) {
-			$group_type_clause = self::get_sql_clause_for_group_types( $r['group_type__not_in'], 'NOT IN' );
+		// Event types to exclude. This has priority over inclusions.
+		if ( ! empty( $r['event_type__not_in'] ) ) {
+			$event_type_clause = self::get_sql_clause_for_event_types( $r['event_type__not_in'], 'NOT IN' );
 
-		// Group types to include.
-		} elseif ( ! empty( $r['group_type'] ) ) {
-			$group_type_clause = self::get_sql_clause_for_group_types( $r['group_type'], 'IN' );
+		// Event types to include.
+		} elseif ( ! empty( $r['event_type'] ) ) {
+			$event_type_clause = self::get_sql_clause_for_event_types( $r['event_type'], 'IN' );
 		}
 
-		if ( ! empty( $group_type_clause ) ) {
-			$where_conditions['group_type'] = $group_type_clause;
+		if ( ! empty( $event_type_clause ) ) {
+			$where_conditions['event_type'] = $event_type_clause;
 		}
 
 		if ( ! empty( $r['user_id'] ) ) {
@@ -1229,7 +1229,7 @@ class SZ_Groups_Group {
 			 * @param array  $value Converted 'type' value for order and orderby.
 			 * @param string $value Parsed 'type' value for the get method.
 			 */
-			$order_orderby = apply_filters( 'sz_groups_get_orderby', self::convert_type_to_order_orderby( $r['type'] ), $r['type'] );
+			$order_orderby = apply_filters( 'sz_events_get_orderby', self::convert_type_to_order_orderby( $r['type'] ), $r['type'] );
 
 			// If an invalid type is passed, $order_orderby will be
 			// an array with empty values. In this case, we stick
@@ -1245,11 +1245,11 @@ class SZ_Groups_Group {
 
 		// 'total_member_count' and 'last_activity' sorts require additional table joins.
 		if ( 'total_member_count' === $orderby ) {
-			$sql['from'] .= " JOIN {$sz->groups->table_name_groupmeta} gm_total_member_count ON ( g.id = gm_total_member_count.group_id )";
+			$sql['from'] .= " JOIN {$sz->events->table_name_eventmeta} gm_total_member_count ON ( g.id = gm_total_member_count.event_id )";
 			$where_conditions['total_member_count'] = "gm_total_member_count.meta_key = 'total_member_count'";
 		} elseif ( 'last_activity' === $orderby ) {
 
-			$sql['from'] .= " JOIN {$sz->groups->table_name_groupmeta} gm_last_activity on ( g.id = gm_last_activity.group_id )";
+			$sql['from'] .= " JOIN {$sz->events->table_name_eventmeta} gm_last_activity on ( g.id = gm_last_activity.event_id )";
 			$where_conditions['last_activity'] = "gm_last_activity.meta_key = 'last_activity'";
 		}
 
@@ -1270,7 +1270,7 @@ class SZ_Groups_Group {
 		 * @param string $orderby Original orderby value.
 		 * @param string $value   Parsed 'type' value for the get method.
 		 */
-		$orderby = apply_filters( 'sz_groups_get_orderby_converted_by_term', self::convert_orderby_to_order_by_term( $orderby ), $orderby, $r['type'] );
+		$orderby = apply_filters( 'sz_events_get_orderby_converted_by_term', self::convert_orderby_to_order_by_term( $orderby ), $orderby, $r['type'] );
 
 		// Random order is a special case.
 		if ( 'rand()' === $orderby ) {
@@ -1289,7 +1289,7 @@ class SZ_Groups_Group {
 			$where = "WHERE {$sql['where']}";
 		}
 
-		$paged_groups_sql = "{$sql['select']} FROM {$sql['from']} {$where} {$sql['orderby']} {$sql['pagination']}";
+		$paged_events_sql = "{$sql['select']} FROM {$sql['from']} {$where} {$sql['orderby']} {$sql['pagination']}";
 
 		/**
 		 * Filters the pagination SQL statement.
@@ -1300,47 +1300,47 @@ class SZ_Groups_Group {
 		 * @param array  $sql   Array of SQL parts before concatenation.
 		 * @param array  $r     Array of parsed arguments for the get method.
 		 */
-		$paged_groups_sql = apply_filters( 'sz_groups_get_paged_groups_sql', $paged_groups_sql, $sql, $r );
+		$paged_events_sql = apply_filters( 'sz_events_get_paged_events_sql', $paged_events_sql, $sql, $r );
 
-		$cached = sz_core_get_incremented_cache( $paged_groups_sql, 'sz_groups' );
+		$cached = sz_core_get_incremented_cache( $paged_events_sql, 'sz_events' );
 		if ( false === $cached ) {
-			$paged_group_ids = $wpdb->get_col( $paged_groups_sql );
-			sz_core_set_incremented_cache( $paged_groups_sql, 'sz_groups', $paged_group_ids );
+			$paged_event_ids = $wpdb->get_col( $paged_events_sql );
+			sz_core_set_incremented_cache( $paged_events_sql, 'sz_events', $paged_event_ids );
 		} else {
-			$paged_group_ids = $cached;
+			$paged_event_ids = $cached;
 		}
 
 		if ( 'ids' === $r['fields'] ) {
 			// We only want the IDs.
-			$paged_groups = array_map( 'intval', $paged_group_ids );
+			$paged_events = array_map( 'intval', $paged_event_ids );
 		} else {
-			$uncached_group_ids = sz_get_non_cached_ids( $paged_group_ids, 'sz_groups' );
-			if ( $uncached_group_ids ) {
-				$group_ids_sql = implode( ',', array_map( 'intval', $uncached_group_ids ) );
-				$group_data_objects = $wpdb->get_results( "SELECT g.* FROM {$sz->groups->table_name} g WHERE g.id IN ({$group_ids_sql})" );
-				foreach ( $group_data_objects as $group_data_object ) {
-					wp_cache_set( $group_data_object->id, $group_data_object, 'sz_groups' );
+			$uncached_event_ids = sz_get_non_cached_ids( $paged_event_ids, 'sz_events' );
+			if ( $uncached_event_ids ) {
+				$event_ids_sql = implode( ',', array_map( 'intval', $uncached_event_ids ) );
+				$event_data_objects = $wpdb->get_results( "SELECT g.* FROM {$sz->events->table_name} g WHERE g.id IN ({$event_ids_sql})" );
+				foreach ( $event_data_objects as $event_data_object ) {
+					wp_cache_set( $event_data_object->id, $event_data_object, 'sz_events' );
 				}
 			}
 
-			$paged_groups = array();
-			foreach ( $paged_group_ids as $paged_group_id ) {
-				$paged_groups[] = new SZ_Groups_Group( $paged_group_id );
+			$paged_events = array();
+			foreach ( $paged_event_ids as $paged_event_id ) {
+				$paged_events[] = new SZ_Events_Event( $paged_event_id );
 			}
 
-			$group_ids = array();
-			foreach ( (array) $paged_groups as $group ) {
-				$group_ids[] = $group->id;
+			$event_ids = array();
+			foreach ( (array) $paged_events as $event ) {
+				$event_ids[] = $event->id;
 			}
 
-			// Grab all groupmeta.
+			// Grab all eventmeta.
 			if ( ! empty( $r['update_meta_cache'] ) ) {
-				sz_groups_update_meta_cache( $group_ids );
+				sz_events_update_meta_cache( $event_ids );
 			}
 
 			// Prefetch all administrator IDs, if requested.
 			if ( $r['update_admin_cache'] ) {
-				SZ_Groups_Member::prime_group_admins_mods_cache( $group_ids );
+				SZ_Events_Member::prime_event_admins_mods_cache( $event_ids );
 			}
 
 			// Set up integer properties needing casting.
@@ -1349,37 +1349,37 @@ class SZ_Groups_Group {
 			);
 
 			// Integer casting.
-			foreach ( $paged_groups as $key => $g ) {
+			foreach ( $paged_events as $key => $g ) {
 				foreach ( $int_props as $int_prop ) {
-					$paged_groups[ $key ]->{$int_prop} = (int) $paged_groups[ $key ]->{$int_prop};
+					$paged_events[ $key ]->{$int_prop} = (int) $paged_events[ $key ]->{$int_prop};
 				}
 			}
 
 		}
 
-		// Find the total number of groups in the results set.
-		$total_groups_sql = "SELECT COUNT(DISTINCT g.id) FROM {$sql['from']} $where";
+		// Find the total number of events in the results set.
+		$total_events_sql = "SELECT COUNT(DISTINCT g.id) FROM {$sql['from']} $where";
 
 		/**
-		 * Filters the SQL used to retrieve total group results.
+		 * Filters the SQL used to retrieve total event results.
 		 *
 		 * @since 1.5.0
 		 *
-		 * @param string $t_sql     Concatenated SQL statement used for retrieving total group results.
+		 * @param string $t_sql     Concatenated SQL statement used for retrieving total event results.
 		 * @param array  $total_sql Array of SQL parts for the query.
 		 * @param array  $r         Array of parsed arguments for the get method.
 		 */
-		$total_groups_sql = apply_filters( 'sz_groups_get_total_groups_sql', $total_groups_sql, $sql, $r );
+		$total_events_sql = apply_filters( 'sz_events_get_total_events_sql', $total_events_sql, $sql, $r );
 
-		$cached = sz_core_get_incremented_cache( $total_groups_sql, 'sz_groups' );
+		$cached = sz_core_get_incremented_cache( $total_events_sql, 'sz_events' );
 		if ( false === $cached ) {
-			$total_groups = (int) $wpdb->get_var( $total_groups_sql );
-			sz_core_set_incremented_cache( $total_groups_sql, 'sz_groups', $total_groups );
+			$total_events = (int) $wpdb->get_var( $total_events_sql );
+			sz_core_set_incremented_cache( $total_events_sql, 'sz_events', $total_events );
 		} else {
-			$total_groups = (int) $cached;
+			$total_events = (int) $cached;
 		}
 
-		return array( 'groups' => $paged_groups, 'total' => $total_groups );
+		return array( 'events' => $paged_events, 'total' => $total_events );
 	}
 
 	/**
@@ -1403,13 +1403,13 @@ class SZ_Groups_Group {
 		);
 
 		if ( ! empty( $meta_query ) ) {
-			$groups_meta_query = new WP_Meta_Query( $meta_query );
+			$events_meta_query = new WP_Meta_Query( $meta_query );
 
 			// WP_Meta_Query expects the table name at
-			// $wpdb->group.
-			$wpdb->groupmeta = sportszone()->groups->table_name_groupmeta;
+			// $wpdb->event.
+			$wpdb->eventmeta = sportszone()->events->table_name_eventmeta;
 
-			$meta_sql = $groups_meta_query->get_sql( 'group', 'g', 'id' );
+			$meta_sql = $events_meta_query->get_sql( 'event', 'g', 'id' );
 			$sql_array['join']  = $meta_sql['join'];
 			$sql_array['where'] = self::strip_leading_and( $meta_sql['where'] );
 		}
@@ -1496,7 +1496,7 @@ class SZ_Groups_Group {
 				break;
 
 			case 'meta_id' :
-				$order_by_term = sportszone()->groups->table_name_groupmeta . '.id';
+				$order_by_term = sportszone()->events->table_name_eventmeta . '.id';
 				break;
 		}
 
@@ -1504,7 +1504,7 @@ class SZ_Groups_Group {
 	}
 
 	/**
-	 * Get a list of groups whose names start with a given letter.
+	 * Get a list of events whose names start with a given letter.
 	 *
 	 * @since 1.6.0
 	 *
@@ -1514,12 +1514,12 @@ class SZ_Groups_Group {
 	 * @param int|null          $page            Optional. The page offset of results to return.
 	 *                                           Default: null (no limit).
 	 * @param bool              $populate_extras Deprecated.
-	 * @param string|array|bool $exclude         Optional. Array or comma-separated list of group
+	 * @param string|array|bool $exclude         Optional. Array or comma-separated list of event
 	 *                                           IDs to exclude from results.
 	 * @return false|array {
-	 *     @type array $groups Array of group objects returned by the
+	 *     @type array $events Array of event objects returned by the
 	 *                         paginated query.
-	 *     @type int   $total  Total count of all groups matching non-
+	 *     @type int   $total  Total count of all events matching non-
 	 *                         paginated query params.
 	 * }
 	 */
@@ -1547,13 +1547,13 @@ class SZ_Groups_Group {
 			'exclude'        => $exclude,
 		);
 
-		return SZ_Groups_Group::get( $args );
+		return SZ_Events_Event::get( $args );
 	}
 
 	/**
-	 * Get a list of random groups.
+	 * Get a list of random events.
 	 *
-	 * Use SZ_Groups_Group::get() with 'type' = 'random' instead.
+	 * Use SZ_Events_Event::get() with 'type' = 'random' instead.
 	 *
 	 * @since 1.6.0
 	 *
@@ -1561,18 +1561,18 @@ class SZ_Groups_Group {
 	 *                                           Default: null (no limit).
 	 * @param int|null          $page            Optional. The page offset of results to return.
 	 *                                           Default: null (no limit).
-	 * @param int               $user_id         Optional. If present, groups will be limited to
+	 * @param int               $user_id         Optional. If present, events will be limited to
 	 *                                           those of which the specified user is a member.
-	 * @param string|bool       $search_terms    Optional. Limit groups to those whose name
+	 * @param string|bool       $search_terms    Optional. Limit events to those whose name
 	 *                                           or description field contain the search string.
 	 * @param bool              $populate_extras Optional. Whether to fetch extra
-	 *                                           information about the groups. Default: true.
-	 * @param string|array|bool $exclude         Optional. Array or comma-separated list of group
+	 *                                           information about the events. Default: true.
+	 * @param string|array|bool $exclude         Optional. Array or comma-separated list of event
 	 *                                           IDs to exclude from results.
 	 * @return array {
-	 *     @type array $groups Array of group objects returned by the
+	 *     @type array $events Array of event objects returned by the
 	 *                         paginated query.
-	 *     @type int   $total  Total count of all groups matching non-
+	 *     @type int   $total  Total count of all events matching non-
 	 *                         paginated query params.
 	 * }
 	 */
@@ -1586,68 +1586,68 @@ class SZ_Groups_Group {
 			'exclude'            => $exclude,
 		);
 
-		return SZ_Groups_Group::get( $args );
+		return SZ_Events_Event::get( $args );
 	}
 
 	/**
-	 * Fetch extra data for a list of groups.
+	 * Fetch extra data for a list of events.
 	 *
 	 * This method is used throughout the class, by methods that take a
 	 * $populate_extras parameter.
 	 *
 	 * Data fetched:
-	 *     - Logged-in user's status within each group (is_member,
+	 *     - Logged-in user's status within each event (is_member,
 	 *       is_confirmed, is_pending, is_banned)
 	 *
 	 * @since 1.6.0
 	 *
-	 * @param array        $paged_groups Array of groups.
-	 * @param string|array $group_ids    Array or comma-separated list of IDs matching
-	 *                                   $paged_groups.
+	 * @param array        $paged_events Array of events.
+	 * @param string|array $event_ids    Array or comma-separated list of IDs matching
+	 *                                   $paged_events.
 	 * @param string|bool  $type         Not used.
-	 * @return array $paged_groups
+	 * @return array $paged_events
 	 */
-	public static function get_group_extras( &$paged_groups, &$group_ids, $type = false ) {
+	public static function get_event_extras( &$paged_events, &$event_ids, $type = false ) {
 		$user_id = sz_loggedin_user_id();
 
-		foreach ( $paged_groups as &$group ) {
-			$group->is_member  = groups_is_user_member( $user_id, $group->id )  ? 1 : 0;
-			$group->is_invited = groups_is_user_invited( $user_id, $group->id ) ? 1 : 0;
-			$group->is_pending = groups_is_user_pending( $user_id, $group->id ) ? 1 : 0;
-			$group->is_banned  = (bool) groups_is_user_banned( $user_id, $group->id );
+		foreach ( $paged_events as &$event ) {
+			$event->is_member  = events_is_user_member( $user_id, $event->id )  ? 1 : 0;
+			$event->is_invited = events_is_user_invited( $user_id, $event->id ) ? 1 : 0;
+			$event->is_pending = events_is_user_pending( $user_id, $event->id ) ? 1 : 0;
+			$event->is_banned  = (bool) events_is_user_banned( $user_id, $event->id );
 		}
 
-		return $paged_groups;
+		return $paged_events;
 	}
 
 	/**
-	 * Delete all invitations to a given group.
+	 * Delete all invitations to a given event.
 	 *
 	 * @since 1.6.0
 	 *
-	 * @param int $group_id ID of the group whose invitations are being deleted.
+	 * @param int $event_id ID of the event whose invitations are being deleted.
 	 * @return int|null Number of rows records deleted on success, null on
 	 *                  failure.
 	 */
-	public static function delete_all_invites( $group_id ) {
+	public static function delete_all_invites( $event_id ) {
 		global $wpdb;
 
 		$sz = sportszone();
 
-		return $wpdb->query( $wpdb->prepare( "DELETE FROM {$sz->groups->table_name_members} WHERE group_id = %d AND invite_sent = 1", $group_id ) );
+		return $wpdb->query( $wpdb->prepare( "DELETE FROM {$sz->events->table_name_members} WHERE event_id = %d AND invite_sent = 1", $event_id ) );
 	}
 
 	/**
-	 * Get a total group count for the site.
+	 * Get a total event count for the site.
 	 *
-	 * Will include hidden groups in the count only if
+	 * Will include hidden events in the count only if
 	 * sz_current_user_can( 'sz_moderate' ).
 	 *
 	 * @since 1.6.0
 	 *
-	 * @return int Group count.
+	 * @return int Event count.
 	 */
-	public static function get_total_group_count() {
+	public static function get_total_event_count() {
 		global $wpdb;
 
 		$hidden_sql = '';
@@ -1656,59 +1656,59 @@ class SZ_Groups_Group {
 
 		$sz = sportszone();
 
-		return $wpdb->get_var( "SELECT COUNT(id) FROM {$sz->groups->table_name} {$hidden_sql}" );
+		return $wpdb->get_var( "SELECT COUNT(id) FROM {$sz->events->table_name} {$hidden_sql}" );
 	}
 
 	/**
-	 * Get the member count for a group.
+	 * Get the member count for a event.
 	 *
 	 * @since 1.6.0
 	 *
-	 * @param int $group_id Group ID.
-	 * @return int Count of confirmed members for the group.
+	 * @param int $event_id Event ID.
+	 * @return int Count of confirmed members for the event.
 	 */
-	public static function get_total_member_count( $group_id ) {
+	public static function get_total_member_count( $event_id ) {
 		global $wpdb;
 
 		$sz = sportszone();
 
-		return $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(id) FROM {$sz->groups->table_name_members} WHERE group_id = %d AND is_confirmed = 1 AND is_banned = 0", $group_id ) );
+		return $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(id) FROM {$sz->events->table_name_members} WHERE event_id = %d AND is_confirmed = 1 AND is_banned = 0", $event_id ) );
 	}
 
 	/**
-	 * Get an array containing ids for each group type.
+	 * Get an array containing ids for each event type.
 	 *
 	 * A bit of a kludge workaround for some issues
-	 * with sz_has_groups().
+	 * with sz_has_events().
 	 *
 	 * @since 1.7.0
 	 *
 	 * @return array
 	 */
-	public static function get_group_type_ids() {
+	public static function get_event_type_ids() {
 		global $wpdb;
 
 		$sz  = sportszone();
 		$ids = array();
 
-		$ids['all']     = $wpdb->get_col( "SELECT id FROM {$sz->groups->table_name}" );
-		$ids['public']  = $wpdb->get_col( "SELECT id FROM {$sz->groups->table_name} WHERE status = 'public'" );
-		$ids['private'] = $wpdb->get_col( "SELECT id FROM {$sz->groups->table_name} WHERE status = 'private'" );
-		$ids['hidden']  = $wpdb->get_col( "SELECT id FROM {$sz->groups->table_name} WHERE status = 'hidden'" );
+		$ids['all']     = $wpdb->get_col( "SELECT id FROM {$sz->events->table_name}" );
+		$ids['public']  = $wpdb->get_col( "SELECT id FROM {$sz->events->table_name} WHERE status = 'public'" );
+		$ids['private'] = $wpdb->get_col( "SELECT id FROM {$sz->events->table_name} WHERE status = 'private'" );
+		$ids['hidden']  = $wpdb->get_col( "SELECT id FROM {$sz->events->table_name} WHERE status = 'hidden'" );
 
 		return $ids;
 	}
 
 	/**
-	 * Get SQL clause for group type(s).
+	 * Get SQL clause for event type(s).
 	 *
 	 * @since 2.6.0
 	 *
-	 * @param  string|array $group_types Group type(s).
+	 * @param  string|array $event_types Event type(s).
 	 * @param  string       $operator    'IN' or 'NOT IN'.
 	 * @return string       $clause      SQL clause.
 	 */
-	protected static function get_sql_clause_for_group_types( $group_types, $operator ) {
+	protected static function get_sql_clause_for_event_types( $event_types, $operator ) {
 		global $wpdb;
 
 		// Sanitize operator.
@@ -1717,27 +1717,27 @@ class SZ_Groups_Group {
 		}
 
 		// Parse and sanitize types.
-		if ( ! is_array( $group_types ) ) {
-			$group_types = preg_split( '/[,\s+]/', $group_types );
+		if ( ! is_array( $event_types ) ) {
+			$event_types = preg_split( '/[,\s+]/', $event_types );
 		}
 
 		$types = array();
-		foreach ( $group_types as $gt ) {
-			if ( sz_groups_get_group_type_object( $gt ) ) {
+		foreach ( $event_types as $gt ) {
+			if ( sz_events_get_event_type_object( $gt ) ) {
 				$types[] = $gt;
 			}
 		}
 
 		$tax_query = new WP_Tax_Query( array(
 			array(
-				'taxonomy' => 'sz_group_type',
+				'taxonomy' => 'sz_event_type',
 				'field'    => 'name',
 				'operator' => $operator,
 				'terms'    => $types,
 			),
 		) );
 
-		$site_id  = sz_get_taxonomy_term_site_id( 'sz_group_type' );
+		$site_id  = sz_get_taxonomy_term_site_id( 'sz_event_type' );
 		$switched = false;
 		if ( $site_id !== get_current_blog_id() ) {
 			switch_to_blog( $site_id );

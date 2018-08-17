@@ -1882,6 +1882,84 @@ form.ac-form .ac-reply-content input {
 
 /**
 *----------------------------------------------------------
+* @section 3.2 - Events Loop
+*----------------------------------------------------------
+*/
+.sportszone-wrap .events-list li .list-title {
+	text-align: center;
+}
+
+.sportszone-wrap .events-list li .event-details {
+	clear: left;
+}
+
+.sportszone-wrap .events-list li .event-desc {
+	border: 1px solid #eaeaea;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	-ms-border-radius: 10px;
+	border-radius: 10px;
+	background-clip: padding-box;
+	font-size: 13px;
+	color: #737373;
+	font-style: italic;
+	margin: 10px auto 0;
+	padding: 1em;
+}
+
+@media screen and (min-width: 46.8em) {
+	.sportszone-wrap .events-list li .event-desc {
+		font-size: 16px;
+	}
+}
+
+.sportszone-wrap .events-list li p {
+	margin: 0 0 0.5em;
+}
+
+@media screen and (min-width: 46.8em) {
+	.sportszone-wrap .events-list li .item {
+		margin-right: 0;
+	}
+	.sportszone-wrap .events-list li .list-title,
+	.sportszone-wrap .events-list li .item-meta {
+		text-align: left;
+		width: auto;
+	}
+	.sportszone-wrap .events-list li .item-meta {
+		margin-bottom: 20px;
+	}
+	.sportszone-wrap .events-list li .last-activity {
+		clear: left;
+		margin-top: -20px;
+	}
+}
+
+.sportszone-wrap .events-list li.event-no-avatar div.event-desc {
+	margin-left: 0;
+}
+
+.sportszone-wrap .myevents .events-list.grid .wrap {
+	min-height: 450px;
+	padding-bottom: 0;
+}
+
+@media screen and (min-width: 46.8em) {
+	.sportszone-wrap .events-list.grid.three .event-desc, .sportszone-wrap .events-list.grid.four .event-desc {
+		font-size: 14px;
+	}
+}
+
+@media screen and (min-width: 46.8em) {
+	.sportszone .sz-vertical-navs .events-list .item-avatar {
+		margin-right: 3%;
+		width: 15%;
+	}
+}
+
+
+/**
+*----------------------------------------------------------
 * @section 3.2 - Members Loop
 *----------------------------------------------------------
 */
@@ -2042,6 +2120,24 @@ form.ac-form .ac-reply-content input {
 	margin-top: 15px;
 }
 
+
+/**
+*----------------------------------------------------------
+* @section 4.2 - Events Creation Steps
+*----------------------------------------------------------
+*/
+#event-create-body {
+	padding: 0.5em;
+}
+
+#event-create-body .creation-step-name {
+	text-align: center;
+}
+
+#event-create-body .avatar-nav-items {
+	margin-top: 15px;
+}
+
 /**
 *-------------------------------------------------------------------------------
 * @section 5.0 - Single Item screens: Groups, Users
@@ -2092,11 +2188,13 @@ form.ac-form .ac-reply-content input {
 }
 
 .single-headers .group-status,
+.single-headers .event-status,
 .single-headers .activity {
 	display: inline;
 }
 
-.single-headers .group-status {
+.single-headers .group-status,
+.single-headers .event-status {
 	font-size: 18px;
 	color: #333;
 	padding-right: 1em;
@@ -2347,6 +2445,100 @@ body.no-js .single-item-header .js-self-profile-button {
 
 /**
 *-----------------------------------------------------
+* @subsection 5.1.2 - item-header Events
+*
+* Events Specific Item Header
+*-----------------------------------------------------
+*/
+.events-header .sz-event-type-list {
+	margin: 0;
+}
+
+.events-header .sz-feedback {
+	clear: both;
+}
+
+.events-header .event-item-actions {
+	float: left;
+	margin: 0 0 15px 15px;
+	padding-top: 0;
+	width: 100%;
+}
+
+.events-header .moderators-lists {
+	margin-top: 0;
+}
+
+.events-header .moderators-lists .moderators-title {
+	font-size: 14px;
+}
+
+.events-header .moderators-lists .user-list {
+	margin: 0 0 5px;
+}
+
+.events-header .moderators-lists .user-list ul:after {
+	clear: both;
+	content: "";
+	display: table;
+}
+
+.events-header .moderators-lists .user-list li {
+	display: inline-block;
+	float: none;
+	margin-left: 4px;
+	padding: 4px;
+}
+
+.events-header .moderators-lists img.avatar {
+	-moz-box-shadow: none;
+	-webkit-box-shadow: none;
+	box-shadow: none;
+	float: none;
+	height: 30px;
+	margin: 0;
+	max-width: 100%;
+	width: 30px;
+}
+
+@media screen and (min-width: 46.8em) {
+	.events-header div#item-header-content {
+		float: left;
+		margin-left: 10%;
+		text-align: left;
+		padding-top: 15px;
+		width: 42%;
+	}
+	.events-header .event-item-actions {
+		float: right;
+		margin: 0 0 15px 15px;
+		text-align: right;
+		width: 20%;
+	}
+	.events-header .events-meta {
+		clear: both;
+	}
+}
+
+.events-header .desc-wrap {
+	background: #eaeaea;
+	border: 1px solid #d6d6d6;
+	margin: 0 0 15px;
+	padding: 1em;
+	text-align: center;
+}
+
+.events-header .desc-wrap .event-description {
+	background: #fafafa;
+	-webkit-box-shadow: inset 0 0 9px #ccc;
+	-moz-box-shadow: inset 0 0 9px #ccc;
+	box-shadow: inset 0 0 9px #ccc;
+	padding: 1em;
+	text-align: left;
+}
+
+/**
+*-----------------------------------------------------
 * @subsection 5.1.2 - Item Header User Accounts
 *
 * User Accounts Specific Item Header
@@ -2399,6 +2591,21 @@ body.no-js .single-item-header .js-self-profile-button {
 }
 
 .single-item.group-members .item-body .filters {
+	margin-top: 0;
+}
+/**
+*----------------------------------------------------
+* @subsection 5.2.2 - Item Body Events
+*
+* Events specific item body rules -  screens
+*----------------------------------------------------
+*/
+.single-item.event-members .item-body .filters:not(.no-subnav) {
+	border-top: 5px solid #eaeaea;
+	padding-top: 1em;
+}
+
+.single-item.event-members .item-body .filters {
 	margin-top: 0;
 }
 
@@ -2529,6 +2736,132 @@ body.no-js .single-item-header .js-self-profile-button {
 
 /**
 *-----------------------------------------
+* @subsection 5.2.1.1 - Management Settings Screens
+*-----------------------------------------
+*/
+.sportszone-wrap .event-status-type ul {
+	margin: 0 0 20px 20px;
+}
+
+.events-manage-members-list {
+	padding: 0.5em 0;
+}
+
+.events-manage-members-list dd {
+	margin: 0;
+	padding: 1em 0;
+}
+
+.events-manage-members-list .section-title {
+	background: #eaeaea;
+	padding-left: 0.3em;
+}
+
+.events-manage-members-list ul {
+	list-style: none;
+	margin-bottom: 0;
+}
+
+.events-manage-members-list ul li {
+	border-bottom: 1px solid #eee;
+	margin-bottom: 10px;
+	padding: 0.5em 0.3em 0.3em;
+}
+
+.events-manage-members-list ul li:only-child,
+.events-manage-members-list ul li:last-child {
+	border-bottom: 0;
+}
+
+.events-manage-members-list ul li:nth-child(even) {
+	background: #fafafa;
+}
+
+.events-manage-members-list ul li.banned-user {
+	background: #fad3d3;
+}
+
+.events-manage-members-list ul .member-name {
+	margin-bottom: 0;
+	text-align: center;
+}
+
+.events-manage-members-list ul img {
+	display: block;
+	margin: 0 auto;
+	width: 20%;
+}
+
+@media screen and (min-width: 32em) {
+	.events-manage-members-list ul .member-name {
+		text-align: left;
+	}
+	.events-manage-members-list ul img {
+		display: inline;
+		width: 50px;
+	}
+}
+
+.events-manage-members-list ul .members-manage-buttons:before,
+.events-manage-members-list ul .members-manage-buttons:after {
+	content: " ";
+	display: table;
+}
+
+.events-manage-members-list ul .members-manage-buttons:after {
+	clear: both;
+}
+
+.events-manage-members-list ul .members-manage-buttons {
+	margin: 15px 0 5px;
+}
+
+.events-manage-members-list ul .members-manage-buttons a.button {
+	color: #767676;
+	display: block;
+	font-size: 13px;
+}
+
+@media screen and (min-width: 32em) {
+	.events-manage-members-list ul .members-manage-buttons a.button {
+		display: inline-block;
+	}
+}
+
+.events-manage-members-list ul .members-manage-buttons.text-links-list {
+	margin-bottom: 0;
+}
+
+@media screen and (max-width: 32em) {
+	.events-manage-members-list ul .members-manage-buttons.text-links-list a.button {
+		background: #fafafa;
+		border: 1px solid #eee;
+		display: block;
+		margin-bottom: 10px;
+	}
+}
+
+.events-manage-members-list ul .action:not(.text-links-list) a.button {
+	font-size: 12px;
+}
+
+@media screen and (min-width: 46.8em) {
+	.events-manage-members-list ul li .avatar,
+	.events-manage-members-list ul li .member-name {
+		float: left;
+	}
+	.events-manage-members-list ul li .avatar {
+		margin-right: 15px;
+	}
+	.events-manage-members-list ul li .action {
+		clear: both;
+		float: left;
+	}
+}
+
+
+/**
+*-----------------------------------------
 * @subsection 5.2.1.2 - Group Members List
 *-----------------------------------------
 */
@@ -2580,17 +2913,17 @@ body.no-js .single-item-header .js-self-profile-button {
 }
 
 .sportszone .sz-invites-content .item-list .item-meta span,
-.sportszone .sz-invites-content .group-inviters li {
+.sportszone .sz-invites-content .event-inviters li {
 	color: #767676;
 }
 
-.sportszone .sz-invites-content li ul.group-inviters {
+.sportszone .sz-invites-content li ul.event-inviters {
 	clear: both;
 	margin: 0;
 	overflow: hidden;
 }
 
-.sportszone .sz-invites-content li ul.group-inviters li {
+.sportszone .sz-invites-content li ul.event-inviters li {
 	border: 0;
 	float: left;
 	font-size: 20px;
@@ -2663,30 +2996,35 @@ body.no-js .single-item-header .js-self-profile-button {
 	.sportszone .sz-invites-content ul.item-list > li:nth-child(even) {
 		margin-left: 0.5%;
 	}
-	.sportszone .sz-invites-content ul.item-list ul.group-inviters {
+	.sportszone .sz-invites-content ul.item-list ul.group-inviters,
+	.sportszone .sz-invites-content ul.item-list ul.event-inviters {
 		float: left;
 		width: auto;
 	}
 }
 
 @media screen and (min-width: 46.8em) {
-	:not(.vertical) + .item-body #group-invites-container {
+	:not(.vertical) + .item-body #group-invites-container,
+	:not(.vertical) + .item-body #event-invites-container  {
 		display: -ms-grid;
 		display: grid;
 		-ms-grid-columns: 25% auto;
 		grid-template-columns: 25% auto;
 		grid-template-areas: "group-invites-nav group-invites-column";
 	}
-	:not(.vertical) + .item-body #group-invites-container .sz-invites-nav {
+	:not(.vertical) + .item-body #group-invites-container .sz-invites-nav,
+	:not(.vertical) + .item-body #event-invites-container .sz-invites-nav {
 		-ms-grid-row: 1;
 		-ms-grid-column: 1;
 		grid-area: group-invites-nav;
 	}
-	:not(.vertical) + .item-body #group-invites-container .sz-invites-nav li {
+	:not(.vertical) + .item-body #group-invites-container .sz-invites-nav li,
+	:not(.vertical) + .item-body #event-invites-container .sz-invites-nav li {
 		display: block;
 		float: none;
 	}
-	:not(.vertical) + .item-body #group-invites-container .group-invites-column {
+	:not(.vertical) + .item-body #group-invites-container .group-invites-column,
+	:not(.vertical) + .item-body #event-invites-container .event-invites-column {
 		-ms-grid-row: 1;
 		-ms-grid-column: 2;
 		grid-area: group-invites-column;
@@ -2698,7 +3036,8 @@ body.no-js .single-item-header .js-self-profile-button {
 * @subsection 5.2.1.4 - Group Activity
 *-----------------------------------------
 */
-.sportszone.groups .activity-update-form {
+.sportszone.groups .activity-update-form,
+.sportszone.events .activity-update-form {
 	margin-top: 0;
 }
 
@@ -2870,7 +3209,8 @@ body.no-js .sportszone-wrap .field-visibility-settings {
 	border-bottom-right-radius: 0;
 }
 
-.sportszone-wrap .profile.public .profile-group-title {
+.sportszone-wrap .profile.public .profile-group-title,
+.sportszone-wrap .profile.public .profile-event-title {
 	border-bottom: 1px solid #ccc;
 }
 
@@ -3364,7 +3704,9 @@ div.sz-navs#subsubnav.sz-messages-filters .user-messages-bulk-actions {
 .sportszone-wrap .standard-form [data-sz-search] input[type="search"],
 .sportszone-wrap .standard-form [data-sz-search] input[type="text"],
 .sportszone-wrap .standard-form .groups-members-search input[type="search"],
-.sportszone-wrap .standard-form .groups-members-search input[type="text"] {
+.sportszone-wrap .standard-form .groups-members-search input[type="text"],
+.sportszone-wrap .standard-form .events-members-search input[type="search"],
+.sportszone-wrap .standard-form .events-members-search input[type="text"] {
 	background: #fafafa;
 	border: 1px solid #d6d6d6;
 	border-radius: 0;
@@ -3851,7 +4193,8 @@ body.no-js .sportszone #messages-bulk-management #select-all-messages {
 	text-align: left;
 }
 
-.sportszone-wrap #groups-notification-settings {
+.sportszone-wrap #groups-notification-settings,
+.sportszone-wrap #events-notification-settings {
 	margin-bottom: 0;
 }
 
@@ -4068,8 +4411,10 @@ body.no-js .sportszone #messages-bulk-management #select-all-messages {
 
 .sportszone .sportszone-wrap .sz-invites-content ul.sz-list li.selected a.invite-button:hover,
 .sportszone .sportszone-wrap .sz-invites-content ul.sz-list li.selected a.group-remove-invite-button:hover,
+.sportszone .sportszone-wrap .sz-invites-content ul.sz-list li.selected a.event-remove-invite-button:hover,
 .sportszone .sportszone-wrap .sz-invites-content ul.sz-list li a.invite-button:hover,
-.sportszone .sportszone-wrap .sz-invites-content ul.sz-list li a.group-remove-invite-button:hover {
+.sportszone .sportszone-wrap .sz-invites-content ul.sz-list li a.group-remove-invite-button:hover,
+.sportszone .sportszone-wrap .sz-invites-content ul.sz-list li a.event-remove-invite-button:hover {
 	color: #a00;
 }
 
@@ -4227,12 +4572,14 @@ body.no-js .sportszone #messages-bulk-management #select-all-messages {
 	content: "\f303";
 }
 
-.sportszone-wrap ul.item-list li .invite-button:not(.group-remove-invite-button) span.icons:before {
+.sportszone-wrap ul.item-list li .invite-button:not(.group-remove-invite-button) span.icons:before,
+.sportszone-wrap ul.item-list li .invite-button:not(.event-remove-invite-button) span.icons:before {
 	content: "\f502";
 }
 
 .sportszone-wrap ul.item-list li.selected .invite-button span.icons:before,
-.sportszone-wrap ul.item-list li .group-remove-invite-button span.icons:before {
+.sportszone-wrap ul.item-list li .group-remove-invite-button span.icons:before,
+.sportszone-wrap ul.item-list li .event-remove-invite-button span.icons:before {
 	content: "\f153";
 }
 
@@ -4274,7 +4621,8 @@ body.no-js .sportszone #messages-bulk-management #select-all-messages {
 	border: 0;
 }
 
-.sportszone-wrap #group-create-body .sz-cover-image-status p.warning {
+.sportszone-wrap #group-create-body .sz-cover-image-status p.warning,
+.sportszone-wrap #event-create-body .sz-cover-image-status p.warning {
 	background: #0b80a4;
 	border: 0;
 	-webkit-box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.2);
@@ -4869,29 +5217,39 @@ body.no-js .sportszone #messages-bulk-management #select-all-messages {
 		margin: 0 auto;
 		min-height: 7rem;
 	}
-	.grid.members-group-list .list-wrap .item-block {
+	.grid.members-group-list .list-wrap .item-block,
+	.grid.members-event-list .list-wrap .item-block {
 		margin: 0 auto;
 		min-height: 7rem;
 	}
-	.grid.groups-list .list-wrap {
+	.grid.groups-list .list-wrap,
+	.grid.events-list .list-wrap {
 		min-height: 470px;
 	}
-	.grid.groups-list .list-wrap .item-block {
+	.grid.groups-list .list-wrap .item-block,
+	.grid.events-list .list-wrap .item-block {
 		min-height: 6rem;
 	}
-	.grid.groups-list .list-wrap .group-desc {
+	.grid.groups-list .list-wrap .group-desc,
+	.grid.events-list .list-wrap .event-desc{
 		margin: 15px auto 0;
 		min-height: 5em;
 		overflow: hidden;
 	}
 	.grid.groups-list .list-wrap .last-activity,
 	.grid.groups-list .list-wrap .group-details,
-	.grid.groups-list .list-wrap .item-desc {
+	.grid.groups-list .list-wrap .item-desc,
+	.grid.events-list .list-wrap .last-activity,
+	.grid.events-list .list-wrap .event-details,
+	.grid.events-list .list-wrap .item-desc {
 		margin-bottom: 0;
 	}
 	.grid.groups-list .list-wrap .last-activity p,
 	.grid.groups-list .list-wrap .group-details p,
-	.grid.groups-list .list-wrap .item-desc p {
+	.grid.groups-list .list-wrap .item-desc p,
+	.grid.events-list .list-wrap .last-activity p,
+	.grid.events-list .list-wrap .event-details p,
+	.grid.events-list .list-wrap .item-desc p {
 		margin-bottom: 0;
 	}
 	.grid.blogs-list .list-wrap {
@@ -5030,7 +5388,8 @@ body.no-js .sportszone #messages-bulk-management #select-all-messages {
 }
 
 .sportszone-wrap .grid.sz-list > li .item .item-block,
-.sportszone-wrap .grid.sz-list > li .item .group-desc {
+.sportszone-wrap .grid.sz-list > li .item .group-desc,
+.sportszone-wrap .grid.sz-list > li .item .event-desc {
 	float: none;
 	width: 96%;
 }
@@ -5043,7 +5402,8 @@ body.no-js .sportszone #messages-bulk-management #select-all-messages {
 	margin-top: 5px;
 }
 
-.sportszone-wrap .grid.sz-list > li .item .group-desc {
+.sportszone-wrap .grid.sz-list > li .item .group-desc,
+.sportszone-wrap .grid.sz-list > li .item .event-desc {
 	clear: none;
 }
 
@@ -5092,7 +5452,9 @@ body.no-js .sportszone #messages-bulk-management #select-all-messages {
 }
 
 .sportszone-wrap .grid.three > li .group-desc,
-.sportszone-wrap .grid.four > li .group-desc {
+.sportszone-wrap .grid.four > li .group-desc,
+.sportszone-wrap .grid.three > li .event-desc,
+.sportszone-wrap .grid.four > li .event-desc {
 	min-height: 8em;
 }
 
@@ -5115,7 +5477,8 @@ body.no-js .sportszone #messages-bulk-management #select-all-messages {
 	padding-bottom: 5px;
 }
 
-.sportszone:not(.logged-in) .grid.groups-list .list-wrap {
+.sportszone:not(.logged-in) .grid.groups-list .list-wrap,
+.sportszone:not(.logged-in) .grid.events-list .list-wrap {
 	min-height: 430px;
 }
 
@@ -5165,11 +5528,13 @@ body.no-js .sportszone #messages-bulk-management #select-all-messages {
 		margin-bottom: 15px;
 	}
 	.sz-single-vert-nav .sz-wrap .user-nav-tabs.users-nav ul li,
-	.sz-single-vert-nav .sz-wrap .group-nav-tabs.groups-nav ul li {
+	.sz-single-vert-nav .sz-wrap .group-nav-tabs.groups-nav ul li,
+	.sz-single-vert-nav .sz-wrap .group-nav-tabs.events-nav ul li {
 		left: 1px;
 		position: relative;
 	}
-	.sz-single-vert-nav .item-body:not(#group-create-body) {
+	.sz-single-vert-nav .item-body:not(#group-create-body),
+	.sz-single-vert-nav .item-body:not(#event-create-body) {
 		background: #fff;
 		border-left: 1px solid #d6d6d6;
 		float: right;

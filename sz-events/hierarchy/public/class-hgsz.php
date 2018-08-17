@@ -2,7 +2,7 @@
 /**
  * The public class.
  *
- * @package   HierarchicalGroupsForSZ
+ * @package   HierarchicalEventsForSZ
  * @author    dcavins
  * @license   GPL-2.0+
  * @copyright 2016 David Cavins
@@ -11,7 +11,7 @@
 /**
  * Plugin class for public functionality.
  *
- * @package   HierarchicalGroupsForSZ_Public_Class
+ * @package   HierarchicalEventsForSZ_Public_Class
  * @author    dcavins
  * @license   GPL-2.0+
  * @copyright 2016 David Cavins
@@ -43,7 +43,7 @@ class HGSZ_Public {
 	 *
 	 * @var      string
 	 */
-	protected $plugin_slug = 'hierarchical-groups-for-sz';
+	protected $plugin_slug = 'hierarchical-events-for-sz';
 
 	/**
 	 * Initialize the plugin by setting localization and loading public scripts
@@ -68,53 +68,53 @@ class HGSZ_Public {
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_styles_scripts' ) );
 
 
-		/* Changes to the groups directory view. ******************************/
+		/* Changes to the events directory view. ******************************/
 		// Add our templates to SportsZone' template stack.
 		add_filter( 'sz_get_template_stack', array( $this, 'add_template_stack'), 10, 1 );
 
-		// Potentially override the groups loop template.
-		add_filter( 'sz_get_template_part', array( $this, 'filter_groups_loop_template'), 10, 3 );
+		// Potentially override the events loop template.
+		add_filter( 'sz_get_template_part', array( $this, 'filter_events_loop_template'), 10, 3 );
 
 		/*
-		 * Adds toggle allowing user to choose whether to restrict groups list to top-level groups
+		 * Adds toggle allowing user to choose whether to restrict events list to top-level events
 		 * (working top down), or whether to intermingle.
 		 */
-		add_action( 'sz_groups_directory_group_types', array( $this, 'output_enable_tree_checkbox' ) );
+		add_action( 'sz_events_directory_event_types', array( $this, 'output_enable_tree_checkbox' ) );
 
-		// Hook sz_has_groups filters right before a group directory is rendered.
-		add_action( 'sz_before_groups_loop', array( $this, 'add_has_group_parse_arg_filters' ) );
+		// Hook sz_has_events filters right before a event directory is rendered.
+		add_action( 'sz_before_events_loop', array( $this, 'add_has_event_parse_arg_filters' ) );
 
-		// Unhook sz_has_groups filters right after a group directory is rendered.
-		add_action( 'sz_after_groups_loop', array( $this, 'remove_has_group_parse_arg_filters' ) );
+		// Unhook sz_has_events filters right after a event directory is rendered.
+		add_action( 'sz_after_events_loop', array( $this, 'remove_has_event_parse_arg_filters' ) );
 
-		// Add pagination blocks to the groups-loop-tree directory.
-		add_action( 'hgsz_before_directory_groups_list_tree', 'hgsz_groups_loop_pagination_top' );
-		add_action( 'hgsz_after_directory_groups_list_tree', 'hgsz_groups_loop_pagination_bottom' );
+		// Add pagination blocks to the events-loop-tree directory.
+		add_action( 'hgsz_before_directory_events_list_tree', 'hgsz_events_loop_pagination_top' );
+		add_action( 'hgsz_after_directory_events_list_tree', 'hgsz_events_loop_pagination_bottom' );
 
-		// Add the hierarchy breadcrumb links to a single group's hierarchy screen.
-		add_action( 'hgsz_before_groups_loop', 'hgsz_single_group_hierarchy_screen_list_header' );
+		// Add the hierarchy breadcrumb links to a single event's hierarchy screen.
+		add_action( 'hgsz_before_events_loop', 'hgsz_single_event_hierarchy_screen_list_header' );
 
-		// Add the "has-children" class to a group item that has children.
-		add_filter( 'sz_get_group_class', array( $this, 'filter_group_classes' ) );
+		// Add the "has-children" class to a event item that has children.
+		add_filter( 'sz_get_event_class', array( $this, 'filter_event_classes' ) );
 
-		// Handle AJAX requests for subgroups.
-		add_action( 'wp_ajax_hgsz_get_child_groups', array( $this, 'ajax_subgroups_response_cb' ) );
-		add_action( 'wp_ajax_nopriv_hgsz_get_child_groups', array( $this, 'ajax_subgroups_response_cb' ) );
+		// Handle AJAX requests for subevents.
+		add_action( 'wp_ajax_hgsz_get_child_events', array( $this, 'ajax_subevents_response_cb' ) );
+		add_action( 'wp_ajax_nopriv_hgsz_get_child_events', array( $this, 'ajax_subevents_response_cb' ) );
 
 
-		/* Changes to single group behavior. **********************************/
-		// Modify group permalinks to reflect hierarchy
-		add_filter( 'sz_get_group_permalink', array( $this, 'make_permalink_hierarchical' ), 10, 2 );
+		/* Changes to single event behavior. **********************************/
+		// Modify event permalinks to reflect hierarchy
+		add_filter( 'sz_get_event_permalink', array( $this, 'make_permalink_hierarchical' ), 10, 2 );
 
 		/*
 		 * Update the current action and action variables, after the table name is set,
-		 * but before SZ Groups Component sets the current group, action and variables.
+		 * but before SZ Events Component sets the current event, action and variables.
 		 * This change allows the URLs to be hierarchically written, but for
-		 * SportsZone to know which group is really the current group.
+		 * SportsZone to know which event is really the current event.
 		 */
-		add_action( 'sz_groups_setup_globals', array( $this, 'reset_action_variables' ) );
+		add_action( 'sz_events_setup_globals', array( $this, 'reset_action_variables' ) );
 
-		// Add hierarchically related activity to group activity streams.
+		// Add hierarchically related activity to event activity streams.
 		add_filter( 'sz_after_has_activities_parse_args', array( $this, 'add_activity_aggregation' ) );
 
 
@@ -145,7 +145,7 @@ class HGSZ_Public {
 
 		/*
 		 * WordPress 4.6 and newer automatically loads language files found at
-		 * wp-content/languages/plugins/hierarchical-groups-for-sz-LOCALE.mo
+		 * wp-content/languages/plugins/hierarchical-events-for-sz-LOCALE.mo
 		 * This is for older installations of WordPress.
 		 */
 
@@ -162,7 +162,7 @@ class HGSZ_Public {
 	 * @since    1.0.0
 	 */
 	public function enqueue_styles_scripts() {
-		if ( sz_is_active( 'groups' ) ) {
+		if ( sz_is_active( 'events' ) ) {
 			// Styles
 			if ( is_rtl() ) {
 				wp_enqueue_style( $this->plugin_slug . '-plugin-styles-rtl', plugins_url( 'css/public-rtl.css', __FILE__ ), array(), $this->version );
@@ -176,21 +176,21 @@ class HGSZ_Public {
 	}
 
 
-	/* Changes to the groups directory view. **********************************/
+	/* Changes to the events directory view. **********************************/
 	/**
 	 * Add our templates to SportsZone' template stack.
 	 *
 	 * @since    1.0.0
 	 */
 	public function add_template_stack( $templates ) {
-		if ( sz_is_current_component( 'groups' ) ) {
+		if ( sz_is_current_component( 'events' ) ) {
 			$templates[] = plugin_dir_path( __FILE__ ) . 'views/templates';
 		}
 		return $templates;
 	}
 
 	/**
-	 * Potentially override the groups loop template.
+	 * Potentially override the events loop template.
 	 *
 	 * @since    1.0.0
 	 *
@@ -200,46 +200,46 @@ class HGSZ_Public {
 	 *
 	 * @return array $templates
 	 */
-	public function filter_groups_loop_template( $templates, $slug, $name ) {
-		if ( 'groups/groups-loop' == $slug && hgsz_get_directory_as_tree_setting() ) {
+	public function filter_events_loop_template( $templates, $slug, $name ) {
+		if ( 'events/events-loop' == $slug && hgsz_get_directory_as_tree_setting() ) {
 			/*
-			 * Add our setting to the front of the array, for the main groups
-			 * directory and a single group's hierarchy screen.
-			 * Make sure this isn't the "my groups" view on the main directory
-			 * or a user's groups screen--those directories must be flat.
+			 * Add our setting to the front of the array, for the main events
+			 * directory and a single event's hierarchy screen.
+			 * Make sure this isn't the "my events" view on the main directory
+			 * or a user's events screen--those directories must be flat.
 			 */
-			if ( ! hgsz_is_my_groups_view() ) {
-				array_unshift( $templates, 'groups/groups-loop-tree.php' );
+			if ( ! hgsz_is_my_events_view() ) {
+				array_unshift( $templates, 'events/events-loop-tree.php' );
 			}
 		}
 		return $templates;
 	}
 
 	/**
-	 * Add sz_has_groups filters right before the directory is rendered.
-	 * This helps avoid modifying the "single-group" use of sz_has_group() used
-	 * to render the group wrapper.
+	 * Add sz_has_events filters right before the directory is rendered.
+	 * This helps avoid modifying the "single-event" use of sz_has_event() used
+	 * to render the event wrapper.
 	 *
 	 * @since 1.0.0
  	 */
-	public function add_has_group_parse_arg_filters() {
-		add_filter( 'sz_after_has_groups_parse_args', array( $this, 'filter_has_groups_args' ) );
+	public function add_has_event_parse_arg_filters() {
+		add_filter( 'sz_after_has_events_parse_args', array( $this, 'filter_has_events_args' ) );
 	}
 
 	/**
-	 * Remove sz_has_groups filters right before the directory is rendered.
-	 * This helps avoid modifying the other use of sz_has_group() like
-	 * widgets that might appear on a page with a group directory.
+	 * Remove sz_has_events filters right before the directory is rendered.
+	 * This helps avoid modifying the other use of sz_has_event() like
+	 * widgets that might appear on a page with a event directory.
 	 *
 	 * @since 1.0.0
  	 */
-	public function remove_has_group_parse_arg_filters() {
-		remove_filter( 'sz_after_has_groups_parse_args', array( $this, 'filter_has_groups_args' ) );
+	public function remove_has_event_parse_arg_filters() {
+		remove_filter( 'sz_after_has_events_parse_args', array( $this, 'filter_has_events_args' ) );
 	}
 
 	/**
-	 * Adds toggle allowing user to choose whether to restrict groups list
-	 * to top-level groups (working top down), or whether to intermingle.
+	 * Adds toggle allowing user to choose whether to restrict events list
+	 * to top-level events (working top down), or whether to intermingle.
 	 *
  	 * @since 1.0.0
 	 *
@@ -252,7 +252,7 @@ class HGSZ_Public {
 
 		// Calculate the checkbox status, based on the cookie value.
 		$checked = true;
-		if ( isset( $_COOKIE['sz-groups-use-tree-view'] ) && 0 == $_COOKIE['sz-groups-use-tree-view'] ) {
+		if ( isset( $_COOKIE['sz-events-use-tree-view'] ) && 0 == $_COOKIE['sz-events-use-tree-view'] ) {
 			$checked = false;
 		}
 
@@ -260,7 +260,7 @@ class HGSZ_Public {
 		$label = sz_get_option( 'hgsz-directory-enable-tree-view-label' );
 		// Next, allow translations to be applied.
 		if ( empty( $label ) ) {
-			$label = __( 'Include top-level groups only.', 'hierarchical-groups-for-sz' );
+			$label = __( 'Include top-level events only.', 'hierarchical-events-for-sz' );
 		}
 
 		/**
@@ -279,8 +279,8 @@ class HGSZ_Public {
 	}
 
 	/**
-	 * Filter has_groups parameters to change results on the main directory
-	 * and on a single group's hierarchy screen.
+	 * Filter has_events parameters to change results on the main directory
+	 * and on a single event's hierarchy screen.
 	 *
 	 * @since 1.0.0
 	 *
@@ -288,27 +288,27 @@ class HGSZ_Public {
 	 *
 	 * @return array
  	 */
-	public function filter_has_groups_args( $args ) {
+	public function filter_has_events_args( $args ) {
 		/*
-		 * Should we filter this groups loop at all?
+		 * Should we filter this events loop at all?
 		 * We only want to filter if adding the hierarchy makes sense.
-		 * For instance, if a user searches for groups matching "oboes",
-		 * they probably want the results, not only groups that match "oboes"
+		 * For instance, if a user searches for events matching "oboes",
+		 * they probably want the results, not only events that match "oboes"
 		 * AND have a parent_id of 0.
 		 * Adding the toggle means that if a user choosing an orderby, we let
 		 * them decide whether they want hierarchical results or not.
-		 * We never apply hierarchy to a "my groups" view, because a user
-		 * would have to belong to all ancestor groups of a child group they
-		 * belong to in order to see that child group.
+		 * We never apply hierarchy to a "my events" view, because a user
+		 * would have to belong to all ancestor events of a child event they
+		 * belong to in order to see that child event.
 		 * This is a guess.
 		 * Feel free to customize the guess for your site using the
-		 * 'hgsz_enable_has_group_args_filter' filter.
+		 * 'hgsz_enable_has_event_args_filter' filter.
 		 */
 		$use_tree = hgsz_get_directory_as_tree_setting();
 
 		// If the tree view is allowed, has the user set a preference?
-		if ( $use_tree && isset( $_COOKIE['sz-groups-use-tree-view'] ) ) {
-			$use_tree = (bool) $_COOKIE['sz-groups-use-tree-view'];
+		if ( $use_tree && isset( $_COOKIE['sz-events-use-tree-view'] ) ) {
+			$use_tree = (bool) $_COOKIE['sz-events-use-tree-view'];
 		}
 
 		$force_parent_id = false;
@@ -325,40 +325,40 @@ class HGSZ_Public {
 		}
 
 		/**
-		 * Filters whether or not to apply a parent_id to a groups loop.
+		 * Filters whether or not to apply a parent_id to a events loop.
 		 *
 		 * @since 1.0.0
 		 *
-		 * @param bool  $force_parent_id Whether to apply a parent_id to a groups loop.
-		 * @param array $args            Incoming sz_has_groups() args.
+		 * @param bool  $force_parent_id Whether to apply a parent_id to a events loop.
+		 * @param array $args            Incoming sz_has_events() args.
 		 */
-		$force_parent_id = apply_filters( 'hgsz_enable_has_group_args_force_parent_id', $force_parent_id, $args );
+		$force_parent_id = apply_filters( 'hgsz_enable_has_event_args_force_parent_id', $force_parent_id, $args );
 
-		// Maybe set the parent_id on the main groups directory.
-		if ( sz_is_groups_directory() && ! hgsz_is_my_groups_view() ) {
+		// Maybe set the parent_id on the main events directory.
+		if ( sz_is_events_directory() && ! hgsz_is_my_events_view() ) {
 			if ( $force_parent_id ) {
 				$args['parent_id'] = isset( $_REQUEST['parent_id'] ) ? (int) $_REQUEST['parent_id'] : 0;
 			} elseif ( empty( $args['parent_id'] ) && isset( $_REQUEST['parent_id'] ) )  {
 				/*
 				 * Even if a parent ID is not forced, requests may still come
-				 * in for subgroup loops. Respect a passed parent ID, though.
+				 * in for subevent loops. Respect a passed parent ID, though.
 				 */
 				$args['parent_id'] = (int) $_REQUEST['parent_id'];
 			}
 		}
 
-		// We do have to filter some args on the single group 'hierarchy' screen.
+		// We do have to filter some args on the single event 'hierarchy' screen.
 		if ( hgsz_is_hierarchy_screen() ) {
 			/*
 			 * Change some of the default args to generate a directory-style loop.
 			 *
-			 * Use the current group id as the parent ID on a single group's
+			 * Use the current event id as the parent ID on a single event's
 			 * hierarchy screen. (Don't override passed parent IDs, though.)
 			 */
 			if ( empty( $args['parent_id'] ) ) {
-				$args['parent_id'] = isset( $_REQUEST['parent_id'] ) ? (int) $_REQUEST['parent_id'] : sz_get_current_group_id();
+				$args['parent_id'] = isset( $_REQUEST['parent_id'] ) ? (int) $_REQUEST['parent_id'] : sz_get_current_event_id();
 			}
-			// Unset the type and slug set in sz_has_groups() when in a single group.
+			// Unset the type and slug set in sz_has_events() when in a single event.
 			$args['type'] = $args['slug'] = null;
 			// Set update_admin_cache to true, because this is actually a directory.
 			$args['update_admin_cache'] = true;
@@ -372,91 +372,91 @@ class HGSZ_Public {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param array $classes Array of determined classes for the group.
+	 * @param array $classes Array of determined classes for the event.
 	 *
 	 * @return array
  	 */
-	public function filter_group_classes( $classes ) {
-		if ( $has_children = hgsz_group_has_children( sz_get_group_id(), sz_loggedin_user_id(), 'directory' ) ) {
+	public function filter_event_classes( $classes ) {
+		if ( $has_children = hgsz_event_has_children( sz_get_event_id(), sz_loggedin_user_id(), 'directory' ) ) {
 			$classes[] = 'has-children';
 		}
 		return $classes;
 	}
 
 	/**
-	 * Generate the response for the AJAX hgsz_get_child_groups action.
+	 * Generate the response for the AJAX hgsz_get_child_events action.
 	 *
 	 * @since 1.0.0
 	 *
 	 * @return html
 	 */
-	public function ajax_subgroups_response_cb() {
-		// Within a single group, prefer the subgroups loop template.
+	public function ajax_subevents_response_cb() {
+		// Within a single event, prefer the subevents loop template.
 		if ( hgsz_is_hierarchy_screen() ) {
-			sz_get_template_part( 'groups/single/subgroups-loop' );
+			sz_get_template_part( 'events/single/subevents-loop' );
 		} else {
-			sz_get_template_part( 'groups/groups-loop' );
+			sz_get_template_part( 'events/events-loop' );
 		}
 
 		exit;
 	}
 
 
-	/* Changes to single group behavior. **************************************/
+	/* Changes to single event behavior. **************************************/
 	/**
-	 * Filter a child group's permalink to take the form
-	 * /groups/parent-group/child-group.
+	 * Filter a child event's permalink to take the form
+	 * /events/parent-event/child-event.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string $permalink Permalink for the current group in the loop.
-	 * @param object $group     Group object.
+	 * @param string $permalink Permalink for the current event in the loop.
+	 * @param object $event     Event object.
 	 *
-	 * @return string Filtered permalink for the group.
+	 * @return string Filtered permalink for the event.
 	 */
-	public function make_permalink_hierarchical( $permalink, $group = null ) {
+	public function make_permalink_hierarchical( $permalink, $event = null ) {
 
- 		if ( is_null( $group ) ) {
+ 		if ( is_null( $event ) ) {
  			return $permalink;
  		}
 
-		// We only need to filter if this not a top-level group.
-		if ( $group->parent_id != 0 ) {
-			$group_path = hgsz_build_hierarchical_slug( $group->id );
-			$permalink  = trailingslashit( sz_get_groups_directory_permalink() . $group_path );
+		// We only need to filter if this not a top-level event.
+		if ( $event->parent_id != 0 ) {
+			$event_path = hgsz_build_hierarchical_slug( $event->id );
+			$permalink  = trailingslashit( sz_get_events_directory_permalink() . $event_path );
 		}
 		return $permalink;
 	}
 
 	/**
 	 * Filter $sz->current_action and $sz->action_variables before the single
-	 * group details are set up in the Single Group Globals section of
-	 * SZ_Groups_Component::setup_globals() to ignore the hierarchical
-	 * piece of the URL for child groups.
+	 * event details are set up in the Single Event Globals section of
+	 * SZ_Events_Component::setup_globals() to ignore the hierarchical
+	 * piece of the URL for child events.
 	 *
 	 * @since 1.0.0
 	 *
 	 */
 	public function reset_action_variables() {
-		if ( sz_is_groups_component() ) {
+		if ( sz_is_events_component() ) {
 			$sz = sportszone();
 
-			// We're looking for group slugs masquerading as action variables.
+			// We're looking for event slugs masquerading as action variables.
 			$action_variables = sz_action_variables();
 			if ( ! $action_variables || ! is_array( $action_variables ) ) {
 				return;
 			}
 
-			// The current group slug is the 'sz_current_action'.
-			$parent_id = groups_get_id( sz_current_action() );
+			// The current event slug is the 'sz_current_action'.
+			$parent_id = events_get_id( sz_current_action() );
 
 			/*
-			 * The Single Group Globals section of SZ_Groups_Component::setup_globals()
-			 * uses the current action to set up the current group. Pull found
-			 * group slugs out of the action variables array.
+			 * The Single Event Globals section of SZ_Events_Component::setup_globals()
+			 * uses the current action to set up the current event. Pull found
+			 * event slugs out of the action variables array.
 			 */
 			foreach ( $action_variables as $maybe_slug ) {
-				if ( $parent_id = hgsz_child_group_exists( $maybe_slug, $parent_id ) ) {
+				if ( $parent_id = hgsz_child_event_exists( $maybe_slug, $parent_id ) ) {
 					$sz->current_action = array_shift( $sz->action_variables );
 				} else {
 					// If we've gotten into real action variables, stop.
@@ -467,8 +467,8 @@ class HGSZ_Public {
 	}
 
 	/**
-	 * Filter has_activities parameters to add hierarchically related groups of
-	 * the current group that user has access to.
+	 * Filter has_activities parameters to add hierarchically related events of
+	 * the current event that user has access to.
 	 *
 	 * @since 1.0.0
 	 *
@@ -477,33 +477,33 @@ class HGSZ_Public {
 	 * @return array
 	 */
 	public function add_activity_aggregation( $args ) {
-		// Only fire on group activity streams.
-		if ( $args['object'] != 'groups' ) {
+		// Only fire on event activity streams.
+		if ( $args['object'] != 'events' ) {
 			return $args;
 		}
 
-		$group_id = sz_get_current_group_id();
+		$event_id = sz_get_current_event_id();
 
-		// Check if this group is set to aggregate child group activity.
-		$include_activity = hgsz_group_include_hierarchical_activity( $group_id );
+		// Check if this event is set to aggregate child event activity.
+		$include_activity = hgsz_event_include_hierarchical_activity( $event_id );
 
 		switch ( $include_activity ) {
 			case 'include-from-both':
-				$parents = hgsz_get_ancestor_group_ids( $group_id, sz_loggedin_user_id(), 'activity' );
-				$children  = hgsz_get_descendent_groups( $group_id, sz_loggedin_user_id(), 'activity' );
+				$parents = hgsz_get_ancestor_event_ids( $event_id, sz_loggedin_user_id(), 'activity' );
+				$children  = hgsz_get_descendent_events( $event_id, sz_loggedin_user_id(), 'activity' );
 				$child_ids = wp_list_pluck( $children, 'id' );
-				$include   = array_merge( array( $group_id ), $parents, $child_ids );
+				$include   = array_merge( array( $event_id ), $parents, $child_ids );
 				break;
 			case 'include-from-parents':
-				$parents = hgsz_get_ancestor_group_ids( $group_id, sz_loggedin_user_id(), 'activity' );
-				// Add the parent IDs to the main group ID.
-				$include = array_merge( array( $group_id ), $parents );
+				$parents = hgsz_get_ancestor_event_ids( $event_id, sz_loggedin_user_id(), 'activity' );
+				// Add the parent IDs to the main event ID.
+				$include = array_merge( array( $event_id ), $parents );
 				break;
 			case 'include-from-children':
-				$children  = hgsz_get_descendent_groups( $group_id, sz_loggedin_user_id(), 'activity' );
+				$children  = hgsz_get_descendent_events( $event_id, sz_loggedin_user_id(), 'activity' );
 				$child_ids = wp_list_pluck( $children, 'id' );
-				// Add the child IDs to the main group ID.
-				$include   = array_merge( array( $group_id ), $child_ids );
+				// Add the child IDs to the main event ID.
+				$include   = array_merge( array( $event_id ), $child_ids );
 				break;
 			case 'include-from-none':
 			default:
@@ -546,9 +546,9 @@ class HGSZ_Public {
 						$retval = true;
 					}
 					break;
-				case 'group-admins':
+				case 'event-admins':
 					if ( sz_user_can( $user_id, 'sz_moderate' )
-						 || groups_is_user_admin( $user_id, sz_get_current_group_id() ) ) {
+						 || events_is_user_admin( $user_id, sz_get_current_event_id() ) ) {
 						$retval = true;
 					}
 					break;
@@ -560,9 +560,9 @@ class HGSZ_Public {
 
 		}
 
-		if ( 'create_subgroups' == $capability ) {
-			// We need to know which group is in question.
-			if ( empty( $args['group_id'] ) ) {
+		if ( 'create_subevents' == $capability ) {
+			// We need to know which event is in question.
+			if ( empty( $args['event_id'] ) ) {
 				return false;
 			}
 
@@ -570,22 +570,22 @@ class HGSZ_Public {
 			if ( sz_user_can( $user_id, 'sz_moderate' ) ) {
 				$retval = true;
 			} else {
-				$group_id = (int) $args['group_id'];
+				$event_id = (int) $args['event_id'];
 
-				// Possible settings for the group meta setting 'allowed_subgroup_creators'
-				$creator_setting = hgsz_get_allowed_subgroup_creators( $group_id );
+				// Possible settings for the event meta setting 'allowed_subevent_creators'
+				$creator_setting = hgsz_get_allowed_subevent_creators( $event_id );
 				switch ( $creator_setting ) {
 					case 'admin' :
-						$retval = groups_is_user_admin( $user_id, $group_id );
+						$retval = events_is_user_admin( $user_id, $event_id );
 						break;
 
 					case 'mod' :
-						$retval = ( groups_is_user_mod( $user_id, $group_id )
-									|| groups_is_user_admin( $user_id, $group_id ) );
+						$retval = ( events_is_user_mod( $user_id, $event_id )
+									|| events_is_user_admin( $user_id, $event_id ) );
 						break;
 
 					case 'member' :
-						$retval = groups_is_user_member( $user_id, $group_id );
+						$retval = events_is_user_member( $user_id, $event_id );
 						break;
 
 					case 'loggedin' :

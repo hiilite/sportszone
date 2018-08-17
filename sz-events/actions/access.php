@@ -1,28 +1,28 @@
 <?php
 /**
- * Groups: Access protection action handler
+ * Events: Access protection action handler
  *
  * @package SportsZone
- * @subpackage GroupActions
+ * @subpackage EventActions
  * @since 3.0.0
  */
 
 /**
- * Protect access to single groups.
+ * Protect access to single events.
  *
  * @since 2.1.0
  */
-function sz_groups_group_access_protection() {
-	if ( ! sz_is_group() ) {
+function sz_events_event_access_protection() {
+	if ( ! sz_is_event() ) {
 		return;
 	}
 
-	$current_group   = groups_get_current_group();
-	$user_has_access = $current_group->user_has_access;
-	$is_visible      = $current_group->is_visible;
+	$current_event   = events_get_current_event();
+	$user_has_access = $current_event->user_has_access;
+	$is_visible      = $current_event->is_visible;
 	$no_access_args  = array();
 
-	// The user can know about the group but doesn't have full access.
+	// The user can know about the event but doesn't have full access.
 	if ( ! $user_has_access && $is_visible ) {
 		// Always allow access to home and request-membership.
 		if ( sz_is_current_action( 'home' ) || sz_is_current_action( 'request-membership' ) ) {
@@ -31,8 +31,8 @@ function sz_groups_group_access_protection() {
 		// User doesn't have access, so set up redirect args.
 		} elseif ( is_user_logged_in() ) {
 			$no_access_args = array(
-				'message'  => __( 'You do not have access to this group.', 'sportszone' ),
-				'root'     => sz_get_group_permalink( $current_group ) . 'home/',
+				'message'  => __( 'You do not have access to this event.', 'sportszone' ),
+				'root'     => sz_get_event_permalink( $current_event ) . 'home/',
 				'redirect' => false
 			);
 		}
@@ -42,14 +42,14 @@ function sz_groups_group_access_protection() {
 	if ( sz_is_current_action( 'admin' ) && ! sz_is_item_admin() ) {
 		$user_has_access = false;
 		$no_access_args  = array(
-			'message'  => __( 'You are not an admin of this group.', 'sportszone' ),
-			'root'     => sz_get_group_permalink( $current_group ),
+			'message'  => __( 'You are not an admin of this event.', 'sportszone' ),
+			'root'     => sz_get_event_permalink( $current_event ),
 			'redirect' => false
 		);
 	}
 
 	/**
-	 * Allow plugins to filter whether the current user has access to this group content.
+	 * Allow plugins to filter whether the current user has access to this event content.
 	 *
 	 * Note that if a plugin sets $user_has_access to false, it may also
 	 * want to change the $no_access_args, to avoid problems such as
@@ -63,18 +63,18 @@ function sz_groups_group_access_protection() {
 	 *                               of no access. Note that this value is passed by reference,
 	 *                               so it can be modified by the filter callback.
 	 */
-	$user_has_access = apply_filters_ref_array( 'sz_group_user_has_access', array( $user_has_access, &$no_access_args ) );
+	$user_has_access = apply_filters_ref_array( 'sz_event_user_has_access', array( $user_has_access, &$no_access_args ) );
 
 	// If user has access, we return rather than redirect.
 	if ( $user_has_access ) {
 		return;
 	}
 
-	// Groups that the user cannot know about should return a 404 for non-members.
-	// Unset the current group so that you're not redirected
-	// to the default group tab.
+	// Events that the user cannot know about should return a 404 for non-members.
+	// Unset the current event so that you're not redirected
+	// to the default event tab.
 	if ( ! $is_visible ) {
-		sportszone()->groups->current_group = 0;
+		sportszone()->events->current_event = 0;
 		sportszone()->is_single_item        = false;
 		sz_do_404();
 		return;
@@ -83,4 +83,4 @@ function sz_groups_group_access_protection() {
 	}
 
 }
-add_action( 'sz_actions', 'sz_groups_group_access_protection' );
+add_action( 'sz_actions', 'sz_events_event_access_protection' );

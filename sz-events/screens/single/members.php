@@ -1,42 +1,42 @@
 <?php
 /**
- * Groups: Single group "Members" screen handler
+ * Events: Single event "Members" screen handler
  *
  * @package SportsZone
- * @subpackage GroupsScreens
+ * @subpackage EventsScreens
  * @since 3.0.0
  */
 
 /**
- * Handle the display of a group's Members page.
+ * Handle the display of a event's Members page.
  *
  * @since 1.0.0
  */
-function groups_screen_group_members() {
+function events_screen_event_members() {
 
 	if ( !sz_is_single_item() )
 		return false;
 
 	$sz = sportszone();
 
-	// Refresh the group member count meta.
-	groups_update_groupmeta( $sz->groups->current_group->id, 'total_member_count', groups_get_total_member_count( $sz->groups->current_group->id ) );
+	// Refresh the event member count meta.
+	events_update_eventmeta( $sz->events->current_event->id, 'total_member_count', events_get_total_member_count( $sz->events->current_event->id ) );
 
 	/**
-	 * Fires before the loading of a group's Members page.
+	 * Fires before the loading of a event's Members page.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param int $id ID of the group whose members are being displayed.
+	 * @param int $id ID of the event whose members are being displayed.
 	 */
-	do_action( 'groups_screen_group_members', $sz->groups->current_group->id );
+	do_action( 'events_screen_event_members', $sz->events->current_event->id );
 
 	/**
-	 * Filters the template to load for a group's Members page.
+	 * Filters the template to load for a event's Members page.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string $value Path to a group's Members template.
+	 * @param string $value Path to a event's Members template.
 	 */
-	sz_core_load_template( apply_filters( 'groups_template_group_members', 'groups/single/home' ) );
+	sz_core_load_template( apply_filters( 'events_template_event_members', 'events/single/home' ) );
 }

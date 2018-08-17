@@ -480,6 +480,7 @@ function sz_core_get_packaged_component_ids() {
 		'activity',
 		'members',
 		'groups',
+		'events',
 		'blogs',
 		'xprofile',
 		'friends',
@@ -752,6 +753,7 @@ function sz_core_get_directory_page_default_titles() {
 	$page_default_titles = array(
 		'activity' => _x( 'Activity', 'Page title for the Activity directory.',       'sportszone' ),
 		'groups'   => _x( 'Groups',   'Page title for the Groups directory.',         'sportszone' ),
+		'events'   => _x( 'Events',   'Page title for the Events directory.',         'sportszone' ),
 		'blogs'    => _x( 'Sites',    'Page title for the Sites directory.',          'sportszone' ),
 		'members'  => _x( 'Members',  'Page title for the Members directory.',        'sportszone' ),
 		'activate' => _x( 'Activate', 'Page title for the user activation screen.',   'sportszone' ),
@@ -2357,6 +2359,10 @@ function sz_core_action_search_site( $slug = '' ) {
 			case 'groups':
 				$slug = sz_is_active( 'groups' ) ? sz_get_groups_root_slug() : '';
 				break;
+				
+			case 'events':
+				$slug = sz_is_active( 'events' ) ? sz_get_events_root_slug() : '';
+				break;
 
 			case 'members':
 			default:
@@ -2487,6 +2493,10 @@ function sz_core_get_components( $type = 'all' ) {
 		'groups'   => array(
 			'title'       => __( 'User Groups', 'sportszone' ),
 			'description' => __( 'Groups allow your users to organize themselves into specific public, private or hidden sections with separate activity streams and member listings.', 'sportszone' )
+		),
+		'events'   => array(
+			'title'       => __( 'Events', 'sportszone' ),
+			'description' => __( 'Events allow your users to organize themselves into specific public, private or hidden sections with separate activity streams and member listings.', 'sportszone' )
 		),
 		'blogs'    => array(
 			'title'       => __( 'Site Tracking', 'sportszone' ),

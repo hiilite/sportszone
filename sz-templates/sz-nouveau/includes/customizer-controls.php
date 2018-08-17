@@ -48,7 +48,7 @@ class SZ_Nouveau_Nav_Customize_Control extends WP_Customize_Control {
 				)
 			);
 
-			if ( ! empty( $random['groups'] ) ) {
+			if ( ! empty( $random['groups'] ) ) { 
 				$group    = reset( $random['groups'] );
 				$nav      = new SZ_Nouveau_Customizer_Group_Nav( $group->id );
 				$item_nav = $nav->get_group_nav();
@@ -56,6 +56,29 @@ class SZ_Nouveau_Nav_Customize_Control extends WP_Customize_Control {
 
 			if ( $item_nav ) {
 				$guide = __( 'Drag each possible group navigation items that are listed below into the order you prefer, in some groups some of these navigation items might not be active.', 'sportszone' );
+			}
+		}
+		// It's a event
+		elseif ( 'event' === $this->type ) {
+			$guide = __( 'Customizing the Events navigation order needs you create at least one event first.', 'sportszone' );
+
+			// Try to fetch any random event:
+			$random = events_get_events(
+				array(
+					'type'        => 'random',
+					'per_page'    => 1,
+					'show_hidden' => true,
+				)
+			);
+
+			if ( ! empty( $random['events'] ) ) {
+				$event    = reset( $random['events'] );
+				$nav      = new SZ_Nouveau_Customizer_Event_Nav( $event->id );
+				$item_nav = $nav->get_event_nav();
+			}
+
+			if ( $item_nav ) {
+				$guide = __( 'Drag each possible event navigation items that are listed below into the order you prefer, in some events some of these navigation items might not be active.', 'sportszone' );
 			}
 
 		// It's a user!

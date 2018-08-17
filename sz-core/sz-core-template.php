@@ -2305,6 +2305,17 @@ function sz_is_groups_component() {
 }
 
 /**
+ * Check whether the current page is part of the Groups component.
+ *
+ * @since 1.1.0
+ *
+ * @return bool True if the current page is part of the Groups component.
+ */
+function sz_is_events_component() {
+	return (bool) sz_is_current_component( 'events' );
+}
+
+/**
  * Check whether the current page is part of the Forums component.
  *
  * @since 1.5.0
@@ -2531,6 +2542,31 @@ function sz_is_user_groups_activity() {
 }
 
 /**
+ * Is the current page a user's Events activity stream?
+ *
+ *
+ * @since 1.5.0
+ *
+ * @return bool True if the current page is a user's Events activity stream.
+ */
+function sz_is_user_events_activity() {
+
+	if ( ! sz_is_active( 'events' ) ) {
+		return false;
+	}
+
+	$slug = ( sz_get_events_slug() )
+		? sz_get_events_slug()
+		: 'events';
+
+	if ( sz_is_user_activity() && sz_is_current_action( $slug ) ) {
+		return true;
+	}
+
+	return false;
+}
+
+/**
  * Is the current page part of a user's extended profile?
  *
  * Eg http://example.com/members/joe/profile/ (or a subpage thereof).
@@ -2593,6 +2629,18 @@ function sz_is_user_change_cover_image() {
  */
 function sz_is_user_groups() {
 	return (bool) ( sz_is_user() && sz_is_groups_component() );
+}
+
+/**
+ * Is the current page part of a user's Events page?
+ *
+ *
+ * @since 1.1.0
+ *
+ * @return bool True if the current page is a user's Events page.
+ */
+function sz_is_user_events() {
+	return (bool) ( sz_is_user() && sz_is_events_component() );
 }
 
 /**
@@ -2974,6 +3022,214 @@ function sz_is_blogs_directory() {
 	return false;
 }
 
+/** Events ********************************************************************/
+
+/**
+ * Is the current page the events directory?
+ *
+ * @since 2.0.0
+ *
+ * @return bool True if the current page is the events directory.
+ */
+function sz_is_events_directory() {
+	if ( sz_is_events_component() && ! sz_is_event() && ( ! sz_current_action() || ( sz_action_variable() && sz_is_current_action( sz_get_events_event_type_base() ) ) ) ) {
+		return true;
+	}
+
+	return false;
+}
+
+/**
+ * Does the current page belong to a single event?
+ *
+ * Will return true for any subpage of a single event.
+ *
+ * @since 1.2.0
+ *
+ * @return bool True if the current page is part of a single event.
+ */
+function sz_is_event() {
+	$retval = sz_is_active( 'events' );
+
+	if ( ! empty( $retval ) ) {
+		$retval = sz_is_events_component() && events_get_current_event();
+	}
+
+	return (bool) $retval;
+}
+
+/**
+ * Is the current page a single event's home page?
+ *
+ * URL will vary depending on which event tab is set to be the "home". By
+ * default, it's the event's recent activity.
+ *
+ * @since 1.1.0
+ *
+ * @return bool True if the current page is a single event's home page.
+ */
+function sz_is_event_home() {
+	if ( sz_is_single_item() && sz_is_events_component() && ( ! sz_current_action() || sz_is_current_action( 'home' ) ) ) {
+		return true;
+	}
+
+	return false;
+}
+
+/**
+ * Is the current page part of the event creation process?
+ *
+ * @since 1.1.0
+ *
+ * @return bool True if the current page is part of the event creation process.
+ */
+function sz_is_event_create() {
+	return (bool) ( sz_is_events_component() && sz_is_current_action( 'create' ) );
+}
+
+/**
+ * Is the current page part of a single event's admin screens?
+ *
+ * Eg http://example.com/events/myevent/admin/settings/.
+ *
+ * @since 1.1.0
+ *
+ * @return bool True if the current page is part of a single event's admin.
+ */
+function sz_is_event_admin_page() {
+	return (bool) ( sz_is_single_item() && sz_is_events_component() && sz_is_current_action( 'admin' ) );
+}
+
+/**
+ * Is the current page a event's activity page?
+ *
+ * @since 1.2.1
+ *
+ * @return bool True if the current page is a event's activity page.
+ */
+function sz_is_event_activity() {
+	$retval = false;
+
+	if ( sz_is_single_item() && sz_is_events_component() && sz_is_current_action( 'activity' ) ) {
+		$retval = true;
+	}
+
+	if ( sz_is_event_home() && sz_is_active( 'activity' ) && ! sz_is_event_custom_front() ) {
+		$retval = true;
+	}
+
+	return $retval;
+}
+
+/**
+ * Is the current page a event forum topic?
+ *
+ * @since 1.1.0
+ * @since 3.0.0 Required for bbPress 2 integration.
+ *
+ * @return bool True if the current page is part of a event forum topic.
+ */
+function sz_is_event_forum_topic() {
+	return (bool) ( sz_is_single_item() && sz_is_events_component() && sz_is_current_action( 'forum' ) && sz_is_action_variable( 'topic', 0 ) );
+}
+
+/**
+ * Is the current page a event forum topic edit page?
+ *
+ * @since 1.2.0
+ * @since 3.0.0 Required for bbPress 2 integration.
+ *
+ * @return bool True if the current page is part of a event forum topic edit page.
+ */
+function sz_is_event_forum_topic_edit() {
+	return (bool) ( sz_is_single_item() && sz_is_events_component() && sz_is_current_action( 'forum' ) && sz_is_action_variable( 'topic', 0 ) && sz_is_action_variable( 'edit', 2 ) );
+}
+
+/**
+ * Is the current page a event's Members page?
+ *
+ * Eg http://example.com/events/myevent/members/.
+ *
+ * @since 1.1.0
+ *
+ * @return bool True if the current page is part of a event's Members page.
+ */
+function sz_is_event_members() {
+	$retval = false;
+
+	if ( sz_is_single_item() && sz_is_events_component() && sz_is_current_action( 'members' ) ) {
+		$retval = true;
+	}
+
+	if ( sz_is_event_home() && ! sz_is_active( 'activity' ) && ! sz_is_event_custom_front() ) {
+		$retval = true;
+	}
+
+	return $retval;
+}
+
+/**
+ * Is the current page a event's Invites page?
+ *
+ * Eg http://example.com/events/myevent/send-invites/.
+ *
+ * @since 1.1.0
+ *
+ * @return bool True if the current page is a event's Send Invites page.
+ */
+function sz_is_event_invites() {
+	return (bool) ( sz_is_events_component() && sz_is_current_action( 'send-invites' ) );
+}
+
+/**
+ * Is the current page a event's Request Membership page?
+ *
+ * Eg http://example.com/events/myevent/request-membership/.
+ *
+ * @since 1.2.0
+ *
+ * @return bool True if the current page is a event's Request Membership page.
+ */
+function sz_is_event_membership_request() {
+	return (bool) ( sz_is_events_component() && sz_is_current_action( 'request-membership' ) );
+}
+
+/**
+ * Is the current page a leave event attempt?
+ *
+ * @since 1.1.0
+ *
+ * @return bool True if the current page is a Leave Group attempt.
+ */
+function sz_is_event_leave() {
+	return (bool) ( sz_is_events_component() && sz_is_single_item() && sz_is_current_action( 'leave-event' ) );
+}
+
+/**
+ * Is the current page part of a single event?
+ *
+ * Not currently used by SportsZone.
+ *
+ * @todo How is this functionally different from sz_is_event()?
+ *
+ * @return bool True if the current page is part of a single event.
+ */
+function sz_is_event_single() {
+	return (bool) ( sz_is_events_component() && sz_is_single_item() );
+}
+
+/**
+ * Is the current event page a custom front?
+ *
+ * @since 2.4.0
+ *
+ * @return bool True if the current event page is a custom front.
+ */
+function sz_is_event_custom_front() {
+	$sz = sportszone();
+	return (bool) sz_is_event_home() && ! empty( $sz->events->current_event->front_template );
+}
+
 /** Messages ******************************************************************/
 
 /**
@@ -3234,6 +3490,10 @@ function sz_get_title_parts( $seplocation = 'right' ) {
 	// Group creation page.
 	} elseif ( sz_is_group_create() ) {
 		$sz_title_parts = array( __( 'Create a Group', 'sportszone' ) );
+		
+	// Event creation page.
+	} elseif ( sz_is_event_create() ) {
+		$sz_title_parts = array( __( 'Create a Event', 'sportszone' ) );
 
 	// Blog creation page.
 	} elseif ( sz_is_create_blog() ) {
@@ -3349,6 +3609,10 @@ function sz_the_body_class() {
 			if ( sz_is_user_groups() ) {
 				$sz_classes[] = 'my-groups';
 			}
+			
+			if ( sz_is_user_events() ) {
+				$sz_classes[] = 'my-events';
+			}
 
 			if ( sz_is_user_activity() ) {
 				$sz_classes[] = 'my-activity';
@@ -3397,6 +3661,10 @@ function sz_the_body_class() {
 
 		if ( sz_is_user_groups_activity() ) {
 			$sz_classes[] = 'groups-activity';
+		}
+		
+		if ( sz_is_user_events_activity() ) {
+			$sz_classes[] = 'events-activity';
 		}
 
 		/* Messages **********************************************************/
@@ -3462,6 +3730,49 @@ function sz_the_body_class() {
 
 		if ( sz_is_group_home() ) {
 			$sz_classes[] = 'group-home';
+		}
+
+		if ( sz_is_single_activity() ) {
+			$sz_classes[] = 'activity-permalink';
+		}
+		
+		/* Events ************************************************************/
+
+		if ( sz_is_event() ) {
+			$sz_classes[] = 'event-' . events_get_current_event()->slug;
+
+			// Add current event types.
+			if ( $event_types = sz_events_get_event_type( sz_get_current_event_id(), false ) ) {
+				foreach ( $event_types as $event_type ) {
+					$sz_classes[] = sprintf( 'event-type-%s', esc_attr( $event_type ) );
+				}
+			}
+		}
+
+		if ( sz_is_event_leave() ) {
+			$sz_classes[] = 'leave-event';
+		}
+
+		if ( sz_is_event_invites() ) {
+			$sz_classes[] = 'event-invites';
+		}
+
+		if ( sz_is_event_members() ) {
+			$sz_classes[] = 'event-members';
+		}
+
+		if ( sz_is_event_admin_page() ) {
+			$sz_classes[] = 'event-admin';
+			$sz_classes[] = sz_get_event_current_admin_tab();
+		}
+
+		if ( sz_is_event_create() ) {
+			$sz_classes[] = 'event-create';
+			$sz_classes[] = sz_get_events_current_create_step();
+		}
+
+		if ( sz_is_event_home() ) {
+			$sz_classes[] = 'event-home';
 		}
 
 		if ( sz_is_single_activity() ) {
@@ -3535,6 +3846,9 @@ function sz_get_the_post_class( $wp_classes = array() ) {
 
 	} elseif ( sz_is_group() ) {
 		$sz_classes[] = 'sz_group';
+
+	} elseif ( sz_is_event() ) {
+		$sz_classes[] = 'sz_event';
 
 	} elseif ( sz_is_activity_component() ) {
 		$sz_classes[] = 'sz_activity';

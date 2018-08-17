@@ -1,32 +1,32 @@
 <?php
 /**
- * Groups: User's "Groups" screen handler
+ * Events: User's "Events" screen handler
  *
  * @package SportsZone
- * @subpackage GroupScreens
+ * @subpackage EventScreens
  * @since 3.0.0
  */
 
 /**
- * Handle the loading of the My Groups page.
+ * Handle the loading of the My Events page.
  *
  * @since 1.0.0
  */
-function groups_screen_my_groups() {
+function events_screen_my_events() {
 
 	/**
-	 * Fires before the loading of the My Groups page.
+	 * Fires before the loading of the My Events page.
 	 *
 	 * @since 1.1.0
 	 */
-	do_action( 'groups_screen_my_groups' );
+	do_action( 'events_screen_my_events' );
 
 	/**
-	 * Filters the template to load for the My Groups page.
+	 * Filters the template to load for the My Events page.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string $value Path to the My Groups page template to load.
+	 * @param string $value Path to the My Events page template to load.
 	 */
-	sz_core_load_template( apply_filters( 'groups_template_my_groups', 'members/single/home' ) );
+	sz_core_load_template( apply_filters( 'events_template_my_events', 'members/single/home' ) );
 }

@@ -4,14 +4,14 @@
  * These are used internally, but are probably not interesting for users
  * of the plugin.
  *
- * @package   HierarchicalGroupsForSZ
+ * @package   HierarchicalEventsForSZ
  * @author    dcavins
  * @license   GPL-2.0+
  * @copyright 2016 David Cavins
  */
 
 /**
- * Get the slug of the hierarchy screen for a group.
+ * Get the slug of the hierarchy screen for a event.
  *
  * @since 1.0.0
  *
@@ -19,7 +19,7 @@
  */
 function hgsz_get_hierarchy_screen_slug() {
 	/**
-	 * Filters the slug used for the hierarchy screen for a group.
+	 * Filters the slug used for the hierarchy screen for a event.
 	 *
 	 * @since 1.0.0
 	 *
@@ -29,7 +29,7 @@ function hgsz_get_hierarchy_screen_slug() {
 }
 
 /**
- * Get the label of the hierarchy screen's navigation item for a group.
+ * Get the label of the hierarchy screen's navigation item for a event.
  *
  * @since 1.0.0
  *
@@ -37,47 +37,47 @@ function hgsz_get_hierarchy_screen_slug() {
  */
 function hgsz_get_hierarchy_nav_item_name() {
 	// Check for a saved option for this string first.
-	$name = sz_get_option( 'hgsz-group-tab-label' );
+	$name = sz_get_option( 'hgsz-event-tab-label' );
 	// Next, allow translations to be applied.
 	if ( empty( $name ) ) {
-		$name = _x( 'Hierarchy %s', 'Label for group navigation tab. %s will be replaced with the number of child groups.', 'hierarchical-groups-for-sz' );
+		$name = _x( 'Hierarchy %s', 'Label for event navigation tab. %s will be replaced with the number of child events.', 'hierarchical-events-for-sz' );
 	}
 	/*
-	 * Apply the number of groups indicator span.
-	 * Don't run if we don't know the group ID.
+	 * Apply the number of events indicator span.
+	 * Don't run if we don't know the event ID.
 	 */
-	if ( $group_id = sz_get_current_group_id() ) {
-		$name = sprintf( $name, '<span>' . number_format( hgsz_group_has_children( $group_id, sz_loggedin_user_id(), 'exclude_hidden' ) ) . '</span>' );
+	if ( $event_id = sz_get_current_event_id() ) {
+		$name = sprintf( $name, '<span>' . number_format( hgsz_event_has_children( $event_id, sz_loggedin_user_id(), 'exclude_hidden' ) ) . '</span>' );
 	}
 	/**
-	 * Filters the label of the hierarchy screen's navigation item for a group.
+	 * Filters the label of the hierarchy screen's navigation item for a event.
 	 *
 	 * @since 1.0.0
 	 *
 	 * @param string $value    Label to use.
-	 * @param int    $group_id ID of the current group.
+	 * @param int    $event_id ID of the current event.
 	 */
-	return apply_filters( 'hgsz_group_tab_label', $name, $group_id );
+	return apply_filters( 'hgsz_event_tab_label', $name, $event_id );
 }
 
 /**
- * Determine whether a group should be included in results sets for a
+ * Determine whether a event should be included in results sets for a
  * user in a specific context.
  *
  * @since 1.0.0
  *
- * @param object $group   SZ_Groups_Group object to check.
- * @param int    $user_id ID of a user to check group visibility for.
- * @param string $context 'normal' filters hidden groups only that the user doesn't belong to.
- *                        'activity' includes only groups for which the user should see
+ * @param object $event   SZ_Events_Event object to check.
+ * @param int    $user_id ID of a user to check event visibility for.
+ * @param string $context 'normal' filters hidden events only that the user doesn't belong to.
+ *                        'activity' includes only events for which the user should see
  *                        the activity streams.
- *                        'exclude_hidden' filters all hidden groups out (for directories).
+ *                        'exclude_hidden' filters all hidden events out (for directories).
  *
- * @return bool True if group meets context requirements.
+ * @return bool True if event meets context requirements.
  */
-function hgsz_include_group_by_context( $group = false, $user_id = false, $context = 'normal' ) {
+function hgsz_include_event_by_context( $event = false, $user_id = false, $context = 'normal' ) {
 	$include = false;
-	if ( ! isset( $group->id ) ) {
+	if ( ! isset( $event->id ) ) {
 		return $include;
 	}
 
@@ -86,89 +86,89 @@ function hgsz_include_group_by_context( $group = false, $user_id = false, $conte
 	}
 
 	/*
-	 * 'exclude_hidden' is useful on directories, where hidden groups
+	 * 'exclude_hidden' is useful on directories, where hidden events
 	 * are excluded by SZ.
 	 */
 	if ( 'exclude_hidden' == $context ) {
-		if ( 'hidden' != $group->status ) {
+		if ( 'hidden' != $event->status ) {
 			$include = true;
 		}
 	/*
-	 * 'activity' includes only groups for which the user can view the activity streams.
+	 * 'activity' includes only events for which the user can view the activity streams.
 	 */
 	} elseif ( 'activity' == $context ) {
 		// For activity stream inclusion, require public status or membership.
-		if ( 'public' == $group->status || groups_is_user_member( $user_id, $group->id ) ) {
+		if ( 'public' == $event->status || events_is_user_member( $user_id, $event->id ) ) {
 			$include = true;
 		}
 	/*
-	 * 'mygroups' is useful on user-specific directories, where only groups the
-	 * user belongs to are returned, and the group status is irrelevant.
+	 * 'myevents' is useful on user-specific directories, where only events the
+	 * user belongs to are returned, and the event status is irrelevant.
 	 */
-	} elseif ( 'mygroups' == $context ) {
-		if ( groups_is_user_member( $user_id, $group->id ) ) {
+	} elseif ( 'myevents' == $context ) {
+		if ( events_is_user_member( $user_id, $event->id ) ) {
 			$include = true;
 		}
 	} elseif ( 'normal' == $context ) {
-		if ( 'hidden' != $group->status || groups_is_user_member( $user_id, $group->id ) ) {
+		if ( 'hidden' != $event->status || events_is_user_member( $user_id, $event->id ) ) {
 			$include = true;
 		}
 	}
 
 	/**
-	 * Filters whether this group should be included for this user and context combination.
+	 * Filters whether this event should be included for this user and context combination.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param bool            $include Whether to include this group.
-	 * @param SZ_Groups_Group $group   The group object in question.
+	 * @param bool            $include Whether to include this event.
+	 * @param SZ_Events_Event $event   The event object in question.
 	 * @param int             $user_id ID of user to check.
 	 * @param string          $user_id Current context.
 	 */
-	return apply_filters( 'hgsz_include_group_by_context', $include, $group, $user_id, $context );
+	return apply_filters( 'hgsz_include_event_by_context', $include, $event, $user_id, $context );
 }
 
 /**
- * Create the hierarchical-style URL for a subgroup: groups/parent/child/action.
+ * Create the hierarchical-style URL for a subevent: events/parent/child/action.
  *
  * @since 1.0.0
  *
- * @param  int   $group_id ID of the group.
+ * @param  int   $event_id ID of the event.
  *
- * @return string Slug for group, empty if no slug found.
+ * @return string Slug for event, empty if no slug found.
  */
-function hgsz_build_hierarchical_slug( $group_id = 0 ) {
+function hgsz_build_hierarchical_slug( $event_id = 0 ) {
 
-	if ( ! $group_id ) {
-		$group_id = sz_get_current_group_id();
+	if ( ! $event_id ) {
+		$event_id = sz_get_current_event_id();
 	}
-	if ( ! $group_id ) {
+	if ( ! $event_id ) {
 		return '';
 	}
 
-	$group = groups_get_group( $group_id );
-	$path = array( sz_get_group_slug( $group ) );
+	$event = events_get_event( $event_id );
+	$path = array( sz_get_event_slug( $event ) );
 
-	while ( $group->parent_id != 0 ) {
-		$group  = groups_get_group( $group->parent_id );
-		$path[] = sz_get_group_slug( $group );
+	while ( $event->parent_id != 0 ) {
+		$event  = events_get_event( $event->parent_id );
+		$path[] = sz_get_event_slug( $event );
 	}
 
 	return implode( '/', array_reverse( $path ) );
 }
 
 /**
- * Should a group's activity stream include parent or child group activity?
+ * Should a event's activity stream include parent or child event activity?
  *
  * @since 1.0.0
  *
- * @param int $group_id Group to fetch setting for.
+ * @param int $event_id Event to fetch setting for.
  *
  * @return string Setting to use.
  */
-function hgsz_group_include_hierarchical_activity( $group_id = 0 ) {
-	if ( ! $group_id ) {
-		$group_id = sz_get_current_group_id();
+function hgsz_event_include_hierarchical_activity( $event_id = 0 ) {
+	if ( ! $event_id ) {
+		$event_id = sz_get_current_event_id();
 	}
 	$include = false;
 
@@ -176,9 +176,9 @@ function hgsz_group_include_hierarchical_activity( $group_id = 0 ) {
 	 * First, we check which setting has priority.
 	 */
 	$enforce = hgsz_get_global_activity_enforce_setting();
-	if ( 'site-admins' == $enforce || 'group-admins' == $enforce ) {
-		// Groups can override, so check the group's raw setting first.
-		$include = groups_get_groupmeta( $group_id, 'hgsz-include-activity-from-relatives' );
+	if ( 'site-admins' == $enforce || 'event-admins' == $enforce ) {
+		// Events can override, so check the event's raw setting first.
+		$include = events_get_eventmeta( $event_id, 'hgsz-include-activity-from-relatives' );
 
 		if ( $include ) {
 			// Only run this if not empty. We want to pass empty values to the next check.
@@ -192,15 +192,15 @@ function hgsz_group_include_hierarchical_activity( $group_id = 0 ) {
 	}
 
 	/**
-	 * Filters whether a group's activity stream should include parent or
-	 * child group activity.
+	 * Filters whether a event's activity stream should include parent or
+	 * child event activity.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string $include  Whether to include this group.
-	 * @param int    $group_id ID of the group to check.
+	 * @param string $include  Whether to include this event.
+	 * @param int    $event_id ID of the event to check.
 	 */
-	return apply_filters( 'hgsz_group_include_hierarchical_activity', $include, $group_id );
+	return apply_filters( 'hgsz_event_include_hierarchical_activity', $include, $event_id );
 }
 
 /* Plugin settings management *************************************************/
@@ -210,10 +210,10 @@ function hgsz_group_include_hierarchical_activity( $group_id = 0 ) {
  *
  * @since 1.0.0
  *
- * @return bool Which members of a group are allowed to associate subgroups with it.
+ * @return bool Which members of a event are allowed to associate subevents with it.
  */
 function hgsz_get_directory_as_tree_setting() {
-	return (bool) sz_get_option( 'hgsz-groups-directory-show-tree' );
+	return (bool) sz_get_option( 'hgsz-events-directory-show-tree' );
 }
 
 /**
@@ -221,18 +221,18 @@ function hgsz_get_directory_as_tree_setting() {
  *
  * @since 1.0.0
  *
- * @param int $group_id Which group ID's meta to fetch.
+ * @param int $event_id Which event ID's meta to fetch.
  *
- * @return string Which members of a group are allowed to associate subgroups with it.
+ * @return string Which members of a event are allowed to associate subevents with it.
  */
-function hgsz_get_allowed_subgroup_creators( $group_id = 0 ) {
-	if ( ! $group_id ) {
-		$group_id = sz_get_current_group_id();
+function hgsz_get_allowed_subevent_creators( $event_id = 0 ) {
+	if ( ! $event_id ) {
+		$event_id = sz_get_current_event_id();
 	}
 
-	$value = groups_get_groupmeta( $group_id, 'hgsz-allowed-subgroup-creators' );
+	$value = events_get_eventmeta( $event_id, 'hgsz-allowed-subevent-creators' );
 
-	return hgsz_sanitize_subgroup_creators_setting( $value );
+	return hgsz_sanitize_subevent_creators_setting( $value );
 }
 
 /**
@@ -242,7 +242,7 @@ function hgsz_get_allowed_subgroup_creators( $group_id = 0 ) {
  *
  * @return string Level of enforcement for overriding the default settings.
  */
-function hgsz_sanitize_subgroup_creators_setting( $value = 'noone' ) {
+function hgsz_sanitize_subevent_creators_setting( $value = 'noone' ) {
 	$valid = array( 'loggedin', 'member', 'mod', 'admin', 'noone' );
 	if ( ! in_array( $value, $valid, true ) ) {
 		$value = 'noone';
@@ -303,7 +303,7 @@ function hgsz_sanitize_include_setting( $value = 'include-from-none' ) {
  */
 function hgsz_sanitize_include_setting_enforce( $value = 'strict' ) {
 	$valid = array(
-		'group-admins',
+		'event-admins',
 		'site-admins',
 		'strict'
 	);

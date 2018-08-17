@@ -3,43 +3,43 @@
  * Functions for the plugin in the global scope.
  * These may be useful for users working on theming or extending the plugin.
  *
- * @package   HierarchicalGroupsForSZ
+ * @package   HierarchicalEventsForSZ
  * @author    dcavins
  * @license   GPL-2.0+
  * @copyright 2016 David Cavins
  */
 
 /**
- * Is the current page a group's subgroup directory?
+ * Is the current page a event's subevent directory?
  *
- * Eg http://example.com/groups/mygroup/hierarchy/.
+ * Eg http://example.com/events/myevent/hierarchy/.
  *
  * @since 1.0.0
  *
- * @return bool True if the current page is a group's directory of subgroups.
+ * @return bool True if the current page is a event's directory of subevents.
  */
 function hgsz_is_hierarchy_screen() {
 	$screen_slug = hgsz_get_hierarchy_screen_slug();
-	return (bool) ( sz_is_groups_component() && sz_is_current_action( $screen_slug ) );
+	return (bool) ( sz_is_events_component() && sz_is_current_action( $screen_slug ) );
 }
 
 /**
- * Is this a user's "My Groups" view? This can happen on the main directory or
- * at a user's profile (/members/username/groups/).
+ * Is this a user's "My Events" view? This can happen on the main directory or
+ * at a user's profile (/members/username/events/).
  *
  * @since 1.0.0
  *
  * @return bool True if yes.
  */
-function hgsz_is_my_groups_view() {
+function hgsz_is_my_events_view() {
 	$retval = false;
 
-	// Could be the user profile groups pane.
-	if ( sz_is_user_groups() ) {
+	// Could be the user profile events pane.
+	if ( sz_is_user_events() ) {
 		$retval = true;
 
-	// Could be the "my groups" filter on the main directory?
-	} elseif ( sz_is_groups_directory() && ( isset( $_COOKIE['sz-groups-scope'] ) && 'personal' == $_COOKIE['sz-groups-scope'] ) ) {
+	// Could be the "my events" filter on the main directory?
+	} elseif ( sz_is_events_directory() && ( isset( $_COOKIE['sz-events-scope'] ) && 'personal' == $_COOKIE['sz-events-scope'] ) ) {
 		$retval = true;
 	}
 
@@ -47,222 +47,222 @@ function hgsz_is_my_groups_view() {
 }
 
 /**
- * Get the child groups for a specific group.
+ * Get the child events for a specific event.
  *
- * To return all child groups, leave the $user_id parameter empty. To return
- * only those child groups visible to a specific user, specify a $user_id.
+ * To return all child events, leave the $user_id parameter empty. To return
+ * only those child events visible to a specific user, specify a $user_id.
  *
  * @since 1.0.0
  *
- * @param int    $group_id ID of the group.
- * @param int    $user_id  ID of a user to check group visibility for.
- * @param string $context  See hgsz_include_group_by_context() for description.
+ * @param int    $event_id ID of the event.
+ * @param int    $user_id  ID of a user to check event visibility for.
+ * @param string $context  See hgsz_include_event_by_context() for description.
  *
- * @return array Array of group objects.
+ * @return array Array of event objects.
  */
-function hgsz_get_child_groups( $group_id = false, $user_id = false, $context = 'normal' ) {
-	$groups = array();
+function hgsz_get_child_events( $event_id = false, $user_id = false, $context = 'normal' ) {
+	$events = array();
 
 	/*
-	 * Passing a group id of 0 would find all top-level groups, which could be
-	 * intentional. We only try to find the current group when the $group_id is false.
+	 * Passing a event id of 0 would find all top-level events, which could be
+	 * intentional. We only try to find the current event when the $event_id is false.
 	 */
-	if ( false === $group_id ) {
-		$group_id = sz_get_current_group_id();
-		if ( ! $group_id ) {
-			// If we can't resolve the group_id, don't proceed with a zero value.
+	if ( false === $event_id ) {
+		$event_id = sz_get_current_event_id();
+		if ( ! $event_id ) {
+			// If we can't resolve the event_id, don't proceed with a zero value.
 			return $retval;
 		}
 	}
 
-	// Fetch all child groups.
+	// Fetch all child events.
 	$child_args = array(
-		'parent_id'   => $group_id,
+		'parent_id'   => $event_id,
 		'show_hidden' => true,
 		'per_page'    => false,
 		'page'        => false,
 	);
-	$children  = groups_get_groups( $child_args );
+	$children  = events_get_events( $child_args );
 
-	// If a user ID has been specified, we filter groups accordingly.
+	// If a user ID has been specified, we filter events accordingly.
 	$filter = ( false !== $user_id && ! sz_user_can( $user_id, 'sz_moderate' ) );
 
-	foreach ( $children['groups'] as $child ) {
+	foreach ( $children['events'] as $child ) {
 		if ( $filter ) {
-			if ( hgsz_include_group_by_context( $child, $user_id, $context ) ) {
-				$groups[] = $child;
+			if ( hgsz_include_event_by_context( $child, $user_id, $context ) ) {
+				$events[] = $child;
 			}
 		} else {
-			$groups[] = $child;
+			$events[] = $child;
 		}
 	}
 
-	return $groups;
+	return $events;
 }
 
 /**
- * Does a specific group have child groups?
+ * Does a specific event have child events?
  *
- * To check for the actual existence of child groups, leave the $user_id
+ * To check for the actual existence of child events, leave the $user_id
  * parameter empty. To check whether any exist that are visible to a user,
  * supply a $user_id.
  *
  * @since 1.0.0
  *
- * @param int    $group_id ID of the group.
- * @param int    $user_id  ID of a user to check group visibility for.
- * @param string $context  See hgsz_include_group_by_context() for description.
+ * @param int    $event_id ID of the event.
+ * @param int    $user_id  ID of a user to check event visibility for.
+ * @param string $context  See hgsz_include_event_by_context() for description.
  *
  * @return bool True if true, false if not.
  */
-function hgsz_group_has_children( $group_id = false, $user_id = false, $context = 'normal' ) {
+function hgsz_event_has_children( $event_id = false, $user_id = false, $context = 'normal' ) {
 
 	/*
-	 * Passing a group id of 0 finds all top-level groups, which could be
-	 * intentional. Try to find the current group only when the $group_id is false.
+	 * Passing a event id of 0 finds all top-level events, which could be
+	 * intentional. Try to find the current event only when the $event_id is false.
 	 */
-	if ( false === $group_id ) {
-		$group_id = sz_get_current_group_id();
-		if ( ! $group_id ) {
-			// If we can't resolve the group_id, don't proceed with a zero value.
+	if ( false === $event_id ) {
+		$event_id = sz_get_current_event_id();
+		if ( ! $event_id ) {
+			// If we can't resolve the event_id, don't proceed with a zero value.
 			return false;
 		}
 	}
 
 	// We may need to adjust the context, based on what kind of directory we're on.
 	if ( 'directory' == $context ) {
-		if ( sz_is_groups_directory() ) {
+		if ( sz_is_events_directory() ) {
 			// If the directory is AJAX powered, we have to check cookies.
-			if ( isset( $_COOKIE['sz-groups-scope'] ) && 'personal' == $_COOKIE['sz-groups-scope'] ) {
-				// Hidden groups are included in this directory.
-				$context = 'mygroups';
+			if ( isset( $_COOKIE['sz-events-scope'] ) && 'personal' == $_COOKIE['sz-events-scope'] ) {
+				// Hidden events are included in this directory.
+				$context = 'myevents';
 			} else {
-				// Hidden groups are not included in standard directories.
+				// Hidden events are not included in standard directories.
 				$context = 'exclude_hidden';
 			}
-		} elseif ( sz_is_user_groups() ) {
-			// Hidden groups are included in this directory.
-			$context = 'mygroups';
+		} elseif ( sz_is_user_events() ) {
+			// Hidden events are included in this directory.
+			$context = 'myevents';
 		} else {
-			// Fallback: Hidden groups are not included in standard directories.
+			// Fallback: Hidden events are not included in standard directories.
 			$context = 'exclude_hidden';
 		}
 	}
 
-	$children = hgsz_get_child_groups( $group_id, $user_id, $context );
+	$children = hgsz_get_child_events( $event_id, $user_id, $context );
 	return count( $children );
 }
 
 /**
- * Get all groups that are descendants of a specific group.
+ * Get all events that are descendants of a specific event.
  *
- * To return all descendent groups, leave the $user_id parameter empty. To return
- * only those child groups visible to a specific user, specify a $user_id.
+ * To return all descendent events, leave the $user_id parameter empty. To return
+ * only those child events visible to a specific user, specify a $user_id.
  *
  * @since 1.0.0
  *
- * @param int    $group_id ID of the group.
- * @param int    $user_id  ID of a user to check group visibility for.
- * @param string $context  See hgsz_include_group_by_context() for description.
+ * @param int    $event_id ID of the event.
+ * @param int    $user_id  ID of a user to check event visibility for.
+ * @param string $context  See hgsz_include_event_by_context() for description.
  *
- * @return array Array of group objects.
+ * @return array Array of event objects.
  */
-function hgsz_get_descendent_groups( $group_id = false, $user_id = false, $context = 'normal' ) {
+function hgsz_get_descendent_events( $event_id = false, $user_id = false, $context = 'normal' ) {
 	/*
-	 * Passing a group id of 0 would find all top-level groups, which could be
-	 * intentional. We only try to find the current group when the $group_id is false.
+	 * Passing a event id of 0 would find all top-level events, which could be
+	 * intentional. We only try to find the current event when the $event_id is false.
 	 */
-	if ( false === $group_id ) {
-		$group_id = sz_get_current_group_id();
-		if ( ! $group_id ) {
-			// If we can't resolve the group_id, don't proceed with a zero value.
+	if ( false === $event_id ) {
+		$event_id = sz_get_current_event_id();
+		if ( ! $event_id ) {
+			// If we can't resolve the event_id, don't proceed with a zero value.
 			return array();
 		}
 	}
 
 	// Prepare the return set.
-	$groups = array();
-	// If a user ID has been specified, we filter hidden groups accordingly.
+	$events = array();
+	// If a user ID has been specified, we filter hidden events accordingly.
 	$filter = ( false !== $user_id && ! sz_user_can( $user_id, 'sz_moderate' ) );
 
-	// Start from the group specified.
-	$parents = array( $group_id );
+	// Start from the event specified.
+	$parents = array( $event_id );
 	$descendants = array();
 
 	// We work down the tree until no new children are found.
 	while ( $parents ) {
-		// Fetch all child groups.
+		// Fetch all child events.
 		$child_args = array(
 			'parent_id'   => $parents,
 			'show_hidden' => true,
 			'per_page'    => false,
 			'page'        => false,
 		);
-		$children = groups_get_groups( $child_args );
+		$children = events_get_events( $child_args );
 		// Reset parents array to rebuild for next round.
 		$parents = array();
-		foreach ( $children['groups'] as $group ) {
+		foreach ( $children['events'] as $event ) {
 			if ( $filter ) {
-				if ( hgsz_include_group_by_context( $group, $user_id, $context ) ) {
-					$groups[] = $group;
-					$parents[] = $group->id;
+				if ( hgsz_include_event_by_context( $event, $user_id, $context ) ) {
+					$events[] = $event;
+					$parents[] = $event->id;
 				}
 			} else {
-				$groups[] = $group;
-				$parents[] = $group->id;
+				$events[] = $event;
+				$parents[] = $event->id;
 			}
 		}
 	}
 
-	return $groups;
+	return $events;
 }
 
 /**
- * Check a slug to see if a child group of a specific parent group exists.
+ * Check a slug to see if a child event of a specific parent event exists.
  *
- * Like `groups_get_id()`, but limited to children of a specific group. Avoids
- * slug collisions between group tab names and groups with the same slug.
- * For instance, if there's a unrelated group called "Docs", you want the
- * "docs" tab of a group to ignore that group and return the docs pane for the
- * current group.
- * Caveat: If you create a child group with the same slug as a tab of the parent
- * group, you'll always get the child group.
+ * Like `events_get_id()`, but limited to children of a specific event. Avoids
+ * slug collisions between event tab names and events with the same slug.
+ * For instance, if there's a unrelated event called "Docs", you want the
+ * "docs" tab of a event to ignore that event and return the docs pane for the
+ * current event.
+ * Caveat: If you create a child event with the same slug as a tab of the parent
+ * event, you'll always get the child event.
  *
  * @since 1.0.0
  *
- * @param string $slug      Group slug to check.
- * @param int    $parent_id ID of the parent group.
+ * @param string $slug      Event slug to check.
+ * @param int    $parent_id ID of the parent event.
  *
- * @return int ID of found group.
+ * @return int ID of found event.
  */
-function hgsz_child_group_exists( $slug, $parent_id = 0 ) {
+function hgsz_child_event_exists( $slug, $parent_id = 0 ) {
 	if ( empty( $slug ) ) {
 		return 0;
 	}
 
 	/*
-	 * Take advantage of caching in groups_get_groups().
+	 * Take advantage of caching in events_get_events().
 	 */
 	$child_id = 0;
 	if ( version_compare( sz_get_version(), '2.9', '<' ) ) {
-		// Fetch groups with parent_id and loop through looking for a matching slug.
-		$child_groups = groups_get_groups( array(
+		// Fetch events with parent_id and loop through looking for a matching slug.
+		$child_events = events_get_events( array(
 			'parent_id'   => array( $parent_id ),
 			'show_hidden' => true,
 			'per_page'    => false,
 			'page'        => false,
 		) );
 
-		foreach ( $child_groups['groups'] as $group ) {
-			if ( $slug == $group->slug ) {
-				$child_id = $group->id;
+		foreach ( $child_events['events'] as $event ) {
+			if ( $slug == $event->slug ) {
+				$child_id = $event->id;
 				// Stop once we've got a match.
 				break;
 			}
 		}
 	} else {
-		// SZ 2.9 adds "slug" support to groups_get_groups().
-		$child_groups = groups_get_groups( array(
+		// SZ 2.9 adds "slug" support to events_get_events().
+		$child_events = events_get_events( array(
 			'parent_id'   => array( $parent_id ),
 			'slug'        => array( $slug ),
 			'show_hidden' => true,
@@ -270,8 +270,8 @@ function hgsz_child_group_exists( $slug, $parent_id = 0 ) {
 			'page'        => false,
 		) );
 
-		if ( $child_groups['groups'] ) {
-			$child_id = current( $child_groups['groups'] )->id;
+		if ( $child_events['events'] ) {
+			$child_id = current( $child_events['events'] )->id;
 		}
 	}
 
@@ -279,37 +279,37 @@ function hgsz_child_group_exists( $slug, $parent_id = 0 ) {
 }
 
 /**
- * Get the parent group ID for a specific group.
+ * Get the parent event ID for a specific event.
  *
- * To return the parent group regardless of visibility, leave the $user_id
+ * To return the parent event regardless of visibility, leave the $user_id
  * parameter empty. To return the parent only when visible to a specific user,
  * specify a $user_id.
  *
  * @since 1.0.0
  *
- * @param int    $group_id ID of the group.
- * @param int    $user_id  ID of a user to check group visibility for.
- * @param string $context  See hgsz_include_group_by_context() for description.
+ * @param int    $event_id ID of the event.
+ * @param int    $user_id  ID of a user to check event visibility for.
+ * @param string $context  See hgsz_include_event_by_context() for description.
  *
- * @return int ID of parent group.
+ * @return int ID of parent event.
  */
-function hgsz_get_parent_group_id( $group_id = false, $user_id = false, $context = 'normal' ) {
-	if ( false === $group_id ) {
-		$group_id = sz_get_current_group_id();
-		if ( ! $group_id ) {
-			// If we can't resolve the group_id, don't proceed.
+function hgsz_get_parent_event_id( $event_id = false, $user_id = false, $context = 'normal' ) {
+	if ( false === $event_id ) {
+		$event_id = sz_get_current_event_id();
+		if ( ! $event_id ) {
+			// If we can't resolve the event_id, don't proceed.
 			return 0;
 		}
 	}
 
-	$group     = groups_get_group( $group_id );
-	$parent_id = $group->parent_id;
+	$event     = events_get_event( $event_id );
+	$parent_id = $event->parent_id;
 
-	// If the user is specified, is the parent group visible to that user?
-	// @TODO: This could make use of group visibility when available.
+	// If the user is specified, is the parent event visible to that user?
+	// @TODO: This could make use of event visibility when available.
 	if ( false !== $user_id && ! sz_user_can( $user_id, 'sz_moderate' ) ) {
-		$parent_group = groups_get_group( $parent_id );
-		if ( ! hgsz_include_group_by_context( $parent_group, $user_id, $context ) ) {
+		$parent_event = events_get_event( $parent_id );
+		if ( ! hgsz_include_event_by_context( $parent_event, $user_id, $context ) ) {
 			$parent_id = 0;
 		}
 	}
@@ -318,32 +318,32 @@ function hgsz_get_parent_group_id( $group_id = false, $user_id = false, $context
 }
 
 /**
- * Get an array of group ids that are ancestors of a specific group.
+ * Get an array of event ids that are ancestors of a specific event.
  *
- * To return all ancestor groups, leave the $user_id parameter empty. To return
- * only those ancestor groups visible to a specific user, specify a $user_id.
- * Note that if groups the user can't see are encountered, the chain of ancestry
+ * To return all ancestor events, leave the $user_id parameter empty. To return
+ * only those ancestor events visible to a specific user, specify a $user_id.
+ * Note that if events the user can't see are encountered, the chain of ancestry
  * is stopped. Also note that the order here is useful: the first element is the
- * parent group id, the second is the grandparent group id and so on.
+ * parent event id, the second is the grandparent event id and so on.
  *
  * @since 1.0.0
  *
- * @param  int   $group_id ID of the group.
- * @param  int   $user_id  ID of a user to check group visibility for.
- * @param  string $context  'normal' filters hidden groups only; 'activity' includes
- *                          only groups for which the user should see the activity streams.
+ * @param  int   $event_id ID of the event.
+ * @param  int   $user_id  ID of a user to check event visibility for.
+ * @param  string $context  'normal' filters hidden events only; 'activity' includes
+ *                          only events for which the user should see the activity streams.
  *
- * @return array Array of group IDs.
+ * @return array Array of event IDs.
  */
-function hgsz_get_ancestor_group_ids( $group_id = false, $user_id = false, $context = 'normal' ) {
+function hgsz_get_ancestor_event_ids( $event_id = false, $user_id = false, $context = 'normal' ) {
 	/*
-	 * Passing a group id of 0 would find all top-level groups, which could be
-	 * intentional. We only try to find the current group when the $group_id is false.
+	 * Passing a event id of 0 would find all top-level events, which could be
+	 * intentional. We only try to find the current event when the $event_id is false.
 	 */
-	if ( false === $group_id ) {
-		$group_id = sz_get_current_group_id();
-		if ( ! $group_id ) {
-			// If we can't resolve the group_id, don't proceed with a zero value.
+	if ( false === $event_id ) {
+		$event_id = sz_get_current_event_id();
+		if ( ! $event_id ) {
+			// If we can't resolve the event_id, don't proceed with a zero value.
 			return array();
 		}
 	}
@@ -351,40 +351,40 @@ function hgsz_get_ancestor_group_ids( $group_id = false, $user_id = false, $cont
 	$ancestors = array();
 
 	// We work up the tree until no new parent is found.
-	while ( $group_id ) {
-		$parent_group_id = hgsz_get_parent_group_id( $group_id, $user_id, $context );
-		if ( $parent_group_id ) {
-			$ancestors[] = $parent_group_id;
+	while ( $event_id ) {
+		$parent_event_id = hgsz_get_parent_event_id( $event_id, $user_id, $context );
+		if ( $parent_event_id ) {
+			$ancestors[] = $parent_event_id;
 		}
-		// Set a new group id to work from.
-		$group_id = $parent_group_id;
+		// Set a new event id to work from.
+		$event_id = $parent_event_id;
 	}
 
 	return $ancestors;
 }
 
 /**
- * Get an array of possible parent group ids for a specific group and user.
+ * Get an array of possible parent event ids for a specific event and user.
  *
- * To be a candidate for group parenthood, the group cannot be a descendent of
- * this group, and the user must be allowed to create child groups in that group.
+ * To be a candidate for event parenthood, the event cannot be a descendent of
+ * this event, and the user must be allowed to create child events in that event.
  *
  * @since 1.0.0
  *
- * @param  int   $group_id ID of the group.
- * @param  int   $user_id  ID of a user to check group visibility for.
+ * @param  int   $event_id ID of the event.
+ * @param  int   $user_id  ID of a user to check event visibility for.
  *
- * @return array Array of group objects.
+ * @return array Array of event objects.
  */
-function hgsz_get_possible_parent_groups( $group_id = false, $user_id = false ) {
+function hgsz_get_possible_parent_events( $event_id = false, $user_id = false ) {
 	/*
-	 * Passing a group id of 0 would find all top-level groups, which could be
-	 * intentional. We only try to find the current group when the $group_id is false.
+	 * Passing a event id of 0 would find all top-level events, which could be
+	 * intentional. We only try to find the current event when the $event_id is false.
 	 */
-	if ( false === $group_id ) {
-		$group_id = sz_get_current_group_id();
-		if ( ! $group_id ) {
-			// If we can't resolve the group_id, don't proceed with a zero value.
+	if ( false === $event_id ) {
+		$event_id = sz_get_current_event_id();
+		if ( ! $event_id ) {
+			// If we can't resolve the event_id, don't proceed with a zero value.
 			return array();
 		}
 	}
@@ -398,28 +398,28 @@ function hgsz_get_possible_parent_groups( $group_id = false, $user_id = false ) 
 	}
 
 	// First, get a list of descendants (don't pass a user id--we want them all).
-	$descendants = hgsz_get_descendent_groups( $group_id );
+	$descendants = hgsz_get_descendent_events( $event_id );
 	$exclude_ids = wp_list_pluck( $descendants, 'id' );
-	// Also exclude the current group.
-	$exclude_ids[] = $group_id;
+	// Also exclude the current event.
+	$exclude_ids[] = $event_id;
 
 	$args = array(
 		'orderby'         => 'name',
 		'order'           => 'ASC',
 		'populate_extras' => false,
-		'exclude'         => $exclude_ids, // Exclude descendants and this group.
+		'exclude'         => $exclude_ids, // Exclude descendants and this event.
 		'show_hidden'     => true,
 		'per_page'        => false, // Do not limit the number returned.
 		'page'            => false, // Do not limit the number returned.
 	);
 
-	$possible_parents = groups_get_groups( $args );
-	foreach ( $possible_parents['groups'] as $k => $group ) {
-		// Check whether the user can create child groups of this group.
-		if ( ! sz_user_can( $user_id, 'create_subgroups', array( 'group_id' => $group->id ) ) ) {
-			unset( $possible_parents['groups'][$k] );
+	$possible_parents = events_get_events( $args );
+	foreach ( $possible_parents['events'] as $k => $event ) {
+		// Check whether the user can create child events of this event.
+		if ( ! sz_user_can( $user_id, 'create_subevents', array( 'event_id' => $event->id ) ) ) {
+			unset( $possible_parents['events'][$k] );
 		}
 	}
 
-	return $possible_parents['groups'];
+	return $possible_parents['events'];
 }

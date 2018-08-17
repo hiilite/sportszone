@@ -1,13 +1,13 @@
 <?php
 /**
- * SportsZone Groups Loader.
+ * SportsZone Events Loader.
  *
- * A groups component, for users to group themselves together. Includes a
- * robust sub-component API that allows Groups to be extended.
+ * A events component, for users to event themselves together. Includes a
+ * robust sub-component API that allows Events to be extended.
  * Comes preconfigured with an activity stream, discussion forums, and settings.
  *
  * @package SportsZone
- * @subpackage GroupsLoader
+ * @subpackage EventsLoader
  * @since 1.5.0
  */
 
@@ -15,11 +15,11 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Set up the sz-groups component.
+ * Set up the sz-events component.
  *
  * @since 1.5.0
  */
-function sz_setup_groups() {
-	sportszone()->groups = new SZ_Groups_Component();
+function sz_setup_events() {
+	sportszone()->events = new SZ_Events_Component();
 }
-add_action( 'sz_setup_components', 'sz_setup_groups', 6 );
+add_action( 'sz_setup_components', 'sz_setup_events', 6 );

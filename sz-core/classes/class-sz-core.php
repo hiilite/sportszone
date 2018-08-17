@@ -65,7 +65,7 @@ class SZ_Core extends SZ_Component {
 		 *
 		 * @param array $value Array of included and optional components.
 		 */
-		$sz->optional_components = apply_filters( 'sz_optional_components', array( 'activity', 'blogs', 'friends', 'groups', 'messages', 'notifications', 'settings', 'xprofile' ) );
+		$sz->optional_components = apply_filters( 'sz_optional_components', array( 'activity', 'blogs', 'friends', 'groups', 'events', 'messages', 'notifications', 'settings', 'xprofile' ) );
 
 		/**
 		 * Filters the required components.
@@ -292,6 +292,7 @@ class SZ_Core extends SZ_Component {
 
 		parent::setup_cache_groups();
 	}
+	
 
 	/**
 	 * Set up post types.

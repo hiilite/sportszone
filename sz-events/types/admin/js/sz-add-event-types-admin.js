@@ -24,27 +24,27 @@ jQuery( document ).ready(
 
 			/******************SUPPORT******************/
 
-			/******************GROUP TYPES LISTING******************/
+			/******************EVENT TYPES LISTING******************/
 
-			// Create slug as soon as group type name is entered
+			// Create slug as soon as event type name is entered
 			$( document ).on(
-				'keyup', '#group-type-name', function(){
+				'keyup', '#event-type-name', function(){
 					var slug = $( this ).val().toLowerCase().replace( / /g, "" );
-					$( '#group-type-slug' ).val( slug );
+					$( '#event-type-slug' ).val( slug );
 				}
 			);
 
-			// Delete Group Types
+			// Delete Event Types
 			$( document ).on(
 				'click', '.dlt-szgt', function(){
 					var slug = $( this ).attr( 'id' );
-					if ( confirm( 'Your confirmation will delete the group type with slug : ' + slug ) == true ) {
+					if ( confirm( 'Your confirmation will delete the event type with slug : ' + slug ) == true ) {
 						$( this ).html( 'Deleting..' );
 						$( this ).closest( 'tr' ).css( 'background-color', '#FF9999' );
 						$.post(
 							ajaxurl,
 							{
-								'action' : 'szgt_delete_group_type',
+								'action' : 'szet_delete_event_type',
 								'slug' : slug
 							},
 							function( response ){
@@ -57,7 +57,7 @@ jQuery( document ).ready(
 				}
 			);
 
-			// Edit Buddypress Group Types
+			// Edit Buddypress Event Types
 			$( document ).on(
 				'click', '.edit-szgt', function(){
 					var slug = $( this ).attr( 'id' );
@@ -66,14 +66,14 @@ jQuery( document ).ready(
 				}
 			);
 
-			// Close Editor Buddypress Group Types
+			// Close Editor Buddypress Event Types
 			$( document ).on(
 				'click', '.close', function(){
 					$( '.szgt-editor' ).hide();
 				}
 			);
 
-			// Update Buddypress Group Types
+			// Update Buddypress Event Types
 			$( document ).on(
 				'click', '.szgt-update', function(){
 					var curr_slug = $( this ).attr( 'id' );
@@ -89,7 +89,7 @@ jQuery( document ).ready(
 					$.post(
 						ajaxurl,
 						{
-							'action' : 'szgt_update_group_type',
+							'action' : 'szet_update_event_type',
 							'new_slug' : new_slug,
 							'new_desc' : new_desc,
 							'old_slug' : curr_slug,
@@ -107,13 +107,13 @@ jQuery( document ).ready(
 				}
 			);
 
-			/******************GROUP TYPES LISTING******************/
+			/******************EVENT TYPES LISTING******************/
 
 			/******************GENERAL SETTINGS******************/
 
-			// SHow/hide the group type search tab
+			// SHow/hide the event type search tab
 			$( document ).on(
-				'change', '#szgt-group-types-search-enabled', function(){
+				'change', '#szgt-event-types-search-enabled', function(){
 					if ( $( this ).prop( 'checked' ) == true ) {
 						$( '#szgt-search-tab' ).css( 'display', 'block' );
 					} else {

@@ -220,6 +220,21 @@ function sz_setup_cache_groups() {
 }
 
 /**
+ * Fire the 'sz_setup_cache_events' action, where cache events are registered.
+ *
+ * @since 2.2.0
+ */
+function sz_setup_cache_events() {
+
+	/**
+	 * Fires inside the 'sz_setup_cache_events' function, where cache events are registered.
+	 *
+	 * @since 2.2.0
+	 */
+	do_action( 'sz_setup_cache_events' );
+}
+
+/**
  * Set up the currently logged-in user.
  *
  * @since 1.7.0

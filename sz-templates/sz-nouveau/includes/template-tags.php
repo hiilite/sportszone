@@ -339,7 +339,7 @@ function sz_nouveau_user_feedback( $feedback_id = '' ) {
 function sz_nouveau_before_loop() {
 	$component = sz_current_component();
 
-	if ( sz_is_group() ) {
+	if ( sz_is_group() || sz_is_event() ) {
 		$component = sz_current_action();
 	}
 
@@ -361,7 +361,7 @@ function sz_nouveau_before_loop() {
 function sz_nouveau_after_loop() {
 	$component = sz_current_component();
 
-	if ( sz_is_group() ) {
+	if ( sz_is_group() || sz_is_group() ) {
 		$component = sz_current_action();
 	}
 
@@ -398,6 +398,13 @@ function sz_nouveau_pagination( $position ) {
 		if ( sz_is_group_admin_page() ) {
 			$pagination_type = sz_action_variable( 0 );
 		}
+	} elseif ( sz_is_event() ) {
+		$screen          = 'event';
+		$pagination_type = sz_current_action();
+
+		if ( sz_is_event_admin_page() ) {
+			$pagination_type = sz_action_variable( 0 );
+		}
 	}
 
 	switch ( $pagination_type ) {
@@ -416,7 +423,7 @@ function sz_nouveau_pagination( $position ) {
 			$pag_links = sz_get_members_pagination_links();
 
 			// Groups single items are not using these hooks
-			if ( ! sz_is_group() ) {
+			if ( ! sz_is_group() && ! sz_is_event() ) {
 				$top_hook    = 'sz_before_directory_members_list';
 				$bottom_hook = 'sz_after_directory_members_list';
 			}
@@ -430,6 +437,14 @@ function sz_nouveau_pagination( $position ) {
 			$top_hook    = 'sz_before_directory_groups_list';
 			$bottom_hook = 'sz_after_directory_groups_list';
 			$page_arg    = $GLOBALS['groups_template']->pag_arg;
+			break;
+			
+		case 'events':
+			$pag_count   = sz_get_events_pagination_count();
+			$pag_links   = sz_get_events_pagination_links();
+			$top_hook    = 'sz_before_directory_events_list';
+			$bottom_hook = 'sz_after_directory_events_list';
+			$page_arg    = $GLOBALS['events_template']->pag_arg;
 			break;
 
 		case 'notifications':
@@ -525,6 +540,8 @@ function sz_nouveau_loop_classes() {
 		// The $component is faked if it's the single group member loop
 		if ( ! sz_is_directory() && ( sz_is_group() && 'members' === sz_current_action() ) ) {
 			$component = 'members_group';
+		} elseif ( ! sz_is_directory() && ( sz_is_event() && 'members' === sz_current_action() ) ) {
+			$component = 'members_event';
 		} elseif ( ! sz_is_directory() && ( sz_is_user() && 'my-friends' === sz_current_action() ) ) {
 			$component = 'members_friends';
 		} else {
@@ -548,6 +565,7 @@ function sz_nouveau_loop_classes() {
 		$available_components = array(
 			'members' => true,
 			'groups'  => true,
+			'events'  => true,
 			'blogs'   => true,
 
 			/*
@@ -558,7 +576,7 @@ function sz_nouveau_loop_classes() {
 		);
 
 		// Only the available components supports custom layouts.
-		if ( ! empty( $available_components[ $component ] ) && ( sz_is_directory() || sz_is_group() || sz_is_user() ) ) {
+		if ( ! empty( $available_components[ $component ] ) && ( sz_is_directory() || sz_is_group() || sz_is_event() || sz_is_user() ) ) {
 			$customizer_option = sprintf( '%s_layout', $component );
 			$layout_prefs      = sz_nouveau_get_temporary_setting(
 				$customizer_option,
@@ -720,15 +738,12 @@ function sz_nouveau_has_nav( $args = array() ) {
 	if ( empty( $n['type'] ) ) {
 		return false;
 	}
-
 	$nav                       = array();
 	$sz_nouveau->displayed_nav = '';
 	$sz_nouveau->object_nav    = $n['object'];
-
 	if ( sz_is_directory() || 'directory' === $sz_nouveau->object_nav ) {
 		$sz_nouveau->displayed_nav = 'directory';
 		$nav                       = $sz_nouveau->directory_nav->get_primary();
-
 	// So far it's only possible to build a Group nav when displaying it.
 	} elseif ( sz_is_group() ) {
 		$sz_nouveau->displayed_nav = 'groups';
@@ -747,6 +762,30 @@ function sz_nouveau_has_nav( $args = array() ) {
 		}
 
 		$nav = $group_nav->get_secondary(
+			array(
+				'parent_slug'     => $parent_slug,
+				'user_has_access' => (bool) $n['user_has_access'],
+			)
+		);
+
+	// Build the nav for the displayed user
+	} elseif ( sz_is_event() ) {
+		$sz_nouveau->displayed_nav = 'events';
+		$parent_slug               = sz_get_current_event_slug();
+		$event_nav                 = sportszone()->events->nav;
+
+		if ( 'event_manage' === $sz_nouveau->object_nav && sz_is_event_admin_page() ) {
+			$parent_slug .= '_manage';
+
+		/**
+		 * If it's not the Admin tabs, reorder the Group's nav according to the
+		 * customizer setting.
+		 */
+		} else {
+			sz_nouveau_set_nav_item_order( $event_nav, sz_nouveau_get_appearance_settings( 'event_nav_order' ), $parent_slug );
+		}
+
+		$nav = $event_nav->get_secondary(
 			array(
 				'parent_slug'     => $parent_slug,
 				'user_has_access' => (bool) $n['user_has_access'],
@@ -868,6 +907,8 @@ function sz_nouveau_nav_id() {
 			$id = sprintf( '%1$s-%2$s', $nav_item->component, $nav_item->slug );
 		} elseif ( 'groups' === $sz_nouveau->displayed_nav || 'personal' ===  $sz_nouveau->displayed_nav ) {
 			$id = sprintf( '%1$s-%2$s-li', $nav_item->css_id, $sz_nouveau->displayed_nav );
+		} elseif ( 'events' === $sz_nouveau->displayed_nav || 'personal' ===  $sz_nouveau->displayed_nav ) {
+			$id = sprintf( '%1$s-%2$s-li', $nav_item->css_id, $sz_nouveau->displayed_nav );
 		} else {
 			$id = $nav_item->slug;
 		}
@@ -917,6 +958,27 @@ function sz_nouveau_nav_classes() {
 
 			// Group Admin Tabs.
 			} elseif ( 'group_manage' === $sz_nouveau->object_nav ) {
+				$selected = sz_action_variable( 0 );
+				$classes  = array( 'sz-' . $sz_nouveau->displayed_nav . '-admin-tab' );
+
+			// If we are here, it's the member's subnav
+			} elseif ( 'personal' === $sz_nouveau->displayed_nav ) {
+				$classes  = array( 'sz-' . $sz_nouveau->displayed_nav . '-sub-tab' );
+			}
+
+			if ( $nav_item->slug === $selected ) {
+				$classes = array_merge( $classes, array( 'current', 'selected' ) );
+			}
+		} elseif ( 'events' === $sz_nouveau->displayed_nav || 'personal' === $sz_nouveau->displayed_nav ) {
+			$classes  = array( 'sz-' . $sz_nouveau->displayed_nav . '-tab' );
+			$selected = sz_current_action();
+
+			// User's primary nav
+			if ( ! empty( $nav_item->primary ) ) {
+				$selected = sz_current_component();
+
+			// Group Admin Tabs.
+			} elseif ( 'event_manage' === $sz_nouveau->object_nav ) {
 				$selected = sz_action_variable( 0 );
 				$classes  = array( 'sz-' . $sz_nouveau->displayed_nav . '-admin-tab' );
 
@@ -1073,6 +1135,12 @@ function sz_nouveau_nav_link_id() {
 			if ( ! empty( $nav_item->primary ) && 'personal' === $sz_nouveau->displayed_nav ) {
 				$link_id = 'user-' . $link_id;
 			}
+		} if ( ( 'events' === $sz_nouveau->displayed_nav || 'personal' === $sz_nouveau->displayed_nav ) && ! empty( $nav_item->css_id ) ) {
+			$link_id = $nav_item->css_id;
+
+			if ( ! empty( $nav_item->primary ) && 'personal' === $sz_nouveau->displayed_nav ) {
+				$link_id = 'user-' . $link_id;
+			}
 		} else {
 			$link_id = $nav_item->slug;
 		}
@@ -1115,6 +1183,12 @@ function sz_nouveau_nav_link_title() {
 
 		} elseif (
 			( 'groups' === $sz_nouveau->displayed_nav || 'personal' === $sz_nouveau->displayed_nav )
+			&&
+			! empty( $nav_item->name )
+		) {
+			$title = $nav_item->name;
+		} elseif (
+			( 'events' === $sz_nouveau->displayed_nav || 'personal' === $sz_nouveau->displayed_nav )
 			&&
 			! empty( $nav_item->name )
 		) {
@@ -1163,6 +1237,12 @@ function sz_nouveau_nav_link_text() {
 			! empty( $nav_item->name )
 		) {
 			$link_text = _sz_strip_spans_from_title( $nav_item->name );
+		} elseif (
+			( 'events' === $sz_nouveau->displayed_nav || 'personal' === $sz_nouveau->displayed_nav )
+			&&
+			! empty( $nav_item->name )
+		) {
+			$link_text = _sz_strip_spans_from_title( $nav_item->name );
 		}
 
 		/**
@@ -1193,6 +1273,8 @@ function sz_nouveau_nav_has_count() {
 		$count = $nav_item->count;
 	} elseif ( 'groups' === $sz_nouveau->displayed_nav && 'members' === $nav_item->slug ) {
 		$count = 0 !== (int) groups_get_current_group()->total_member_count;
+	} elseif ( 'events' === $sz_nouveau->displayed_nav && 'members' === $nav_item->slug ) {
+		$count = 0 !== (int) events_get_current_event()->total_member_count;
 	} elseif ( 'personal' === $sz_nouveau->displayed_nav && ! empty( $nav_item->primary ) ) {
 		$count = (bool) strpos( $nav_item->name, '="count"' );
 	}
@@ -1235,6 +1317,10 @@ function sz_nouveau_nav_count() {
 
 		} elseif ( 'groups' === $sz_nouveau->displayed_nav && 'members' === $nav_item->slug ) {
 			$count = groups_get_current_group()->total_member_count;
+
+		// @todo imho SportsZone shouldn't add html tags inside Nav attributes...
+		} elseif ( 'events' === $sz_nouveau->displayed_nav && 'members' === $nav_item->slug ) {
+			$count = events_get_current_event()->total_member_count;
 
 		// @todo imho SportsZone shouldn't add html tags inside Nav attributes...
 		} elseif ( 'personal' === $sz_nouveau->displayed_nav && ! empty( $nav_item->primary ) ) {
@@ -1407,6 +1493,9 @@ function sz_nouveau_container_classes() {
 		} elseif ( sz_is_group() ) {
 			$customizer_option = 'group_nav_display';
 
+		} elseif ( sz_is_event() ) {
+			$customizer_option = 'event_nav_display';
+
 		} elseif ( sz_is_directory() ) {
 			switch ( $component ) {
 				case 'activity':
@@ -1419,6 +1508,10 @@ function sz_nouveau_container_classes() {
 
 				case 'groups':
 					$customizer_option = 'groups_dir_layout';
+					break;
+					
+				case 'events':
+					$customizer_option = 'events_dir_layout';
 					break;
 
 				case 'blogs':
@@ -1462,7 +1555,7 @@ function sz_nouveau_container_classes() {
 		if ( $customizer_option ) {
 			$layout_prefs  = sz_nouveau_get_temporary_setting( $customizer_option, sz_nouveau_get_appearance_settings( $customizer_option ) );
 
-			if ( $layout_prefs && (int) $layout_prefs === 1 && ( sz_is_user() || sz_is_group() ) ) {
+			if ( $layout_prefs && (int) $layout_prefs === 1 && ( sz_is_user() || sz_is_group() || sz_is_event() ) ) {
 				$classes[] = 'sz-single-vert-nav';
 				$classes[] = 'sz-vertical-navs';
 			}
@@ -1519,12 +1612,18 @@ function sz_nouveau_single_item_nav_classes() {
 		if ( sz_is_group() ) {
 			$nav_tabs = (int) sz_nouveau_get_temporary_setting( 'group_nav_tabs', sz_nouveau_get_appearance_settings( 'group_nav_tabs' ) );
 
+		} elseif ( sz_is_event() ) {
+			$nav_tabs = (int) sz_nouveau_get_temporary_setting( 'event_nav_tabs', sz_nouveau_get_appearance_settings( 'event_nav_tabs' ) );
+
 		} elseif ( sz_is_user() ) {
 			$nav_tabs = (int) sz_nouveau_get_temporary_setting( 'user_nav_tabs', sz_nouveau_get_appearance_settings( 'user_nav_tabs' ) );
 		}
 
 		if ( sz_is_group() && 1 === $nav_tabs) {
 			$classes[] = 'group-nav-tabs';
+			$classes[] = 'tabbed-links';
+		} elseif ( sz_is_event() && 1 === $nav_tabs) {
+			$classes[] = 'event-nav-tabs';
 			$classes[] = 'tabbed-links';
 		} elseif ( sz_is_user() && 1 === $nav_tabs ) {
 			$classes[] = 'user-nav-tabs';
@@ -1534,11 +1633,14 @@ function sz_nouveau_single_item_nav_classes() {
 		if ( sz_is_user() ) {
 			$component = 'members';
 			$menu_type = 'users-nav';
+			$customizer_option = 'user_nav_display';
+		} elseif (sz_is_event()) {
+			$menu_type = 'events-nav';
+			$customizer_option = 'event_nav_display';
 		} else {
 			$menu_type = 'groups-nav';
+			$customizer_option = 'group_nav_display';
 		}
-
-		$customizer_option = ( sz_is_user() )? 'user_nav_display' : 'group_nav_display';
 
 		$layout_prefs = (int) sz_nouveau_get_temporary_setting( $customizer_option, sz_nouveau_get_appearance_settings( $customizer_option ) );
 
@@ -1592,24 +1694,34 @@ function sz_nouveau_single_item_subnav_classes() {
 		// Set user or group class string
 		if ( sz_is_user() ) {
 			$classes[] = 'user-subnav';
+			$customizer_option = 'user_subnav_tabs';
 		}
 
 		if ( sz_is_group() ) {
 			$classes[] = 'group-subnav';
+			$customizer_option = 'group_subnav_tabs';
+		}
+		
+		if ( sz_is_event() ) {
+			$classes[] = 'event-subnav';
+			$customizer_option = 'event_subnav_tabs';
 		}
 
 		if ( ( sz_is_group() && 'send-invites' === sz_current_action() ) || ( sz_is_group_create() && 'group-invites' === sz_get_groups_current_create_step() ) ) {
 			$classes[] = 'sz-invites-nav';
 		}
+		
+		if ( ( sz_is_event() && 'send-invites' === sz_current_action() ) || ( sz_is_event_create() && 'event-invites' === sz_get_events_current_create_step() ) ) {
+			$classes[] = 'sz-invites-nav';
+		}
 
-		$customizer_option = ( sz_is_user() )? 'user_subnav_tabs' : 'group_subnav_tabs';
 		$nav_tabs = (int) sz_nouveau_get_temporary_setting( $customizer_option, sz_nouveau_get_appearance_settings( $customizer_option ) );
 
 		if ( sz_is_user() && 1 === $nav_tabs ) {
 			$classes[] = 'tabbed-links';
 		}
 
-		if ( sz_is_group() && 1 === $nav_tabs ) {
+		if ( (sz_is_group() && 1 === $nav_tabs) || (sz_is_event() && 1 === $nav_tabs) ) {
 			$classes[] = 'tabbed-links';
 		}
 
@@ -1668,6 +1780,47 @@ function sz_nouveau_groups_create_steps_classes() {
 		 */
 		return apply_filters( 'sz_nouveau_get_group_create_steps_classes', join( ' ', $class ), $classes );
 	}
+	
+/**
+ * Output the events create steps classes.
+ *
+ * @since 3.0.0
+ *
+ * @return string CSS classes
+ */
+function sz_nouveau_events_create_steps_classes() {
+	echo esc_attr( sz_nouveau_get_event_create_steps_classes() );
+}
+
+	/**
+	 * Returns the events create steps customizer option choice class.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return string CSS classes
+	 */
+	function sz_nouveau_get_event_create_steps_classes() {
+		$classes  = array( 'sz-navs', 'event-create-links', 'no-ajax' );
+		$nav_tabs = (int) sz_nouveau_get_temporary_setting( 'events_create_tabs', sz_nouveau_get_appearance_settings( 'events_create_tabs' ) );
+
+		if ( 1 === $nav_tabs ) {
+			$classes[] = 'tabbed-links';
+		}
+
+		$class = array_map( 'sanitize_html_class', $classes );
+
+		/**
+		 * Filters the final results for SportsZone Nouveau event creation step classes.
+		 *
+		 * This filter will return a single string of concatenated classes to be used.
+		 *
+		 * @since 3.0.0
+		 *
+		 * @param string $value   Concatenated classes.
+		 * @param array  $classes Array of classes that were concatenated.
+		 */
+		return apply_filters( 'sz_nouveau_get_event_create_steps_classes', join( ' ', $class ), $classes );
+	}
 
 
 /** Template tags for the object search **************************************/
@@ -1686,6 +1839,8 @@ function sz_nouveau_get_search_primary_object( $object = '' ) {
 		$object = 'member';
 	} elseif ( sz_is_group() ) {
 		$object = 'group';
+	} elseif ( sz_is_event() ) {
+		$object = 'event';
 	} elseif ( sz_is_directory() ) {
 		$object = 'dir';
 	} else {
@@ -1725,6 +1880,8 @@ function sz_nouveau_get_search_objects( $objects = array() ) {
 	if ( 'member' === $primary || 'dir' === $primary ) {
 		$objects['secondary'] = sz_current_component();
 	} elseif ( 'group' === $primary ) {
+		$objects['secondary'] = sz_current_action();
+	} elseif ( 'event' === $primary ) {
 		$objects['secondary'] = sz_current_action();
 	} else {
 
@@ -1769,6 +1926,8 @@ function sz_nouveau_search_object_data_attr( $attr = '' ) {
 	}
 
 	if ( sz_is_active( 'groups' ) && sz_is_group_members() ) {
+		$attr = join( '_', $objects );
+	} elseif ( sz_is_active( 'events' ) && sz_is_event_members() ) {
 		$attr = join( '_', $objects );
 	} else {
 		$attr = $objects['secondary'];
@@ -1879,6 +2038,14 @@ function sz_nouveau_search_form() {
 			 */
 			do_action( 'sz_groups_directory_group_types' );
 
+		} elseif ( 'events' === $objects['secondary'] ) {
+			/**
+			 * Fires inside the events directory event types.
+			 *
+			 * @since 1.2.0
+			 */
+			do_action( 'sz_events_directory_event_types' );
+
 		} elseif ( 'members' === $objects['secondary'] ) {
 			/**
 			 * Fires inside the members directory member sub-types.
@@ -1894,6 +2061,13 @@ function sz_nouveau_search_form() {
 		 * @since 1.2.0
 		 */
 		do_action( 'sz_group_activity_syndication_options' );
+	} elseif ( 'event' === $objects['primary'] && 'activity' === $objects['secondary'] ) {
+		/**
+		 * Fires inside the syndication options list, after the RSS option.
+		 *
+		 * @since 1.2.0
+		 */
+		do_action( 'sz_event_activity_syndication_options' );
 	}
 }
 
@@ -1924,6 +2098,16 @@ function sz_nouveau_current_object() {
 
 		if ( 'activity' !== sz_current_action() ) {
 			$component['data_filter'] = 'group_' . sz_current_action();
+		}
+
+	} elseif ( sz_is_event() ) {
+		$component['members_select']   = 'events_members-order-select';
+		$component['members_order_by'] = 'events_members-order-by';
+		$component['object']           = sz_current_action();
+		$component['data_filter']      = sz_current_action();
+
+		if ( 'activity' !== sz_current_action() ) {
+			$component['data_filter'] = 'event_' . sz_current_action();
 		}
 
 	} else {
@@ -1961,6 +2145,7 @@ function sz_nouveau_filter_container_id() {
 			'notifications' => 'notifications-filter-select',
 			'activity'      => 'activity-filter-select',
 			'groups'        => 'groups-order-select',
+			'events'        => 'events-order-select',
 			'blogs'         => 'blogs-order-select',
 		);
 
@@ -2004,6 +2189,7 @@ function sz_nouveau_filter_id() {
 			'notifications' => 'notifications-filter-by',
 			'activity'      => 'activity-filter-by',
 			'groups'        => 'groups-order-by',
+			'events'        => 'events-order-by',
 			'blogs'         => 'blogs-order-by',
 		);
 
@@ -2141,6 +2327,9 @@ function sz_nouveau_get_customizer_link( $args = array() ) {
 	} elseif ( sz_is_group() ) {
 		$url = rawurlencode( sz_get_group_permalink( groups_get_current_group() ) );
 
+	} elseif ( sz_is_event() ) {
+		$url = rawurlencode( sz_get_event_permalink( events_get_current_event() ) );
+
 	} elseif ( ! empty( $r['object'] ) && ! empty( $r['item_id'] ) ) {
 		if ( 'user' === $r['object'] ) {
 			$url = rawurlencode( sz_core_get_user_domain( $r['item_id'] ) );
@@ -2150,6 +2339,12 @@ function sz_nouveau_get_customizer_link( $args = array() ) {
 
 			if ( ! empty( $group->id ) ) {
 				$url = rawurlencode( sz_get_group_permalink( $group ) );
+			}
+		} elseif ( 'event' === $r['object'] ) {
+			$event = events_get_event( array( 'event_id' => $r['item_id'] ) );
+
+			if ( ! empty( $event->id ) ) {
+				$url = rawurlencode( sz_get_event_permalink( $event ) );
 			}
 		}
 	}

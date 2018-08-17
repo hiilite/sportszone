@@ -439,6 +439,9 @@ class SZ_Component {
 
 		// Setup cache groups.
 		add_action( 'sz_setup_cache_groups',     array( $this, 'setup_cache_groups'     ), 10 );
+		
+		// Setup cache events.
+		add_action( 'sz_setup_cache_events',     array( $this, 'setup_cache_events'     ), 10 );
 
 		// Register post types.
 		add_action( 'sz_register_post_types',    array( $this, 'register_post_types'    ), 10 );
@@ -636,6 +639,24 @@ class SZ_Component {
 		 * @since 2.2.0
 		 */
 		do_action( 'sz_' . $this->id . '_setup_cache_groups' );
+	}
+	
+	/**
+	 * Setup component-specific cache events.
+	 *
+	 * @since 2.2.0
+	 *
+	 */
+	public function setup_cache_events() {
+
+		/**
+		 * Fires in the setup_cache_events method inside SZ_Component.
+		 *
+		 * This is a dynamic hook that is based on the component string ID.
+		 *
+		 * @since 2.2.0
+		 */
+		do_action( 'sz_' . $this->id . '_setup_cache_events' );
 	}
 
 	/**

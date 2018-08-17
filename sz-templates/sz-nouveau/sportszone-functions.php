@@ -582,6 +582,8 @@ class SZ_Nouveau extends SZ_Theme_Compat {
 			$nav_items = sz_nouveau_get_activity_directory_nav_items();
 		} elseif ( sz_is_groups_directory() ) {
 			$nav_items = sz_nouveau_get_groups_directory_nav_items();
+		} elseif ( sz_is_events_directory() ) {
+			$nav_items = sz_nouveau_get_events_directory_nav_items();
 		} elseif ( sz_is_blogs_directory() ) {
 			$nav_items = sz_nouveau_get_blogs_directory_nav_items();
 		}

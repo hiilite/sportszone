@@ -11,16 +11,16 @@
 }
 
 // Non-overrides don't require as much selector juice.
-.child-groups-container {
+.child-events-container {
 	clear: both;
 	overflow: auto;
 	width: auto;
-	.view-all-child-groups-link {
+	.view-all-child-events-link {
 		margin-left: 1em;
 	}
 }
 
-.toggle-child-groups {
+.toggle-child-events {
 	line-height: 1.8;
 	&:before {
 		content: "";
@@ -54,7 +54,7 @@
 	}
 }
 
-.child-groups {
+.child-events {
 	border-left: solid 1px #ccc;
 	overflow: auto;
 	display: none;
@@ -85,8 +85,8 @@
 	}
 }
 
-// Styles for the group settings form.
-.hierarchy form[name="group-settings-form"] {
+// Styles for the event settings form.
+.hierarchy form[name="event-settings-form"] {
 	.info {
 		margin-bottom: .5em;
 	}
@@ -95,16 +95,16 @@
 	}
 }
 
-// Breadcrumbs on the single group screen:
-.parent-group-breadcrumbs {
+// Breadcrumbs on the single event screen:
+.parent-event-breadcrumbs {
 	margin: 0 0 1.5em;
 }
 
 @media screen and (min-width:768px), print {
-	.child-groups-container {
+	.child-events-container {
 		margin-left: 2%;
 	}
-	.child-groups {
+	.child-events {
 		margin-left: 7px;
 	}
 }

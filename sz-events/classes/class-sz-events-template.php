@@ -1,6 +1,6 @@
 <?php
 /**
- * SportsZone Groups Template loop class.
+ * SportsZone Events Template loop class.
  *
  * @package SportsZone
  * @since 1.2.0
@@ -10,13 +10,13 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * The main Groups template loop class.
+ * The main Events template loop class.
  *
- * Responsible for loading a group of groups into a loop for display.
+ * Responsible for loading a event of events into a loop for display.
  *
  * @since 1.2.0
  */
-class SZ_Groups_Template {
+class SZ_Events_Template {
 
 	/**
 	 * The loop iterator.
@@ -24,31 +24,31 @@ class SZ_Groups_Template {
 	 * @var int
 	 * @since 1.2.0
 	 */
-	public $current_group = -1;
+	public $current_event = -1;
 
 	/**
-	 * The number of groups returned by the paged query.
+	 * The number of events returned by the paged query.
 	 *
 	 * @var int
 	 * @since 1.2.0
 	 */
-	public $group_count;
+	public $event_count;
 
 	/**
-	 * Array of groups located by the query.
+	 * Array of events located by the query.
 	 *
 	 * @var array
 	 * @since 1.2.0
 	 */
-	public $groups;
+	public $events;
 
 	/**
-	 * The group object currently being iterated on.
+	 * The event object currently being iterated on.
 	 *
 	 * @var object
 	 * @since 1.2.0
 	 */
-	public $group;
+	public $event;
 
 	/**
 	 * A flag for whether the loop is currently being iterated.
@@ -83,20 +83,20 @@ class SZ_Groups_Template {
 	public $pag_links;
 
 	/**
-	 * The total number of groups matching the query parameters.
+	 * The total number of events matching the query parameters.
 	 *
 	 * @var int
 	 * @since 1.2.0
 	 */
-	public $total_group_count;
+	public $total_event_count;
 
 	/**
-	 * Whether the template loop is for a single group page.
+	 * Whether the template loop is for a single event page.
 	 *
 	 * @var bool
 	 * @since 1.2.0
 	 */
-	public $single_group = false;
+	public $single_event = false;
 
 	/**
 	 * Field to sort by.
@@ -117,11 +117,11 @@ class SZ_Groups_Template {
 	/**
 	 * Constructor method.
 	 *
-	 * @see SZ_Groups_Group::get() for an in-depth description of arguments.
+	 * @see SZ_Events_Event::get() for an in-depth description of arguments.
 	 *
 	 * @param array $args {
 	 *     Array of arguments. Accepts all arguments accepted by
-	 *     {@link SZ_Groups_Group::get()}. In cases where the default
+	 *     {@link SZ_Events_Event::get()}. In cases where the default
 	 *     values of the params differ, they have been discussed below.
 	 *     @type int $per_page Default: 20.
 	 *     @type int $page Default: 1.
@@ -167,15 +167,15 @@ class SZ_Groups_Template {
 			'parent_id'          => null,
 			'search_terms'       => '',
 			'search_columns'     => array(),
-			'group_type'         => '',
-			'group_type__in'     => '',
-			'group_type__not_in' => '',
+			'event_type'         => '',
+			'event_type__in'     => '',
+			'event_type__not_in' => '',
 			'meta_query'         => false,
 			'update_meta_cache'  => true,
 			'update_admin_cache' => false,
 		);
 
-		$r = sz_parse_args( $args, $defaults, 'groups_template' );
+		$r = sz_parse_args( $args, $defaults, 'events_template' );
 		extract( $r );
 
 		$this->pag_arg  = sanitize_key( $r['page_arg'] );
@@ -187,30 +187,30 @@ class SZ_Groups_Template {
 		}
 
 		if ( 'invites' == $type ) {
-			$this->groups = groups_get_invites_for_user( $user_id, $this->pag_num, $this->pag_page, $exclude );
-		} elseif ( 'single-group' == $type ) {
-			$this->single_group = true;
+			$this->events = events_get_invites_for_user( $user_id, $this->pag_num, $this->pag_page, $exclude );
+		} elseif ( 'single-event' == $type ) {
+			$this->single_event = true;
 
-			if ( groups_get_current_group() ) {
-				$group = groups_get_current_group();
+			if ( events_get_current_event() ) {
+				$event = events_get_current_event();
 
 			} else {
-				$group = groups_get_group( SZ_Groups_Group::get_id_from_slug( $r['slug'] ) );
+				$event = events_get_event( SZ_Events_Event::get_id_from_slug( $r['slug'] ) );
 			}
 
-			// Backwards compatibility - the 'group_id' variable is not part of the
-			// SZ_Groups_Group object, but we add it here for devs doing checks against it
+			// Backwards compatibility - the 'event_id' variable is not part of the
+			// SZ_Events_Event object, but we add it here for devs doing checks against it
 			//
 			// @see https://sportszone.trac.wordpress.org/changeset/3540
 			//
 			// this is subject to removal in a future release; devs should check against
-			// $group->id instead.
-			$group->group_id = $group->id;
+			// $event->id instead.
+			$event->event_id = $event->id;
 
-			$this->groups = array( $group );
+			$this->events = array( $event );
 
 		} else {
-			$this->groups = groups_get_groups( array(
+			$this->events = events_get_events( array(
 				'type'               => $type,
 				'order'              => $order,
 				'orderby'            => $orderby,
@@ -220,9 +220,9 @@ class SZ_Groups_Template {
 				'search_terms'       => $search_terms,
 				'search_columns'     => $search_columns,
 				'meta_query'         => $meta_query,
-				'group_type'         => $group_type,
-				'group_type__in'     => $group_type__in,
-				'group_type__not_in' => $group_type__not_in,
+				'event_type'         => $event_type,
+				'event_type__in'     => $event_type__in,
+				'event_type__not_in' => $event_type__not_in,
 				'include'            => $include,
 				'exclude'            => $exclude,
 				'parent_id'          => $parent_id,
@@ -233,39 +233,39 @@ class SZ_Groups_Template {
 		}
 
 		if ( 'invites' == $type ) {
-			$this->total_group_count = (int) $this->groups['total'];
-			$this->group_count       = (int) $this->groups['total'];
-			$this->groups            = $this->groups['groups'];
-		} elseif ( 'single-group' == $type ) {
-			if ( empty( $group->id ) ) {
-				$this->total_group_count = 0;
-				$this->group_count       = 0;
+			$this->total_event_count = (int) $this->events['total'];
+			$this->event_count       = (int) $this->events['total'];
+			$this->events            = $this->events['events'];
+		} elseif ( 'single-event' == $type ) {
+			if ( empty( $event->id ) ) {
+				$this->total_event_count = 0;
+				$this->event_count       = 0;
 			} else {
-				$this->total_group_count = 1;
-				$this->group_count       = 1;
+				$this->total_event_count = 1;
+				$this->event_count       = 1;
 			}
 		} else {
-			if ( empty( $max ) || $max >= (int) $this->groups['total'] ) {
-				$this->total_group_count = (int) $this->groups['total'];
+			if ( empty( $max ) || $max >= (int) $this->events['total'] ) {
+				$this->total_event_count = (int) $this->events['total'];
 			} else {
-				$this->total_group_count = (int) $max;
+				$this->total_event_count = (int) $max;
 			}
 
-			$this->groups = $this->groups['groups'];
+			$this->events = $this->events['events'];
 
 			if ( !empty( $max ) ) {
-				if ( $max >= count( $this->groups ) ) {
-					$this->group_count = count( $this->groups );
+				if ( $max >= count( $this->events ) ) {
+					$this->event_count = count( $this->events );
 				} else {
-					$this->group_count = (int) $max;
+					$this->event_count = (int) $max;
 				}
 			} else {
-				$this->group_count = count( $this->groups );
+				$this->event_count = count( $this->events );
 			}
 		}
 
 		// Build pagination links.
-		if ( (int) $this->total_group_count && (int) $this->pag_num ) {
+		if ( (int) $this->total_event_count && (int) $this->pag_num ) {
 			$pag_args = array(
 				$this->pag_arg => '%#%'
 			);
@@ -283,17 +283,17 @@ class SZ_Groups_Template {
 			);
 
 			if ( ! empty( $search_terms ) ) {
-				$query_arg = sz_core_get_component_search_query_arg( 'groups' );
+				$query_arg = sz_core_get_component_search_query_arg( 'events' );
 				$add_args[ $query_arg ] = urlencode( $search_terms );
 			}
 
 			$this->pag_links = paginate_links( array(
 				'base'      => add_query_arg( $pag_args, $base ),
 				'format'    => '',
-				'total'     => ceil( (int) $this->total_group_count / (int) $this->pag_num ),
+				'total'     => ceil( (int) $this->total_event_count / (int) $this->pag_num ),
 				'current'   => $this->pag_page,
-				'prev_text' => _x( '&larr;', 'Group pagination previous text', 'sportszone' ),
-				'next_text' => _x( '&rarr;', 'Group pagination next text', 'sportszone' ),
+				'prev_text' => _x( '&larr;', 'Event pagination previous text', 'sportszone' ),
+				'next_text' => _x( '&rarr;', 'Event pagination next text', 'sportszone' ),
 				'mid_size'  => 1,
 				'add_args'  => $add_args,
 			) );
@@ -301,16 +301,16 @@ class SZ_Groups_Template {
 	}
 
 	/**
-	 * Whether there are groups available in the loop.
+	 * Whether there are events available in the loop.
 	 *
 	 * @since 1.2.0
 	 *
-	 * @see sz_has_groups()
+	 * @see sz_has_events()
 	 *
 	 * @return bool True if there are items in the loop, otherwise false.
 	 */
-	function has_groups() {
-		if ( $this->group_count ) {
+	function has_events() {
+		if ( $this->event_count ) {
 			return true;
 		}
 
@@ -318,57 +318,57 @@ class SZ_Groups_Template {
 	}
 
 	/**
-	 * Set up the next group and iterate index.
+	 * Set up the next event and iterate index.
 	 *
 	 * @since 1.2.0
 	 *
-	 * @return object The next group to iterate over.
+	 * @return object The next event to iterate over.
 	 */
-	function next_group() {
-		$this->current_group++;
-		$this->group = $this->groups[$this->current_group];
+	function next_event() {
+		$this->current_event++;
+		$this->event = $this->events[$this->current_event];
 
-		return $this->group;
+		return $this->event;
 	}
 
 	/**
-	 * Rewind the groups and reset member index.
+	 * Rewind the events and reset member index.
 	 *
 	 * @since 1.2.0
 	 */
-	function rewind_groups() {
-		$this->current_group = -1;
-		if ( $this->group_count > 0 ) {
-			$this->group = $this->groups[0];
+	function rewind_events() {
+		$this->current_event = -1;
+		if ( $this->event_count > 0 ) {
+			$this->event = $this->events[0];
 		}
 	}
 
 	/**
-	 * Whether there are groups left in the loop to iterate over.
+	 * Whether there are events left in the loop to iterate over.
 	 *
-	 * This method is used by {@link sz_groups()} as part of the while loop
-	 * that controls iteration inside the groups loop, eg:
-	 *     while ( sz_groups() ) { ...
+	 * This method is used by {@link sz_events()} as part of the while loop
+	 * that controls iteration inside the events loop, eg:
+	 *     while ( sz_events() ) { ...
 	 *
 	 * @since 1.2.0
 	 *
-	 * @see sz_groups()
+	 * @see sz_events()
 	 *
-	 * @return bool True if there are more groups to show, otherwise false.
+	 * @return bool True if there are more events to show, otherwise false.
 	 */
-	function groups() {
-		if ( $this->current_group + 1 < $this->group_count ) {
+	function events() {
+		if ( $this->current_event + 1 < $this->event_count ) {
 			return true;
-		} elseif ( $this->current_group + 1 == $this->group_count ) {
+		} elseif ( $this->current_event + 1 == $this->event_count ) {
 
 			/**
-			 * Fires right before the rewinding of groups list.
+			 * Fires right before the rewinding of events list.
 			 *
 			 * @since 1.5.0
 			 */
-			do_action('group_loop_end');
+			do_action('event_loop_end');
 			// Do some cleaning up after the loop.
-			$this->rewind_groups();
+			$this->rewind_events();
 		}
 
 		$this->in_the_loop = false;
@@ -376,28 +376,28 @@ class SZ_Groups_Template {
 	}
 
 	/**
-	 * Set up the current group inside the loop.
+	 * Set up the current event inside the loop.
 	 *
-	 * Used by {@link sz_the_group()} to set up the current group data
+	 * Used by {@link sz_the_event()} to set up the current event data
 	 * while looping, so that template tags used during that iteration make
 	 * reference to the current member.
 	 *
 	 * @since 1.2.0
 	 *
-	 * @see sz_the_group()
+	 * @see sz_the_event()
 	 */
-	function the_group() {
+	function the_event() {
 		$this->in_the_loop = true;
-		$this->group       = $this->next_group();
+		$this->event       = $this->next_event();
 
-		if ( 0 == $this->current_group ) {
+		if ( 0 == $this->current_event ) {
 
 			/**
-			 * Fires if the current group item is the first in the loop.
+			 * Fires if the current event item is the first in the loop.
 			 *
 			 * @since 1.1.0
 			 */
-			do_action( 'group_loop_start' );
+			do_action( 'event_loop_start' );
 		}
 	}
 }

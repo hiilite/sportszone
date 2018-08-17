@@ -1096,7 +1096,7 @@ function sz_attachments_get_cover_image_settings( $component = 'xprofile' ) {
 	 */
 	$settings = sz_parse_args( $args, array(
 		'components'    => array(),
-		'width'         => 828,
+		'width'         => 1300,
 		'height'        => 315,
 		'callback'      => '',
 		'theme_handle'  => '',

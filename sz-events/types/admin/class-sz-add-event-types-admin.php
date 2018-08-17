@@ -5,8 +5,8 @@
  * @link       https://wbcomdesigns.com/
  * @since      1.0.0
  *
- * @package    SZ_Add_Group_Types
- * @subpackage SZ_Add_Group_Types/admin
+ * @package    SZ_Add_Event_Types
+ * @subpackage SZ_Add_Event_Types/admin
  */
 
 /**
@@ -15,11 +15,11 @@
  * Defines the plugin name, version, and two examples hooks for how to
  * enqueue the admin-specific stylesheet and JavaScript.
  *
- * @package    SZ_Add_Group_Types
- * @subpackage SZ_Add_Group_Types/admin
+ * @package    SZ_Add_Event_Types
+ * @subpackage SZ_Add_Event_Types/admin
  * @author     Wbcom Designs <admin@wbcomdesigns.com>
  */
-class SZ_Add_Group_Types_Admin {
+class SZ_Add_Event_Types_Admin {
 
 	/**
 	 * The ID of this plugin.
@@ -50,10 +50,10 @@ class SZ_Add_Group_Types_Admin {
 
 		$this->plugin_name = $plugin_name;
 		$this->version     = $version;
-		$this->szgt_save_general_settings();
-		$this->szgt_save_group_types();
-		$this->szgt_save_type_display_settings();
-		$this->szgt_save_group_type_search_settings();
+		$this->szet_save_general_settings();
+		$this->szet_save_event_types();
+		$this->szet_save_type_display_settings();
+		$this->szet_save_event_type_search_settings();
 
 	}
 
@@ -68,15 +68,15 @@ class SZ_Add_Group_Types_Admin {
 		 * This function is provided for demonstration purposes only.
 		 *
 		 * An instance of this class should be passed to the run() function
-		 * defined in SZ_Add_Group_Types_Loader as all of the hooks are defined
+		 * defined in SZ_Add_Event_Types_Loader as all of the hooks are defined
 		 * in that particular class.
 		 *
-		 * The SZ_Add_Group_Types_Loader will then create the relationship
+		 * The SZ_Add_Event_Types_Loader will then create the relationship
 		 * between the defined hooks and the functions defined in this
 		 * class.
 		 */
-		if ( strpos( filter_input( INPUT_SERVER, 'REQUEST_URI' ), 'sz-add-group-types' ) !== false ) {
-			wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/sz-add-group-types-admin.css', array(), $this->version, 'all' );
+		if ( strpos( filter_input( INPUT_SERVER, 'REQUEST_URI' ), 'sz-add-event-types' ) !== false ) {
+			wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/sz-add-event-types-admin.css', array(), $this->version, 'all' );
 		}
 	}
 
@@ -91,35 +91,35 @@ class SZ_Add_Group_Types_Admin {
 		 * This function is provided for demonstration purposes only.
 		 *
 		 * An instance of this class should be passed to the run() function
-		 * defined in SZ_Add_Group_Types_Loader as all of the hooks are defined
+		 * defined in SZ_Add_Event_Types_Loader as all of the hooks are defined
 		 * in that particular class.
 		 *
-		 * The SZ_Add_Group_Types_Loader will then create the relationship
+		 * The SZ_Add_Event_Types_Loader will then create the relationship
 		 * between the defined hooks and the functions defined in this
 		 * class.
 		 */
-		if ( strpos( filter_input( INPUT_SERVER, 'REQUEST_URI' ), 'sz-add-group-types' ) !== false ) {
-			wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/sz-add-group-types-admin.js', array( 'jquery' ), $this->version, false );
+		if ( strpos( filter_input( INPUT_SERVER, 'REQUEST_URI' ), 'sz-add-event-types' ) !== false ) {
+			wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/sz-add-event-types-admin.js', array( 'jquery' ), $this->version, false );
 		}
 	}
 
 	/**
-	 * Register a submenu to handle group types
+	 * Register a submenu to handle event types
 	 *
 	 * @since    1.0.0
 	 */
-	public function szgt_add_submenu_page() {
-		add_submenu_page( 'sz-groups', __( 'Group Types Settings', 'sportszone' ), __( 'Types Settings', 'sportszone' ), 'manage_options', $this->plugin_name, array( $this, 'szgt_admin_settings_page' ));
+	public function szet_add_submenu_page() {
+		add_submenu_page( 'sz-events', __( 'Event Types Settings', 'sportszone' ), __( 'Types Settings', 'sportszone' ), 'manage_options', $this->plugin_name, array( $this, 'szet_admin_settings_page' ));
 	}
 	/**
 	 * Actions performed to create a submenu page content
 	 */
-	public function szgt_admin_settings_page() {
+	public function szet_admin_settings_page() {
 		$tab = ( filter_input( INPUT_GET, 'tab' ) !== null ) ? filter_input( INPUT_GET, 'tab' ) : $this->plugin_name;
 		?>
 		<div class="wrap">
-			<h2><?php esc_html_e( 'Group Types - SportsZone', 'sz-add-group-types' ); ?></h2>
-			<?php $this->szgt_plugin_settings_tabs(); ?>
+			<h2><?php esc_html_e( 'Event Types - SportsZone', 'sz-add-event-types' ); ?></h2>
+			<?php $this->szet_plugin_settings_tabs(); ?>
 			<?php do_settings_sections( $tab ); ?>
 		</div>
 		<?php
@@ -128,7 +128,7 @@ class SZ_Add_Group_Types_Admin {
 	/**
 	 * Actions performed to create tabs on the sub menu page
 	 */
-	public function szgt_plugin_settings_tabs() {
+	public function szet_plugin_settings_tabs() {
 		$current_tab = ( filter_input( INPUT_GET, 'tab' ) !== null ) ? filter_input( INPUT_GET, 'tab' ) : $this->plugin_name;
 		echo '<h2 class="nav-tab-wrapper">';
 		foreach ( $this->plugin_settings_tabs as $tab_key => $tab_caption ) {
@@ -141,118 +141,118 @@ class SZ_Add_Group_Types_Admin {
 	/**
 	 * General Tab
 	 */
-	public function szgt_register_general_settings() {
-		$this->plugin_settings_tabs['szgt-general'] = __( 'General', 'sz-add-group-types' );
+	public function szet_register_general_settings() {
+		$this->plugin_settings_tabs['szgt-general'] = __( 'General', 'sz-add-event-types' );
 		register_setting( 'szgt-general', 'szgt-general' );
-		add_settings_section( 'szgt-general-section', ' ', array( &$this, 'szgt_general_settings_content' ), 'szgt-general' );
+		add_settings_section( 'szgt-general-section', ' ', array( &$this, 'szet_general_settings_content' ), 'szgt-general' );
 	}
 
 	/**
 	 * General Tab Content
 	 */
-	public function szgt_general_settings_content() {
+	public function szet_general_settings_content() {
 		if ( file_exists( dirname( __FILE__ ) . '/settings/szgt-general-settings.php' ) ) {
 			require_once dirname( __FILE__ ) . '/settings/szgt-general-settings.php';
 		}
 	}
 
 	/**
-	 * Group Types Listing Tab
+	 * Event Types Listing Tab
 	 */
-	public function szgt_register_group_types_listing_settings() {
-		$this->plugin_settings_tabs['sz-add-group-types'] = __( 'Group Types', 'sz-add-group-types' );
-		register_setting( 'sz-add-group-types', 'sz-add-group-types' );
-		add_settings_section( 'sz-add-group-types-section', ' ', array( &$this, 'szgt_group_types_listing_settings_content' ), 'sz-add-group-types' );
+	public function szet_register_event_types_listing_settings() {
+		$this->plugin_settings_tabs['sz-add-event-types'] = __( 'Event Types', 'sz-add-event-types' );
+		register_setting( 'sz-add-event-types', 'sz-add-event-types' );
+		add_settings_section( 'sz-add-event-types-section', ' ', array( &$this, 'szet_event_types_listing_settings_content' ), 'sz-add-event-types' );
 	}
 
 	/**
-	 * Group Types Listing Tab Content
+	 * Event Types Listing Tab Content
 	 */
-	public function szgt_group_types_listing_settings_content() {
-		if ( file_exists( dirname( __FILE__ ) . '/settings/szgt-group-types-listing-settings.php' ) ) {
-			require_once dirname( __FILE__ ) . '/settings/szgt-group-types-listing-settings.php';
+	public function szet_event_types_listing_settings_content() {
+		if ( file_exists( dirname( __FILE__ ) . '/settings/szgt-event-types-listing-settings.php' ) ) {
+			require_once dirname( __FILE__ ) . '/settings/szgt-event-types-listing-settings.php';
 		}
 	}
 
 	/**
-	 * Group Types Search Tab
+	 * Event Types Search Tab
 	 */
-	public function szgt_register_group_type_search_settings() {
-		$this->plugin_settings_tabs['szgt-search'] = __( 'Group Type Search', 'sz-add-group-types' );
+	public function szet_register_event_type_search_settings() {
+		$this->plugin_settings_tabs['szgt-search'] = __( 'Event Type Search', 'sz-add-event-types' );
 		register_setting( 'szgt-search', 'szgt-search' );
-		add_settings_section( 'szgt-search-enabled-section', ' ', array( &$this, 'szgt_group_type_search_settings_content' ), 'szgt-search' );
+		add_settings_section( 'szgt-search-enabled-section', ' ', array( &$this, 'szet_event_type_search_settings_content' ), 'szgt-search' );
 	}
 
 	/**
-	 * Group Types Search Tab Content
+	 * Event Types Search Tab Content
 	 */
-	public function szgt_group_type_search_settings_content() {
-		if ( file_exists( dirname( __FILE__ ) . '/settings/szgt-group-type-search-settings.php' ) ) {
-			require_once dirname( __FILE__ ) . '/settings/szgt-group-type-search-settings.php';
+	public function szet_event_type_search_settings_content() {
+		if ( file_exists( dirname( __FILE__ ) . '/settings/szgt-event-type-search-settings.php' ) ) {
+			require_once dirname( __FILE__ ) . '/settings/szgt-event-type-search-settings.php';
 		}
 	}
 
 	/**
 	 * Support Tab
 	 */
-	public function szgt_register_support_settings() {
-		$this->plugin_settings_tabs['szgt-support'] = __( 'Support', 'sz-add-group-types' );
+	public function szet_register_support_settings() {
+		$this->plugin_settings_tabs['szgt-support'] = __( 'Support', 'sz-add-event-types' );
 		register_setting( 'szgt-support', 'szgt-support' );
-		add_settings_section( 'szgt-support-section', ' ', array( &$this, 'szgt_support_settings_content' ), 'szgt-support' );
+		add_settings_section( 'szgt-support-section', ' ', array( &$this, 'szet_support_settings_content' ), 'szgt-support' );
 	}
 
 	/**
 	 * Support Tab Content
 	 */
-	public function szgt_support_settings_content() {
+	public function szet_support_settings_content() {
 		if ( file_exists( dirname( __FILE__ ) . '/settings/szgt-support-settings.php' ) ) {
 			require_once dirname( __FILE__ ) . '/settings/szgt-support-settings.php';
 		}
 	}
 
 	/**
-	 * Group Type Display Setting Tab
+	 * Event Type Display Setting Tab
 	 */
-	public function szgt_register_type_display_settings() {
-		$this->plugin_settings_tabs['szgt-type-display'] = __( 'Display Group Types', 'sz-add-group-types' );
+	public function szet_register_type_display_settings() {
+		$this->plugin_settings_tabs['szgt-type-display'] = __( 'Display Event Types', 'sz-add-event-types' );
 		register_setting( 'szgt-type-display', 'szgt-type-display' );
-		add_settings_section( 'szgt-type-display-section', ' ', array( &$this, 'szgt_type_display_settings_content' ), 'szgt-type-display' );
+		add_settings_section( 'szgt-type-display-section', ' ', array( &$this, 'szet_type_display_settings_content' ), 'szgt-type-display' );
 	}
 
 	/**
-	 * Group Type Display Setting Tab Content
+	 * Event Type Display Setting Tab Content
 	 */
-	public function szgt_type_display_settings_content() {
-		if ( file_exists( dirname( __FILE__ ) . '/settings/szgt-group-type-display-settings.php' ) ) {
-			require_once dirname( __FILE__ ) . '/settings/szgt-group-type-display-settings.php';
+	public function szet_type_display_settings_content() {
+		if ( file_exists( dirname( __FILE__ ) . '/settings/szgt-event-type-display-settings.php' ) ) {
+			require_once dirname( __FILE__ ) . '/settings/szgt-event-type-display-settings.php';
 		}
 	}
 
 	/**
 	 * Save Plugin General Settings
 	 */
-	public function szgt_save_general_settings() {
+	public function szet_save_general_settings() {
 		global $allowedposttags;
-		if ( ( filter_input( INPUT_POST, 'szgt_submit_general_settings' ) !== null ) && wp_verify_nonce( filter_input( INPUT_POST, 'szgt-general-settings-nonce' ), 'szgt' ) ) {
+		if ( ( filter_input( INPUT_POST, 'szet_submit_general_settings' ) !== null ) && wp_verify_nonce( filter_input( INPUT_POST, 'szgt-general-settings-nonce' ), 'szgt' ) ) {
 
-			$group_types_pre_selected = 'no';
-			if ( null !== filter_input( INPUT_POST, 'szgt-group-types-pre-selected' ) ) {
-				$group_types_pre_selected = 'yes';
+			$event_types_pre_selected = 'no';
+			if ( null !== filter_input( INPUT_POST, 'szgt-event-types-pre-selected' ) ) {
+				$event_types_pre_selected = 'yes';
 			}
 
-			$group_type_search_enabled = 'no';
-			if ( null !== filter_input( INPUT_POST, 'szgt-group-types-search-enabled' ) ) {
-				$group_type_search_enabled = 'yes';
+			$event_type_search_enabled = 'no';
+			if ( null !== filter_input( INPUT_POST, 'szgt-event-types-search-enabled' ) ) {
+				$event_type_search_enabled = 'yes';
 			}
 
 			$admin_settings = array(
-				'group_types_pre_selected'  => $group_types_pre_selected,
-				'group_type_search_enabled' => $group_type_search_enabled,
+				'event_types_pre_selected'  => $event_types_pre_selected,
+				'event_type_search_enabled' => $event_type_search_enabled,
 			);
 
-			update_site_option( 'szgt_general_settings', $admin_settings );
+			update_site_option( 'szet_general_settings', $admin_settings );
 			$success_msg  = "<div class='notice updated is-dismissible' id='message'>";
-			$success_msg .= '<p>' . __( 'Settings Saved.', 'sz-add-group-types' ) . '</p>';
+			$success_msg .= '<p>' . __( 'Settings Saved.', 'sz-add-event-types' ) . '</p>';
 			$success_msg .= '</div>';
 			wp_kses( $success_msg, $allowedposttags );
 		}
@@ -261,68 +261,68 @@ class SZ_Add_Group_Types_Admin {
 	/**
 	 * Save Plugin General Settings
 	 */
-	public function szgt_save_type_display_settings() {
+	public function szet_save_type_display_settings() {
 		global $allowedposttags;
 		$type_arr = array();
-		if ( null !== filter_input( INPUT_POST, 'szgt_submit_group_type_display_settings' ) ) {
-			if ( isset( $_POST['szgt_group_type_display'] ) ) {
-				$type_arr = array_map( 'sanitize_text_field', wp_unslash( $_POST['szgt_group_type_display'] ) );
+		if ( null !== filter_input( INPUT_POST, 'szet_submit_event_type_display_settings' ) ) {
+			if ( isset( $_POST['szet_event_type_display'] ) ) {
+				$type_arr = array_map( 'sanitize_text_field', wp_unslash( $_POST['szet_event_type_display'] ) );
 			}
-			update_site_option( 'szgt_type_display_settings', $type_arr );
+			update_site_option( 'szet_type_display_settings', $type_arr );
 			$success_msg  = "<div class='notice updated is-dismissible' id='message'>";
-			$success_msg .= '<p>' . __( 'Settings Saved.', 'sz-add-group-types' ) . '</p>';
+			$success_msg .= '<p>' . __( 'Settings Saved.', 'sz-add-event-types' ) . '</p>';
 			$success_msg .= '</div>';
 			wp_kses( $success_msg, $allowedposttags );
 		}
 	}
 
 	/**
-	 * Save Group Types that are added
+	 * Save Event Types that are added
 	 */
-	public function szgt_save_group_types() {
+	public function szet_save_event_types() {
 		global $allowedposttags;
-		if ( ( filter_input( INPUT_POST, 'szgt-add-group-type' ) !== null ) && wp_verify_nonce( filter_input( INPUT_POST, 'szgt-add-group-types-nonce' ), 'szgt-group-types' ) ) {
-			$group_type_name = sanitize_text_field( filter_input( INPUT_POST, 'group-type-name' ) );
+		if ( ( filter_input( INPUT_POST, 'szgt-add-event-type' ) !== null ) && wp_verify_nonce( filter_input( INPUT_POST, 'szgt-add-event-types-nonce' ), 'szgt-event-types' ) ) {
+			$event_type_name = sanitize_text_field( filter_input( INPUT_POST, 'event-type-name' ) );
 
-			if ( filter_input( INPUT_POST, 'group-type-slug' ) !== null ) {
-				$group_type_slug = sanitize_text_field( filter_input( INPUT_POST, 'group-type-slug' ) );
+			if ( filter_input( INPUT_POST, 'event-type-slug' ) !== null ) {
+				$event_type_slug = sanitize_text_field( filter_input( INPUT_POST, 'event-type-slug' ) );
 			} else {
-				$group_type_slug = str_replace( ' ', '', strtolower( $group_type_name ) );
+				$event_type_slug = str_replace( ' ', '', strtolower( $event_type_name ) );
 			}
 
-			$group_type_desc = '';
-			if ( filter_input( INPUT_POST, 'group-type-desc' ) !== null ) {
-				$group_type_desc = sanitize_text_field( filter_input( INPUT_POST, 'group-type-desc' ) );
+			$event_type_desc = '';
+			if ( filter_input( INPUT_POST, 'event-type-desc' ) !== null ) {
+				$event_type_desc = sanitize_text_field( filter_input( INPUT_POST, 'event-type-desc' ) );
 			}
 
-			$group_types = get_site_option( 'szgt_group_types' );
-			if ( ! is_array( $group_types ) ) {
-				$group_types = array();
+			$event_types = get_site_option( 'szet_event_types' );
+			if ( ! is_array( $event_types ) ) {
+				$event_types = array();
 			}
 
 			$flag = 0;
-			if ( ! empty( $group_types ) ) {
-				foreach ( $group_types as $key => $group_type ) {
-					if ( $group_type_slug === $group_type['slug'] ) {
+			if ( ! empty( $event_types ) ) {
+				foreach ( $event_types as $key => $event_type ) {
+					if ( $event_type_slug === $event_type['slug'] ) {
 						$flag = 1;
 					}
 				}
 			}
 
 			if ( 0 === $flag ) {
-				$group_types[] = array(
-					'name' => $group_type_name,
-					'slug' => $group_type_slug,
-					'desc' => $group_type_desc,
+				$event_types[] = array(
+					'name' => $event_type_name,
+					'slug' => $event_type_slug,
+					'desc' => $event_type_desc,
 				);
-				update_site_option( 'szgt_group_types', $group_types );
+				update_site_option( 'szet_event_types', $event_types );
 				$success_msg  = "<div class='notice updated is-dismissible' id='message'>";
-				$success_msg .= '<p>' . __( 'Group Type Added!', 'sz-add-group-types' ) . '</p>';
+				$success_msg .= '<p>' . __( 'Event Type Added!', 'sz-add-event-types' ) . '</p>';
 				$success_msg .= '</div>';
 				wp_kses( $success_msg, $allowedposttags );
 			} else {
 				$error_msg  = "<div class='notice notice-error is-dismissible' id='message'>";
-				$error_msg .= '<p>' . __( 'Group Type With This Name/Slug Already Exists!', 'sz-add-group-types' ) . '</p>';
+				$error_msg .= '<p>' . __( 'Event Type With This Name/Slug Already Exists!', 'sz-add-event-types' ) . '</p>';
 				$error_msg .= '</div>';
 				wp_kses( $error_msg, $allowedposttags );
 			}
@@ -330,28 +330,28 @@ class SZ_Add_Group_Types_Admin {
 	}
 
 	/**
-	 * Ajax served to delete the group type
+	 * Ajax served to delete the event type
 	 */
-	public function szgt_delete_group_type() {
-		if ( ( filter_input( INPUT_POST, 'action' ) !== null ) && 'szgt_delete_group_type' === filter_input( INPUT_POST, 'action' ) ) {
+	public function szet_delete_event_type() {
+		if ( ( filter_input( INPUT_POST, 'action' ) !== null ) && 'szet_delete_event_type' === filter_input( INPUT_POST, 'action' ) ) {
 			$slug = sanitize_text_field( filter_input( INPUT_POST, 'slug' ) );
 
-			$group_types = get_site_option( 'szgt_group_types' );
-			foreach ( $group_types as $key => $group_type ) {
-				if ( $slug === $group_type['slug'] ) {
+			$event_types = get_site_option( 'szet_event_types' );
+			foreach ( $event_types as $key => $event_type ) {
+				if ( $slug === $event_type['slug'] ) {
 					$key_to_unset = $key;
 					break;
 				}
 			}
-			unset( $group_types[ $key_to_unset ] );
-			if ( empty( $group_types ) ) {
-				delete_option( 'szgt_group_types' );
+			unset( $event_types[ $key_to_unset ] );
+			if ( empty( $event_types ) ) {
+				delete_option( 'szet_event_types' );
 			} else {
-				update_site_option( 'szgt_group_types', $group_types );
+				update_site_option( 'szet_event_types', $event_types );
 			}
 
 			$response = array(
-				'message' => __( 'Group Type Deleted.', 'sz-add-group-types' ),
+				'message' => __( 'Event Type Deleted.', 'sz-add-event-types' ),
 			);
 			wp_send_json_success( $response );
 			die;
@@ -359,32 +359,32 @@ class SZ_Add_Group_Types_Admin {
 	}
 
 	/**
-	 * Ajax served to update the group type
+	 * Ajax served to update the event type
 	 */
-	public function szgt_update_group_type() {
-		if ( ( filter_input( INPUT_POST, 'action' ) !== null ) && 'szgt_update_group_type' === filter_input( INPUT_POST, 'action' ) ) {
+	public function szet_update_event_type() {
+		if ( ( filter_input( INPUT_POST, 'action' ) !== null ) && 'szet_update_event_type' === filter_input( INPUT_POST, 'action' ) ) {
 			$new_name = sanitize_text_field( filter_input( INPUT_POST, 'new_name' ) );
 			$old_slug = sanitize_text_field( filter_input( INPUT_POST, 'old_slug' ) );
 
-			$group_types = get_site_option( 'szgt_group_types' );
-			foreach ( $group_types as $key => $group_type ) {
-				if ( $old_slug === $group_type['slug'] ) {
+			$event_types = get_site_option( 'szet_event_types' );
+			foreach ( $event_types as $key => $event_type ) {
+				if ( $old_slug === $event_type['slug'] ) {
 					$key_to_update = $key;
 					break;
 				}
 			}
 
-			$new_group_type = array(
+			$new_event_type = array(
 				'name' => $new_name,
 				'slug' => sanitize_text_field( filter_input( INPUT_POST, 'new_slug' ) ),
 				'desc' => sanitize_text_field( filter_input( INPUT_POST, 'new_desc' ) ),
 			);
 
-			$group_types[ $key_to_update ] = $new_group_type;
-			update_site_option( 'szgt_group_types', $group_types );
+			$event_types[ $key_to_update ] = $new_event_type;
+			update_site_option( 'szet_event_types', $event_types );
 
 			$response = array(
-				'message' => __( 'Group Type Updated.', 'sz-add-group-types' ),
+				'message' => __( 'Event Type Updated.', 'sz-add-event-types' ),
 			);
 			wp_send_json_success( $response );
 			die;
@@ -392,24 +392,24 @@ class SZ_Add_Group_Types_Admin {
 	}
 
 	/**
-	 * Register all saved group types
+	 * Register all saved event types
 	 */
-	public function szgt_register_group_types() {
-		global $sz_grp_types;
+	public function szet_register_event_types() {
+		global $sz_evt_types;
 		$create_screen_checked = false;
-		if ( isset( $sz_grp_types->group_types_pre_selected ) ) {
-			if ( 'yes' === $sz_grp_types->group_types_pre_selected ) {
+		if ( isset( $sz_evt_types->event_types_pre_selected ) ) {
+			if ( 'yes' === $sz_evt_types->event_types_pre_selected ) {
 				$create_screen_checked = true;
 			}
 		}
-		$saved_group_types = $sz_grp_types->group_types;
-		$group_types       = sz_groups_get_group_types();
-		if ( ! empty( $saved_group_types ) ) {
-			foreach ( $saved_group_types as $key => $saved_group_type ) {
-				$slug = $saved_group_type['slug'];
-				$name = $saved_group_type['name'];
-				$desc = $saved_group_type['desc'];
-				if ( ! in_array( $slug, $group_types, true ) ) {
+		$saved_event_types = $sz_evt_types->event_types;
+		$event_types       = sz_events_get_event_types();
+		if ( ! empty( $saved_event_types ) ) {
+			foreach ( $saved_event_types as $key => $saved_event_type ) {
+				$slug = $saved_event_type['slug'];
+				$name = $saved_event_type['name'];
+				$desc = $saved_event_type['desc'];
+				if ( ! in_array( $slug, $event_types, true ) ) {
 					$temp = array(
 						'labels'                => array(
 							'name'          => $name,
@@ -421,30 +421,30 @@ class SZ_Add_Group_Types_Admin {
 						'description'           => $desc,
 						'create_screen_checked' => $create_screen_checked,
 					);
-					sz_groups_register_group_type( $name, $temp );
+					sz_events_register_event_type( $name, $temp );
 				}
 			}
 		}
 	}
 
 	/**
-	 * Save Plugin Group Type Search Settings
+	 * Save Plugin Event Type Search Settings
 	 */
-	public function szgt_save_group_type_search_settings() {
+	public function szet_save_event_type_search_settings() {
 		global $allowedposttags;
-		if ( ( filter_input( INPUT_POST, 'szgt_submit_group_type_search_settings' ) !== null ) && wp_verify_nonce( filter_input( INPUT_POST, 'szgt-group-type-search-settings-nonce' ), 'szgt-search-settings' ) ) {
-			$group_type_search_template = 'both';
-			if ( null !== filter_input( INPUT_POST, 'szgt-group-type-search-template' ) ) {
-				$group_type_search_template = sanitize_text_field( filter_input( INPUT_POST, 'szgt-group-type-search-template' ) );
+		if ( ( filter_input( INPUT_POST, 'szet_submit_event_type_search_settings' ) !== null ) && wp_verify_nonce( filter_input( INPUT_POST, 'szgt-event-type-search-settings-nonce' ), 'szgt-search-settings' ) ) {
+			$event_type_search_template = 'both';
+			if ( null !== filter_input( INPUT_POST, 'szgt-event-type-search-template' ) ) {
+				$event_type_search_template = sanitize_text_field( filter_input( INPUT_POST, 'szgt-event-type-search-template' ) );
 			}
 
 			$admin_settings = array(
-				'group_type_search_template' => $group_type_search_template,
+				'event_type_search_template' => $event_type_search_template,
 			);
 
-			update_site_option( 'szgt_group_type_search_settings', $admin_settings );
+			update_site_option( 'szet_event_type_search_settings', $admin_settings );
 			$success_msg  = "<div class='notice updated is-dismissible' id='message'>";
-			$success_msg .= '<p>' . __( 'Settings Saved.', 'sz-add-group-types' ) . '</p>';
+			$success_msg .= '<p>' . __( 'Settings Saved.', 'sz-add-event-types' ) . '</p>';
 			$success_msg .= '</div>';
 			echo wp_kses( $success_msg, $allowedposttags );
 		}

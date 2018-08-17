@@ -47,6 +47,7 @@
 	<?php endif; ?>
 
 	<?php if ( is_active_sidebar( 'sidebar-sportszone-groups' ) ) : ?>
+	
 		<div id="group-front-widgets" class="sz-sidebar sz-widget-area" role="complementary">
 
 			<?php dynamic_sidebar( 'sidebar-sportszone-groups' ); ?>

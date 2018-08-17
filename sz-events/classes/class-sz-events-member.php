@@ -1,9 +1,9 @@
 <?php
 /**
- * SportsZone Groups Classes.
+ * SportsZone Events Classes.
  *
  * @package SportsZone
- * @subpackage GroupsClasses
+ * @subpackage EventsClasses
  * @since 1.6.0
  */
 
@@ -11,9 +11,9 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * SportsZone Group Membership object.
+ * SportsZone Event Membership object.
  */
-class SZ_Groups_Member {
+class SZ_Events_Member {
 
 	/**
 	 * ID of the membership.
@@ -24,12 +24,12 @@ class SZ_Groups_Member {
 	var $id;
 
 	/**
-	 * ID of the group associated with the membership.
+	 * ID of the event associated with the membership.
 	 *
 	 * @since 1.6.0
 	 * @var int
 	 */
-	var $group_id;
+	var $event_id;
 
 	/**
 	 * ID of the user associated with the membership.
@@ -48,7 +48,7 @@ class SZ_Groups_Member {
 	var $inviter_id;
 
 	/**
-	 * Whether the member is an admin of the group.
+	 * Whether the member is an admin of the event.
 	 *
 	 * @since 1.6.0
 	 * @var int
@@ -56,7 +56,7 @@ class SZ_Groups_Member {
 	var $is_admin;
 
 	/**
-	 * Whether the member is a mod of the group.
+	 * Whether the member is a mod of the event.
 	 *
 	 * @since 1.6.0
 	 * @var int
@@ -64,7 +64,7 @@ class SZ_Groups_Member {
 	var $is_mod;
 
 	/**
-	 * Whether the member is banned from the group.
+	 * Whether the member is banned from the event.
 	 *
 	 * @since 1.6.0
 	 * @var int
@@ -72,9 +72,9 @@ class SZ_Groups_Member {
 	var $is_banned;
 
 	/**
-	 * Title used to describe the group member's role in the group.
+	 * Title used to describe the event member's role in the event.
 	 *
-	 * Eg, 'Group Admin'.
+	 * Eg, 'Event Admin'.
 	 *
 	 * @since 1.6.0
 	 * @var int
@@ -103,7 +103,7 @@ class SZ_Groups_Member {
 	 * Comments associated with the membership.
 	 *
 	 * In BP core, these are limited to the optional message users can
-	 * include when requesting membership to a private group.
+	 * include when requesting membership to a private event.
 	 *
 	 * @since 1.6.0
 	 * @var string
@@ -136,20 +136,20 @@ class SZ_Groups_Member {
 	 *
 	 * @since 1.6.0
 	 *
-	 * @param int      $user_id  Optional. Along with $group_id, can be used to
+	 * @param int      $user_id  Optional. Along with $event_id, can be used to
 	 *                           look up a membership.
-	 * @param int      $group_id Optional. Along with $user_id, can be used to
+	 * @param int      $event_id Optional. Along with $user_id, can be used to
 	 *                           look up a membership.
 	 * @param int|bool $id       Optional. The unique ID of the membership object.
 	 * @param bool     $populate Whether to populate the properties of the
 	 *                           located membership. Default: true.
 	 */
-	public function __construct( $user_id = 0, $group_id = 0, $id = false, $populate = true ) {
+	public function __construct( $user_id = 0, $event_id = 0, $id = false, $populate = true ) {
 
-		// User and group are not empty, and ID is.
-		if ( !empty( $user_id ) && !empty( $group_id ) && empty( $id ) ) {
+		// User and event are not empty, and ID is.
+		if ( !empty( $user_id ) && !empty( $event_id ) && empty( $id ) ) {
 			$this->user_id  = $user_id;
-			$this->group_id = $group_id;
+			$this->event_id = $event_id;
 
 			if ( !empty( $populate ) ) {
 				$this->populate();
@@ -176,17 +176,17 @@ class SZ_Groups_Member {
 
 		$sz = sportszone();
 
-		if ( $this->user_id && $this->group_id && !$this->id )
-			$sql = $wpdb->prepare( "SELECT * FROM {$sz->groups->table_name_members} WHERE user_id = %d AND group_id = %d", $this->user_id, $this->group_id );
+		if ( $this->user_id && $this->event_id && !$this->id )
+			$sql = $wpdb->prepare( "SELECT * FROM {$sz->events->table_name_members} WHERE user_id = %d AND event_id = %d", $this->user_id, $this->event_id );
 
 		if ( !empty( $this->id ) )
-			$sql = $wpdb->prepare( "SELECT * FROM {$sz->groups->table_name_members} WHERE id = %d", $this->id );
+			$sql = $wpdb->prepare( "SELECT * FROM {$sz->events->table_name_members} WHERE id = %d", $this->id );
 
 		$member = $wpdb->get_row($sql);
 
 		if ( !empty( $member ) ) {
 			$this->id            = (int) $member->id;
-			$this->group_id      = (int) $member->group_id;
+			$this->event_id      = (int) $member->event_id;
 			$this->user_id       = (int) $member->user_id;
 			$this->inviter_id    = (int) $member->inviter_id;
 			$this->is_admin      = (int) $member->is_admin;
@@ -262,43 +262,43 @@ class SZ_Groups_Member {
 
 		$sz = sportszone();
 
-		$this->user_id       = apply_filters( 'groups_member_user_id_before_save',       $this->user_id,       $this->id );
-		$this->group_id      = apply_filters( 'groups_member_group_id_before_save',      $this->group_id,      $this->id );
-		$this->inviter_id    = apply_filters( 'groups_member_inviter_id_before_save',    $this->inviter_id,    $this->id );
-		$this->is_admin      = apply_filters( 'groups_member_is_admin_before_save',      $this->is_admin,      $this->id );
-		$this->is_mod        = apply_filters( 'groups_member_is_mod_before_save',        $this->is_mod,        $this->id );
-		$this->is_banned     = apply_filters( 'groups_member_is_banned_before_save',     $this->is_banned,     $this->id );
-		$this->user_title    = apply_filters( 'groups_member_user_title_before_save',    $this->user_title,    $this->id );
-		$this->date_modified = apply_filters( 'groups_member_date_modified_before_save', $this->date_modified, $this->id );
-		$this->is_confirmed  = apply_filters( 'groups_member_is_confirmed_before_save',  $this->is_confirmed,  $this->id );
-		$this->comments      = apply_filters( 'groups_member_comments_before_save',      $this->comments,      $this->id );
-		$this->invite_sent   = apply_filters( 'groups_member_invite_sent_before_save',   $this->invite_sent,   $this->id );
+		$this->user_id       = apply_filters( 'events_member_user_id_before_save',       $this->user_id,       $this->id );
+		$this->event_id      = apply_filters( 'events_member_event_id_before_save',      $this->event_id,      $this->id );
+		$this->inviter_id    = apply_filters( 'events_member_inviter_id_before_save',    $this->inviter_id,    $this->id );
+		$this->is_admin      = apply_filters( 'events_member_is_admin_before_save',      $this->is_admin,      $this->id );
+		$this->is_mod        = apply_filters( 'events_member_is_mod_before_save',        $this->is_mod,        $this->id );
+		$this->is_banned     = apply_filters( 'events_member_is_banned_before_save',     $this->is_banned,     $this->id );
+		$this->user_title    = apply_filters( 'events_member_user_title_before_save',    $this->user_title,    $this->id );
+		$this->date_modified = apply_filters( 'events_member_date_modified_before_save', $this->date_modified, $this->id );
+		$this->is_confirmed  = apply_filters( 'events_member_is_confirmed_before_save',  $this->is_confirmed,  $this->id );
+		$this->comments      = apply_filters( 'events_member_comments_before_save',      $this->comments,      $this->id );
+		$this->invite_sent   = apply_filters( 'events_member_invite_sent_before_save',   $this->invite_sent,   $this->id );
 
 		/**
-		 * Fires before the current group membership item gets saved.
+		 * Fires before the current event membership item gets saved.
 		 *
 		 * Please use this hook to filter the properties above. Each part will be passed in.
 		 *
 		 * @since 1.0.0
 		 *
-		 * @param SZ_Groups_Member $this Current instance of the group membership item being saved. Passed by reference.
+		 * @param SZ_Events_Member $this Current instance of the event membership item being saved. Passed by reference.
 		 */
-		do_action_ref_array( 'groups_member_before_save', array( &$this ) );
+		do_action_ref_array( 'events_member_before_save', array( &$this ) );
 
 		// The following properties are required; bail if not met.
-		if ( empty( $this->user_id ) || empty( $this->group_id ) ) {
+		if ( empty( $this->user_id ) || empty( $this->event_id ) ) {
 			return false;
 		}
 
 		if ( !empty( $this->id ) ) {
-			$sql = $wpdb->prepare( "UPDATE {$sz->groups->table_name_members} SET inviter_id = %d, is_admin = %d, is_mod = %d, is_banned = %d, user_title = %s, date_modified = %s, is_confirmed = %d, comments = %s, invite_sent = %d WHERE id = %d", $this->inviter_id, $this->is_admin, $this->is_mod, $this->is_banned, $this->user_title, $this->date_modified, $this->is_confirmed, $this->comments, $this->invite_sent, $this->id );
+			$sql = $wpdb->prepare( "UPDATE {$sz->events->table_name_members} SET inviter_id = %d, is_admin = %d, is_mod = %d, is_banned = %d, user_title = %s, date_modified = %s, is_confirmed = %d, comments = %s, invite_sent = %d WHERE id = %d", $this->inviter_id, $this->is_admin, $this->is_mod, $this->is_banned, $this->user_title, $this->date_modified, $this->is_confirmed, $this->comments, $this->invite_sent, $this->id );
 		} else {
-			// Ensure that user is not already a member of the group before inserting.
-			if ( $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$sz->groups->table_name_members} WHERE user_id = %d AND group_id = %d AND is_confirmed = 1 LIMIT 1", $this->user_id, $this->group_id ) ) ) {
+			// Ensure that user is not already a member of the event before inserting.
+			if ( $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$sz->events->table_name_members} WHERE user_id = %d AND event_id = %d AND is_confirmed = 1 LIMIT 1", $this->user_id, $this->event_id ) ) ) {
 				return false;
 			}
 
-			$sql = $wpdb->prepare( "INSERT INTO {$sz->groups->table_name_members} ( user_id, group_id, inviter_id, is_admin, is_mod, is_banned, user_title, date_modified, is_confirmed, comments, invite_sent ) VALUES ( %d, %d, %d, %d, %d, %d, %s, %s, %d, %s, %d )", $this->user_id, $this->group_id, $this->inviter_id, $this->is_admin, $this->is_mod, $this->is_banned, $this->user_title, $this->date_modified, $this->is_confirmed, $this->comments, $this->invite_sent );
+			$sql = $wpdb->prepare( "INSERT INTO {$sz->events->table_name_members} ( user_id, event_id, inviter_id, is_admin, is_mod, is_banned, user_title, date_modified, is_confirmed, comments, invite_sent ) VALUES ( %d, %d, %d, %d, %d, %d, %s, %s, %d, %s, %d )", $this->user_id, $this->event_id, $this->inviter_id, $this->is_admin, $this->is_mod, $this->is_banned, $this->user_title, $this->date_modified, $this->is_confirmed, $this->comments, $this->invite_sent );
 		}
 
 		if ( !$wpdb->query( $sql ) )
@@ -306,22 +306,22 @@ class SZ_Groups_Member {
 
 		$this->id = $wpdb->insert_id;
 
-		// Update the user's group count.
-		self::refresh_total_group_count_for_user( $this->user_id );
+		// Update the user's event count.
+		self::refresh_total_event_count_for_user( $this->user_id );
 
-		// Update the group's member count.
-		self::refresh_total_member_count_for_group( $this->group_id );
+		// Update the event's member count.
+		self::refresh_total_member_count_for_event( $this->event_id );
 
 		/**
-		 * Fires after the current group membership item has been saved.
+		 * Fires after the current event membership item has been saved.
 		 *
 		 * Please use this hook to filter the properties above. Each part will be passed in.
 		 *
 		 * @since 1.0.0
 		 *
-		 * @param SZ_Groups_Member $this Current instance of the group membership item has been saved. Passed by reference.
+		 * @param SZ_Events_Member $this Current instance of the event membership item has been saved. Passed by reference.
 		 */
-		do_action_ref_array( 'groups_member_after_save', array( &$this ) );
+		do_action_ref_array( 'events_member_after_save', array( &$this ) );
 
 		return true;
 	}
@@ -338,13 +338,13 @@ class SZ_Groups_Member {
 		if ( 'mod' == $status ) {
 			$this->is_admin   = 0;
 			$this->is_mod     = 1;
-			$this->user_title = __( 'Group Mod', 'sportszone' );
+			$this->user_title = __( 'Event Mod', 'sportszone' );
 		}
 
 		if ( 'admin' == $status ) {
 			$this->is_admin   = 1;
 			$this->is_mod     = 0;
-			$this->user_title = __( 'Group Admin', 'sportszone' );
+			$this->user_title = __( 'Event Admin', 'sportszone' );
 		}
 
 		return $this->save();
@@ -366,7 +366,7 @@ class SZ_Groups_Member {
 	}
 
 	/**
-	 * Ban the user from the group.
+	 * Ban the user from the event.
 	 *
 	 * @since 1.6.0
 	 *
@@ -383,7 +383,7 @@ class SZ_Groups_Member {
 	}
 
 	/**
-	 * Unban the user from the group.
+	 * Unban the user from the event.
 	 *
 	 * @since 1.6.0
 	 *
@@ -430,34 +430,34 @@ class SZ_Groups_Member {
 		global $wpdb;
 
 		/**
-		 * Fires before a member is removed from a group.
+		 * Fires before a member is removed from a event.
 		 *
 		 * @since 2.3.0
 		 *
-		 * @param SZ_Groups_Member $this Current group membership object.
+		 * @param SZ_Events_Member $this Current event membership object.
 		 */
-		do_action_ref_array( 'groups_member_before_remove', array( $this ) );
+		do_action_ref_array( 'events_member_before_remove', array( $this ) );
 
 		$sz  = sportszone();
-		$sql = $wpdb->prepare( "DELETE FROM {$sz->groups->table_name_members} WHERE user_id = %d AND group_id = %d", $this->user_id, $this->group_id );
+		$sql = $wpdb->prepare( "DELETE FROM {$sz->events->table_name_members} WHERE user_id = %d AND event_id = %d", $this->user_id, $this->event_id );
 
 		if ( !$result = $wpdb->query( $sql ) )
 			return false;
 
-		// Update the user's group count.
-		self::refresh_total_group_count_for_user( $this->user_id );
+		// Update the user's event count.
+		self::refresh_total_event_count_for_user( $this->user_id );
 
-		// Update the group's member count.
-		self::refresh_total_member_count_for_group( $this->group_id );
+		// Update the event's member count.
+		self::refresh_total_member_count_for_event( $this->event_id );
 
 		/**
-		 * Fires after a member is removed from a group.
+		 * Fires after a member is removed from a event.
 		 *
 		 * @since 2.3.0
 		 *
-		 * @param SZ_Groups_Member $this Current group membership object.
+		 * @param SZ_Events_Member $this Current event membership object.
 		 */
-		do_action_ref_array( 'groups_member_after_remove', array( $this ) );
+		do_action_ref_array( 'events_member_after_remove', array( $this ) );
 
 		return $result;
 	}
@@ -465,75 +465,75 @@ class SZ_Groups_Member {
 	/** Static Methods ****************************************************/
 
 	/**
-	 * Refresh the total_group_count for a user.
+	 * Refresh the total_event_count for a user.
 	 *
 	 * @since 1.8.0
 	 *
 	 * @param int $user_id ID of the user.
 	 * @return bool True on success, false on failure.
 	 */
-	public static function refresh_total_group_count_for_user( $user_id ) {
-		return sz_update_user_meta( $user_id, 'total_group_count', (int) self::total_group_count( $user_id ) );
+	public static function refresh_total_event_count_for_user( $user_id ) {
+		return sz_update_user_meta( $user_id, 'total_event_count', (int) self::total_event_count( $user_id ) );
 	}
 
 	/**
-	 * Refresh the total_member_count for a group.
+	 * Refresh the total_member_count for a event.
 	 *
 	 * @since 1.8.0
 	 *
-	 * @param int $group_id ID of the group.
+	 * @param int $event_id ID of the event.
 	 * @return bool|int True on success, false on failure.
 	 */
-	public static function refresh_total_member_count_for_group( $group_id ) {
-		return groups_update_groupmeta( $group_id, 'total_member_count', (int) SZ_Groups_Group::get_total_member_count( $group_id ) );
+	public static function refresh_total_member_count_for_event( $event_id ) {
+		return events_update_eventmeta( $event_id, 'total_member_count', (int) SZ_Events_Event::get_total_member_count( $event_id ) );
 	}
 
 	/**
-	 * Delete a membership, based on user + group IDs.
+	 * Delete a membership, based on user + event IDs.
 	 *
 	 * @since 1.6.0
 	 *
 	 * @param int $user_id  ID of the user.
-	 * @param int $group_id ID of the group.
+	 * @param int $event_id ID of the event.
 	 * @return True on success, false on failure.
 	 */
-	public static function delete( $user_id, $group_id ) {
+	public static function delete( $user_id, $event_id ) {
 		global $wpdb;
 
 		/**
-		 * Fires before a group membership is deleted.
+		 * Fires before a event membership is deleted.
 		 *
 		 * @since 2.3.0
 		 *
 		 * @param int $user_id  ID of the user.
-		 * @param int $group_id ID of the group.
+		 * @param int $event_id ID of the event.
 		 */
-		do_action( 'sz_groups_member_before_delete', $user_id, $group_id );
+		do_action( 'sz_events_member_before_delete', $user_id, $event_id );
 
 		$sz = sportszone();
-		$remove = $wpdb->query( $wpdb->prepare( "DELETE FROM {$sz->groups->table_name_members} WHERE user_id = %d AND group_id = %d", $user_id, $group_id ) );
+		$remove = $wpdb->query( $wpdb->prepare( "DELETE FROM {$sz->events->table_name_members} WHERE user_id = %d AND event_id = %d", $user_id, $event_id ) );
 
-		// Update the user's group count.
-		self::refresh_total_group_count_for_user( $user_id );
+		// Update the user's event count.
+		self::refresh_total_event_count_for_user( $user_id );
 
-		// Update the group's member count.
-		self::refresh_total_member_count_for_group( $group_id );
+		// Update the event's member count.
+		self::refresh_total_member_count_for_event( $event_id );
 
 		/**
-		 * Fires after a member is removed from a group.
+		 * Fires after a member is removed from a event.
 		 *
 		 * @since 2.3.0
 		 *
 		 * @param int $user_id  ID of the user.
-		 * @param int $group_id ID of the group.
+		 * @param int $event_id ID of the event.
 		 */
-		do_action( 'sz_groups_member_after_delete', $user_id, $group_id );
+		do_action( 'sz_events_member_after_delete', $user_id, $event_id );
 
 		return $remove;
 	}
 
 	/**
-	 * Get the IDs of the groups of which a specified user is a member.
+	 * Get the IDs of the events of which a specified user is a member.
 	 *
 	 * @since 1.6.0
 	 *
@@ -543,11 +543,11 @@ class SZ_Groups_Member {
 	 * @param int|bool $page    Optional. Page offset of results to return.
 	 *                          Default: false (no limit).
 	 * @return array {
-	 *     @type array $groups Array of groups returned by paginated query.
-	 *     @type int   $total  Count of groups matching query.
+	 *     @type array $events Array of events returned by paginated query.
+	 *     @type int   $total  Count of events matching query.
 	 * }
 	 */
-	public static function get_group_ids( $user_id, $limit = false, $page = false ) {
+	public static function get_event_ids( $user_id, $limit = false, $page = false ) {
 		global $wpdb;
 
 		$pag_sql = '';
@@ -556,22 +556,22 @@ class SZ_Groups_Member {
 
 		$sz = sportszone();
 
-		// If the user is logged in and viewing their own groups, we can show hidden and private groups.
+		// If the user is logged in and viewing their own events, we can show hidden and private events.
 		if ( $user_id != sz_loggedin_user_id() ) {
-			$group_sql = $wpdb->prepare( "SELECT DISTINCT m.group_id FROM {$sz->groups->table_name_members} m, {$sz->groups->table_name} g WHERE g.status != 'hidden' AND m.user_id = %d AND m.is_confirmed = 1 AND m.is_banned = 0{$pag_sql}", $user_id );
-			$total_groups = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(DISTINCT m.group_id) FROM {$sz->groups->table_name_members} m, {$sz->groups->table_name} g WHERE g.status != 'hidden' AND m.user_id = %d AND m.is_confirmed = 1 AND m.is_banned = 0", $user_id ) );
+			$event_sql = $wpdb->prepare( "SELECT DISTINCT m.event_id FROM {$sz->events->table_name_members} m, {$sz->events->table_name} g WHERE g.status != 'hidden' AND m.user_id = %d AND m.is_confirmed = 1 AND m.is_banned = 0{$pag_sql}", $user_id );
+			$total_events = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(DISTINCT m.event_id) FROM {$sz->events->table_name_members} m, {$sz->events->table_name} g WHERE g.status != 'hidden' AND m.user_id = %d AND m.is_confirmed = 1 AND m.is_banned = 0", $user_id ) );
 		} else {
-			$group_sql = $wpdb->prepare( "SELECT DISTINCT group_id FROM {$sz->groups->table_name_members} WHERE user_id = %d AND is_confirmed = 1 AND is_banned = 0{$pag_sql}", $user_id );
-			$total_groups = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(DISTINCT group_id) FROM {$sz->groups->table_name_members} WHERE user_id = %d AND is_confirmed = 1 AND is_banned = 0", $user_id ) );
+			$event_sql = $wpdb->prepare( "SELECT DISTINCT event_id FROM {$sz->events->table_name_members} WHERE user_id = %d AND is_confirmed = 1 AND is_banned = 0{$pag_sql}", $user_id );
+			$total_events = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(DISTINCT event_id) FROM {$sz->events->table_name_members} WHERE user_id = %d AND is_confirmed = 1 AND is_banned = 0", $user_id ) );
 		}
 
-		$groups = $wpdb->get_col( $group_sql );
+		$events = $wpdb->get_col( $event_sql );
 
-		return array( 'groups' => $groups, 'total' => (int) $total_groups );
+		return array( 'events' => $events, 'total' => (int) $total_events );
 	}
 
 	/**
-	 * Get the IDs of the groups of which a specified user is a member, sorted by the date joined.
+	 * Get the IDs of the events of which a specified user is a member, sorted by the date joined.
 	 *
 	 * @since 1.6.0
 	 *
@@ -580,11 +580,11 @@ class SZ_Groups_Member {
 	 *                             Default: false (no limit).
 	 * @param int|bool    $page    Optional. Page offset of results to return.
 	 *                             Default: false (no limit).
-	 * @param string|bool $filter  Optional. Limit results to groups whose name or
+	 * @param string|bool $filter  Optional. Limit results to events whose name or
 	 *                             description field matches search terms.
 	 * @return array {
-	 *     @type array $groups Array of groups returned by paginated query.
-	 *     @type int   $total  Count of groups matching query.
+	 *     @type array $events Array of events returned by paginated query.
+	 *     @type int   $total  Count of events matching query.
 	 * }
 	 */
 	public static function get_recently_joined( $user_id, $limit = false, $page = false, $filter = false ) {
@@ -607,14 +607,14 @@ class SZ_Groups_Member {
 
 		$sz = sportszone();
 
-		$paged_groups = $wpdb->get_results( "SELECT g.*, gm1.meta_value as total_member_count, gm2.meta_value as last_activity FROM {$sz->groups->table_name_groupmeta} gm1, {$sz->groups->table_name_groupmeta} gm2, {$sz->groups->table_name_members} m, {$sz->groups->table_name} g WHERE g.id = m.group_id AND g.id = gm1.group_id AND g.id = gm2.group_id AND gm2.meta_key = 'last_activity' AND gm1.meta_key = 'total_member_count'{$hidden_sql}{$filter_sql} AND {$user_id_sql} AND m.is_confirmed = 1 AND m.is_banned = 0 ORDER BY m.date_modified DESC {$pag_sql}" );
-		$total_groups = $wpdb->get_var( "SELECT COUNT(DISTINCT m.group_id) FROM {$sz->groups->table_name_members} m, {$sz->groups->table_name} g WHERE m.group_id = g.id{$hidden_sql}{$filter_sql} AND {$user_id_sql} AND m.is_banned = 0 AND m.is_confirmed = 1 ORDER BY m.date_modified DESC" );
+		$paged_events = $wpdb->get_results( "SELECT g.*, gm1.meta_value as total_member_count, gm2.meta_value as last_activity FROM {$sz->events->table_name_eventmeta} gm1, {$sz->events->table_name_eventmeta} gm2, {$sz->events->table_name_members} m, {$sz->events->table_name} g WHERE g.id = m.event_id AND g.id = gm1.event_id AND g.id = gm2.event_id AND gm2.meta_key = 'last_activity' AND gm1.meta_key = 'total_member_count'{$hidden_sql}{$filter_sql} AND {$user_id_sql} AND m.is_confirmed = 1 AND m.is_banned = 0 ORDER BY m.date_modified DESC {$pag_sql}" );
+		$total_events = $wpdb->get_var( "SELECT COUNT(DISTINCT m.event_id) FROM {$sz->events->table_name_members} m, {$sz->events->table_name} g WHERE m.event_id = g.id{$hidden_sql}{$filter_sql} AND {$user_id_sql} AND m.is_banned = 0 AND m.is_confirmed = 1 ORDER BY m.date_modified DESC" );
 
-		return array( 'groups' => $paged_groups, 'total' => $total_groups );
+		return array( 'events' => $paged_events, 'total' => $total_events );
 	}
 
 	/**
-	 * Get the IDs of the groups of which a specified user is an admin.
+	 * Get the IDs of the events of which a specified user is an admin.
 	 *
 	 * @since 1.6.0
 	 *
@@ -623,11 +623,11 @@ class SZ_Groups_Member {
 	 *                             Default: false (no limit).
 	 * @param int|bool    $page    Optional. Page offset of results to return.
 	 *                             Default: false (no limit).
-	 * @param string|bool $filter  Optional. Limit results to groups whose name or
+	 * @param string|bool $filter  Optional. Limit results to events whose name or
 	 *                             description field matches search terms.
 	 * @return array {
-	 *     @type array $groups Array of groups returned by paginated query.
-	 *     @type int   $total  Count of groups matching query.
+	 *     @type array $events Array of events returned by paginated query.
+	 *     @type int   $total  Count of events matching query.
 	 * }
 	 */
 	public static function get_is_admin_of( $user_id, $limit = false, $page = false, $filter = false ) {
@@ -650,14 +650,14 @@ class SZ_Groups_Member {
 
 		$sz = sportszone();
 
-		$paged_groups = $wpdb->get_results( "SELECT g.*, gm1.meta_value as total_member_count, gm2.meta_value as last_activity FROM {$sz->groups->table_name_groupmeta} gm1, {$sz->groups->table_name_groupmeta} gm2, {$sz->groups->table_name_members} m, {$sz->groups->table_name} g WHERE g.id = m.group_id AND g.id = gm1.group_id AND g.id = gm2.group_id AND gm2.meta_key = 'last_activity' AND gm1.meta_key = 'total_member_count'{$hidden_sql}{$filter_sql} AND {$user_id_sql} AND m.is_confirmed = 1 AND m.is_banned = 0 AND m.is_admin = 1 ORDER BY m.date_modified ASC {$pag_sql}" );
-		$total_groups = $wpdb->get_var( "SELECT COUNT(DISTINCT m.group_id) FROM {$sz->groups->table_name_members} m, {$sz->groups->table_name} g WHERE m.group_id = g.id{$hidden_sql}{$filter_sql} AND {$user_id_sql} AND m.is_confirmed = 1 AND m.is_banned = 0 AND m.is_admin = 1 ORDER BY date_modified ASC" );
+		$paged_events = $wpdb->get_results( "SELECT g.*, gm1.meta_value as total_member_count, gm2.meta_value as last_activity FROM {$sz->events->table_name_eventmeta} gm1, {$sz->events->table_name_eventmeta} gm2, {$sz->events->table_name_members} m, {$sz->events->table_name} g WHERE g.id = m.event_id AND g.id = gm1.event_id AND g.id = gm2.event_id AND gm2.meta_key = 'last_activity' AND gm1.meta_key = 'total_member_count'{$hidden_sql}{$filter_sql} AND {$user_id_sql} AND m.is_confirmed = 1 AND m.is_banned = 0 AND m.is_admin = 1 ORDER BY m.date_modified ASC {$pag_sql}" );
+		$total_events = $wpdb->get_var( "SELECT COUNT(DISTINCT m.event_id) FROM {$sz->events->table_name_members} m, {$sz->events->table_name} g WHERE m.event_id = g.id{$hidden_sql}{$filter_sql} AND {$user_id_sql} AND m.is_confirmed = 1 AND m.is_banned = 0 AND m.is_admin = 1 ORDER BY date_modified ASC" );
 
-		return array( 'groups' => $paged_groups, 'total' => $total_groups );
+		return array( 'events' => $paged_events, 'total' => $total_events );
 	}
 
 	/**
-	 * Get the IDs of the groups of which a specified user is a moderator.
+	 * Get the IDs of the events of which a specified user is a moderator.
 	 *
 	 * @since 1.6.0
 	 *
@@ -666,11 +666,11 @@ class SZ_Groups_Member {
 	 *                             Default: false (no limit).
 	 * @param int|bool    $page    Optional. Page offset of results to return.
 	 *                             Default: false (no limit).
-	 * @param string|bool $filter  Optional. Limit results to groups whose name or
+	 * @param string|bool $filter  Optional. Limit results to events whose name or
 	 *                             description field matches search terms.
 	 * @return array {
-	 *     @type array $groups Array of groups returned by paginated query.
-	 *     @type int   $total  Count of groups matching query.
+	 *     @type array $events Array of events returned by paginated query.
+	 *     @type int   $total  Count of events matching query.
 	 * }
 	 */
 	public static function get_is_mod_of( $user_id, $limit = false, $page = false, $filter = false ) {
@@ -693,14 +693,14 @@ class SZ_Groups_Member {
 
 		$sz = sportszone();
 
-		$paged_groups = $wpdb->get_results( "SELECT g.*, gm1.meta_value as total_member_count, gm2.meta_value as last_activity FROM {$sz->groups->table_name_groupmeta} gm1, {$sz->groups->table_name_groupmeta} gm2, {$sz->groups->table_name_members} m, {$sz->groups->table_name} g WHERE g.id = m.group_id AND g.id = gm1.group_id AND g.id = gm2.group_id AND gm2.meta_key = 'last_activity' AND gm1.meta_key = 'total_member_count'{$hidden_sql}{$filter_sql} AND {$user_id_sql} AND m.is_confirmed = 1 AND m.is_banned = 0 AND m.is_mod = 1 ORDER BY m.date_modified ASC {$pag_sql}" );
-		$total_groups = $wpdb->get_var( "SELECT COUNT(DISTINCT m.group_id) FROM {$sz->groups->table_name_members} m, {$sz->groups->table_name} g WHERE m.group_id = g.id{$hidden_sql}{$filter_sql} AND {$user_id_sql} AND m.is_confirmed = 1 AND m.is_banned = 0 AND m.is_mod = 1 ORDER BY date_modified ASC" );
+		$paged_events = $wpdb->get_results( "SELECT g.*, gm1.meta_value as total_member_count, gm2.meta_value as last_activity FROM {$sz->events->table_name_eventmeta} gm1, {$sz->events->table_name_eventmeta} gm2, {$sz->events->table_name_members} m, {$sz->events->table_name} g WHERE g.id = m.event_id AND g.id = gm1.event_id AND g.id = gm2.event_id AND gm2.meta_key = 'last_activity' AND gm1.meta_key = 'total_member_count'{$hidden_sql}{$filter_sql} AND {$user_id_sql} AND m.is_confirmed = 1 AND m.is_banned = 0 AND m.is_mod = 1 ORDER BY m.date_modified ASC {$pag_sql}" );
+		$total_events = $wpdb->get_var( "SELECT COUNT(DISTINCT m.event_id) FROM {$sz->events->table_name_members} m, {$sz->events->table_name} g WHERE m.event_id = g.id{$hidden_sql}{$filter_sql} AND {$user_id_sql} AND m.is_confirmed = 1 AND m.is_banned = 0 AND m.is_mod = 1 ORDER BY date_modified ASC" );
 
-		return array( 'groups' => $paged_groups, 'total' => $total_groups );
+		return array( 'events' => $paged_events, 'total' => $total_events );
 	}
 
 	/**
-	 * Get the groups of which a specified user is banned from.
+	 * Get the events of which a specified user is banned from.
 	 *
 	 * @since 2.4.0
 	 *
@@ -709,11 +709,11 @@ class SZ_Groups_Member {
 	 *                             Default: false (no limit).
 	 * @param int|bool    $page    Optional. Page offset of results to return.
 	 *                             Default: false (no limit).
-	 * @param string|bool $filter  Optional. Limit results to groups whose name or
+	 * @param string|bool $filter  Optional. Limit results to events whose name or
 	 *                             description field matches search terms.
 	 * @return array {
-	 *     @type array $groups Array of groups returned by paginated query.
-	 *     @type int   $total  Count of groups matching query.
+	 *     @type array $events Array of events returned by paginated query.
+	 *     @type int   $total  Count of events matching query.
 	 * }
 	 */
 	public static function get_is_banned_of( $user_id, $limit = false, $page = false, $filter = false ) {
@@ -737,21 +737,21 @@ class SZ_Groups_Member {
 			$hidden_sql = " AND g.status != 'hidden'";
 		}
 
-		$paged_groups = $wpdb->get_results( "SELECT g.*, gm1.meta_value as total_member_count, gm2.meta_value as last_activity FROM {$sz->groups->table_name_groupmeta} gm1, {$sz->groups->table_name_groupmeta} gm2, {$sz->groups->table_name_members} m, {$sz->groups->table_name} g WHERE g.id = m.group_id AND g.id = gm1.group_id AND g.id = gm2.group_id AND gm2.meta_key = 'last_activity' AND gm1.meta_key = 'total_member_count'{$hidden_sql}{$filter_sql} AND {$user_id_sql} AND m.is_banned = 1  ORDER BY m.date_modified ASC {$pag_sql}" );
-		$total_groups = $wpdb->get_var( "SELECT COUNT(DISTINCT m.group_id) FROM {$sz->groups->table_name_members} m, {$sz->groups->table_name} g WHERE m.group_id = g.id{$hidden_sql}{$filter_sql} AND {$user_id_sql} AND m.is_banned = 1 ORDER BY date_modified ASC" );
+		$paged_events = $wpdb->get_results( "SELECT g.*, gm1.meta_value as total_member_count, gm2.meta_value as last_activity FROM {$sz->events->table_name_eventmeta} gm1, {$sz->events->table_name_eventmeta} gm2, {$sz->events->table_name_members} m, {$sz->events->table_name} g WHERE g.id = m.event_id AND g.id = gm1.event_id AND g.id = gm2.event_id AND gm2.meta_key = 'last_activity' AND gm1.meta_key = 'total_member_count'{$hidden_sql}{$filter_sql} AND {$user_id_sql} AND m.is_banned = 1  ORDER BY m.date_modified ASC {$pag_sql}" );
+		$total_events = $wpdb->get_var( "SELECT COUNT(DISTINCT m.event_id) FROM {$sz->events->table_name_members} m, {$sz->events->table_name} g WHERE m.event_id = g.id{$hidden_sql}{$filter_sql} AND {$user_id_sql} AND m.is_banned = 1 ORDER BY date_modified ASC" );
 
-		return array( 'groups' => $paged_groups, 'total' => $total_groups );
+		return array( 'events' => $paged_events, 'total' => $total_events );
 	}
 
 	/**
-	 * Get the count of groups of which the specified user is a member.
+	 * Get the count of events of which the specified user is a member.
 	 *
 	 * @since 1.6.0
 	 *
 	 * @param int $user_id Optional. Default: ID of the displayed user.
-	 * @return int Group count.
+	 * @return int Event count.
 	 */
-	public static function total_group_count( $user_id = 0 ) {
+	public static function total_event_count( $user_id = 0 ) {
 		global $wpdb;
 
 		if ( empty( $user_id ) )
@@ -760,14 +760,14 @@ class SZ_Groups_Member {
 		$sz = sportszone();
 
 		if ( $user_id != sz_loggedin_user_id() && !sz_current_user_can( 'sz_moderate' ) ) {
-			return (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(DISTINCT m.group_id) FROM {$sz->groups->table_name_members} m, {$sz->groups->table_name} g WHERE m.group_id = g.id AND g.status != 'hidden' AND m.user_id = %d AND m.is_confirmed = 1 AND m.is_banned = 0", $user_id ) );
+			return (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(DISTINCT m.event_id) FROM {$sz->events->table_name_members} m, {$sz->events->table_name} g WHERE m.event_id = g.id AND g.status != 'hidden' AND m.user_id = %d AND m.is_confirmed = 1 AND m.is_banned = 0", $user_id ) );
 		} else {
-			return (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(DISTINCT m.group_id) FROM {$sz->groups->table_name_members} m, {$sz->groups->table_name} g WHERE m.group_id = g.id AND m.user_id = %d AND m.is_confirmed = 1 AND m.is_banned = 0", $user_id ) );
+			return (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(DISTINCT m.event_id) FROM {$sz->events->table_name_members} m, {$sz->events->table_name} g WHERE m.event_id = g.id AND m.user_id = %d AND m.is_confirmed = 1 AND m.is_banned = 0", $user_id ) );
 		}
 	}
 
 	/**
-	 * Get a user's outstanding group invitations.
+	 * Get a user's outstanding event invitations.
 	 *
 	 * @since 1.6.0
 	 *
@@ -777,10 +777,10 @@ class SZ_Groups_Member {
 	 * @param int|bool          $page    Optional. Page offset of results to return.
 	 *                                   Default: false (no limit).
 	 * @param string|array|bool $exclude Optional. Array or comma-separated list
-	 *                                   of group IDs to exclude from results.
+	 *                                   of event IDs to exclude from results.
 	 * @return array {
-	 *     @type array $groups Array of groups returned by paginated query.
-	 *     @type int   $total  Count of groups matching query.
+	 *     @type array $events Array of events returned by paginated query.
+	 *     @type int   $total  Count of events matching query.
 	 * }
 	 */
 	public static function get_invites( $user_id, $limit = false, $page = false, $exclude = false ) {
@@ -797,13 +797,13 @@ class SZ_Groups_Member {
 
 		$sz = sportszone();
 
-		$paged_groups = $wpdb->get_results( $wpdb->prepare( "SELECT g.*, gm1.meta_value as total_member_count, gm2.meta_value as last_activity FROM {$sz->groups->table_name_groupmeta} gm1, {$sz->groups->table_name_groupmeta} gm2, {$sz->groups->table_name_members} m, {$sz->groups->table_name} g WHERE g.id = m.group_id AND g.id = gm1.group_id AND g.id = gm2.group_id AND gm2.meta_key = 'last_activity' AND gm1.meta_key = 'total_member_count' AND m.is_confirmed = 0 AND m.inviter_id != 0 AND m.invite_sent = 1 AND m.user_id = %d {$exclude_sql} ORDER BY m.date_modified ASC {$pag_sql}", $user_id ) );
+		$paged_events = $wpdb->get_results( $wpdb->prepare( "SELECT g.*, gm1.meta_value as total_member_count, gm2.meta_value as last_activity FROM {$sz->events->table_name_eventmeta} gm1, {$sz->events->table_name_eventmeta} gm2, {$sz->events->table_name_members} m, {$sz->events->table_name} g WHERE g.id = m.event_id AND g.id = gm1.event_id AND g.id = gm2.event_id AND gm2.meta_key = 'last_activity' AND gm1.meta_key = 'total_member_count' AND m.is_confirmed = 0 AND m.inviter_id != 0 AND m.invite_sent = 1 AND m.user_id = %d {$exclude_sql} ORDER BY m.date_modified ASC {$pag_sql}", $user_id ) );
 
-		return array( 'groups' => $paged_groups, 'total' => self::get_invite_count_for_user( $user_id ) );
+		return array( 'events' => $paged_events, 'total' => self::get_invite_count_for_user( $user_id ) );
 	}
 
 	/**
-	 * Gets the total group invite count for a user.
+	 * Gets the total event invite count for a user.
 	 *
 	 * @since 2.0.0
 	 *
@@ -815,56 +815,56 @@ class SZ_Groups_Member {
 
 		$sz = sportszone();
 
-		$count = wp_cache_get( $user_id, 'sz_group_invite_count' );
+		$count = wp_cache_get( $user_id, 'sz_event_invite_count' );
 
 		if ( false === $count ) {
-			$count = (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(DISTINCT m.group_id) FROM {$sz->groups->table_name_members} m, {$sz->groups->table_name} g WHERE m.group_id = g.id AND m.is_confirmed = 0 AND m.inviter_id != 0 AND m.invite_sent = 1 AND m.user_id = %d", $user_id ) );
-			wp_cache_set( $user_id, $count, 'sz_group_invite_count' );
+			$count = (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(DISTINCT m.event_id) FROM {$sz->events->table_name_members} m, {$sz->events->table_name} g WHERE m.event_id = g.id AND m.is_confirmed = 0 AND m.inviter_id != 0 AND m.invite_sent = 1 AND m.user_id = %d", $user_id ) );
+			wp_cache_set( $user_id, $count, 'sz_event_invite_count' );
 		}
 
 		return $count;
 	}
 
 	/**
-	 * Check whether a user has an outstanding invitation to a given group.
+	 * Check whether a user has an outstanding invitation to a given event.
 	 *
 	 * @since 1.6.0
 	 *
 	 * @param int    $user_id  ID of the potential invitee.
-	 * @param int    $group_id ID of the group.
+	 * @param int    $event_id ID of the event.
 	 * @param string $type     If 'sent', results are limited to those invitations
 	 *                         that have actually been sent (non-draft). Default: 'sent'.
 	 * @return int|null The ID of the invitation if found; null if not found.
 	 */
-	public static function check_has_invite( $user_id, $group_id, $type = 'sent' ) {
+	public static function check_has_invite( $user_id, $event_id, $type = 'sent' ) {
 		global $wpdb;
 
 		if ( empty( $user_id ) )
 			return false;
 
 		$sz  = sportszone();
-		$sql = "SELECT id FROM {$sz->groups->table_name_members} WHERE user_id = %d AND group_id = %d AND is_confirmed = 0 AND inviter_id != 0";
+		$sql = "SELECT id FROM {$sz->events->table_name_members} WHERE user_id = %d AND event_id = %d AND is_confirmed = 0 AND inviter_id != 0";
 
 		if ( 'sent' == $type )
 			$sql .= " AND invite_sent = 1";
 
-		$query = $wpdb->get_var( $wpdb->prepare( $sql, $user_id, $group_id ) );
+		$query = $wpdb->get_var( $wpdb->prepare( $sql, $user_id, $event_id ) );
 
 		return is_numeric( $query ) ? (int) $query : $query;
 	}
 
 	/**
-	 * Delete an invitation, by specifying user ID and group ID.
+	 * Delete an invitation, by specifying user ID and event ID.
 	 *
 	 * @since 1.6.0
 	 *
 	 * @global WPDB $wpdb
 	 *
 	 * @param  int $user_id  ID of the user.
-	 * @param  int $group_id ID of the group.
+	 * @param  int $event_id ID of the event.
 	 * @return int Number of records deleted.
 	 */
-	public static function delete_invite( $user_id, $group_id ) {
+	public static function delete_invite( $user_id, $event_id ) {
 		global $wpdb;
 
 		if ( empty( $user_id ) ) {
@@ -872,38 +872,38 @@ class SZ_Groups_Member {
 		}
 
 		/**
-		 * Fires before a group invitation is deleted.
+		 * Fires before a event invitation is deleted.
 		 *
 		 * @since 2.6.0
 		 *
 		 * @param int $user_id  ID of the user.
-		 * @param int $group_id ID of the group.
+		 * @param int $event_id ID of the event.
 		 */
-		do_action( 'sz_groups_member_before_delete_invite', $user_id, $group_id );
+		do_action( 'sz_events_member_before_delete_invite', $user_id, $event_id );
 
-		$table_name = sportszone()->groups->table_name_members;
+		$table_name = sportszone()->events->table_name_members;
 
 		$sql = "DELETE FROM {$table_name}
 				WHERE user_id = %d
-					AND group_id = %d
+					AND event_id = %d
 					AND is_confirmed = 0
 					AND inviter_id != 0";
 
-		$prepared = $wpdb->prepare( $sql, $user_id, $group_id );
+		$prepared = $wpdb->prepare( $sql, $user_id, $event_id );
 
 		return $wpdb->query( $prepared );
 	}
 
 	/**
-	 * Delete an unconfirmed membership request, by user ID and group ID.
+	 * Delete an unconfirmed membership request, by user ID and event ID.
 	 *
 	 * @since 1.6.0
 	 *
 	 * @param int $user_id  ID of the user.
-	 * @param int $group_id ID of the group.
+	 * @param int $event_id ID of the event.
 	 * @return int Number of records deleted.
 	 */
-	public static function delete_request( $user_id, $group_id ) {
+	public static function delete_request( $user_id, $event_id ) {
 		global $wpdb;
 
 		if ( empty( $user_id ) )
@@ -911,19 +911,19 @@ class SZ_Groups_Member {
 
 		$sz = sportszone();
 
-		return $wpdb->query( $wpdb->prepare( "DELETE FROM {$sz->groups->table_name_members} WHERE user_id = %d AND group_id = %d AND is_confirmed = 0 AND inviter_id = 0 AND invite_sent = 0", $user_id, $group_id ) );
+		return $wpdb->query( $wpdb->prepare( "DELETE FROM {$sz->events->table_name_members} WHERE user_id = %d AND event_id = %d AND is_confirmed = 0 AND inviter_id = 0 AND invite_sent = 0", $user_id, $event_id ) );
 	}
 
 	/**
-	 * Check whether a user is an admin of a given group.
+	 * Check whether a user is an admin of a given event.
 	 *
 	 * @since 1.6.0
 	 *
 	 * @param int $user_id  ID of the user.
-	 * @param int $group_id ID of the group.
+	 * @param int $event_id ID of the event.
 	 * @return mixed
 	 */
-	public static function check_is_admin( $user_id, $group_id ) {
+	public static function check_is_admin( $user_id, $event_id ) {
 		global $wpdb;
 
 		if ( empty( $user_id ) )
@@ -931,19 +931,19 @@ class SZ_Groups_Member {
 
 		$sz = sportszone();
 
-		return $wpdb->query( $wpdb->prepare( "SELECT id FROM {$sz->groups->table_name_members} WHERE user_id = %d AND group_id = %d AND is_admin = 1 AND is_banned = 0", $user_id, $group_id ) );
+		return $wpdb->query( $wpdb->prepare( "SELECT id FROM {$sz->events->table_name_members} WHERE user_id = %d AND event_id = %d AND is_admin = 1 AND is_banned = 0", $user_id, $event_id ) );
 	}
 
 	/**
-	 * Check whether a user is a mod of a given group.
+	 * Check whether a user is a mod of a given event.
 	 *
 	 * @since 1.6.0
 	 *
 	 * @param int $user_id  ID of the user.
-	 * @param int $group_id ID of the group.
+	 * @param int $event_id ID of the event.
 	 * @return mixed
 	 */
-	public static function check_is_mod( $user_id, $group_id ) {
+	public static function check_is_mod( $user_id, $event_id ) {
 		global $wpdb;
 
 		if ( empty( $user_id ) )
@@ -951,19 +951,19 @@ class SZ_Groups_Member {
 
 		$sz = sportszone();
 
-		return $wpdb->query( $wpdb->prepare( "SELECT id FROM {$sz->groups->table_name_members} WHERE user_id = %d AND group_id = %d AND is_mod = 1 AND is_banned = 0", $user_id, $group_id ) );
+		return $wpdb->query( $wpdb->prepare( "SELECT id FROM {$sz->events->table_name_members} WHERE user_id = %d AND event_id = %d AND is_mod = 1 AND is_banned = 0", $user_id, $event_id ) );
 	}
 
 	/**
-	 * Check whether a user is a member of a given group.
+	 * Check whether a user is a member of a given event.
 	 *
 	 * @since 1.6.0
 	 *
 	 * @param int $user_id  ID of the user.
-	 * @param int $group_id ID of the group.
+	 * @param int $event_id ID of the event.
 	 * @return mixed
 	 */
-	public static function check_is_member( $user_id, $group_id ) {
+	public static function check_is_member( $user_id, $event_id ) {
 		global $wpdb;
 
 		if ( empty( $user_id ) )
@@ -971,20 +971,20 @@ class SZ_Groups_Member {
 
 		$sz = sportszone();
 
-		return $wpdb->query( $wpdb->prepare( "SELECT id FROM {$sz->groups->table_name_members} WHERE user_id = %d AND group_id = %d AND is_confirmed = 1 AND is_banned = 0", $user_id, $group_id ) );
+		return $wpdb->query( $wpdb->prepare( "SELECT id FROM {$sz->events->table_name_members} WHERE user_id = %d AND event_id = %d AND is_confirmed = 1 AND is_banned = 0", $user_id, $event_id ) );
 	}
 
 	/**
-	 * Check whether a user is banned from a given group.
+	 * Check whether a user is banned from a given event.
 	 *
 	 * @since 1.6.0
 	 *
 	 * @param int $user_id  ID of the user.
-	 * @param int $group_id ID of the group.
+	 * @param int $event_id ID of the event.
 	 * @return int|null int 1 if user is banned; int 0 if user is not banned;
-	 *                  null if user is not part of the group or if group doesn't exist.
+	 *                  null if user is not part of the event or if event doesn't exist.
 	 */
-	public static function check_is_banned( $user_id, $group_id ) {
+	public static function check_is_banned( $user_id, $event_id ) {
 		global $wpdb;
 
 		if ( empty( $user_id ) )
@@ -992,21 +992,21 @@ class SZ_Groups_Member {
 
 		$sz = sportszone();
 
-		$query = $wpdb->get_var( $wpdb->prepare( "SELECT is_banned FROM {$sz->groups->table_name_members} WHERE user_id = %d AND group_id = %d", $user_id, $group_id ) );
+		$query = $wpdb->get_var( $wpdb->prepare( "SELECT is_banned FROM {$sz->events->table_name_members} WHERE user_id = %d AND event_id = %d", $user_id, $event_id ) );
 
 		return is_numeric( $query ) ? (int) $query : $query;
 	}
 
 	/**
-	 * Is the specified user the creator of the group?
+	 * Is the specified user the creator of the event?
 	 *
 	 * @since 1.2.6
 	 *
 	 * @param int $user_id  ID of the user.
-	 * @param int $group_id ID of the group.
-	 * @return int|null int of group ID if user is the creator; null on failure.
+	 * @param int $event_id ID of the event.
+	 * @return int|null int of event ID if user is the creator; null on failure.
 	 */
-	public static function check_is_creator( $user_id, $group_id ) {
+	public static function check_is_creator( $user_id, $event_id ) {
 		global $wpdb;
 
 		if ( empty( $user_id ) )
@@ -1014,21 +1014,21 @@ class SZ_Groups_Member {
 
 		$sz = sportszone();
 
-		$query = $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$sz->groups->table_name} WHERE creator_id = %d AND id = %d", $user_id, $group_id ) );
+		$query = $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$sz->events->table_name} WHERE creator_id = %d AND id = %d", $user_id, $event_id ) );
 
 		return is_numeric( $query ) ? (int) $query : $query;
 	}
 
 	/**
-	 * Check whether a user has an outstanding membership request for a given group.
+	 * Check whether a user has an outstanding membership request for a given event.
 	 *
 	 * @since 1.6.0
 	 *
 	 * @param int $user_id  ID of the user.
-	 * @param int $group_id ID of the group.
+	 * @param int $event_id ID of the event.
 	 * @return int Database ID of the membership if found; int 0 on failure.
 	 */
-	public static function check_for_membership_request( $user_id, $group_id ) {
+	public static function check_for_membership_request( $user_id, $event_id ) {
 		global $wpdb;
 
 		if ( empty( $user_id ) )
@@ -1036,163 +1036,163 @@ class SZ_Groups_Member {
 
 		$sz = sportszone();
 
-		return $wpdb->query( $wpdb->prepare( "SELECT id FROM {$sz->groups->table_name_members} WHERE user_id = %d AND group_id = %d AND is_confirmed = 0 AND is_banned = 0 AND inviter_id = 0", $user_id, $group_id ) );
+		return $wpdb->query( $wpdb->prepare( "SELECT id FROM {$sz->events->table_name_members} WHERE user_id = %d AND event_id = %d AND is_confirmed = 0 AND is_banned = 0 AND inviter_id = 0", $user_id, $event_id ) );
 	}
 
 	/**
-	 * Get a list of randomly selected IDs of groups that the member belongs to.
+	 * Get a list of randomly selected IDs of events that the member belongs to.
 	 *
 	 * @since 1.6.0
 	 *
 	 * @param int $user_id      ID of the user.
-	 * @param int $total_groups Max number of group IDs to return. Default: 5.
-	 * @return array Group IDs.
+	 * @param int $total_events Max number of event IDs to return. Default: 5.
+	 * @return array Event IDs.
 	 */
-	public static function get_random_groups( $user_id = 0, $total_groups = 5 ) {
+	public static function get_random_events( $user_id = 0, $total_events = 5 ) {
 		global $wpdb;
 
 		$sz = sportszone();
 
-		// If the user is logged in and viewing their random groups, we can show hidden and private groups.
+		// If the user is logged in and viewing their random events, we can show hidden and private events.
 		if ( sz_is_my_profile() ) {
-			return array_map( 'intval', $wpdb->get_col( $wpdb->prepare( "SELECT DISTINCT group_id FROM {$sz->groups->table_name_members} WHERE user_id = %d AND is_confirmed = 1 AND is_banned = 0 ORDER BY rand() LIMIT %d", $user_id, $total_groups ) ) );
+			return array_map( 'intval', $wpdb->get_col( $wpdb->prepare( "SELECT DISTINCT event_id FROM {$sz->events->table_name_members} WHERE user_id = %d AND is_confirmed = 1 AND is_banned = 0 ORDER BY rand() LIMIT %d", $user_id, $total_events ) ) );
 		} else {
-			return array_map( 'intval', $wpdb->get_col( $wpdb->prepare( "SELECT DISTINCT m.group_id FROM {$sz->groups->table_name_members} m, {$sz->groups->table_name} g WHERE m.group_id = g.id AND g.status != 'hidden' AND m.user_id = %d AND m.is_confirmed = 1 AND m.is_banned = 0 ORDER BY rand() LIMIT %d", $user_id, $total_groups ) ) );
+			return array_map( 'intval', $wpdb->get_col( $wpdb->prepare( "SELECT DISTINCT m.event_id FROM {$sz->events->table_name_members} m, {$sz->events->table_name} g WHERE m.event_id = g.id AND g.status != 'hidden' AND m.user_id = %d AND m.is_confirmed = 1 AND m.is_banned = 0 ORDER BY rand() LIMIT %d", $user_id, $total_events ) ) );
 		}
 	}
 
 	/**
-	 * Get the IDs of all a given group's members.
+	 * Get the IDs of all a given event's members.
 	 *
 	 * @since 1.6.0
 	 *
-	 * @param int $group_id ID of the group.
-	 * @return array IDs of all group members.
+	 * @param int $event_id ID of the event.
+	 * @return array IDs of all event members.
 	 */
-	public static function get_group_member_ids( $group_id ) {
+	public static function get_event_member_ids( $event_id ) {
 		global $wpdb;
 
 		$sz = sportszone();
 
-		return array_map( 'intval', $wpdb->get_col( $wpdb->prepare( "SELECT user_id FROM {$sz->groups->table_name_members} WHERE group_id = %d AND is_confirmed = 1 AND is_banned = 0", $group_id ) ) );
+		return array_map( 'intval', $wpdb->get_col( $wpdb->prepare( "SELECT user_id FROM {$sz->events->table_name_members} WHERE event_id = %d AND is_confirmed = 1 AND is_banned = 0", $event_id ) ) );
 	}
 
 	/**
-	 * Get a list of all a given group's admins.
+	 * Get a list of all a given event's admins.
 	 *
 	 * @since 1.6.0
 	 *
-	 * @param int $group_id ID of the group.
-	 * @return array Info about group admins (user_id + date_modified).
+	 * @param int $event_id ID of the event.
+	 * @return array Info about event admins (user_id + date_modified).
 	 */
-	public static function get_group_administrator_ids( $group_id ) {
+	public static function get_event_administrator_ids( $event_id ) {
 		global $wpdb;
 
-		if ( empty( $group_id ) ) {
+		if ( empty( $event_id ) ) {
 			return array();
 		}
 
-		$group_admins = wp_cache_get( $group_id, 'sz_group_admins' );
+		$event_admins = wp_cache_get( $event_id, 'sz_event_admins' );
 
-		if ( false === $group_admins ) {
-			self::prime_group_admins_mods_cache( array( $group_id ) );
-			$group_admins = wp_cache_get( $group_id, 'sz_group_admins' );
+		if ( false === $event_admins ) {
+			self::prime_event_admins_mods_cache( array( $event_id ) );
+			$event_admins = wp_cache_get( $event_id, 'sz_event_admins' );
 		}
 
-		if ( false === $group_admins ) {
+		if ( false === $event_admins ) {
 			// The wp_cache_get is still coming up empty. Return an empty array.
-			$group_admins = array();
+			$event_admins = array();
 		} else {
 			// Cast the user_id property as an integer.
-			foreach ( (array) $group_admins as $key => $data ) {
-				$group_admins[ $key ]->user_id = (int) $group_admins[ $key ]->user_id;
+			foreach ( (array) $event_admins as $key => $data ) {
+				$event_admins[ $key ]->user_id = (int) $event_admins[ $key ]->user_id;
 			}
 		}
 
-		return $group_admins;
+		return $event_admins;
 	}
 
 	/**
-	 * Prime the sz_group_admins cache for one or more groups.
+	 * Prime the sz_event_admins cache for one or more events.
 	 *
 	 * @since 2.7.0
 	 *
-	 * @param array $group_ids IDs of the groups.
+	 * @param array $event_ids IDs of the events.
 	 * @return bool True on success.
 	 */
-	public static function prime_group_admins_mods_cache( $group_ids ) {
+	public static function prime_event_admins_mods_cache( $event_ids ) {
 		global $wpdb;
 
-		$uncached = sz_get_non_cached_ids( $group_ids, 'sz_group_admins' );
+		$uncached = sz_get_non_cached_ids( $event_ids, 'sz_event_admins' );
 
 		if ( $uncached ) {
 			$sz = sportszone();
 			$uncached_sql = implode( ',', array_map( 'intval', $uncached ) );
-			$group_admin_mods = $wpdb->get_results( "SELECT user_id, group_id, date_modified, is_admin, is_mod FROM {$sz->groups->table_name_members} WHERE group_id IN ({$uncached_sql}) AND ( is_admin = 1 OR is_mod = 1 ) AND is_banned = 0" );
+			$event_admin_mods = $wpdb->get_results( "SELECT user_id, event_id, date_modified, is_admin, is_mod FROM {$sz->events->table_name_members} WHERE event_id IN ({$uncached_sql}) AND ( is_admin = 1 OR is_mod = 1 ) AND is_banned = 0" );
 
 			$admins = $mods = array();
-			if ( $group_admin_mods ) {
-				foreach ( $group_admin_mods as $group_admin_mod ) {
+			if ( $event_admin_mods ) {
+				foreach ( $event_admin_mods as $event_admin_mod ) {
 					$obj = new stdClass();
-					$obj->user_id = $group_admin_mod->user_id;
-					$obj->date_modified = $group_admin_mod->date_modified;
+					$obj->user_id = $event_admin_mod->user_id;
+					$obj->date_modified = $event_admin_mod->date_modified;
 
-					if ( $group_admin_mod->is_admin ) {
-						$admins[ $group_admin_mod->group_id ][] = $obj;
+					if ( $event_admin_mod->is_admin ) {
+						$admins[ $event_admin_mod->event_id ][] = $obj;
 					} else {
-						$mods[ $group_admin_mod->group_id ][] = $obj;
+						$mods[ $event_admin_mod->event_id ][] = $obj;
 					}
 				}
 			}
 
-			// Prime cache for all groups, even those with no matches.
-			foreach ( $uncached as $group_id ) {
-				$group_admins = isset( $admins[ $group_id ] ) ? $admins[ $group_id ] : array();
-				wp_cache_set( $group_id, $group_admins, 'sz_group_admins' );
+			// Prime cache for all events, even those with no matches.
+			foreach ( $uncached as $event_id ) {
+				$event_admins = isset( $admins[ $event_id ] ) ? $admins[ $event_id ] : array();
+				wp_cache_set( $event_id, $event_admins, 'sz_event_admins' );
 
-				$group_mods = isset( $mods[ $group_id ] ) ? $mods[ $group_id ] : array();
-				wp_cache_set( $group_id, $group_mods, 'sz_group_mods' );
+				$event_mods = isset( $mods[ $event_id ] ) ? $mods[ $event_id ] : array();
+				wp_cache_set( $event_id, $event_mods, 'sz_event_mods' );
 			}
 		}
 	}
 
 	/**
-	 * Get a list of all a given group's moderators.
+	 * Get a list of all a given event's moderators.
 	 *
 	 * @since 1.6.0
 	 *
-	 * @param int $group_id ID of the group.
-	 * @return array Info about group mods (user_id + date_modified).
+	 * @param int $event_id ID of the event.
+	 * @return array Info about event mods (user_id + date_modified).
 	 */
-	public static function get_group_moderator_ids( $group_id ) {
+	public static function get_event_moderator_ids( $event_id ) {
 		global $wpdb;
 
-		if ( empty( $group_id ) ) {
+		if ( empty( $event_id ) ) {
 			return array();
 		}
 
-		$group_mods = wp_cache_get( $group_id, 'sz_group_mods' );
+		$event_mods = wp_cache_get( $event_id, 'sz_event_mods' );
 
-		if ( false === $group_mods ) {
-			self::prime_group_admins_mods_cache( array( $group_id ) );
-			$group_mods = wp_cache_get( $group_id, 'sz_group_mods' );
+		if ( false === $event_mods ) {
+			self::prime_event_admins_mods_cache( array( $event_id ) );
+			$event_mods = wp_cache_get( $event_id, 'sz_event_mods' );
 		}
 
-		if ( false === $group_mods ) {
+		if ( false === $event_mods ) {
 			// The wp_cache_get is still coming up empty. Return an empty array.
-			$group_mods = array();
+			$event_mods = array();
 		} else {
 			// Cast the user_id property as an integer.
-			foreach ( (array) $group_mods as $key => $data ) {
-				$group_mods[ $key ]->user_id = (int) $group_mods[ $key ]->user_id;
+			foreach ( (array) $event_mods as $key => $data ) {
+				$event_mods[ $key ]->user_id = (int) $event_mods[ $key ]->user_id;
 			}
 		}
 
-		return $group_mods;
+		return $event_mods;
 	}
 
 	/**
-	 * Get group membership objects by ID (or an array of IDs).
+	 * Get event membership objects by ID (or an array of IDs).
 	 *
 	 * @since 2.6.0
 	 *
@@ -1205,31 +1205,31 @@ class SZ_Groups_Member {
 		$sz = sportszone();
 
 		$membership_ids = implode( ',', wp_parse_id_list( $membership_ids ) );
-		return $wpdb->get_results( "SELECT * FROM {$sz->groups->table_name_members} WHERE id IN ({$membership_ids})" );
+		return $wpdb->get_results( "SELECT * FROM {$sz->events->table_name_members} WHERE id IN ({$membership_ids})" );
 	}
 
 	/**
-	 * Get the IDs users with outstanding membership requests to the group.
+	 * Get the IDs users with outstanding membership requests to the event.
 	 *
 	 * @since 1.6.0
 	 *
-	 * @param int $group_id ID of the group.
+	 * @param int $event_id ID of the event.
 	 * @return array IDs of users with outstanding membership requests.
 	 */
-	public static function get_all_membership_request_user_ids( $group_id ) {
+	public static function get_all_membership_request_user_ids( $event_id ) {
 		global $wpdb;
 
 		$sz = sportszone();
 
-		return array_map( 'intval', $wpdb->get_col( $wpdb->prepare( "SELECT user_id FROM {$sz->groups->table_name_members} WHERE group_id = %d AND is_confirmed = 0 AND inviter_id = 0", $group_id ) ) );
+		return array_map( 'intval', $wpdb->get_col( $wpdb->prepare( "SELECT user_id FROM {$sz->events->table_name_members} WHERE event_id = %d AND is_confirmed = 0 AND inviter_id = 0", $event_id ) ) );
 	}
 
 	/**
-	 * Get members of a group.
+	 * Get members of a event.
 	 *
 	 * @deprecated 1.6.0
 	 *
-	 * @param int        $group_id            ID of the group being queried for.
+	 * @param int        $event_id            ID of the event being queried for.
 	 * @param bool|int   $limit               Max amount to return.
 	 * @param bool|int   $page                Pagination value.
 	 * @param bool       $exclude_admins_mods Whether or not to exclude admins and moderators.
@@ -1237,10 +1237,10 @@ class SZ_Groups_Member {
 	 * @param bool|array $exclude             Array of user IDs to exclude.
 	 * @return false|array
 	 */
-	public static function get_all_for_group( $group_id, $limit = false, $page = false, $exclude_admins_mods = true, $exclude_banned = true, $exclude = false ) {
+	public static function get_all_for_event( $event_id, $limit = false, $page = false, $exclude_admins_mods = true, $exclude_banned = true, $exclude = false ) {
 		global $wpdb;
 
-		_deprecated_function( __METHOD__, '1.8', 'SZ_Group_Member_Query' );
+		_deprecated_function( __METHOD__, '1.8', 'SZ_Event_Member_Query' );
 
 		$pag_sql = '';
 		if ( !empty( $limit ) && !empty( $page ) )
@@ -1265,17 +1265,17 @@ class SZ_Groups_Member {
 		if ( sz_is_active( 'xprofile' ) ) {
 
 			/**
-			 * Filters the SQL prepared statement used to fetch group members.
+			 * Filters the SQL prepared statement used to fetch event members.
 			 *
 			 * @since 1.5.0
 			 *
-			 * @param string $value SQL prepared statement for fetching group members.
+			 * @param string $value SQL prepared statement for fetching event members.
 			 */
-			$members = $wpdb->get_results( apply_filters( 'sz_group_members_user_join_filter', $wpdb->prepare( "SELECT m.user_id, m.date_modified, m.is_banned, u.user_login, u.user_nicename, u.user_email, pd.value as display_name FROM {$sz->groups->table_name_members} m, {$wpdb->users} u, {$sz->profile->table_name_data} pd WHERE u.ID = m.user_id AND u.ID = pd.user_id AND pd.field_id = 1 AND group_id = %d AND is_confirmed = 1 {$banned_sql} {$exclude_admins_sql} {$exclude_sql} ORDER BY m.date_modified DESC {$pag_sql}", $group_id ) ) );
+			$members = $wpdb->get_results( apply_filters( 'sz_event_members_user_join_filter', $wpdb->prepare( "SELECT m.user_id, m.date_modified, m.is_banned, u.user_login, u.user_nicename, u.user_email, pd.value as display_name FROM {$sz->events->table_name_members} m, {$wpdb->users} u, {$sz->profile->table_name_data} pd WHERE u.ID = m.user_id AND u.ID = pd.user_id AND pd.field_id = 1 AND event_id = %d AND is_confirmed = 1 {$banned_sql} {$exclude_admins_sql} {$exclude_sql} ORDER BY m.date_modified DESC {$pag_sql}", $event_id ) ) );
 		} else {
 
-			/** This filter is documented in sz-groups/sz-groups-classes */
-			$members = $wpdb->get_results( apply_filters( 'sz_group_members_user_join_filter', $wpdb->prepare( "SELECT m.user_id, m.date_modified, m.is_banned, u.user_login, u.user_nicename, u.user_email, u.display_name FROM {$sz->groups->table_name_members} m, {$wpdb->users} u WHERE u.ID = m.user_id AND group_id = %d AND is_confirmed = 1 {$banned_sql} {$exclude_admins_sql} {$exclude_sql} ORDER BY m.date_modified DESC {$pag_sql}", $group_id ) ) );
+			/** This filter is documented in sz-events/sz-events-classes */
+			$members = $wpdb->get_results( apply_filters( 'sz_event_members_user_join_filter', $wpdb->prepare( "SELECT m.user_id, m.date_modified, m.is_banned, u.user_login, u.user_nicename, u.user_email, u.display_name FROM {$sz->events->table_name_members} m, {$wpdb->users} u WHERE u.ID = m.user_id AND event_id = %d AND is_confirmed = 1 {$banned_sql} {$exclude_admins_sql} {$exclude_sql} ORDER BY m.date_modified DESC {$pag_sql}", $event_id ) ) );
 		}
 
 		if ( empty( $members ) ) {
@@ -1287,13 +1287,13 @@ class SZ_Groups_Member {
 		} else {
 
 			/**
-			 * Filters the SQL prepared statement used to fetch group members total count.
+			 * Filters the SQL prepared statement used to fetch event members total count.
 			 *
 			 * @since 1.5.0
 			 *
-			 * @param string $value SQL prepared statement for fetching group member count.
+			 * @param string $value SQL prepared statement for fetching event member count.
 			 */
-			$total_member_count = $wpdb->get_var( apply_filters( 'sz_group_members_count_user_join_filter', $wpdb->prepare( "SELECT COUNT(user_id) FROM {$sz->groups->table_name_members} m WHERE group_id = %d AND is_confirmed = 1 {$banned_sql} {$exclude_admins_sql} {$exclude_sql}", $group_id ) ) );
+			$total_member_count = $wpdb->get_var( apply_filters( 'sz_event_members_count_user_join_filter', $wpdb->prepare( "SELECT COUNT(user_id) FROM {$sz->events->table_name_members} m WHERE event_id = %d AND is_confirmed = 1 {$banned_sql} {$exclude_admins_sql} {$exclude_sql}", $event_id ) ) );
 		}
 
 		// Fetch whether or not the user is a friend.
@@ -1329,29 +1329,29 @@ class SZ_Groups_Member {
 
 		$sz = sportszone();
 
-		$group_ids = $wpdb->get_col( $wpdb->prepare( "SELECT id FROM {$sz->groups->table_name_members} WHERE user_id = %d ORDER BY id ASC", $user_id ) );
+		$event_ids = $wpdb->get_col( $wpdb->prepare( "SELECT id FROM {$sz->events->table_name_members} WHERE user_id = %d ORDER BY id ASC", $user_id ) );
 
-		return $group_ids;
+		return $event_ids;
 	}
 
 	/**
-	 * Delete all memberships for a given group.
+	 * Delete all memberships for a given event.
 	 *
 	 * @since 1.6.0
 	 *
-	 * @param int $group_id ID of the group.
+	 * @param int $event_id ID of the event.
 	 * @return int Number of records deleted.
 	 */
-	public static function delete_all( $group_id ) {
+	public static function delete_all( $event_id ) {
 		global $wpdb;
 
 		$sz = sportszone();
 
-		return $wpdb->query( $wpdb->prepare( "DELETE FROM {$sz->groups->table_name_members} WHERE group_id = %d", $group_id ) );
+		return $wpdb->query( $wpdb->prepare( "DELETE FROM {$sz->events->table_name_members} WHERE event_id = %d", $event_id ) );
 	}
 
 	/**
-	 * Delete all group membership information for the specified user.
+	 * Delete all event membership information for the specified user.
 	 *
 	 * @since 1.0.0
 	 *
@@ -1363,16 +1363,16 @@ class SZ_Groups_Member {
 
 		$sz = sportszone();
 
-		// Get all the group ids for the current user's groups and update counts.
-		$group_ids = SZ_Groups_Member::get_group_ids( $user_id );
-		foreach ( $group_ids['groups'] as $group_id ) {
-			groups_update_groupmeta( $group_id, 'total_member_count', groups_get_total_member_count( $group_id ) - 1 );
+		// Get all the event ids for the current user's events and update counts.
+		$event_ids = SZ_Events_Member::get_event_ids( $user_id );
+		foreach ( $event_ids['events'] as $event_id ) {
+			events_update_eventmeta( $event_id, 'total_member_count', events_get_total_member_count( $event_id ) - 1 );
 
-			// If current user is the creator of a group and is the sole admin, delete that group to avoid counts going out-of-sync.
-			if ( groups_is_user_admin( $user_id, $group_id ) && count( groups_get_group_admins( $group_id ) ) < 2 && groups_is_user_creator( $user_id, $group_id ) )
-				groups_delete_group( $group_id );
+			// If current user is the creator of a event and is the sole admin, delete that event to avoid counts going out-of-sync.
+			if ( events_is_user_admin( $user_id, $event_id ) && count( events_get_event_admins( $event_id ) ) < 2 && events_is_user_creator( $user_id, $event_id ) )
+				events_delete_event( $event_id );
 		}
 
-		return $wpdb->query( $wpdb->prepare( "DELETE FROM {$sz->groups->table_name_members} WHERE user_id = %d", $user_id ) );
+		return $wpdb->query( $wpdb->prepare( "DELETE FROM {$sz->events->table_name_members} WHERE user_id = %d", $user_id ) );
 	}
 }

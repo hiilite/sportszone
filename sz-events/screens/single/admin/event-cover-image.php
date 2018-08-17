@@ -1,44 +1,44 @@
 <?php
 /**
- * Groups: Single group "Manage > Cover Image" screen handler
+ * Events: Single event "Manage > Cover Image" screen handler
  *
  * @package SportsZone
- * @subpackage GroupsScreens
+ * @subpackage EventsScreens
  * @since 3.0.0
  */
 
 /**
- * Handle the display of a group's Change cover image page.
+ * Handle the display of a event's Change cover image page.
  *
  * @since 2.4.0
  */
-function groups_screen_group_admin_cover_image() {
-	if ( 'group-cover-image' != sz_get_group_current_admin_tab() ) {
+function events_screen_event_admin_cover_image() {
+	if ( 'event-cover-image' != sz_get_event_current_admin_tab() ) {
 		return false;
 	}
 
 	// If the logged-in user doesn't have permission or if cover image uploads are disabled, then stop here.
-	if ( ! sz_is_item_admin() || ! sz_group_use_cover_image_header() ) {
+	if ( ! sz_is_item_admin() || ! sz_event_use_cover_image_header() ) {
 		return false;
 	}
 
 	/**
-	 * Fires before the loading of the group Change cover image page template.
+	 * Fires before the loading of the event Change cover image page template.
 	 *
 	 * @since 2.4.0
 	 *
-	 * @param int $id ID of the group that is being displayed.
+	 * @param int $id ID of the event that is being displayed.
 	 *
-	do_action( 'groups_screen_group_admin_cover_image', sz_get_current_group_id() );
+	do_action( 'events_screen_event_admin_cover_image', sz_get_current_event_id() );
 
 	/**
-	 * Filters the template to load for a group's Change cover image page.
+	 * Filters the template to load for a event's Change cover image page.
 	 *
 	 * @since 2.4.0
 	 *
-	 * @param string $value Path to a group's Change cover image template.
+	 * @param string $value Path to a event's Change cover image template.
 	 *
-	sz_core_load_template( apply_filters( 'groups_template_group_admin_cover_image', 'groups/single/home' ) );
+	sz_core_load_template( apply_filters( 'events_template_event_admin_cover_image', 'events/single/home' ) );
 	*/
 	
 	
@@ -46,16 +46,16 @@ function groups_screen_group_admin_cover_image() {
 	
 	$sz = sportszone();
 
-	// If the group admin has deleted the admin cover image.
+	// If the event admin has deleted the admin cover image.
 	if ( sz_is_action_variable( 'delete', 1 ) ) {
 
 		// Check the nonce.
-		check_admin_referer( 'sz_group_cover_image_delete' );
+		check_admin_referer( 'sz_event_cover_image_delete' );
 
-		if ( sz_core_delete_existing_cover_image( array( 'item_id' => $sz->groups->current_group->id, 'object' => 'group' ) ) ) {
-			sz_core_add_message( __( 'The group cover photo was deleted successfully!', 'sportszone' ) );
+		if ( sz_core_delete_existing_cover_image( array( 'item_id' => $sz->events->current_event->id, 'object' => 'event' ) ) ) {
+			sz_core_add_message( __( 'The event cover photo was deleted successfully!', 'sportszone' ) );
 		} else {
-			sz_core_add_message( __( 'There was a problem deleting the group cover photo. Please try again.', 'sportszone' ), 'error' );
+			sz_core_add_message( __( 'There was a problem deleting the event cover photo. Please try again.', 'sportszone' ), 'error' );
 		}
 	}
 
@@ -71,7 +71,7 @@ function groups_screen_group_admin_cover_image() {
 		check_admin_referer( 'sz_cover_image_upload' );
 
 		// Pass the file to the cover_image upload handler.
-		if ( sz_core_cover_image_handle_upload( $_FILES, 'groups_cover_image_upload_dir' ) ) {
+		if ( sz_core_cover_image_handle_upload( $_FILES, 'events_cover_image_upload_dir' ) ) {
 			$sz->cover_image_admin->step = 'crop-image';
 
 			// Make sure we include the jQuery jCrop file for image cropping.
@@ -87,9 +87,9 @@ function groups_screen_group_admin_cover_image() {
 		check_admin_referer( 'sz_cover_image_cropstore' );
 
 		$args = array(
-			'object'        => 'group',
-			'cover_image_dir'    => 'group-cover-images',
-			'item_id'       => $sz->groups->current_group->id,
+			'object'        => 'event',
+			'cover_image_dir'    => 'event-cover-images',
+			'item_id'       => $sz->events->current_event->id,
 			'original_file' => $_POST['image_src'],
 			'crop_x'        => $_POST['x'],
 			'crop_y'        => $_POST['y'],
@@ -98,40 +98,40 @@ function groups_screen_group_admin_cover_image() {
 		);
 
 		if ( !sz_core_cover_image_handle_crop( $args ) ) {
-			sz_core_add_message( __( 'There was a problem cropping the group cover image photo.', 'sportszone' ), 'error' );
+			sz_core_add_message( __( 'There was a problem cropping the event cover image photo.', 'sportszone' ), 'error' );
 		} else {
 			/**
-			 * Fires after a group cover_image is uploaded.
+			 * Fires after a event cover_image is uploaded.
 			 *
 			 * @since 2.8.0
 			 *
-			 * @param int    $group_id ID of the group.
+			 * @param int    $event_id ID of the event.
 			 * @param string $type     Avatar type. 'crop' or 'full'.
 			 * @param array  $args     Array of parameters passed to the cover_image handler.
 			 */
-			do_action( 'groups_cover_image_uploaded', sz_get_current_group_id(), 'crop', $args );
-			sz_core_add_message( __( 'The new group cover image photo was uploaded successfully.', 'sportszone' ) );
+			do_action( 'events_cover_image_uploaded', sz_get_current_event_id(), 'crop', $args );
+			sz_core_add_message( __( 'The new event cover image photo was uploaded successfully.', 'sportszone' ) );
 		}
 	}
 
 	/**
-	 * Fires before the loading of the group Change Avatar page template.
+	 * Fires before the loading of the event Change Avatar page template.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param int $id ID of the group that is being displayed.
+	 * @param int $id ID of the event that is being displayed.
 	 */
-	do_action( 'groups_screen_group_admin_cover_image', $sz->groups->current_group->id );
+	do_action( 'events_screen_event_admin_cover_image', $sz->events->current_event->id );
 
 	/**
-	 * Filters the template to load for a group's Change Avatar page.
+	 * Filters the template to load for a event's Change Avatar page.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string $value Path to a group's Change Avatar template.
+	 * @param string $value Path to a event's Change Avatar template.
 	 */
-	sz_core_load_template( apply_filters( 'groups_template_group_admin_cover_image', 'groups/single/home' ) );
+	sz_core_load_template( apply_filters( 'events_template_event_admin_cover_image', 'events/single/home' ) );
 	
 	//------------------------------
 }
-add_action( 'sz_screens', 'groups_screen_group_admin_cover_image' );
+add_action( 'sz_screens', 'events_screen_event_admin_cover_image' );

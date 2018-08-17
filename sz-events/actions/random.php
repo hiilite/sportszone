@@ -1,23 +1,23 @@
 <?php
 /**
- * Groups: Random group action handler
+ * Events: Random event action handler
  *
  * @package SportsZone
- * @subpackage GroupActions
+ * @subpackage EventActions
  * @since 3.0.0
  */
 
 /**
- * Catch requests for a random group page (example.com/groups/?random-group) and redirect.
+ * Catch requests for a random event page (example.com/events/?random-event) and redirect.
  *
  * @since 1.2.0
  */
-function groups_action_redirect_to_random_group() {
+function events_action_redirect_to_random_event() {
 
-	if ( sz_is_groups_component() && isset( $_GET['random-group'] ) ) {
-		$group = SZ_Groups_Group::get_random( 1, 1 );
+	if ( sz_is_events_component() && isset( $_GET['random-event'] ) ) {
+		$event = SZ_Events_Event::get_random( 1, 1 );
 
-		sz_core_redirect( trailingslashit( sz_get_groups_directory_permalink() . $group['groups'][0]->slug ) );
+		sz_core_redirect( trailingslashit( sz_get_events_directory_permalink() . $event['events'][0]->slug ) );
 	}
 }
-add_action( 'sz_actions', 'groups_action_redirect_to_random_group' );
+add_action( 'sz_actions', 'events_action_redirect_to_random_event' );

@@ -1,6 +1,6 @@
 <?php
 /**
- * SportsZone Groups membership request template loop class.
+ * SportsZone Events membership request template loop class.
  *
  * @package SportsZone
  * @since 1.0.0
@@ -14,7 +14,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 1.0.0
  */
-class SZ_Groups_Membership_Requests_Template {
+class SZ_Events_Membership_Requests_Template {
 
 	/**
 	 * @since 1.0.0
@@ -76,8 +76,8 @@ class SZ_Groups_Membership_Requests_Template {
 	 * @since 1.5.0
 	 *
 	 * @param array $args {
-	 *     @type int $group_id ID of the group whose membership requests
-	 *                         are being queried. Default: current group id.
+	 *     @type int $event_id ID of the event whose membership requests
+	 *                         are being queried. Default: current event id.
 	 *     @type int $per_page Number of records to return per page of
 	 *                         results. Default: 10.
 	 *     @type int $page     Page of results to show. Default: 1.
@@ -91,7 +91,7 @@ class SZ_Groups_Membership_Requests_Template {
 			_deprecated_argument( __METHOD__, '2.0.0', sprintf( __( 'Arguments passed to %1$s should be in an associative array. See the inline documentation at %2$s for more details.', 'sportszone' ), __METHOD__, __FILE__ ) );
 
 			$old_args_keys = array(
-				0 => 'group_id',
+				0 => 'event_id',
 				1 => 'per_page',
 				2 => 'max',
 			);
@@ -105,15 +105,15 @@ class SZ_Groups_Membership_Requests_Template {
 			'page_arg' => 'mrpage',
 			'max'      => false,
 			'type'     => 'first_joined',
-			'group_id' => sz_get_current_group_id(),
-		), 'groups_membership_requests_template' );
+			'event_id' => sz_get_current_event_id(),
+		), 'events_membership_requests_template' );
 
 		$this->pag_arg  = sanitize_key( $r['page_arg'] );
 		$this->pag_page = sz_sanitize_pagination_arg( $this->pag_arg, $r['page']     );
 		$this->pag_num  = sz_sanitize_pagination_arg( 'num',          $r['per_page'] );
 
-		$mquery = new SZ_Group_Member_Query( array(
-			'group_id' => $r['group_id'],
+		$mquery = new SZ_Event_Member_Query( array(
+			'event_id' => $r['event_id'],
 			'type'     => $r['type'],
 			'per_page' => $this->pag_num,
 			'page'     => $this->pag_page,
@@ -130,12 +130,12 @@ class SZ_Groups_Membership_Requests_Template {
 		foreach ( $this->requests as $rk => $rv ) {
 			// For legacy reasons, the 'id' property of each
 			// request must match the membership id, not the ID of
-			// the user (as it's returned by SZ_Group_Member_Query).
+			// the user (as it's returned by SZ_Event_Member_Query).
 			$this->requests[ $rk ]->user_id = $rv->ID;
 			$this->requests[ $rk ]->id      = $rv->membership_id;
 
 			// Miscellaneous values.
-			$this->requests[ $rk ]->group_id   = $r['group_id'];
+			$this->requests[ $rk ]->event_id   = $r['event_id'];
 		}
 
 		if ( empty( $r['max'] ) || ( $r['max'] >= (int) $mquery->total_users ) ) {
@@ -218,11 +218,11 @@ class SZ_Groups_Membership_Requests_Template {
 		} elseif ( $tick == $this->request_count ) {
 
 			/**
-			 * Fires right before the rewinding of group membership requests list.
+			 * Fires right before the rewinding of event membership requests list.
 			 *
 			 * @since 1.5.0
 			 */
-			do_action( 'group_request_loop_end' );
+			do_action( 'event_request_loop_end' );
 			// Do some cleaning up after the loop.
 			$this->rewind_requests();
 		}
@@ -244,11 +244,11 @@ class SZ_Groups_Membership_Requests_Template {
 		if ( 0 == $this->current_request ) {
 
 			/**
-			 * Fires if the current group membership request item is the first in the loop.
+			 * Fires if the current event membership request item is the first in the loop.
 			 *
 			 * @since 1.1.0
 			 */
-			do_action( 'group_request_loop_start' );
+			do_action( 'event_request_loop_start' );
 		}
 	}
 }

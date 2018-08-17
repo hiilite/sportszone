@@ -461,7 +461,12 @@ class SportsZone {
 		$this->versions();
 
 		/** Update/Install ****************************************************/
-
+		
+		if ( file_exists( $this->plugin_dir . '/sz-cmb2/init.php' ) ) {
+			require_once $this->plugin_dir . '/sz-cmb2/init.php';
+		} elseif ( file_exists( $this->plugin_dir . '/sz-CMB2/init.php' ) ) {
+			require_once $this->plugin_dir . '/sz-CMB2/init.php';
+		}
 		// Theme compatibility
 		require( $this->plugin_dir . 'sz-core/sz-core-template-loader.php'     );
 		require( $this->plugin_dir . 'sz-core/sz-core-theme-compatibility.php' );

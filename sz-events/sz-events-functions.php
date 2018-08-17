@@ -1,6 +1,6 @@
 <?php
 /**
- * SportsZone Groups Functions.
+ * SportsZone Events Functions.
  *
  * Functions are where all the magic happens in SportsZone. They will
  * handle the actual saving or manipulation of information. Usually they will
@@ -8,7 +8,7 @@
  * true or false on success or failure.
  *
  * @package SportsZone
- * @subpackage GroupsFunctions
+ * @subpackage EventsFunctions
  * @since 1.5.0
  */
 
@@ -16,89 +16,89 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Check whether there is a Groups directory page in the $sz global.
+ * Check whether there is a Events directory page in the $sz global.
  *
  * @since 1.5.0
  *
  * @return bool True if set, False if empty.
  */
-function sz_groups_has_directory() {
+function sz_events_has_directory() {
 	$sz = sportszone();
 
-	return (bool) !empty( $sz->pages->groups->id );
+	return (bool) !empty( $sz->pages->events->id );
 }
 
 /**
- * Fetch a single group object.
+ * Fetch a single event object.
  *
- * When calling up a group object, you should always use this function instead
- * of instantiating SZ_Groups_Group directly, so that you will inherit cache
- * support and pass through the groups_get_group filter.
+ * When calling up a event object, you should always use this function instead
+ * of instantiating SZ_Events_Event directly, so that you will inherit cache
+ * support and pass through the events_get_event filter.
  *
  * @since 1.2.0
- * @since 2.7.0 The function signature was changed to accept a group ID only,
- *              instead of an array containing the group ID.
+ * @since 2.7.0 The function signature was changed to accept a event ID only,
+ *              instead of an array containing the event ID.
  *
- * @param int $group_id ID of the group.
- * @return SZ_Groups_Group $group The group object.
+ * @param int $event_id ID of the event.
+ * @return SZ_Events_Event $event The event object.
  */
-function groups_get_group( $group_id ) {
+function events_get_event( $event_id ) {
 	/*
 	 * Backward compatibilty.
 	 * Old-style arguments take the form of an array or a query string.
 	 */
-	if ( ! is_numeric( $group_id ) ) {
-		$r = sz_parse_args( $group_id, array(
-			'group_id'        => false,
+	if ( ! is_numeric( $event_id ) ) {
+		$r = sz_parse_args( $event_id, array(
+			'event_id'        => false,
 			'load_users'      => false,
 			'populate_extras' => false,
-		), 'groups_get_group' );
+		), 'events_get_event' );
 
-		$group_id = $r['group_id'];
+		$event_id = $r['event_id'];
 	}
 
-	$group = new SZ_Groups_Group( $group_id );
+	$event = new SZ_Events_Event( $event_id );
 
 	/**
-	 * Filters a single group object.
+	 * Filters a single event object.
 	 *
 	 * @since 1.2.0
 	 *
-	 * @param SZ_Groups_Group $group Single group object.
+	 * @param SZ_Events_Event $event Single event object.
 	 */
-	return apply_filters( 'groups_get_group', $group );
+	return apply_filters( 'events_get_event', $event );
 }
 
-/** Group Creation, Editing & Deletion ****************************************/
+/** Event Creation, Editing & Deletion ****************************************/
 
 /**
- * Create a group.
+ * Create a event.
  *
  * @since 1.0.0
  *
  * @param array|string $args {
  *     An array of arguments.
- *     @type int|bool $group_id     Pass a group ID to update an existing item, or
- *                                  0 / false to create a new group. Default: 0.
- *     @type int      $creator_id   The user ID that creates the group.
- *     @type string   $name         The group name.
- *     @type string   $description  Optional. The group's description.
- *     @type string   $slug         The group slug.
- *     @type string   $status       The group's status. Accepts 'public', 'private' or
+ *     @type int|bool $event_id     Pass a event ID to update an existing item, or
+ *                                  0 / false to create a new event. Default: 0.
+ *     @type int      $creator_id   The user ID that creates the event.
+ *     @type string   $name         The event name.
+ *     @type string   $description  Optional. The event's description.
+ *     @type string   $slug         The event slug.
+ *     @type string   $status       The event's status. Accepts 'public', 'private' or
  *                                  'hidden'. Defaults to 'public'.
- *     @type int      $parent_id    The ID of the parent group. Default: 0.
- *     @type int      $enable_forum Optional. Whether the group has a forum enabled.
- *                                  If a bbPress forum is enabled for the group,
+ *     @type int      $parent_id    The ID of the parent event. Default: 0.
+ *     @type int      $enable_forum Optional. Whether the event has a forum enabled.
+ *                                  If a bbPress forum is enabled for the event,
  *                                  set this to 1. Default: 0.
- *     @type string   $date_created The GMT time, in Y-m-d h:i:s format, when the group
+ *     @type string   $date_created The GMT time, in Y-m-d h:i:s format, when the event
  *                                  was created. Defaults to the current time.
  * }
- * @return int|bool The ID of the group on success. False on error.
+ * @return int|bool The ID of the event on success. False on error.
  */
-function groups_create_group( $args = '' ) {
+function events_create_event( $args = '' ) {
 
 	$args = sz_parse_args( $args, array(
-		'group_id'     => 0,
+		'event_id'     => 0,
 		'creator_id'   => 0,
 		'name'         => '',
 		'description'  => '',
@@ -107,31 +107,31 @@ function groups_create_group( $args = '' ) {
 		'parent_id'    => null,
 		'enable_forum' => null,
 		'date_created' => null
-	), 'groups_create_group' );
+	), 'events_create_event' );
 
 	extract( $args, EXTR_SKIP );
 
-	// Pass an existing group ID.
-	if ( ! empty( $group_id ) ) {
-		$group = groups_get_group( $group_id );
-		$name  = ! empty( $name ) ? $name : $group->name;
-		$slug  = ! empty( $slug ) ? $slug : $group->slug;
-		$creator_id  = ! empty( $creator_id ) ? $creator_id : $group->creator_id;
-		$description = ! empty( $description ) ? $description : $group->description;
-		$status = ! is_null( $status ) ? $status : $group->status;
-		$parent_id = ! is_null( $parent_id ) ? $parent_id : $group->parent_id;
-		$enable_forum = ! is_null( $enable_forum ) ? $enable_forum : $group->enable_forum;
-		$date_created = ! is_null( $date_created ) ? $date_created : $group->date_created;
+	// Pass an existing event ID.
+	if ( ! empty( $event_id ) ) {
+		$event = events_get_event( $event_id );
+		$name  = ! empty( $name ) ? $name : $event->name;
+		$slug  = ! empty( $slug ) ? $slug : $event->slug;
+		$creator_id  = ! empty( $creator_id ) ? $creator_id : $event->creator_id;
+		$description = ! empty( $description ) ? $description : $event->description;
+		$status = ! is_null( $status ) ? $status : $event->status;
+		$parent_id = ! is_null( $parent_id ) ? $parent_id : $event->parent_id;
+		$enable_forum = ! is_null( $enable_forum ) ? $enable_forum : $event->enable_forum;
+		$date_created = ! is_null( $date_created ) ? $date_created : $event->date_created;
 
-		// Groups need at least a name.
+		// Events need at least a name.
 		if ( empty( $name ) ) {
 			return false;
 		}
 
-	// Create a new group.
+	// Create a new event.
 	} else {
-		// Instantiate new group object.
-		$group = new SZ_Groups_Group;
+		// Instantiate new event object.
+		$event = new SZ_Events_Event;
 
 		// Check for null values, reset to sensible defaults.
 		$status = ! is_null( $status ) ? $status : 'public';
@@ -142,110 +142,110 @@ function groups_create_group( $args = '' ) {
 
 	// Set creator ID.
 	if ( $creator_id ) {
-		$group->creator_id = (int) $creator_id;
+		$event->creator_id = (int) $creator_id;
 	} elseif ( is_user_logged_in() ) {
-		$group->creator_id = sz_loggedin_user_id();
+		$event->creator_id = sz_loggedin_user_id();
 	}
 
-	if ( ! $group->creator_id ) {
+	if ( ! $event->creator_id ) {
 		return false;
 	}
 
 	// Validate status.
-	if ( ! groups_is_valid_status( $status ) ) {
+	if ( ! events_is_valid_status( $status ) ) {
 		return false;
 	}
 
-	// Set group name.
-	$group->name         = $name;
-	$group->description  = $description;
-	$group->slug         = $slug;
-	$group->status       = $status;
-	$group->parent_id    = $parent_id;
-	$group->enable_forum = (int) $enable_forum;
-	$group->date_created = $date_created;
+	// Set event name.
+	$event->name         = $name;
+	$event->description  = $description;
+	$event->slug         = $slug;
+	$event->status       = $status;
+	$event->parent_id    = $parent_id;
+	$event->enable_forum = (int) $enable_forum;
+	$event->date_created = $date_created;
 
-	// Save group.
-	if ( ! $group->save() ) {
+	// Save event.
+	if ( ! $event->save() ) {
 		return false;
 	}
 
-	// If this is a new group, set up the creator as the first member and admin.
-	if ( empty( $group_id ) ) {
-		$member                = new SZ_Groups_Member;
-		$member->group_id      = $group->id;
-		$member->user_id       = $group->creator_id;
+	// If this is a new event, set up the creator as the first member and admin.
+	if ( empty( $event_id ) ) {
+		$member                = new SZ_Events_Member;
+		$member->event_id      = $event->id;
+		$member->user_id       = $event->creator_id;
 		$member->is_admin      = 1;
-		$member->user_title    = __( 'Group Admin', 'sportszone' );
+		$member->user_title    = __( 'Event Admin', 'sportszone' );
 		$member->is_confirmed  = 1;
 		$member->date_modified = sz_core_current_time();
 		$member->save();
 
 		/**
-		 * Fires after the creation of a new group and a group creator needs to be made.
+		 * Fires after the creation of a new event and a event creator needs to be made.
 		 *
 		 * @since 1.5.0
 		 *
-		 * @param int              $id     ID of the newly created group.
-		 * @param SZ_Groups_Member $member Instance of the member who is assigned
-		 *                                 as group creator.
-		 * @param SZ_Groups_Group  $group  Instance of the group being created.
+		 * @param int              $id     ID of the newly created event.
+		 * @param SZ_Events_Member $member Instance of the member who is assigned
+		 *                                 as event creator.
+		 * @param SZ_Events_Event  $event  Instance of the event being created.
 		 */
-		do_action( 'groups_create_group', $group->id, $member, $group );
+		do_action( 'events_create_event', $event->id, $member, $event );
 
 	} else {
 
 		/**
-		 * Fires after the update of a group.
+		 * Fires after the update of a event.
 		 *
 		 * @since 1.5.0
 		 *
-		 * @param int             $id    ID of the updated group.
-		 * @param SZ_Groups_Group $group Instance of the group being updated.
+		 * @param int             $id    ID of the updated event.
+		 * @param SZ_Events_Event $event Instance of the event being updated.
 		 */
-		do_action( 'groups_update_group', $group->id, $group );
+		do_action( 'events_update_event', $event->id, $event );
 	}
 
 	/**
-	 * Fires after the creation or update of a group.
+	 * Fires after the creation or update of a event.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param int             $id    ID of the newly created group.
-	 * @param SZ_Groups_Group $group Instance of the group being updated.
+	 * @param int             $id    ID of the newly created event.
+	 * @param SZ_Events_Event $event Instance of the event being updated.
 	 */
-	do_action( 'groups_created_group', $group->id, $group );
+	do_action( 'events_created_event', $event->id, $event );
 
-	return $group->id;
+	return $event->id;
 }
 
 /**
- * Edit the base details for a group.
+ * Edit the base details for a event.
  *
- * These are the settings that appear on the first page of the group's Admin
+ * These are the settings that appear on the first page of the event's Admin
  * section (Name, Description, and "Notify members...").
  *
  * @since 1.0.0
  *
  * @param array $args {
  *     An array of optional arguments.
- *     @type int    $group_id       ID of the group.
- *     @type string $name           Name of the group.
- *     @type string $slug           Slug of the group.
- *     @type string $description    Description of the group.
- *     @type bool   $notify_members Whether to send an email notification to group
+ *     @type int    $event_id       ID of the event.
+ *     @type string $name           Name of the event.
+ *     @type string $slug           Slug of the event.
+ *     @type string $description    Description of the event.
+ *     @type bool   $notify_members Whether to send an email notification to event
  *                                  members about changes in these details.
  * }
  * @return bool True on success, false on failure.
  */
-function groups_edit_base_group_details( $args = array() ) {
+function events_edit_base_event_details( $args = array() ) {
 
 	// Backward compatibility with old method of passing arguments.
 	if ( ! is_array( $args ) || func_num_args() > 1 ) {
 		_deprecated_argument( __METHOD__, '2.9.0', sprintf( __( 'Arguments passed to %1$s should be in an associative array. See the inline documentation at %2$s for more details.', 'sportszone' ), __METHOD__, __FILE__ ) );
 
 		$old_args_keys = array(
-			0 => 'group_id',
+			0 => 'event_id',
 			1 => 'name',
 			2 => 'description',
 			3 => 'notify_members',
@@ -255,187 +255,187 @@ function groups_edit_base_group_details( $args = array() ) {
 	}
 
 	$r = sz_parse_args( $args, array(
-		'group_id'       => sz_get_current_group_id(),
+		'event_id'       => sz_get_current_event_id(),
 		'name'           => null,
 		'slug'           => null,
 		'description'    => null,
 		'notify_members' => false,
-	), 'groups_edit_base_group_details' );
+	), 'events_edit_base_event_details' );
 
-	if ( ! $r['group_id'] ) {
+	if ( ! $r['event_id'] ) {
 		return false;
 	}
 
-	$group     = groups_get_group( $r['group_id'] );
-	$old_group = clone $group;
+	$event     = events_get_event( $r['event_id'] );
+	$old_event = clone $event;
 
-	// Group name, slug and description can never be empty. Update only if provided.
+	// Event name, slug and description can never be empty. Update only if provided.
 	if ( $r['name'] ) {
-		$group->name = $r['name'];
+		$event->name = $r['name'];
 	}
-	if ( $r['slug'] && $r['slug'] != $group->slug ) {
-		$group->slug = groups_check_slug( $r['slug'] );
+	if ( $r['slug'] && $r['slug'] != $event->slug ) {
+		$event->slug = events_check_slug( $r['slug'] );
 	}
 	if ( $r['description'] ) {
-		$group->description = $r['description'];
+		$event->description = $r['description'];
 	}
 
-	if ( ! $group->save() ) {
+	if ( ! $event->save() ) {
 		return false;
 	}
 
-	// Maybe update the "previous_slug" groupmeta.
-	if ( $group->slug != $old_group->slug ) {
+	// Maybe update the "previous_slug" eventmeta.
+	if ( $event->slug != $old_event->slug ) {
 		/*
-		 * If the old slug exists in this group's past, delete that entry.
-		 * Recent previous_slugs are preferred when selecting the current group
-		 * from an old group slug, so we want the previous slug to be
-		 * saved "now" in the groupmeta table and don't need the old record.
+		 * If the old slug exists in this event's past, delete that entry.
+		 * Recent previous_slugs are preferred when selecting the current event
+		 * from an old event slug, so we want the previous slug to be
+		 * saved "now" in the eventmeta table and don't need the old record.
 		 */
-		groups_delete_groupmeta( $group->id, 'previous_slug', $old_group->slug );
-		groups_add_groupmeta( $group->id, 'previous_slug', $old_group->slug );
+		events_delete_eventmeta( $event->id, 'previous_slug', $old_event->slug );
+		events_add_eventmeta( $event->id, 'previous_slug', $old_event->slug );
 	}
 
 	if ( $r['notify_members'] ) {
-		groups_notification_group_updated( $group->id, $old_group );
+		events_notification_event_updated( $event->id, $old_event );
 	}
 
 	/**
-	 * Fired after a group's details are updated.
+	 * Fired after a event's details are updated.
 	 *
 	 * @since 2.2.0
 	 *
-	 * @param int             $value          ID of the group.
-	 * @param SZ_Groups_Group $old_group      Group object, before being modified.
+	 * @param int             $value          ID of the event.
+	 * @param SZ_Events_Event $old_event      Event object, before being modified.
 	 * @param bool            $notify_members Whether to send an email notification to members about the change.
 	 */
-	do_action( 'groups_details_updated', $group->id, $old_group, $r['notify_members'] );
+	do_action( 'events_details_updated', $event->id, $old_event, $r['notify_members'] );
 
 	return true;
 }
 
 /**
- * Edit the base details for a group.
+ * Edit the base details for a event.
  *
- * These are the settings that appear on the Settings page of the group's Admin
+ * These are the settings that appear on the Settings page of the event's Admin
  * section (privacy settings, "enable forum", invitation status).
  *
  * @since 1.0.0
  *
- * @param int         $group_id      ID of the group.
- * @param bool        $enable_forum  Whether to enable a forum for the group.
- * @param string      $status        Group status. 'public', 'private', 'hidden'.
+ * @param int         $event_id      ID of the event.
+ * @param bool        $enable_forum  Whether to enable a forum for the event.
+ * @param string      $status        Event status. 'public', 'private', 'hidden'.
  * @param string|bool $invite_status Optional. Who is allowed to send invitations
- *                                   to the group. 'members', 'mods', or 'admins'.
- * @param int|bool    $parent_id     Parent group ID.
+ *                                   to the event. 'members', 'mods', or 'admins'.
+ * @param int|bool    $parent_id     Parent event ID.
  * @return bool True on success, false on failure.
  */
-function groups_edit_group_settings( $group_id, $enable_forum, $status, $invite_status = false, $parent_id = false ) {
+function events_edit_event_settings( $event_id, $enable_forum, $status, $invite_status = false, $parent_id = false ) {
 
-	$group = groups_get_group( $group_id );
-	$group->enable_forum = $enable_forum;
+	$event = events_get_event( $event_id );
+	$event->enable_forum = $enable_forum;
 
 	/**
-	 * Before we potentially switch the group status, if it has been changed to public
+	 * Before we potentially switch the event status, if it has been changed to public
 	 * from private and there are outstanding membership requests, auto-accept those requests.
 	 */
-	if ( 'private' == $group->status && 'public' == $status )
-		groups_accept_all_pending_membership_requests( $group->id );
+	if ( 'private' == $event->status && 'public' == $status )
+		events_accept_all_pending_membership_requests( $event->id );
 
 	// Now update the status.
-	$group->status = $status;
+	$event->status = $status;
 
 	// Update the parent ID if necessary.
 	if ( false !== $parent_id ) {
-		$group->parent_id = $parent_id;
+		$event->parent_id = $parent_id;
 	}
 
-	if ( !$group->save() )
+	if ( !$event->save() )
 		return false;
 
 	// Set the invite status.
 	if ( $invite_status )
-		groups_update_groupmeta( $group->id, 'invite_status', $invite_status );
+		events_update_eventmeta( $event->id, 'invite_status', $invite_status );
 
-	groups_update_groupmeta( $group->id, 'last_activity', sz_core_current_time() );
+	events_update_eventmeta( $event->id, 'last_activity', sz_core_current_time() );
 
 	/**
-	 * Fires after the update of a groups settings.
+	 * Fires after the update of a events settings.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param int $id ID of the group that was updated.
+	 * @param int $id ID of the event that was updated.
 	 */
-	do_action( 'groups_settings_updated', $group->id );
+	do_action( 'events_settings_updated', $event->id );
 
 	return true;
 }
 
 /**
- * Delete a group and all of its associated metadata.
+ * Delete a event and all of its associated metadata.
  *
  * @since 1.0.0
  *
- * @param int $group_id ID of the group to delete.
+ * @param int $event_id ID of the event to delete.
  * @return bool True on success, false on failure.
  */
-function groups_delete_group( $group_id ) {
+function events_delete_event( $event_id ) {
 
 	/**
-	 * Fires before the deletion of a group.
+	 * Fires before the deletion of a event.
 	 *
 	 * @since 1.5.0
 	 *
-	 * @param int $group_id ID of the group to be deleted.
+	 * @param int $event_id ID of the event to be deleted.
 	 */
-	do_action( 'groups_before_delete_group', $group_id );
+	do_action( 'events_before_delete_event', $event_id );
 
-	// Get the group object.
-	$group = groups_get_group( $group_id );
+	// Get the event object.
+	$event = events_get_event( $event_id );
 
-	// Bail if group cannot be deleted.
-	if ( ! $group->delete() ) {
+	// Bail if event cannot be deleted.
+	if ( ! $event->delete() ) {
 		return false;
 	}
 
-	// Remove all outstanding invites for this group.
-	groups_delete_all_group_invites( $group_id );
+	// Remove all outstanding invites for this event.
+	events_delete_all_event_invites( $event_id );
 
 	/**
-	 * Fires after the deletion of a group.
+	 * Fires after the deletion of a event.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param int $group_id ID of the group that was deleted.
+	 * @param int $event_id ID of the event that was deleted.
 	 */
-	do_action( 'groups_delete_group', $group_id );
+	do_action( 'events_delete_event', $event_id );
 
 	return true;
 }
 
 /**
- * Check a group status (eg 'private') against the whitelist of registered statuses.
+ * Check a event status (eg 'private') against the whitelist of registered statuses.
  *
  * @since 1.1.0
  *
  * @param string $status Status to check.
  * @return bool True if status is allowed, otherwise false.
  */
-function groups_is_valid_status( $status ) {
+function events_is_valid_status( $status ) {
 	$sz = sportszone();
 
-	return in_array( $status, (array) $sz->groups->valid_status );
+	return in_array( $status, (array) $sz->events->valid_status );
 }
 
 /**
- * Provide a unique, sanitized version of a group slug.
+ * Provide a unique, sanitized version of a event slug.
  *
  * @since 1.0.0
  *
- * @param string $slug Group slug to check.
+ * @param string $slug Event slug to check.
  * @return string $slug A unique and sanitized slug.
  */
-function groups_check_slug( $slug ) {
+function events_check_slug( $slug ) {
 	$sz = sportszone();
 
 	// First, make the proposed slug work in a URL.
@@ -444,129 +444,129 @@ function groups_check_slug( $slug ) {
 	if ( 'wp' == substr( $slug, 0, 2 ) )
 		$slug = substr( $slug, 2, strlen( $slug ) - 2 );
 
-	if ( in_array( $slug, (array) $sz->groups->forbidden_names ) )
+	if ( in_array( $slug, (array) $sz->events->forbidden_names ) )
 		$slug = $slug . '-' . rand();
 
-	if ( SZ_Groups_Group::check_slug( $slug ) ) {
+	if ( SZ_Events_Event::check_slug( $slug ) ) {
 		do {
 			$slug = $slug . '-' . rand();
 		}
-		while ( SZ_Groups_Group::check_slug( $slug ) );
+		while ( SZ_Events_Event::check_slug( $slug ) );
 	}
 
 	return $slug;
 }
 
 /**
- * Get a group slug by its ID.
+ * Get a event slug by its ID.
  *
  * @since 1.0.0
  *
- * @param int $group_id The numeric ID of the group.
- * @return string The group's slug.
+ * @param int $event_id The numeric ID of the event.
+ * @return string The event's slug.
  */
-function groups_get_slug( $group_id ) {
-	$group = groups_get_group( $group_id );
-	return !empty( $group->slug ) ? $group->slug : '';
+function events_get_slug( $event_id ) {
+	$event = events_get_event( $event_id );
+	return !empty( $event->slug ) ? $event->slug : '';
 }
 
 /**
- * Get a group ID by its slug.
+ * Get a event ID by its slug.
  *
  * @since 1.6.0
  *
- * @param string $group_slug The group's slug.
- * @return int|null The group ID on success; null on failure.
+ * @param string $event_slug The event's slug.
+ * @return int|null The event ID on success; null on failure.
  */
-function groups_get_id( $group_slug ) {
-	return SZ_Groups_Group::group_exists( $group_slug );
+function events_get_id( $event_slug ) {
+	return SZ_Events_Event::event_exists( $event_slug );
 }
 
 /**
- * Get a group ID by checking against old (not currently active) slugs.
+ * Get a event ID by checking against old (not currently active) slugs.
  *
  * @since 2.9.0
  *
- * @param string $group_slug The group's slug.
- * @return int|null The group ID on success; null on failure.
+ * @param string $event_slug The event's slug.
+ * @return int|null The event ID on success; null on failure.
  */
-function groups_get_id_by_previous_slug( $group_slug ) {
-	return SZ_Groups_Group::get_id_by_previous_slug( $group_slug );
+function events_get_id_by_previous_slug( $event_slug ) {
+	return SZ_Events_Event::get_id_by_previous_slug( $event_slug );
 }
 
 /** User Actions **************************************************************/
 
 /**
- * Remove a user from a group.
+ * Remove a user from a event.
  *
  * @since 1.0.0
  *
- * @param int $group_id ID of the group.
+ * @param int $event_id ID of the event.
  * @param int $user_id  Optional. ID of the user. Defaults to the currently
  *                      logged-in user.
  * @return bool True on success, false on failure.
  */
-function groups_leave_group( $group_id, $user_id = 0 ) {
+function events_leave_event( $event_id, $user_id = 0 ) {
 
 	if ( empty( $user_id ) )
 		$user_id = sz_loggedin_user_id();
 
-	// Don't let single admins leave the group.
-	if ( count( groups_get_group_admins( $group_id ) ) < 2 ) {
-		if ( groups_is_user_admin( $user_id, $group_id ) ) {
-			sz_core_add_message( __( 'As the only admin, you cannot leave the group.', 'sportszone' ), 'error' );
+	// Don't let single admins leave the event.
+	if ( count( events_get_event_admins( $event_id ) ) < 2 ) {
+		if ( events_is_user_admin( $user_id, $event_id ) ) {
+			sz_core_add_message( __( 'As the only admin, you cannot leave the event.', 'sportszone' ), 'error' );
 			return false;
 		}
 	}
 
-	if ( ! SZ_Groups_Member::delete( $user_id, $group_id ) ) {
+	if ( ! SZ_Events_Member::delete( $user_id, $event_id ) ) {
 		return false;
 	}
 
-	sz_core_add_message( __( 'You successfully left the group.', 'sportszone' ) );
+	sz_core_add_message( __( 'You successfully left the event.', 'sportszone' ) );
 
 	/**
-	 * Fires after a user leaves a group.
+	 * Fires after a user leaves a event.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param int $group_id ID of the group.
-	 * @param int $user_id  ID of the user leaving the group.
+	 * @param int $event_id ID of the event.
+	 * @param int $user_id  ID of the user leaving the event.
 	 */
-	do_action( 'groups_leave_group', $group_id, $user_id );
+	do_action( 'events_leave_event', $event_id, $user_id );
 
 	return true;
 }
 
 /**
- * Add a user to a group.
+ * Add a user to a event.
  *
  * @since 1.0.0
  *
- * @param int $group_id ID of the group.
+ * @param int $event_id ID of the event.
  * @param int $user_id  Optional. ID of the user. Defaults to the currently
  *                      logged-in user.
  * @return bool True on success, false on failure.
  */
-function groups_join_group( $group_id, $user_id = 0 ) {
+function events_join_event( $event_id, $user_id = 0 ) {
 
 	if ( empty( $user_id ) )
 		$user_id = sz_loggedin_user_id();
 
 	// Check if the user has an outstanding invite. If so, delete it.
-	if ( groups_check_user_has_invite( $user_id, $group_id ) )
-		groups_delete_invite( $user_id, $group_id );
+	if ( events_check_user_has_invite( $user_id, $event_id ) )
+		events_delete_invite( $user_id, $event_id );
 
 	// Check if the user has an outstanding request. If so, delete it.
-	if ( groups_check_for_membership_request( $user_id, $group_id ) )
-		groups_delete_membership_request( null, $user_id, $group_id );
+	if ( events_check_for_membership_request( $user_id, $event_id ) )
+		events_delete_membership_request( null, $user_id, $event_id );
 
 	// User is already a member, just return true.
-	if ( groups_is_user_member( $user_id, $group_id ) )
+	if ( events_is_user_member( $user_id, $event_id ) )
 		return true;
 
-	$new_member                = new SZ_Groups_Member;
-	$new_member->group_id      = $group_id;
+	$new_member                = new SZ_Events_Member;
+	$new_member->event_id      = $event_id;
 	$new_member->user_id       = $user_id;
 	$new_member->inviter_id    = 0;
 	$new_member->is_admin      = 0;
@@ -579,100 +579,100 @@ function groups_join_group( $group_id, $user_id = 0 ) {
 
 	$sz = sportszone();
 
-	if ( !isset( $sz->groups->current_group ) || !$sz->groups->current_group || $group_id != $sz->groups->current_group->id )
-		$group = groups_get_group( $group_id );
+	if ( !isset( $sz->events->current_event ) || !$sz->events->current_event || $event_id != $sz->events->current_event->id )
+		$event = events_get_event( $event_id );
 	else
-		$group = $sz->groups->current_group;
+		$event = $sz->events->current_event;
 
 	// Record this in activity streams.
 	if ( sz_is_active( 'activity' ) ) {
-		groups_record_activity( array(
-			'type'    => 'joined_group',
-			'item_id' => $group_id,
+		events_record_activity( array(
+			'type'    => 'joined_event',
+			'item_id' => $event_id,
 			'user_id' => $user_id,
 		) );
 	}
 
 	/**
-	 * Fires after a user joins a group.
+	 * Fires after a user joins a event.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param int $group_id ID of the group.
-	 * @param int $user_id  ID of the user joining the group.
+	 * @param int $event_id ID of the event.
+	 * @param int $user_id  ID of the user joining the event.
 	 */
-	do_action( 'groups_join_group', $group_id, $user_id );
+	do_action( 'events_join_event', $event_id, $user_id );
 
 	return true;
 }
 
 /**
- * Update the last_activity meta value for a given group.
+ * Update the last_activity meta value for a given event.
  *
  * @since 1.0.0
  *
- * @param int $group_id Optional. The ID of the group whose last_activity is
- *                      being updated. Default: the current group's ID.
+ * @param int $event_id Optional. The ID of the event whose last_activity is
+ *                      being updated. Default: the current event's ID.
  * @return false|null False on failure.
  */
-function groups_update_last_activity( $group_id = 0 ) {
+function events_update_last_activity( $event_id = 0 ) {
 
-	if ( empty( $group_id ) ) {
-		$group_id = sportszone()->groups->current_group->id;
+	if ( empty( $event_id ) ) {
+		$event_id = sportszone()->events->current_event->id;
 	}
 
-	if ( empty( $group_id ) ) {
+	if ( empty( $event_id ) ) {
 		return false;
 	}
 
-	groups_update_groupmeta( $group_id, 'last_activity', sz_core_current_time() );
+	events_update_eventmeta( $event_id, 'last_activity', sz_core_current_time() );
 }
-add_action( 'groups_join_group',           'groups_update_last_activity' );
-add_action( 'groups_leave_group',          'groups_update_last_activity' );
-add_action( 'groups_created_group',        'groups_update_last_activity' );
+add_action( 'events_join_event',           'events_update_last_activity' );
+add_action( 'events_leave_event',          'events_update_last_activity' );
+add_action( 'events_created_event',        'events_update_last_activity' );
 
-/** General Group Functions ***************************************************/
+/** General Event Functions ***************************************************/
 
 /**
- * Get a list of group administrators.
+ * Get a list of event administrators.
  *
  * @since 1.0.0
  *
- * @param int $group_id ID of the group.
- * @return array Info about group admins (user_id + date_modified).
+ * @param int $event_id ID of the event.
+ * @return array Info about event admins (user_id + date_modified).
  */
-function groups_get_group_admins( $group_id ) {
-	return SZ_Groups_Member::get_group_administrator_ids( $group_id );
+function events_get_event_admins( $event_id ) {
+	return SZ_Events_Member::get_event_administrator_ids( $event_id );
 }
 
 /**
- * Get a list of group moderators.
+ * Get a list of event moderators.
  *
  * @since 1.0.0
  *
- * @param int $group_id ID of the group.
- * @return array Info about group admins (user_id + date_modified).
+ * @param int $event_id ID of the event.
+ * @return array Info about event admins (user_id + date_modified).
  */
-function groups_get_group_mods( $group_id ) {
-	return SZ_Groups_Member::get_group_moderator_ids( $group_id );
+function events_get_event_mods( $event_id ) {
+	return SZ_Events_Member::get_event_moderator_ids( $event_id );
 }
 
 /**
- * Fetch the members of a group.
+ * Fetch the members of a event.
  *
- * Since SportsZone 1.8, a procedural wrapper for SZ_Group_Member_Query.
- * Previously called SZ_Groups_Member::get_all_for_group().
+ * Since SportsZone 1.8, a procedural wrapper for SZ_Event_Member_Query.
+ * Previously called SZ_Events_Member::get_all_for_event().
  *
- * To use the legacy query, filter 'sz_use_legacy_group_member_query',
+ * To use the legacy query, filter 'sz_use_legacy_event_member_query',
  * returning true.
  *
  * @since 1.0.0
- * @since 3.0.0 $group_id now supports multiple values. Only works if legacy query is not
+ * @since 3.0.0 $event_id now supports multiple values. Only works if legacy query is not
  *              in use.
  *
  * @param array $args {
  *     An array of optional arguments.
- *     @type int|array|string $group_id            ID of the group to limit results to. Also accepts multiple values
+ *     @type int|array|string $event_id            ID of the event to limit results to. Also accepts multiple values
  *                                                 either as an array or as a comma-delimited string.
  *     @type int              $page                Page of results to be queried. Default: 1.
  *     @type int              $per_page            Number of items to return per page of results. Default: 20.
@@ -680,7 +680,7 @@ function groups_get_group_mods( $group_id ) {
  *     @type array            $exclude             Optional. Array of user IDs to exclude.
  *     @type bool|int         $exclude_admins_mods True (or 1) to exclude admins and mods from results. Default: 1.
  *     @type bool|int         $exclude_banned      True (or 1) to exclude banned users from results. Default: 1.
- *     @type array            $group_role          Optional. Array of group roles to include.
+ *     @type array            $event_role          Optional. Array of event roles to include.
  *     @type string           $search_terms        Optional. Filter results by a search string.
  *     @type string           $type                Optional. Sort the order of results. 'last_joined', 'first_joined', or
  *                                                 any of the $type params available in {@link SZ_User_Query}. Default:
@@ -688,63 +688,63 @@ function groups_get_group_mods( $group_id ) {
  * }
  * @return false|array Multi-d array of 'members' list and 'count'.
  */
-function groups_get_group_members( $args = array() ) {
+function events_get_event_members( $args = array() ) {
 
 	// Backward compatibility with old method of passing arguments.
 	if ( ! is_array( $args ) || func_num_args() > 1 ) {
 		_deprecated_argument( __METHOD__, '2.0.0', sprintf( __( 'Arguments passed to %1$s should be in an associative array. See the inline documentation at %2$s for more details.', 'sportszone' ), __METHOD__, __FILE__ ) );
 
 		$old_args_keys = array(
-			0 => 'group_id',
+			0 => 'event_id',
 			1 => 'per_page',
 			2 => 'page',
 			3 => 'exclude_admins_mods',
 			4 => 'exclude_banned',
 			5 => 'exclude',
-			6 => 'group_role',
+			6 => 'event_role',
 		);
 
 		$args = sz_core_parse_args_array( $old_args_keys, func_get_args() );
 	}
 
 	$r = sz_parse_args( $args, array(
-		'group_id'            => sz_get_current_group_id(),
+		'event_id'            => sz_get_current_event_id(),
 		'per_page'            => false,
 		'page'                => false,
 		'exclude_admins_mods' => true,
 		'exclude_banned'      => true,
 		'exclude'             => false,
-		'group_role'          => array(),
+		'event_role'          => array(),
 		'search_terms'        => false,
 		'type'                => 'last_joined',
-	), 'groups_get_group_members' );
+	), 'events_get_event_members' );
 
-	// For legacy users. Use of SZ_Groups_Member::get_all_for_group() is deprecated.
-	if ( apply_filters( 'sz_use_legacy_group_member_query', false, __FUNCTION__, func_get_args() ) ) {
-		$retval = SZ_Groups_Member::get_all_for_group( $r['group_id'], $r['per_page'], $r['page'], $r['exclude_admins_mods'], $r['exclude_banned'], $r['exclude'] );
+	// For legacy users. Use of SZ_Events_Member::get_all_for_event() is deprecated.
+	if ( apply_filters( 'sz_use_legacy_event_member_query', false, __FUNCTION__, func_get_args() ) ) {
+		$retval = SZ_Events_Member::get_all_for_event( $r['event_id'], $r['per_page'], $r['page'], $r['exclude_admins_mods'], $r['exclude_banned'], $r['exclude'] );
 	} else {
 
 		// Both exclude_admins_mods and exclude_banned are legacy arguments.
-		// Convert to group_role.
-		if ( empty( $r['group_role'] ) ) {
-			$r['group_role'] = array( 'member' );
+		// Convert to event_role.
+		if ( empty( $r['event_role'] ) ) {
+			$r['event_role'] = array( 'member' );
 
 			if ( ! $r['exclude_admins_mods'] ) {
-				$r['group_role'][] = 'mod';
-				$r['group_role'][] = 'admin';
+				$r['event_role'][] = 'mod';
+				$r['event_role'][] = 'admin';
 			}
 
 			if ( ! $r['exclude_banned'] ) {
-				$r['group_role'][] = 'banned';
+				$r['event_role'][] = 'banned';
 			}
 		}
 
-		// Perform the group member query (extends SZ_User_Query).
-		$members = new SZ_Group_Member_Query( array(
-			'group_id'       => $r['group_id'],
+		// Perform the event member query (extends SZ_User_Query).
+		$members = new SZ_Event_Member_Query( array(
+			'event_id'       => $r['event_id'],
 			'per_page'       => $r['per_page'],
 			'page'           => $r['page'],
-			'group_role'     => $r['group_role'],
+			'event_role'     => $r['event_role'],
 			'exclude'        => $r['exclude'],
 			'search_terms'   => $r['search_terms'],
 			'type'           => $r['type'],
@@ -761,64 +761,64 @@ function groups_get_group_members( $args = array() ) {
 }
 
 /**
- * Get the member count for a group.
+ * Get the member count for a event.
  *
  * @since 1.2.3
  *
- * @param int $group_id Group ID.
- * @return int Count of confirmed members for the group.
+ * @param int $event_id Event ID.
+ * @return int Count of confirmed members for the event.
  */
-function groups_get_total_member_count( $group_id ) {
-	return SZ_Groups_Group::get_total_member_count( $group_id );
+function events_get_total_member_count( $event_id ) {
+	return SZ_Events_Event::get_total_member_count( $event_id );
 }
 
-/** Group Fetching, Filtering & Searching  ************************************/
+/** Event Fetching, Filtering & Searching  ************************************/
 
 /**
- * Get a collection of groups, based on the parameters passed.
+ * Get a collection of events, based on the parameters passed.
  *
  * @since 1.2.0
- * @since 2.6.0 Added `$group_type`, `$group_type__in`, and `$group_type__not_in` parameters.
+ * @since 2.6.0 Added `$event_type`, `$event_type__in`, and `$event_type__not_in` parameters.
  * @since 2.7.0 Added `$update_admin_cache` and `$parent_id` parameters.
  *
  * @param array|string $args {
  *     Array of arguments. Supports all arguments of
- *     {@link SZ_Groups_Group::get()}. Where the default values differ, they
+ *     {@link SZ_Events_Event::get()}. Where the default values differ, they
  *     have been described here.
  *     @type int $per_page Default: 20.
  *     @type int $page Default: 1.
  * }
- * @return array See {@link SZ_Groups_Group::get()}.
+ * @return array See {@link SZ_Events_Event::get()}.
  */
-function groups_get_groups( $args = '' ) {
+function events_get_events( $args = '' ) {
 
 	$defaults = array(
 		'type'               => false,          // Active, newest, alphabetical, random, popular.
 		'order'              => 'DESC',         // 'ASC' or 'DESC'
 		'orderby'            => 'date_created', // date_created, last_activity, total_member_count, name, random, meta_id.
-		'user_id'            => false,          // Pass a user_id to limit to only groups that this user is a member of.
-		'include'            => false,          // Only include these specific groups (group_ids).
-		'exclude'            => false,          // Do not include these specific groups (group_ids).
-		'parent_id'          => null,           // Get groups that are children of the specified group(s).
-		'slug'               => array(),        // Find a group or groups by slug.
-		'search_terms'       => false,          // Limit to groups that match these search terms.
+		'user_id'            => false,          // Pass a user_id to limit to only events that this user is a member of.
+		'include'            => false,          // Only include these specific events (event_ids).
+		'exclude'            => false,          // Do not include these specific events (event_ids).
+		'parent_id'          => null,           // Get events that are children of the specified event(s).
+		'slug'               => array(),        // Find a event or events by slug.
+		'search_terms'       => false,          // Limit to events that match these search terms.
 		'search_columns'     => array(),        // Select which columns to search.
-		'group_type'         => '',             // Array or comma-separated list of group types to limit results to.
-		'group_type__in'     => '',             // Array or comma-separated list of group types to limit results to.
-		'group_type__not_in' => '',             // Array or comma-separated list of group types that will be excluded from results.
-		'meta_query'         => false,          // Filter by groupmeta. See WP_Meta_Query for syntax.
-		'show_hidden'        => false,          // Show hidden groups to non-admins.
-		'status'             => array(),        // Array or comma-separated list of group statuses to limit results to.
+		'event_type'         => '',             // Array or comma-separated list of event types to limit results to.
+		'event_type__in'     => '',             // Array or comma-separated list of event types to limit results to.
+		'event_type__not_in' => '',             // Array or comma-separated list of event types that will be excluded from results.
+		'meta_query'         => false,          // Filter by eventmeta. See WP_Meta_Query for syntax.
+		'show_hidden'        => false,          // Show hidden events to non-admins.
+		'status'             => array(),        // Array or comma-separated list of event statuses to limit results to.
 		'per_page'           => 20,             // The number of results to return per page.
 		'page'               => 1,              // The page to return if limiting per page.
-		'update_meta_cache'  => true,           // Pre-fetch groupmeta for queried groups.
+		'update_meta_cache'  => true,           // Pre-fetch eventmeta for queried events.
 		'update_admin_cache' => false,
-		'fields'             => 'all',          // Return SZ_Groups_Group objects or a list of ids.
+		'fields'             => 'all',          // Return SZ_Events_Event objects or a list of ids.
 	);
 
-	$r = sz_parse_args( $args, $defaults, 'groups_get_groups' );
+	$r = sz_parse_args( $args, $defaults, 'events_get_events' );
 
-	$groups = SZ_Groups_Group::get( array(
+	$events = SZ_Events_Event::get( array(
 		'type'               => $r['type'],
 		'user_id'            => $r['user_id'],
 		'include'            => $r['include'],
@@ -827,9 +827,9 @@ function groups_get_groups( $args = '' ) {
 		'parent_id'          => $r['parent_id'],
 		'search_terms'       => $r['search_terms'],
 		'search_columns'     => $r['search_columns'],
-		'group_type'         => $r['group_type'],
-		'group_type__in'     => $r['group_type__in'],
-		'group_type__not_in' => $r['group_type__not_in'],
+		'event_type'         => $r['event_type'],
+		'event_type__in'     => $r['event_type__in'],
+		'event_type__not_in' => $r['event_type__not_in'],
 		'meta_query'         => $r['meta_query'],
 		'show_hidden'        => $r['show_hidden'],
 		'status'             => $r['status'],
@@ -843,38 +843,38 @@ function groups_get_groups( $args = '' ) {
 	) );
 
 	/**
-	 * Filters the collection of groups based on parsed parameters.
+	 * Filters the collection of events based on parsed parameters.
 	 *
 	 * @since 1.2.0
 	 *
-	 * @param SZ_Groups_Group $groups Object of found groups based on parameters.
+	 * @param SZ_Events_Event $events Object of found events based on parameters.
 	 *                                Passed by reference.
-	 * @param array           $r      Array of parsed arguments used for group query.
+	 * @param array           $r      Array of parsed arguments used for event query.
 	 *                                Passed by reference.
 	 */
-	return apply_filters_ref_array( 'groups_get_groups', array( &$groups, &$r ) );
+	return apply_filters_ref_array( 'events_get_events', array( &$events, &$r ) );
 }
 
 /**
- * Get the total group count for the site.
+ * Get the total event count for the site.
  *
  * @since 1.2.0
  *
  * @return int
  */
-function groups_get_total_group_count() {
-	$count = wp_cache_get( 'sz_total_group_count', 'sz' );
+function events_get_total_event_count() {
+	$count = wp_cache_get( 'sz_total_event_count', 'sz' );
 
 	if ( false === $count ) {
-		$count = SZ_Groups_Group::get_total_group_count();
-		wp_cache_set( 'sz_total_group_count', $count, 'sz' );
+		$count = SZ_Events_Event::get_total_event_count();
+		wp_cache_set( 'sz_total_event_count', $count, 'sz' );
 	}
 
 	return $count;
 }
 
 /**
- * Get the IDs of the groups of which a specified user is a member.
+ * Get the IDs of the events of which a specified user is a member.
  *
  * @since 1.0.0
  *
@@ -884,33 +884,33 @@ function groups_get_total_group_count() {
  * @param int $pag_page Optional. Page offset of results to return.
  *                      Default: false (no limit).
  * @return array {
- *     @type array $groups Array of groups returned by paginated query.
- *     @type int   $total Count of groups matching query.
+ *     @type array $events Array of events returned by paginated query.
+ *     @type int   $total Count of events matching query.
  * }
  */
-function groups_get_user_groups( $user_id = 0, $pag_num = 0, $pag_page = 0 ) {
+function events_get_user_events( $user_id = 0, $pag_num = 0, $pag_page = 0 ) {
 
 	if ( empty( $user_id ) )
 		$user_id = sz_displayed_user_id();
 
-	return SZ_Groups_Member::get_group_ids( $user_id, $pag_num, $pag_page );
+	return SZ_Events_Member::get_event_ids( $user_id, $pag_num, $pag_page );
 }
 
 /**
- * Get a list of groups of which the specified user is a member.
+ * Get a list of events of which the specified user is a member.
  *
- * Get a list of the groups to which this member belongs,
- * filtered by group membership status and role.
+ * Get a list of the events to which this member belongs,
+ * filtered by event membership status and role.
  * Usage examples: Used with no arguments specified,
  *
- *    sz_get_user_groups( sz_loggedin_user_id() );
+ *    sz_get_user_events( sz_loggedin_user_id() );
  *
- * returns an array of the groups in which the logged-in user
- * is an unpromoted member. To fetch an array of all groups that
+ * returns an array of the events in which the logged-in user
+ * is an unpromoted member. To fetch an array of all events that
  * the current user belongs to, in any membership role,
  * member, moderator or administrator, use
  *
- *    sz_get_user_groups( $user_id, array(
+ *    sz_get_user_events( $user_id, array(
  *        'is_admin' => null,
  *        'is_mod' => null,
  *    ) );
@@ -930,38 +930,38 @@ function groups_get_user_groups( $user_id = 0, $pag_num = 0, $pag_page = 0 ) {
  *                                      Default: false.
  *     @param bool|null   $invite_sent  Whether to return only memberships with 'invite_sent'. Pass `null` to disable
  *                                      this filter. Default: false.
- *     @param string      $orderby      Field to order by. Accepts 'id' (membership ID), 'group_id', 'date_modified'.
- *                                      Default: 'group_id'.
+ *     @param string      $orderby      Field to order by. Accepts 'id' (membership ID), 'event_id', 'date_modified'.
+ *                                      Default: 'event_id'.
  *     @param string      $order        Sort order. Accepts 'ASC' or 'DESC'. Default: 'ASC'.
  * }
- * @return array Array of matching group memberships, keyed by group ID.
+ * @return array Array of matching event memberships, keyed by event ID.
  */
-function sz_get_user_groups( $user_id, $args = array() ) {
+function sz_get_user_events( $user_id, $args = array() ) {
 	$r = sz_parse_args( $args, array(
 		'is_confirmed' => true,
 		'is_banned'    => false,
 		'is_admin'     => false,
 		'is_mod'       => false,
 		'invite_sent'  => null,
-		'orderby'      => 'group_id',
+		'orderby'      => 'event_id',
 		'order'        => 'ASC',
-	), 'get_user_groups' );
+	), 'get_user_events' );
 
 	$user_id = intval( $user_id );
 
-	$membership_ids = wp_cache_get( $user_id, 'sz_groups_memberships_for_user' );
+	$membership_ids = wp_cache_get( $user_id, 'sz_events_memberships_for_user' );
 	if ( false === $membership_ids ) {
-		$membership_ids = SZ_Groups_Member::get_membership_ids_for_user( $user_id );
-		wp_cache_set( $user_id, $membership_ids, 'sz_groups_memberships_for_user' );
+		$membership_ids = SZ_Events_Member::get_membership_ids_for_user( $user_id );
+		wp_cache_set( $user_id, $membership_ids, 'sz_events_memberships_for_user' );
 	}
 
 	// Prime the membership cache.
-	$uncached_membership_ids = sz_get_non_cached_ids( $membership_ids, 'sz_groups_memberships' );
+	$uncached_membership_ids = sz_get_non_cached_ids( $membership_ids, 'sz_events_memberships' );
 	if ( ! empty( $uncached_membership_ids ) ) {
-		$uncached_memberships = SZ_Groups_Member::get_memberships_by_id( $uncached_membership_ids );
+		$uncached_memberships = SZ_Events_Member::get_memberships_by_id( $uncached_membership_ids );
 
 		foreach ( $uncached_memberships as $uncached_membership ) {
-			wp_cache_set( $uncached_membership->id, $uncached_membership, 'sz_groups_memberships' );
+			wp_cache_set( $uncached_membership->id, $uncached_membership, 'sz_events_memberships' );
 		}
 	}
 
@@ -973,15 +973,15 @@ function sz_get_user_groups( $user_id, $args = array() ) {
 		}
 	}
 
-	// Populate group membership array from cache, and normalize.
-	$groups    = array();
-	$int_keys  = array( 'id', 'group_id', 'user_id', 'inviter_id' );
+	// Populate event membership array from cache, and normalize.
+	$events    = array();
+	$int_keys  = array( 'id', 'event_id', 'user_id', 'inviter_id' );
 	$bool_keys = array( 'is_admin', 'is_mod', 'is_confirmed', 'is_banned', 'invite_sent' );
 	foreach ( $membership_ids as $membership_id ) {
-		$membership = wp_cache_get( $membership_id, 'sz_groups_memberships' );
+		$membership = wp_cache_get( $membership_id, 'sz_events_memberships' );
 
 		// Sanity check.
-		if ( ! isset( $membership->group_id ) ) {
+		if ( ! isset( $membership->event_id ) ) {
 			continue;
 		}
 
@@ -1001,105 +1001,105 @@ function sz_get_user_groups( $user_id, $args = array() ) {
 			}
 		}
 
-		$group_id = (int) $membership->group_id;
+		$event_id = (int) $membership->event_id;
 
-		$groups[ $group_id ] = $membership;
+		$events[ $event_id ] = $membership;
 	}
 
 	// By default, results are ordered by membership id.
-	if ( 'group_id' === $r['orderby'] ) {
-		ksort( $groups );
+	if ( 'event_id' === $r['orderby'] ) {
+		ksort( $events );
 	} elseif ( in_array( $r['orderby'], array( 'id', 'date_modified' ) ) ) {
-		$groups = sz_sort_by_key( $groups, $r['orderby'] );
+		$events = sz_sort_by_key( $events, $r['orderby'] );
 	}
 
 	// By default, results are ordered ASC.
 	if ( 'DESC' === strtoupper( $r['order'] ) ) {
 		// `true` to preserve keys.
-		$groups = array_reverse( $groups, true );
+		$events = array_reverse( $events, true );
 	}
 
-	return $groups;
+	return $events;
 }
 
 /**
- * Get the count of groups of which the specified user is a member.
+ * Get the count of events of which the specified user is a member.
  *
  * @since 1.0.0
  *
  * @param int $user_id Optional. Default: ID of the displayed user.
- * @return int Group count.
+ * @return int Event count.
  */
-function groups_total_groups_for_user( $user_id = 0 ) {
+function events_total_events_for_user( $user_id = 0 ) {
 
 	if ( empty( $user_id ) )
 		$user_id = ( sz_displayed_user_id() ) ? sz_displayed_user_id() : sz_loggedin_user_id();
 
-	$count = wp_cache_get( 'sz_total_groups_for_user_' . $user_id, 'sz' );
+	$count = wp_cache_get( 'sz_total_events_for_user_' . $user_id, 'sz' );
 
 	if ( false === $count ) {
-		$count = SZ_Groups_Member::total_group_count( $user_id );
-		wp_cache_set( 'sz_total_groups_for_user_' . $user_id, $count, 'sz' );
+		$count = SZ_Events_Member::total_event_count( $user_id );
+		wp_cache_set( 'sz_total_events_for_user_' . $user_id, $count, 'sz' );
 	}
 
 	return (int) $count;
 }
 
 /**
- * Get the SZ_Groups_Group object corresponding to the current group.
+ * Get the SZ_Events_Event object corresponding to the current event.
  *
  * @since 1.5.0
  *
- * @return SZ_Groups_Group The current group object.
+ * @return SZ_Events_Event The current event object.
  */
-function groups_get_current_group() {
+function events_get_current_event() {
 	$sz = sportszone();
 
-	$current_group = isset( $sz->groups->current_group )
-		? $sz->groups->current_group
+	$current_event = isset( $sz->events->current_event )
+		? $sz->events->current_event
 		: false;
 
 	/**
-	 * Filters the SZ_Groups_Group object corresponding to the current group.
+	 * Filters the SZ_Events_Event object corresponding to the current event.
 	 *
 	 * @since 1.5.0
 	 *
-	 * @param SZ_Groups_Group $current_group Current SZ_Groups_Group object.
+	 * @param SZ_Events_Event $current_event Current SZ_Events_Event object.
 	 */
-	return apply_filters( 'groups_get_current_group', $current_group );
+	return apply_filters( 'events_get_current_event', $current_event );
 }
 
-/** Group Avatars *************************************************************/
+/** Event Avatars *************************************************************/
 
 /**
- * Generate the avatar upload directory path for a given group.
+ * Generate the avatar upload directory path for a given event.
  *
  * @since 1.1.0
  *
- * @param int $group_id Optional. ID of the group. Default: ID of the current group.
+ * @param int $event_id Optional. ID of the event. Default: ID of the current event.
  * @return string
  */
-function groups_avatar_upload_dir( $group_id = 0 ) {
+function events_avatar_upload_dir( $event_id = 0 ) {
 
-	if ( empty( $group_id ) ) {
-		$group_id = sz_get_current_group_id();
+	if ( empty( $event_id ) ) {
+		$event_id = sz_get_current_event_id();
 	}
 
-	$directory = 'group-avatars';
-	$path      = sz_core_avatar_upload_path() . '/' . $directory . '/' . $group_id;
+	$directory = 'event-avatars';
+	$path      = sz_core_avatar_upload_path() . '/' . $directory . '/' . $event_id;
 	$newbdir   = $path;
-	$newurl    = sz_core_avatar_url() . '/' . $directory . '/' . $group_id;
+	$newurl    = sz_core_avatar_url() . '/' . $directory . '/' . $event_id;
 	$newburl   = $newurl;
-	$newsubdir = '/' . $directory . '/' . $group_id;
+	$newsubdir = '/' . $directory . '/' . $event_id;
 
 	/**
-	 * Filters the avatar upload directory path for a given group.
+	 * Filters the avatar upload directory path for a given event.
 	 *
 	 * @since 1.1.0
 	 *
-	 * @param array $value Array of parts related to the groups avatar upload directory.
+	 * @param array $value Array of parts related to the events avatar upload directory.
 	 */
-	return apply_filters( 'groups_avatar_upload_dir', array(
+	return apply_filters( 'events_avatar_upload_dir', array(
 		'path'    => $path,
 		'url'     => $newurl,
 		'subdir'  => $newsubdir,
@@ -1109,37 +1109,37 @@ function groups_avatar_upload_dir( $group_id = 0 ) {
 	) );
 }
 
-/** Group Cover Images *************************************************************/
+/** Event Cover Images *************************************************************/
 
 /**
- * Generate the avatar upload directory path for a given group.
+ * Generate the avatar upload directory path for a given event.
  *
  * @since 1.1.0
  *
- * @param int $group_id Optional. ID of the group. Default: ID of the current group.
+ * @param int $event_id Optional. ID of the event. Default: ID of the current event.
  * @return string
  */
-function groups_cover_image_upload_dir( $group_id = 0 ) {
+function events_cover_image_upload_dir( $event_id = 0 ) {
 
-	if ( empty( $group_id ) ) {
-		$group_id = sz_get_current_group_id();
+	if ( empty( $event_id ) ) {
+		$event_id = sz_get_current_event_id();
 	}
 
-	$directory = 'group-cover-images';
-	$path      = sz_core_cover_image_upload_path() . '/' . $directory . '/' . $group_id;
+	$directory = 'event-cover-images';
+	$path      = sz_core_cover_image_upload_path() . '/' . $directory . '/' . $event_id;
 	$newbdir   = $path;
-	$newurl    = sz_core_cover_image_url() . '/' . $directory . '/' . $group_id;
+	$newurl    = sz_core_cover_image_url() . '/' . $directory . '/' . $event_id;
 	$newburl   = $newurl;
-	$newsubdir = '/' . $directory . '/' . $group_id;
+	$newsubdir = '/' . $directory . '/' . $event_id;
 
 	/**
-	 * Filters the avatar upload directory path for a given group.
+	 * Filters the avatar upload directory path for a given event.
 	 *
 	 * @since 1.1.0
 	 *
-	 * @param array $value Array of parts related to the groups avatar upload directory.
+	 * @param array $value Array of parts related to the events avatar upload directory.
 	 */
-	return apply_filters( 'groups_cover_image_upload_dir', array(
+	return apply_filters( 'events_cover_image_upload_dir', array(
 		'path'    => $path,
 		'url'     => $newurl,
 		'subdir'  => $newsubdir,
@@ -1149,167 +1149,167 @@ function groups_cover_image_upload_dir( $group_id = 0 ) {
 	) );
 }
 
-/** Group Member Status Checks ************************************************/
+/** Event Member Status Checks ************************************************/
 
 /**
- * Check whether a user is an admin of a given group.
+ * Check whether a user is an admin of a given event.
  *
  * @since 1.0.0
  *
  * @param int $user_id ID of the user.
- * @param int $group_id ID of the group.
+ * @param int $event_id ID of the event.
  * @return int|bool ID of the membership if the user is admin, otherwise false.
  */
-function groups_is_user_admin( $user_id, $group_id ) {
+function events_is_user_admin( $user_id, $event_id ) {
 	$is_admin = false;
 
-	$user_groups = sz_get_user_groups( $user_id, array(
+	$user_events = sz_get_user_events( $user_id, array(
 		'is_admin' => true,
 	) );
 
-	if ( isset( $user_groups[ $group_id ] ) ) {
-		$is_admin = $user_groups[ $group_id ]->id;
+	if ( isset( $user_events[ $event_id ] ) ) {
+		$is_admin = $user_events[ $event_id ]->id;
 	}
 
 	return $is_admin;
 }
 
 /**
- * Check whether a user is a mod of a given group.
+ * Check whether a user is a mod of a given event.
  *
  * @since 1.0.0
  *
  * @param int $user_id ID of the user.
- * @param int $group_id ID of the group.
+ * @param int $event_id ID of the event.
  * @return int|bool ID of the membership if the user is mod, otherwise false.
  */
-function groups_is_user_mod( $user_id, $group_id ) {
+function events_is_user_mod( $user_id, $event_id ) {
 	$is_mod = false;
 
-	$user_groups = sz_get_user_groups( $user_id, array(
+	$user_events = sz_get_user_events( $user_id, array(
 		'is_mod' => true,
 	) );
 
-	if ( isset( $user_groups[ $group_id ] ) ) {
-		$is_mod = $user_groups[ $group_id ]->id;
+	if ( isset( $user_events[ $event_id ] ) ) {
+		$is_mod = $user_events[ $event_id ]->id;
 	}
 
 	return $is_mod;
 }
 
 /**
- * Check whether a user is a member of a given group.
+ * Check whether a user is a member of a given event.
  *
  * @since 1.0.0
  *
  * @param int $user_id ID of the user.
- * @param int $group_id ID of the group.
+ * @param int $event_id ID of the event.
  * @return int|bool ID of the membership if the user is member, otherwise false.
  */
-function groups_is_user_member( $user_id, $group_id ) {
+function events_is_user_member( $user_id, $event_id ) {
 	$is_member = false;
 
-	$user_groups = sz_get_user_groups( $user_id, array(
+	$user_events = sz_get_user_events( $user_id, array(
 		'is_admin' => null,
 		'is_mod' => null,
 	) );
 
-	if ( isset( $user_groups[ $group_id ] ) ) {
-		$is_member = $user_groups[ $group_id ]->id;
+	if ( isset( $user_events[ $event_id ] ) ) {
+		$is_member = $user_events[ $event_id ]->id;
 	}
 
 	return $is_member;
 }
 
 /**
- * Check whether a user is banned from a given group.
+ * Check whether a user is banned from a given event.
  *
  * @since 1.0.0
  *
  * @param int $user_id  ID of the user.
- * @param int $group_id ID of the group.
+ * @param int $event_id ID of the event.
  * @return int|bool ID of the membership if the user is banned, otherwise false.
  */
-function groups_is_user_banned( $user_id, $group_id ) {
+function events_is_user_banned( $user_id, $event_id ) {
 	$is_banned = false;
 
-	$user_groups = sz_get_user_groups( $user_id, array(
+	$user_events = sz_get_user_events( $user_id, array(
 		'is_confirmed' => null,
 		'is_banned' => true,
 	) );
 
-	if ( isset( $user_groups[ $group_id ] ) ) {
-		$is_banned = $user_groups[ $group_id ]->id;
+	if ( isset( $user_events[ $event_id ] ) ) {
+		$is_banned = $user_events[ $event_id ]->id;
 	}
 
 	return $is_banned;
 }
 
 /**
- * Check whether a user has an outstanding invitation to a group.
+ * Check whether a user has an outstanding invitation to a event.
  *
  * @since 2.6.0
  *
  * @param int $user_id ID of the user.
- * @param int $group_id ID of the group.
+ * @param int $event_id ID of the event.
  * @return int|bool ID of the membership if the user is invited, otherwise false.
  */
-function groups_is_user_invited( $user_id, $group_id ) {
+function events_is_user_invited( $user_id, $event_id ) {
 	$is_invited = false;
 
-	$user_groups = sz_get_user_groups( $user_id, array(
+	$user_events = sz_get_user_events( $user_id, array(
 		'invite_sent' => true,
 		'is_confirmed' => false,
 	) );
 
-	if ( isset( $user_groups[ $group_id ] ) ) {
-		$is_invited = $user_groups[ $group_id ]->id;
+	if ( isset( $user_events[ $event_id ] ) ) {
+		$is_invited = $user_events[ $event_id ]->id;
 	}
 
 	return $is_invited;
 }
 
 /**
- * Check whether a user has a pending membership request for a group.
+ * Check whether a user has a pending membership request for a event.
  *
  * @since 2.6.0
  *
  * @param int $user_id ID of the user.
- * @param int $group_id ID of the group.
+ * @param int $event_id ID of the event.
  * @return int|bool ID of the membership if the user is pending, otherwise false.
  */
-function groups_is_user_pending( $user_id, $group_id ) {
+function events_is_user_pending( $user_id, $event_id ) {
 	$is_pending = false;
 
-	$user_groups = sz_get_user_groups( $user_id, array(
+	$user_events = sz_get_user_events( $user_id, array(
 		'invite_sent' => false,
 		'is_confirmed' => false,
 	) );
 
-	if ( isset( $user_groups[ $group_id ] ) ) {
-		$is_pending = $user_groups[ $group_id ]->id;
+	if ( isset( $user_events[ $event_id ] ) ) {
+		$is_pending = $user_events[ $event_id ]->id;
 	}
 
 	return $is_pending;
 }
 
 /**
- * Is the specified user the creator of the group?
+ * Is the specified user the creator of the event?
  *
  * @since 1.2.6
  *
  * @param int $user_id ID of the user.
- * @param int $group_id ID of the group.
+ * @param int $event_id ID of the event.
  * @return int|null
  */
-function groups_is_user_creator( $user_id, $group_id ) {
-	return SZ_Groups_Member::check_is_creator( $user_id, $group_id );
+function events_is_user_creator( $user_id, $event_id ) {
+	return SZ_Events_Member::check_is_creator( $user_id, $event_id );
 }
 
-/** Group Activity Posting ****************************************************/
+/** Event Activity Posting ****************************************************/
 
 /**
- * Post an Activity status update affiliated with a group.
+ * Post an Activity status update affiliated with a event.
  *
  * @since 1.2.0
  * @since 2.6.0 Added 'error_type' parameter to $args.
@@ -1319,12 +1319,12 @@ function groups_is_user_creator( $user_id, $group_id ) {
  *     @type string $content  The content of the update.
  *     @type int    $user_id  Optional. ID of the user posting the update. Default:
  *                            ID of the logged-in user.
- *     @type int    $group_id Optional. ID of the group to be affiliated with the
- *                            update. Default: ID of the current group.
+ *     @type int    $event_id Optional. ID of the event to be affiliated with the
+ *                            update. Default: ID of the current event.
  * }
  * @return WP_Error|bool|int Returns the ID of the new activity item on success, or false on failure.
  */
-function groups_post_update( $args = '' ) {
+function events_post_update( $args = '' ) {
 	if ( ! sz_is_active( 'activity' ) ) {
 		return false;
 	}
@@ -1334,119 +1334,119 @@ function groups_post_update( $args = '' ) {
 	$r = sz_parse_args( $args, array(
 		'content'    => false,
 		'user_id'    => sz_loggedin_user_id(),
-		'group_id'   => 0,
+		'event_id'   => 0,
 		'error_type' => 'bool'
-	), 'groups_post_update' );
+	), 'events_post_update' );
 	extract( $r, EXTR_SKIP );
 
-	if ( empty( $group_id ) && !empty( $sz->groups->current_group->id ) )
-		$group_id = $sz->groups->current_group->id;
+	if ( empty( $event_id ) && !empty( $sz->events->current_event->id ) )
+		$event_id = $sz->events->current_event->id;
 
-	if ( empty( $content ) || !strlen( trim( $content ) ) || empty( $user_id ) || empty( $group_id ) )
+	if ( empty( $content ) || !strlen( trim( $content ) ) || empty( $user_id ) || empty( $event_id ) )
 		return false;
 
-	$sz->groups->current_group = groups_get_group( $group_id );
+	$sz->events->current_event = events_get_event( $event_id );
 
-	// Be sure the user is a member of the group before posting.
-	if ( !sz_current_user_can( 'sz_moderate' ) && !groups_is_user_member( $user_id, $group_id ) )
+	// Be sure the user is a member of the event before posting.
+	if ( !sz_current_user_can( 'sz_moderate' ) && !events_is_user_member( $user_id, $event_id ) )
 		return false;
 
 	// Record this in activity streams.
-	$activity_action  = sprintf( __( '%1$s posted an update in the group %2$s', 'sportszone'), sz_core_get_userlink( $user_id ), '<a href="' . sz_get_group_permalink( $sz->groups->current_group ) . '">' . esc_attr( $sz->groups->current_group->name ) . '</a>' );
+	$activity_action  = sprintf( __( '%1$s posted an update in the event %2$s', 'sportszone'), sz_core_get_userlink( $user_id ), '<a href="' . sz_get_event_permalink( $sz->events->current_event ) . '">' . esc_attr( $sz->events->current_event->name ) . '</a>' );
 	$activity_content = $content;
 
 	/**
-	 * Filters the action for the new group activity update.
+	 * Filters the action for the new event activity update.
 	 *
 	 * @since 1.2.0
 	 *
-	 * @param string $activity_action The new group activity update.
+	 * @param string $activity_action The new event activity update.
 	 */
-	$action = apply_filters( 'groups_activity_new_update_action',  $activity_action  );
+	$action = apply_filters( 'events_activity_new_update_action',  $activity_action  );
 
 	/**
-	 * Filters the content for the new group activity update.
+	 * Filters the content for the new event activity update.
 	 *
 	 * @since 1.2.0
 	 *
 	 * @param string $activity_content The content of the update.
 	 */
-	$content_filtered = apply_filters( 'groups_activity_new_update_content', $activity_content );
+	$content_filtered = apply_filters( 'events_activity_new_update_content', $activity_content );
 
-	$activity_id = groups_record_activity( array(
+	$activity_id = events_record_activity( array(
 		'user_id'    => $user_id,
 		'action'     => $action,
 		'content'    => $content_filtered,
 		'type'       => 'activity_update',
-		'item_id'    => $group_id,
+		'item_id'    => $event_id,
 		'error_type' => $error_type
 	) );
 
-	groups_update_groupmeta( $group_id, 'last_activity', sz_core_current_time() );
+	events_update_eventmeta( $event_id, 'last_activity', sz_core_current_time() );
 
 	/**
-	 * Fires after posting of an Activity status update affiliated with a group.
+	 * Fires after posting of an Activity status update affiliated with a event.
 	 *
 	 * @since 1.2.0
 	 *
 	 * @param string $content     The content of the update.
 	 * @param int    $user_id     ID of the user posting the update.
-	 * @param int    $group_id    ID of the group being posted to.
+	 * @param int    $event_id    ID of the event being posted to.
 	 * @param bool   $activity_id Whether or not the activity recording succeeded.
 	 */
-	do_action( 'sz_groups_posted_update', $content, $user_id, $group_id, $activity_id );
+	do_action( 'sz_events_posted_update', $content, $user_id, $event_id, $activity_id );
 
 	return $activity_id;
 }
 
-/** Group Invitations *********************************************************/
+/** Event Invitations *********************************************************/
 
 /**
- * Get IDs of users with outstanding invites to a given group from a specified user.
+ * Get IDs of users with outstanding invites to a given event from a specified user.
  *
  * @since 1.0.0
  *
  * @param int               $user_id ID of the inviting user.
  * @param int|bool          $limit   Limit to restrict to.
  * @param int|bool          $page    Optional. Page offset of results to return.
- * @param string|array|bool $exclude Array of comma-separated list of group IDs
+ * @param string|array|bool $exclude Array of comma-separated list of event IDs
  *                                   to exclude from results.
- * @return array $value IDs of users who have been invited to the group by the
+ * @return array $value IDs of users who have been invited to the event by the
  *                      user but have not yet accepted.
  */
-function groups_get_invites_for_user( $user_id = 0, $limit = false, $page = false, $exclude = false ) {
+function events_get_invites_for_user( $user_id = 0, $limit = false, $page = false, $exclude = false ) {
 
 	if ( empty( $user_id ) )
 		$user_id = sz_loggedin_user_id();
 
-	return SZ_Groups_Member::get_invites( $user_id, $limit, $page, $exclude );
+	return SZ_Events_Member::get_invites( $user_id, $limit, $page, $exclude );
 }
 
 /**
- * Get the total group invite count for a user.
+ * Get the total event invite count for a user.
  *
  * @since 2.0.0
  *
  * @param int $user_id The user ID.
  * @return int
  */
-function groups_get_invite_count_for_user( $user_id = 0 ) {
+function events_get_invite_count_for_user( $user_id = 0 ) {
 	if ( empty( $user_id ) ) {
 		$user_id = sz_loggedin_user_id();
 	}
 
-	return SZ_Groups_Member::get_invite_count_for_user( $user_id );
+	return SZ_Events_Member::get_invite_count_for_user( $user_id );
 }
 
 /**
- * Invite a user to a group.
+ * Invite a user to a event.
  *
  * @since 1.0.0
  *
  * @param array|string $args {
  *     Array of arguments.
  *     @type int    $user_id       ID of the user being invited.
- *     @type int    $group_id      ID of the group to which the user is being invited.
+ *     @type int    $event_id      ID of the event to which the user is being invited.
  *     @type int    $inviter_id    Optional. ID of the inviting user. Default:
  *                                 ID of the logged-in user.
  *     @type string $date_modified Optional. Modified date for the invitation.
@@ -1456,29 +1456,29 @@ function groups_get_invite_count_for_user( $user_id = 0 ) {
  * }
  * @return bool True on success, false on failure.
  */
-function groups_invite_user( $args = '' ) {
+function events_invite_user( $args = '' ) {
 
 	$args = sz_parse_args( $args, array(
 		'user_id'       => false,
-		'group_id'      => false,
+		'event_id'      => false,
 		'inviter_id'    => sz_loggedin_user_id(),
 		'date_modified' => sz_core_current_time(),
 		'is_confirmed'  => 0
-	), 'groups_invite_user' );
+	), 'events_invite_user' );
 	extract( $args, EXTR_SKIP );
 
-	if ( ! $user_id || ! $group_id || ! $inviter_id ) {
+	if ( ! $user_id || ! $event_id || ! $inviter_id ) {
 		return false;
 	}
 
 	// If the user has already requested membership, accept the request.
-	if ( $membership_id = groups_check_for_membership_request( $user_id, $group_id ) ) {
-		groups_accept_membership_request( $membership_id, $user_id, $group_id );
+	if ( $membership_id = events_check_for_membership_request( $user_id, $event_id ) ) {
+		events_accept_membership_request( $membership_id, $user_id, $event_id );
 
 	// Otherwise, create a new invitation.
-	} elseif ( ! groups_is_user_member( $user_id, $group_id ) && ! groups_check_user_has_invite( $user_id, $group_id, 'all' ) ) {
-		$invite                = new SZ_Groups_Member;
-		$invite->group_id      = $group_id;
+	} elseif ( ! events_is_user_member( $user_id, $event_id ) && ! events_check_user_has_invite( $user_id, $event_id, 'all' ) ) {
+		$invite                = new SZ_Events_Member;
+		$invite->event_id      = $event_id;
 		$invite->user_id       = $user_id;
 		$invite->date_modified = $date_modified;
 		$invite->inviter_id    = $inviter_id;
@@ -1488,75 +1488,75 @@ function groups_invite_user( $args = '' ) {
 			return false;
 
 		/**
-		 * Fires after the creation of a new group invite.
+		 * Fires after the creation of a new event invite.
 		 *
 		 * @since 1.0.0
 		 *
-		 * @param array $args Array of parsed arguments for the group invite.
+		 * @param array $args Array of parsed arguments for the event invite.
 		 */
-		do_action( 'groups_invite_user', $args );
+		do_action( 'events_invite_user', $args );
 	}
 
 	return true;
 }
 
 /**
- * Uninvite a user from a group.
+ * Uninvite a user from a event.
  *
- * Functionally, this is equivalent to removing a user from a group.
+ * Functionally, this is equivalent to removing a user from a event.
  *
  * @since 1.0.0
  *
  * @param int $user_id  ID of the user.
- * @param int $group_id ID of the group.
+ * @param int $event_id ID of the event.
  * @return bool True on success, false on failure.
  */
-function groups_uninvite_user( $user_id, $group_id ) {
+function events_uninvite_user( $user_id, $event_id ) {
 
-	if ( ! SZ_Groups_Member::delete_invite( $user_id, $group_id ) )
+	if ( ! SZ_Events_Member::delete_invite( $user_id, $event_id ) )
 		return false;
 
 	/**
-	 * Fires after uninviting a user from a group.
+	 * Fires after uninviting a user from a event.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param int $group_id ID of the group being uninvited from.
+	 * @param int $event_id ID of the event being uninvited from.
 	 * @param int $user_id  ID of the user being uninvited.
 	 */
-	do_action( 'groups_uninvite_user', $group_id, $user_id );
+	do_action( 'events_uninvite_user', $event_id, $user_id );
 
 	return true;
 }
 
 /**
- * Process the acceptance of a group invitation.
+ * Process the acceptance of a event invitation.
  *
- * Returns true if a user is already a member of the group.
+ * Returns true if a user is already a member of the event.
  *
  * @since 1.0.0
  *
  * @param int $user_id  ID of the user.
- * @param int $group_id ID of the group.
- * @return bool True when the user is a member of the group, otherwise false.
+ * @param int $event_id ID of the event.
+ * @return bool True when the user is a member of the event, otherwise false.
  */
-function groups_accept_invite( $user_id, $group_id ) {
+function events_accept_invite( $user_id, $event_id ) {
 
 	// If the user is already a member (because BP at one point allowed two invitations to
 	// slip through), delete all existing invitations/requests and return true.
-	if ( groups_is_user_member( $user_id, $group_id ) ) {
-		if ( groups_check_user_has_invite( $user_id, $group_id ) ) {
-			groups_delete_invite( $user_id, $group_id );
+	if ( events_is_user_member( $user_id, $event_id ) ) {
+		if ( events_check_user_has_invite( $user_id, $event_id ) ) {
+			events_delete_invite( $user_id, $event_id );
 		}
 
-		if ( groups_check_for_membership_request( $user_id, $group_id ) ) {
-			groups_delete_membership_request( null, $user_id, $group_id );
+		if ( events_check_for_membership_request( $user_id, $event_id ) ) {
+			events_delete_membership_request( null, $user_id, $event_id );
 		}
 
 		return true;
 	}
 
-	$member = new SZ_Groups_Member( $user_id, $group_id );
+	$member = new SZ_Events_Member( $user_id, $event_id );
 
 	// Save the inviter ID so that we can pass it to the action below.
 	$inviter_id = $member->inviter_id;
@@ -1568,99 +1568,99 @@ function groups_accept_invite( $user_id, $group_id ) {
 	}
 
 	// Remove request to join.
-	if ( $member->check_for_membership_request( $user_id, $group_id ) ) {
-		$member->delete_request( $user_id, $group_id );
+	if ( $member->check_for_membership_request( $user_id, $event_id ) ) {
+		$member->delete_request( $user_id, $event_id );
 	}
 
-	// Modify group meta.
-	groups_update_groupmeta( $group_id, 'last_activity', sz_core_current_time() );
+	// Modify event meta.
+	events_update_eventmeta( $event_id, 'last_activity', sz_core_current_time() );
 
 	/**
-	 * Fires after a user has accepted a group invite.
+	 * Fires after a user has accepted a event invite.
 	 *
 	 * @since 1.0.0
 	 * @since 2.8.0 The $inviter_id arg was added.
 	 *
-	 * @param int $user_id    ID of the user who accepted the group invite.
-	 * @param int $group_id   ID of the group being accepted to.
-	 * @param int $inviter_id ID of the user who invited this user to the group.
+	 * @param int $user_id    ID of the user who accepted the event invite.
+	 * @param int $event_id   ID of the event being accepted to.
+	 * @param int $inviter_id ID of the user who invited this user to the event.
 	 */
-	do_action( 'groups_accept_invite', $user_id, $group_id, $inviter_id );
+	do_action( 'events_accept_invite', $user_id, $event_id, $inviter_id );
 
 	return true;
 }
 
 /**
- * Reject a group invitation.
+ * Reject a event invitation.
  *
  * @since 1.0.0
  *
  * @param int $user_id  ID of the user.
- * @param int $group_id ID of the group.
+ * @param int $event_id ID of the event.
  * @return bool True on success, false on failure.
  */
-function groups_reject_invite( $user_id, $group_id ) {
-	if ( ! SZ_Groups_Member::delete_invite( $user_id, $group_id ) )
+function events_reject_invite( $user_id, $event_id ) {
+	if ( ! SZ_Events_Member::delete_invite( $user_id, $event_id ) )
 		return false;
 
 	/**
-	 * Fires after a user rejects a group invitation.
+	 * Fires after a user rejects a event invitation.
 	 *
 	 * @since 1.0.0
 	 *
 	 * @param int $user_id  ID of the user rejecting the invite.
-	 * @param int $group_id ID of the group being rejected.
+	 * @param int $event_id ID of the event being rejected.
 	 */
-	do_action( 'groups_reject_invite', $user_id, $group_id );
+	do_action( 'events_reject_invite', $user_id, $event_id );
 
 	return true;
 }
 
 /**
- * Delete a group invitation.
+ * Delete a event invitation.
  *
  * @since 1.0.0
  *
  * @param int $user_id  ID of the invited user.
- * @param int $group_id ID of the group.
+ * @param int $event_id ID of the event.
  * @return bool True on success, false on failure.
  */
-function groups_delete_invite( $user_id, $group_id ) {
-	if ( ! SZ_Groups_Member::delete_invite( $user_id, $group_id ) )
+function events_delete_invite( $user_id, $event_id ) {
+	if ( ! SZ_Events_Member::delete_invite( $user_id, $event_id ) )
 		return false;
 
 	/**
-	 * Fires after the deletion of a group invitation.
+	 * Fires after the deletion of a event invitation.
 	 *
 	 * @since 1.9.0
 	 *
 	 * @param int $user_id  ID of the user whose invitation is being deleted.
-	 * @param int $group_id ID of the group whose invitation is being deleted.
+	 * @param int $event_id ID of the event whose invitation is being deleted.
 	 */
-	do_action( 'groups_delete_invite', $user_id, $group_id );
+	do_action( 'events_delete_invite', $user_id, $event_id );
 
 	return true;
 }
 
 /**
- * Send all pending invites by a single user to a specific group.
+ * Send all pending invites by a single user to a specific event.
  *
  * @since 1.0.0
  *
  * @param int $user_id  ID of the inviting user.
- * @param int $group_id ID of the group.
+ * @param int $event_id ID of the event.
  */
-function groups_send_invites( $user_id, $group_id ) {
+function events_send_invites( $user_id, $event_id ) {
 
 	if ( empty( $user_id ) )
 		$user_id = sz_loggedin_user_id();
 
 	// Send friend invites.
-	$invited_users = groups_get_invites_for_group( $user_id, $group_id );
-	$group = groups_get_group( $group_id );
+	$invited_users = events_get_invites_for_event( $user_id, $event_id );
+	$event = events_get_event( $event_id );
 
 	for ( $i = 0, $count = count( $invited_users ); $i < $count; ++$i ) {
-		$member = new SZ_Groups_Member( $invited_users[$i], $group_id );
+		$member = new SZ_Events_Member( $invited_users[$i], $event_id );
 
 		// Skip if we've already sent an invite to this user.
 		if ( $member->invite_sent ) {
@@ -1668,46 +1668,46 @@ function groups_send_invites( $user_id, $group_id ) {
 		}
 
 		// Send the actual invite.
-		groups_notification_group_invites( $group, $member, $user_id );
+		events_notification_event_invites( $event, $member, $user_id );
 
 		$member->invite_sent = 1;
 		$member->save();
 	}
 
 	/**
-	 * Fires after the sending of invites for a group.
+	 * Fires after the sending of invites for a event.
 	 *
 	 * @since 1.0.0
 	 * @since 2.5.0 Added $user_id to passed parameters.
 	 *
-	 * @param int   $group_id      ID of the group who's being invited to.
-	 * @param array $invited_users Array of users being invited to the group.
+	 * @param int   $event_id      ID of the event who's being invited to.
+	 * @param array $invited_users Array of users being invited to the event.
 	 * @param int   $user_id       ID of the inviting user.
 	 */
-	do_action( 'groups_send_invites', $group_id, $invited_users, $user_id );
+	do_action( 'events_send_invites', $event_id, $invited_users, $user_id );
 }
 
 /**
- * Get IDs of users with outstanding invites to a given group from a specified user.
+ * Get IDs of users with outstanding invites to a given event from a specified user.
  *
  * @since 1.0.0
  * @since 2.9.0 Added $sent as a parameter.
  *
  * @param  int      $user_id  ID of the inviting user.
- * @param  int      $group_id ID of the group.
+ * @param  int      $event_id ID of the event.
  * @param  int|null $sent     Query for a specific invite sent status. If 0, this will query for users
  *                            that haven't had an invite sent to them yet. If 1, this will query for
  *                            users that have had an invite sent to them. If null, no invite status will
  *                            queried. Default: null.
- * @return array    IDs of users who have been invited to the group by the user but have not
+ * @return array    IDs of users who have been invited to the event by the user but have not
  *                  yet accepted.
  */
-function groups_get_invites_for_group( $user_id, $group_id, $sent = null ) {
-	return SZ_Groups_Group::get_invites( $user_id, $group_id, $sent );
+function events_get_invites_for_event( $user_id, $event_id, $sent = null ) {
+	return SZ_Events_Event::get_invites( $user_id, $event_id, $sent );
 }
 
 /**
- * Check to see whether a user has already been invited to a group.
+ * Check to see whether a user has already been invited to a event.
  *
  * By default, the function checks for invitations that have been sent.
  * Entering 'all' as the $type parameter will return unsent invitations as
@@ -1715,13 +1715,13 @@ function groups_get_invites_for_group( $user_id, $group_id, $sent = null ) {
  *
  * @since 1.0.0
  *
- * @param int    $user_id  ID of potential group member.
- * @param int    $group_id ID of potential group.
+ * @param int    $user_id  ID of potential event member.
+ * @param int    $event_id ID of potential event.
  * @param string $type     Optional. Use 'sent' to check for sent invites,
  *                         'all' to check for all. Default: 'sent'.
  * @return int|bool ID of the membership if found, otherwise false.
  */
-function groups_check_user_has_invite( $user_id, $group_id, $type = 'sent' ) {
+function events_check_user_has_invite( $user_id, $event_id, $type = 'sent' ) {
 	$invite = false;
 
 	$args = array(
@@ -1735,225 +1735,225 @@ function groups_check_user_has_invite( $user_id, $group_id, $type = 'sent' ) {
 		$args['invite_sent'] = true;
 	}
 
-	$user_groups = sz_get_user_groups( $user_id, $args );
+	$user_events = sz_get_user_events( $user_id, $args );
 
-	if ( isset( $user_groups[ $group_id ] ) && 0 !== $user_groups[ $group_id ]->inviter_id ) {
-		$invite = $user_groups[ $group_id ]->id;
+	if ( isset( $user_events[ $event_id ] ) && 0 !== $user_events[ $event_id ]->inviter_id ) {
+		$invite = $user_events[ $event_id ]->id;
 	}
 
 	return $invite;
 }
 
 /**
- * Delete all invitations to a given group.
+ * Delete all invitations to a given event.
  *
  * @since 1.0.0
  *
- * @param int $group_id ID of the group whose invitations are being deleted.
+ * @param int $event_id ID of the event whose invitations are being deleted.
  * @return int|null Number of rows records deleted on success, null on failure.
  */
-function groups_delete_all_group_invites( $group_id ) {
-	return SZ_Groups_Group::delete_all_invites( $group_id );
+function events_delete_all_event_invites( $event_id ) {
+	return SZ_Events_Event::delete_all_invites( $event_id );
 }
 
-/** Group Promotion & Banning *************************************************/
+/** Event Promotion & Banning *************************************************/
 
 /**
- * Promote a member to a new status within a group.
+ * Promote a member to a new status within a event.
  *
  * @since 1.0.0
  *
  * @param int    $user_id  ID of the user.
- * @param int    $group_id ID of the group.
+ * @param int    $event_id ID of the event.
  * @param string $status   The new status. 'mod' or 'admin'.
  * @return bool True on success, false on failure.
  */
-function groups_promote_member( $user_id, $group_id, $status ) {
+function events_promote_member( $user_id, $event_id, $status ) {
 
 	if ( ! sz_is_item_admin() )
 		return false;
 
-	$member = new SZ_Groups_Member( $user_id, $group_id );
+	$member = new SZ_Events_Member( $user_id, $event_id );
 
 	// Don't use this action. It's deprecated as of SportsZone 1.6.
-	do_action( 'groups_premote_member', $group_id, $user_id, $status );
+	do_action( 'events_premote_member', $event_id, $user_id, $status );
 
 	/**
 	 * Fires before the promotion of a user to a new status.
 	 *
 	 * @since 1.6.0
 	 *
-	 * @param int    $group_id ID of the group being promoted in.
+	 * @param int    $event_id ID of the event being promoted in.
 	 * @param int    $user_id  ID of the user being promoted.
 	 * @param string $status   New status being promoted to.
 	 */
-	do_action( 'groups_promote_member', $group_id, $user_id, $status );
+	do_action( 'events_promote_member', $event_id, $user_id, $status );
 
 	return $member->promote( $status );
 }
 
 /**
- * Demote a user to 'member' status within a group.
+ * Demote a user to 'member' status within a event.
  *
  * @since 1.0.0
  *
  * @param int $user_id  ID of the user.
- * @param int $group_id ID of the group.
+ * @param int $event_id ID of the event.
  * @return bool True on success, false on failure.
  */
-function groups_demote_member( $user_id, $group_id ) {
+function events_demote_member( $user_id, $event_id ) {
 
 	if ( ! sz_is_item_admin() )
 		return false;
 
-	$member = new SZ_Groups_Member( $user_id, $group_id );
+	$member = new SZ_Events_Member( $user_id, $event_id );
 
 	/**
 	 * Fires before the demotion of a user to 'member'.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param int $group_id ID of the group being demoted in.
+	 * @param int $event_id ID of the event being demoted in.
 	 * @param int $user_id  ID of the user being demoted.
 	 */
-	do_action( 'groups_demote_member', $group_id, $user_id );
+	do_action( 'events_demote_member', $event_id, $user_id );
 
 	return $member->demote();
 }
 
 /**
- * Ban a member from a group.
+ * Ban a member from a event.
  *
  * @since 1.0.0
  *
  * @param int $user_id  ID of the user.
- * @param int $group_id ID of the group.
+ * @param int $event_id ID of the event.
  * @return bool True on success, false on failure.
  */
-function groups_ban_member( $user_id, $group_id ) {
+function events_ban_member( $user_id, $event_id ) {
 
 	if ( ! sz_is_item_admin() )
 		return false;
 
-	$member = new SZ_Groups_Member( $user_id, $group_id );
+	$member = new SZ_Events_Member( $user_id, $event_id );
 
 	/**
-	 * Fires before the banning of a member from a group.
+	 * Fires before the banning of a member from a event.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param int $group_id ID of the group being banned from.
+	 * @param int $event_id ID of the event being banned from.
 	 * @param int $user_id  ID of the user being banned.
 	 */
-	do_action( 'groups_ban_member', $group_id, $user_id );
+	do_action( 'events_ban_member', $event_id, $user_id );
 
 	return $member->ban();
 }
 
 /**
- * Unban a member from a group.
+ * Unban a member from a event.
  *
  * @since 1.0.0
  *
  * @param int $user_id  ID of the user.
- * @param int $group_id ID of the group.
+ * @param int $event_id ID of the event.
  * @return bool True on success, false on failure.
  */
-function groups_unban_member( $user_id, $group_id ) {
+function events_unban_member( $user_id, $event_id ) {
 
 	if ( ! sz_is_item_admin() )
 		return false;
 
-	$member = new SZ_Groups_Member( $user_id, $group_id );
+	$member = new SZ_Events_Member( $user_id, $event_id );
 
 	/**
-	 * Fires before the unbanning of a member from a group.
+	 * Fires before the unbanning of a member from a event.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param int $group_id ID of the group being unbanned from.
+	 * @param int $event_id ID of the event being unbanned from.
 	 * @param int $user_id  ID of the user being unbanned.
 	 */
-	do_action( 'groups_unban_member', $group_id, $user_id );
+	do_action( 'events_unban_member', $event_id, $user_id );
 
 	return $member->unban();
 }
 
-/** Group Removal *************************************************************/
+/** Event Removal *************************************************************/
 
 /**
- * Remove a member from a group.
+ * Remove a member from a event.
  *
  * @since 1.2.6
  *
  * @param int $user_id  ID of the user.
- * @param int $group_id ID of the group.
+ * @param int $event_id ID of the event.
  * @return bool True on success, false on failure.
  */
-function groups_remove_member( $user_id, $group_id ) {
+function events_remove_member( $user_id, $event_id ) {
 
 	if ( ! sz_is_item_admin() ) {
 		return false;
 	}
 
-	$member = new SZ_Groups_Member( $user_id, $group_id );
+	$member = new SZ_Events_Member( $user_id, $event_id );
 
 	/**
-	 * Fires before the removal of a member from a group.
+	 * Fires before the removal of a member from a event.
 	 *
 	 * @since 1.2.6
 	 *
-	 * @param int $group_id ID of the group being removed from.
+	 * @param int $event_id ID of the event being removed from.
 	 * @param int $user_id  ID of the user being removed.
 	 */
-	do_action( 'groups_remove_member', $group_id, $user_id );
+	do_action( 'events_remove_member', $event_id, $user_id );
 
 	return $member->remove();
 }
 
-/** Group Membership **********************************************************/
+/** Event Membership **********************************************************/
 
 /**
- * Create a group membership request.
+ * Create a event membership request.
  *
  * @since 1.0.0
  *
  * @param int $requesting_user_id ID of the user requesting membership.
- * @param int $group_id           ID of the group.
+ * @param int $event_id           ID of the event.
  * @return bool True on success, false on failure.
  */
-function groups_send_membership_request( $requesting_user_id, $group_id ) {
+function events_send_membership_request( $requesting_user_id, $event_id ) {
 
 	// Prevent duplicate requests.
-	if ( groups_check_for_membership_request( $requesting_user_id, $group_id ) )
+	if ( events_check_for_membership_request( $requesting_user_id, $event_id ) )
 		return false;
 
 	// Check if the user is already a member or is banned.
-	if ( groups_is_user_member( $requesting_user_id, $group_id ) || groups_is_user_banned( $requesting_user_id, $group_id ) )
+	if ( events_is_user_member( $requesting_user_id, $event_id ) || events_is_user_banned( $requesting_user_id, $event_id ) )
 		return false;
 
 	// Check if the user is already invited - if so, simply accept invite.
-	if ( groups_check_user_has_invite( $requesting_user_id, $group_id ) ) {
-		groups_accept_invite( $requesting_user_id, $group_id );
+	if ( events_check_user_has_invite( $requesting_user_id, $event_id ) ) {
+		events_accept_invite( $requesting_user_id, $event_id );
 		return true;
 	}
 
-	$requesting_user                = new SZ_Groups_Member;
-	$requesting_user->group_id      = $group_id;
+	$requesting_user                = new SZ_Events_Member;
+	$requesting_user->event_id      = $event_id;
 	$requesting_user->user_id       = $requesting_user_id;
 	$requesting_user->inviter_id    = 0;
 	$requesting_user->is_admin      = 0;
 	$requesting_user->user_title    = '';
 	$requesting_user->date_modified = sz_core_current_time();
 	$requesting_user->is_confirmed  = 0;
-	$requesting_user->comments      = isset( $_POST['group-request-membership-comments'] ) ? $_POST['group-request-membership-comments'] : '';
+	$requesting_user->comments      = isset( $_POST['event-request-membership-comments'] ) ? $_POST['event-request-membership-comments'] : '';
 
 	if ( $requesting_user->save() ) {
-		$admins = groups_get_group_admins( $group_id );
+		$admins = events_get_event_admins( $event_id );
 
 		// Saved okay, now send the email notification.
 		for ( $i = 0, $count = count( $admins ); $i < $count; ++$i )
-			groups_notification_new_membership_request( $requesting_user_id, $admins[$i]->user_id, $group_id, $requesting_user->id );
+			events_notification_new_membership_request( $requesting_user_id, $admins[$i]->user_id, $event_id, $requesting_user->id );
 
 		/**
 		 * Fires after the creation of a new membership request.
@@ -1961,11 +1961,11 @@ function groups_send_membership_request( $requesting_user_id, $group_id ) {
 		 * @since 1.0.0
 		 *
 		 * @param int   $requesting_user_id  ID of the user requesting membership.
-		 * @param array $admins              Array of group admins.
-		 * @param int   $group_id            ID of the group being requested to.
+		 * @param array $admins              Array of event admins.
+		 * @param int   $event_id            ID of the event being requested to.
 		 * @param int   $requesting_user->id ID of the membership.
 		 */
-		do_action( 'groups_membership_requested', $requesting_user_id, $admins, $group_id, $requesting_user->id );
+		do_action( 'events_membership_requested', $requesting_user_id, $admins, $event_id, $requesting_user->id );
 
 		return true;
 	}
@@ -1974,25 +1974,25 @@ function groups_send_membership_request( $requesting_user_id, $group_id ) {
 }
 
 /**
- * Accept a pending group membership request.
+ * Accept a pending event membership request.
  *
  * @since 1.0.0
  *
  * @param int $membership_id ID of the membership object.
  * @param int $user_id       Optional. ID of the user who requested membership.
- *                           Provide this value along with $group_id to override
+ *                           Provide this value along with $event_id to override
  *                           $membership_id.
- * @param int $group_id      Optional. ID of the group to which membership is being
+ * @param int $event_id      Optional. ID of the event to which membership is being
  *                           requested. Provide this value along with $user_id to
  *                           override $membership_id.
  * @return bool True on success, false on failure.
  */
-function groups_accept_membership_request( $membership_id, $user_id = 0, $group_id = 0 ) {
+function events_accept_membership_request( $membership_id, $user_id = 0, $event_id = 0 ) {
 
-	if ( !empty( $user_id ) && !empty( $group_id ) ) {
-		$membership = new SZ_Groups_Member( $user_id, $group_id );
+	if ( !empty( $user_id ) && !empty( $event_id ) ) {
+		$membership = new SZ_Events_Member( $user_id, $event_id );
 	} else {
-		$membership = new SZ_Groups_Member( false, false, $membership_id );
+		$membership = new SZ_Events_Member( false, false, $membership_id );
 	}
 
 	$membership->accept_request();
@@ -2002,161 +2002,161 @@ function groups_accept_membership_request( $membership_id, $user_id = 0, $group_
 	}
 
 	// Check if the user has an outstanding invite, if so delete it.
-	if ( groups_check_user_has_invite( $membership->user_id, $membership->group_id ) ) {
-		groups_delete_invite( $membership->user_id, $membership->group_id );
+	if ( events_check_user_has_invite( $membership->user_id, $membership->event_id ) ) {
+		events_delete_invite( $membership->user_id, $membership->event_id );
 	}
 
 	/**
-	 * Fires after a group membership request has been accepted.
+	 * Fires after a event membership request has been accepted.
 	 *
 	 * @since 1.0.0
 	 *
 	 * @param int  $user_id  ID of the user who accepted membership.
-	 * @param int  $group_id ID of the group that was accepted membership to.
+	 * @param int  $event_id ID of the event that was accepted membership to.
 	 * @param bool $value    If membership was accepted.
 	 */
-	do_action( 'groups_membership_accepted', $membership->user_id, $membership->group_id, true );
+	do_action( 'events_membership_accepted', $membership->user_id, $membership->event_id, true );
 
 	return true;
 }
 
 /**
- * Reject a pending group membership request.
+ * Reject a pending event membership request.
  *
  * @since 1.0.0
  *
  * @param int $membership_id ID of the membership object.
  * @param int $user_id       Optional. ID of the user who requested membership.
- *                           Provide this value along with $group_id to override
+ *                           Provide this value along with $event_id to override
  *                           $membership_id.
- * @param int $group_id      Optional. ID of the group to which membership is being
+ * @param int $event_id      Optional. ID of the event to which membership is being
  *                           requested. Provide this value along with $user_id to
  *                           override $membership_id.
  * @return bool True on success, false on failure.
  */
-function groups_reject_membership_request( $membership_id, $user_id = 0, $group_id = 0 ) {
-	if ( !$membership = groups_delete_membership_request( $membership_id, $user_id, $group_id ) ) {
+function events_reject_membership_request( $membership_id, $user_id = 0, $event_id = 0 ) {
+	if ( !$membership = events_delete_membership_request( $membership_id, $user_id, $event_id ) ) {
 		return false;
 	}
 
 	/**
-	 * Fires after a group membership request has been rejected.
+	 * Fires after a event membership request has been rejected.
 	 *
 	 * @since 1.0.0
 	 *
 	 * @param int  $user_id  ID of the user who rejected membership.
-	 * @param int  $group_id ID of the group that was rejected membership to.
+	 * @param int  $event_id ID of the event that was rejected membership to.
 	 * @param bool $value    If membership was accepted.
 	 */
-	do_action( 'groups_membership_rejected', $membership->user_id, $membership->group_id, false );
+	do_action( 'events_membership_rejected', $membership->user_id, $membership->event_id, false );
 
 	return true;
 }
 
 /**
- * Delete a pending group membership request.
+ * Delete a pending event membership request.
  *
  * @since 1.2.0
  *
  * @param int $membership_id ID of the membership object.
  * @param int $user_id       Optional. ID of the user who requested membership.
- *                           Provide this value along with $group_id to override
+ *                           Provide this value along with $event_id to override
  *                           $membership_id.
- * @param int $group_id      Optional. ID of the group to which membership is being
+ * @param int $event_id      Optional. ID of the event to which membership is being
  *                           requested. Provide this value along with $user_id to
  *                           override $membership_id.
- * @return false|SZ_Groups_Member True on success, false on failure.
+ * @return false|SZ_Events_Member True on success, false on failure.
  */
-function groups_delete_membership_request( $membership_id, $user_id = 0, $group_id = 0 ) {
-	if ( !empty( $user_id ) && !empty( $group_id ) )
-		$membership = new SZ_Groups_Member( $user_id, $group_id );
+function events_delete_membership_request( $membership_id, $user_id = 0, $event_id = 0 ) {
+	if ( !empty( $user_id ) && !empty( $event_id ) )
+		$membership = new SZ_Events_Member( $user_id, $event_id );
 	else
-		$membership = new SZ_Groups_Member( false, false, $membership_id );
+		$membership = new SZ_Events_Member( false, false, $membership_id );
 
-	if ( ! SZ_Groups_Member::delete_request( $membership->user_id, $membership->group_id ) )
+	if ( ! SZ_Events_Member::delete_request( $membership->user_id, $membership->event_id ) )
 		return false;
 
 	return $membership;
 }
 
 /**
- * Check whether a user has an outstanding membership request for a given group.
+ * Check whether a user has an outstanding membership request for a given event.
  *
  * @since 1.0.0
  *
  * @param int $user_id  ID of the user.
- * @param int $group_id ID of the group.
+ * @param int $event_id ID of the event.
  * @return int|bool ID of the membership if found, otherwise false.
  */
-function groups_check_for_membership_request( $user_id, $group_id ) {
+function events_check_for_membership_request( $user_id, $event_id ) {
 	$request = false;
 
-	$user_groups = sz_get_user_groups( $user_id, array(
+	$user_events = sz_get_user_events( $user_id, array(
 		'is_confirmed' => false,
 		'is_banned'    => false,
 		'is_admin'     => null,
 		'is_mod'       => null
 	) );
 
-	if ( isset( $user_groups[ $group_id ] ) && 0 === $user_groups[ $group_id ]->inviter_id ) {
-		$request = $user_groups[ $group_id ]->id;
+	if ( isset( $user_events[ $event_id ] ) && 0 === $user_events[ $event_id ]->inviter_id ) {
+		$request = $user_events[ $event_id ]->id;
 	}
 
 	return $request;
 }
 
 /**
- * Accept all pending membership requests to a group.
+ * Accept all pending membership requests to a event.
  *
  * @since 1.0.2
  *
- * @param int $group_id ID of the group.
+ * @param int $event_id ID of the event.
  * @return bool True on success, false on failure.
  */
-function groups_accept_all_pending_membership_requests( $group_id ) {
-	$user_ids = SZ_Groups_Member::get_all_membership_request_user_ids( $group_id );
+function events_accept_all_pending_membership_requests( $event_id ) {
+	$user_ids = SZ_Events_Member::get_all_membership_request_user_ids( $event_id );
 
 	if ( !$user_ids )
 		return false;
 
 	foreach ( (array) $user_ids as $user_id )
-		groups_accept_membership_request( false, $user_id, $group_id );
+		events_accept_membership_request( false, $user_id, $event_id );
 
 	/**
-	 * Fires after the acceptance of all pending membership requests to a group.
+	 * Fires after the acceptance of all pending membership requests to a event.
 	 *
 	 * @since 1.0.2
 	 *
-	 * @param int $group_id ID of the group whose pending memberships were accepted.
+	 * @param int $event_id ID of the event whose pending memberships were accepted.
 	 */
-	do_action( 'groups_accept_all_pending_membership_requests', $group_id );
+	do_action( 'events_accept_all_pending_membership_requests', $event_id );
 
 	return true;
 }
 
-/** Group Meta ****************************************************************/
+/** Event Meta ****************************************************************/
 
 /**
- * Delete metadata for a group.
+ * Delete metadata for a event.
  *
  * @since 1.0.0
  *
- * @param int         $group_id   ID of the group.
+ * @param int         $event_id   ID of the event.
  * @param string|bool $meta_key   The key of the row to delete.
  * @param string|bool $meta_value Optional. Metadata value. If specified, only delete
  *                                metadata entries with this value.
  * @param bool        $delete_all Optional. If true, delete matching metadata entries
- *                                for all groups. Otherwise, only delete matching
- *                                metadata entries for the specified group.
+ *                                for all events. Otherwise, only delete matching
+ *                                metadata entries for the specified event.
  *                                Default: false.
  * @return bool True on success, false on failure.
  */
-function groups_delete_groupmeta( $group_id, $meta_key = false, $meta_value = false, $delete_all = false ) {
+function events_delete_eventmeta( $event_id, $meta_key = false, $meta_value = false, $delete_all = false ) {
 	global $wpdb;
 
 	// Legacy - if no meta_key is passed, delete all for the item.
 	if ( empty( $meta_key ) ) {
-		$keys = $wpdb->get_col( $wpdb->prepare( "SELECT meta_key FROM {$wpdb->groupmeta} WHERE group_id = %d", $group_id ) );
+		$keys = $wpdb->get_col( $wpdb->prepare( "SELECT meta_key FROM {$wpdb->eventmeta} WHERE event_id = %d", $event_id ) );
 
 		// With no meta_key, ignore $delete_all.
 		$delete_all = false;
@@ -2168,7 +2168,7 @@ function groups_delete_groupmeta( $group_id, $meta_key = false, $meta_value = fa
 
 	$retval = true;
 	foreach ( $keys as $key ) {
-		$retval = delete_metadata( 'group', $group_id, $key, $meta_value, $delete_all );
+		$retval = delete_metadata( 'event', $event_id, $key, $meta_value, $delete_all );
 	}
 
 	remove_filter( 'query', 'sz_filter_metaid_column_name' );
@@ -2177,31 +2177,31 @@ function groups_delete_groupmeta( $group_id, $meta_key = false, $meta_value = fa
 }
 
 /**
- * Get a piece of group metadata.
+ * Get a piece of event metadata.
  *
  * @since 1.0.0
  *
- * @param int    $group_id ID of the group.
+ * @param int    $event_id ID of the event.
  * @param string $meta_key Metadata key.
  * @param bool   $single   Optional. If true, return only the first value of the
  *                         specified meta_key. This parameter has no effect if
  *                         meta_key is empty.
  * @return mixed Metadata value.
  */
-function groups_get_groupmeta( $group_id, $meta_key = '', $single = true ) {
+function events_get_eventmeta( $event_id, $meta_key = '', $single = true ) {
 	add_filter( 'query', 'sz_filter_metaid_column_name' );
-	$retval = get_metadata( 'group', $group_id, $meta_key, $single );
+	$retval = get_metadata( 'event', $event_id, $meta_key, $single );
 	remove_filter( 'query', 'sz_filter_metaid_column_name' );
 
 	return $retval;
 }
 
 /**
- * Update a piece of group metadata.
+ * Update a piece of event metadata.
  *
  * @since 1.0.0
  *
- * @param int    $group_id   ID of the group.
+ * @param int    $event_id   ID of the event.
  * @param string $meta_key   Metadata key.
  * @param mixed  $meta_value Value to store.
  * @param mixed  $prev_value Optional. If specified, only update existing
@@ -2211,20 +2211,20 @@ function groups_get_groupmeta( $group_id, $meta_key = '', $single = true ) {
  *                          metadata, returns true. On successful creation of new metadata,
  *                          returns the integer ID of the new metadata row.
  */
-function groups_update_groupmeta( $group_id, $meta_key, $meta_value, $prev_value = '' ) {
+function events_update_eventmeta( $event_id, $meta_key, $meta_value, $prev_value = '' ) {
 	add_filter( 'query', 'sz_filter_metaid_column_name' );
-	$retval = update_metadata( 'group', $group_id, $meta_key, $meta_value, $prev_value );
+	$retval = update_metadata( 'event', $event_id, $meta_key, $meta_value, $prev_value );
 	remove_filter( 'query', 'sz_filter_metaid_column_name' );
 
 	return $retval;
 }
 
 /**
- * Add a piece of group metadata.
+ * Add a piece of event metadata.
  *
  * @since 2.0.0
  *
- * @param int    $group_id   ID of the group.
+ * @param int    $event_id   ID of the event.
  * @param string $meta_key   Metadata key.
  * @param mixed  $meta_value Metadata value.
  * @param bool   $unique     Optional. Whether to enforce a single metadata value
@@ -2233,25 +2233,25 @@ function groups_update_groupmeta( $group_id, $meta_key, $meta_value, $prev_value
  *                           Default: false.
  * @return int|bool The meta ID on successful update, false on failure.
  */
-function groups_add_groupmeta( $group_id, $meta_key, $meta_value, $unique = false ) {
+function events_add_eventmeta( $event_id, $meta_key, $meta_value, $unique = false ) {
 	add_filter( 'query', 'sz_filter_metaid_column_name' );
-	$retval = add_metadata( 'group', $group_id, $meta_key, $meta_value, $unique );
+	$retval = add_metadata( 'event', $event_id, $meta_key, $meta_value, $unique );
 	remove_filter( 'query', 'sz_filter_metaid_column_name' );
 
 	return $retval;
 }
 
-/** Group Cleanup Functions ***************************************************/
+/** Event Cleanup Functions ***************************************************/
 
 /**
- * Delete all group membership information for the specified user.
+ * Delete all event membership information for the specified user.
  *
  * @since 1.0.0
  *
  * @param int $user_id ID of the user.
  */
-function groups_remove_data_for_user( $user_id ) {
-	SZ_Groups_Member::delete_all_for_user( $user_id );
+function events_remove_data_for_user( $user_id ) {
+	SZ_Events_Member::delete_all_for_user( $user_id );
 
 	/**
 	 * Fires after the deletion of all data for a user.
@@ -2260,78 +2260,78 @@ function groups_remove_data_for_user( $user_id ) {
 	 *
 	 * @param int $user_id ID of the user whose data is being deleted.
 	 */
-	do_action( 'groups_remove_data_for_user', $user_id );
+	do_action( 'events_remove_data_for_user', $user_id );
 }
-add_action( 'wpmu_delete_user',  'groups_remove_data_for_user' );
-add_action( 'delete_user',       'groups_remove_data_for_user' );
-add_action( 'sz_make_spam_user', 'groups_remove_data_for_user' );
+add_action( 'wpmu_delete_user',  'events_remove_data_for_user' );
+add_action( 'delete_user',       'events_remove_data_for_user' );
+add_action( 'sz_make_spam_user', 'events_remove_data_for_user' );
 
 /**
- * Update orphaned child groups when the parent is deleted.
+ * Update orphaned child events when the parent is deleted.
  *
  * @since 2.7.0
  *
- * @param SZ_Groups_Group $group Instance of the group item being deleted.
+ * @param SZ_Events_Event $event Instance of the event item being deleted.
  */
-function sz_groups_update_orphaned_groups_on_group_delete( $group ) {
-	// Get child groups and set the parent to the deleted parent's parent.
-	$grandparent_group_id = $group->parent_id;
+function sz_events_update_orphaned_events_on_event_delete( $event ) {
+	// Get child events and set the parent to the deleted parent's parent.
+	$grandparent_event_id = $event->parent_id;
 	$child_args = array(
-		'parent_id'         => $group->id,
+		'parent_id'         => $event->id,
 		'show_hidden'       => true,
 		'per_page'          => false,
 		'update_meta_cache' => false,
 	);
-	$children = groups_get_groups( $child_args );
-	$children = $children['groups'];
+	$children = events_get_events( $child_args );
+	$children = $children['events'];
 
-	foreach ( $children as $cgroup ) {
-		$cgroup->parent_id = $grandparent_group_id;
-		$cgroup->save();
+	foreach ( $children as $cevent ) {
+		$cevent->parent_id = $grandparent_event_id;
+		$cevent->save();
 	}
 }
-add_action( 'sz_groups_delete_group', 'sz_groups_update_orphaned_groups_on_group_delete', 10, 2 );
+add_action( 'sz_events_delete_event', 'sz_events_update_orphaned_events_on_event_delete', 10, 2 );
 
-/** Group Types ***************************************************************/
+/** Event Types ***************************************************************/
 
 /**
- * Fire the 'sz_groups_register_group_types' action.
+ * Fire the 'sz_events_register_event_types' action.
  *
  * @since 2.6.0
  */
-function sz_groups_register_group_types() {
+function sz_events_register_event_types() {
 	/**
-	 * Fires when it's appropriate to register group types.
+	 * Fires when it's appropriate to register event types.
 	 *
 	 * @since 2.6.0
 	 */
-	do_action( 'sz_groups_register_group_types' );
+	do_action( 'sz_events_register_event_types' );
 }
-add_action( 'sz_register_taxonomies', 'sz_groups_register_group_types' );
+add_action( 'sz_register_taxonomies', 'sz_events_register_event_types' );
 
 /**
- * Register a group type.
+ * Register a event type.
  *
  * @since 2.6.0
  * @since 2.7.0 Introduce $has_directory, $show_in_create_screen, $show_in_list, and
  *              $description, $create_screen_checked as $args parameters.
  *
- * @param string $group_type Unique string identifier for the group type.
+ * @param string $event_type Unique string identifier for the event type.
  * @param array  $args {
- *     Array of arguments describing the group type.
+ *     Array of arguments describing the event type.
  *
- *     @type string|bool $has_directory         Set the slug to be used for custom group directory page. eg.
- *                                              example.com/groups/type/MY_SLUG. Default: false.
- *     @type bool        $show_in_create_screen Whether this group type is allowed to be selected on the group creation
+ *     @type string|bool $has_directory         Set the slug to be used for custom event directory page. eg.
+ *                                              example.com/events/type/MY_SLUG. Default: false.
+ *     @type bool        $show_in_create_screen Whether this event type is allowed to be selected on the event creation
  *                                              page. Default: false.
- *     @type bool|null   $show_in_list          Whether this group type should be shown in lists rendered by
- *                                              sz_group_type_list(). Default: null. If $show_in_create_screen is true,
+ *     @type bool|null   $show_in_list          Whether this event type should be shown in lists rendered by
+ *                                              sz_event_type_list(). Default: null. If $show_in_create_screen is true,
  *                                              this will default to true, unless this is set explicitly to false.
- *     @type string      $description           A short descriptive summary of what the group type is. Currently shown
- *                                              on a group's "Manage > Settings" page when selecting group types.
- *     @type bool        $create_screen_checked If $show_in_create_screen is true, whether we should have our group type
- *                                              checkbox checked by default. Handy if you want to imply that the group
- *                                              type should be enforced, but decision lies with the group creator.
+ *     @type string      $description           A short descriptive summary of what the event type is. Currently shown
+ *                                              on a event's "Manage > Settings" page when selecting event types.
+ *     @type bool        $create_screen_checked If $show_in_create_screen is true, whether we should have our event type
+ *                                              checkbox checked by default. Handy if you want to imply that the event
+ *                                              type should be enforced, but decision lies with the event creator.
  *                                              Default: false.
  *     @type array       $labels {
  *         Array of labels to use in various parts of the interface.
@@ -2340,13 +2340,13 @@ add_action( 'sz_register_taxonomies', 'sz_groups_register_group_types' );
  *         @type string $singular_name Singular name.
  *     }
  * }
- * @return object|WP_Error Group type object on success, WP_Error object on failure.
+ * @return object|WP_Error Event type object on success, WP_Error object on failure.
  */
-function sz_groups_register_group_type( $group_type, $args = array() ) {
+function sz_events_register_event_type( $event_type, $args = array() ) {
 	$sz = sportszone();
 
-	if ( isset( $sz->groups->types[ $group_type ] ) ) {
-		return new WP_Error( 'sz_group_type_exists', __( 'Group type already exists.', 'sportszone' ), $group_type );
+	if ( isset( $sz->events->types[ $event_type ] ) ) {
+		return new WP_Error( 'sz_event_type_exists', __( 'Event type already exists.', 'sportszone' ), $event_type );
 	}
 
 	$r = sz_parse_args( $args, array(
@@ -2356,28 +2356,28 @@ function sz_groups_register_group_type( $group_type, $args = array() ) {
 		'description'           => '',
 		'create_screen_checked' => false,
 		'labels'                => array(),
-	), 'register_group_type' );
+	), 'register_event_type' );
 
-	$group_type = sanitize_key( $group_type );
+	$event_type = sanitize_key( $event_type );
 
 	/**
-	 * Filters the list of illegal group type names.
+	 * Filters the list of illegal event type names.
 	 *
-	 * - 'any' is a special pseudo-type, representing items unassociated with any group type.
+	 * - 'any' is a special pseudo-type, representing items unassociated with any event type.
 	 * - 'null' is a special pseudo-type, representing users without any type.
-	 * - '_none' is used internally to denote an item that should not apply to any group types.
+	 * - '_none' is used internally to denote an item that should not apply to any event types.
 	 *
 	 * @since 2.6.0
 	 *
 	 * @param array $illegal_names Array of illegal names.
 	 */
-	$illegal_names = apply_filters( 'sz_group_type_illegal_names', array( 'any', 'null', '_none' ) );
-	if ( in_array( $group_type, $illegal_names, true ) ) {
-		return new WP_Error( 'sz_group_type_illegal_name', __( 'You may not register a group type with this name.', 'sportszone' ), $group_type );
+	$illegal_names = apply_filters( 'sz_event_type_illegal_names', array( 'any', 'null', '_none' ) );
+	if ( in_array( $event_type, $illegal_names, true ) ) {
+		return new WP_Error( 'sz_event_type_illegal_name', __( 'You may not register a event type with this name.', 'sportszone' ), $event_type );
 	}
 
-	// Store the group type name as data in the object (not just as the array key).
-	$r['name'] = $group_type;
+	// Store the event type name as data in the object (not just as the array key).
+	$r['name'] = $event_type;
 
 	// Make sure the relevant labels have been filled in.
 	$default_name = isset( $r['labels']['name'] ) ? $r['labels']['name'] : ucfirst( $r['name'] );
@@ -2392,9 +2392,9 @@ function sz_groups_register_group_type( $group_type, $args = array() ) {
 		if ( is_string( $r['has_directory'] ) ) {
 			$directory_slug = $r['has_directory'];
 
-		// Otherwise fall back on group type.
+		// Otherwise fall back on event type.
 		} else {
-			$directory_slug = $group_type;
+			$directory_slug = $event_type;
 		}
 
 		// Sanitize for use in URLs.
@@ -2412,55 +2412,55 @@ function sz_groups_register_group_type( $group_type, $args = array() ) {
 		$r['show_in_list'] = (bool) $r['show_in_list'];
 	}
 
-	$sz->groups->types[ $group_type ] = $type = (object) $r;
+	$sz->events->types[ $event_type ] = $type = (object) $r;
 
 	/**
-	 * Fires after a group type is registered.
+	 * Fires after a event type is registered.
 	 *
 	 * @since 2.6.0
 	 *
-	 * @param string $group_type Group type identifier.
-	 * @param object $type       Group type object.
+	 * @param string $event_type Event type identifier.
+	 * @param object $type       Event type object.
 	 */
-	do_action( 'sz_groups_register_group_type', $group_type, $type );
+	do_action( 'sz_events_register_event_type', $event_type, $type );
 
 	return $type;
 }
 
 /**
- * Get a list of all registered group type objects.
+ * Get a list of all registered event type objects.
  *
  * @since 2.6.0
  *
- * @see sz_groups_register_group_type() for accepted arguments.
+ * @see sz_events_register_event_type() for accepted arguments.
  *
  * @param array|string $args     Optional. An array of key => value arguments to match against
- *                               the group type objects. Default empty array.
+ *                               the event type objects. Default empty array.
  * @param string       $output   Optional. The type of output to return. Accepts 'names'
  *                               or 'objects'. Default 'names'.
  * @param string       $operator Optional. The logical operation to perform. 'or' means only one
  *                               element from the array needs to match; 'and' means all elements
  *                               must match. Accepts 'or' or 'and'. Default 'and'.
- * @return array       $types    A list of groups type names or objects.
+ * @return array       $types    A list of events type names or objects.
  */
-function sz_groups_get_group_types( $args = array(), $output = 'names', $operator = 'and' ) {
-	$types = sportszone()->groups->types;
+function sz_events_get_event_types( $args = array(), $output = 'names', $operator = 'and' ) {
+	$types = sportszone()->events->types;
 
 	$types = wp_filter_object_list( $types, $args, $operator );
 
 	/**
-	 * Filters the array of group type objects.
+	 * Filters the array of event type objects.
 	 *
 	 * This filter is run before the $output filter has been applied, so that
-	 * filtering functions have access to the entire group type objects.
+	 * filtering functions have access to the entire event type objects.
 	 *
 	 * @since 2.6.0
 	 *
-	 * @param array  $types     group type objects, keyed by name.
+	 * @param array  $types     event type objects, keyed by name.
 	 * @param array  $args      Array of key=>value arguments for filtering.
 	 * @param string $operator  'or' to match any of $args, 'and' to require all.
 	 */
-	$types = apply_filters( 'sz_groups_get_group_types', $types, $args, $operator );
+	$types = apply_filters( 'sz_events_get_event_types', $types, $args, $operator );
 
 	if ( 'names' === $output ) {
 		$types = wp_list_pluck( $types, 'name' );
@@ -2470,101 +2470,101 @@ function sz_groups_get_group_types( $args = array(), $output = 'names', $operato
 }
 
 /**
- * Retrieve a group type object by name.
+ * Retrieve a event type object by name.
  *
  * @since 2.6.0
  *
- * @param string $group_type The name of the group type.
- * @return object A group type object.
+ * @param string $event_type The name of the event type.
+ * @return object A event type object.
  */
-function sz_groups_get_group_type_object( $group_type ) {
-	$types = sz_groups_get_group_types( array(), 'objects' );
+function sz_events_get_event_type_object( $event_type ) {
+	$types = sz_events_get_event_types( array(), 'objects' );
 
-	if ( empty( $types[ $group_type ] ) ) {
+	if ( empty( $types[ $event_type ] ) ) {
 		return null;
 	}
 
-	return $types[ $group_type ];
+	return $types[ $event_type ];
 }
 
 /**
- * Set type for a group.
+ * Set type for a event.
  *
  * @since 2.6.0
- * @since 2.7.0 $group_type parameter also accepts an array of group types now.
+ * @since 2.7.0 $event_type parameter also accepts an array of event types now.
  *
- * @param int          $group_id   ID of the group.
- * @param string|array $group_type Group type or array of group types to set.
- * @param bool         $append     Optional. True to append this to existing types for group,
+ * @param int          $event_id   ID of the event.
+ * @param string|array $event_type Event type or array of event types to set.
+ * @param bool         $append     Optional. True to append this to existing types for event,
  *                                 false to replace. Default: false.
  * @return false|array $retval See sz_set_object_terms().
  */
-function sz_groups_set_group_type( $group_id, $group_type, $append = false ) {
-	// Pass an empty group type to remove group's type.
-	if ( ! empty( $group_type ) && is_string( $group_type ) && ! sz_groups_get_group_type_object( $group_type ) ) {
+function sz_events_set_event_type( $event_id, $event_type, $append = false ) {
+	// Pass an empty event type to remove event's type.
+	if ( ! empty( $event_type ) && is_string( $event_type ) && ! sz_events_get_event_type_object( $event_type ) ) {
 		return false;
 	}
 
 	// Cast as array.
-	$group_type = (array) $group_type;
+	$event_type = (array) $event_type;
 
-	// Validate group types.
-	foreach ( $group_type as $type ) {
-		// Remove any invalid group types.
-		if ( is_null( sz_groups_get_group_type_object( $type ) ) ) {
-			unset( $group_type[ $type ] );
+	// Validate event types.
+	foreach ( $event_type as $type ) {
+		// Remove any invalid event types.
+		if ( is_null( sz_events_get_event_type_object( $type ) ) ) {
+			unset( $event_type[ $type ] );
 		}
 	}
 
-	$retval = sz_set_object_terms( $group_id, $group_type, 'sz_group_type', $append );
+	$retval = sz_set_object_terms( $event_id, $event_type, 'sz_event_type', $append );
 
 	// Bust the cache if the type has been updated.
 	if ( ! is_wp_error( $retval ) ) {
-		wp_cache_delete( $group_id, 'sz_groups_group_type' );
+		wp_cache_delete( $event_id, 'sz_events_event_type' );
 
 		/**
-		 * Fires just after a group type has been changed.
+		 * Fires just after a event type has been changed.
 		 *
 		 * @since 2.6.0
 		 *
-		 * @param int          $group_id   ID of the group whose group type has been updated.
-		 * @param string|array $group_type Group type or array of group types.
+		 * @param int          $event_id   ID of the event whose event type has been updated.
+		 * @param string|array $event_type Event type or array of event types.
 		 * @param bool         $append     Whether the type is being appended to existing types.
 		 */
-		do_action( 'sz_groups_set_group_type', $group_id, $group_type, $append );
+		do_action( 'sz_events_set_event_type', $event_id, $event_type, $append );
 	}
 
 	return $retval;
 }
 
 /**
- * Get type for a group.
+ * Get type for a event.
  *
  * @since 2.6.0
  *
- * @param int  $group_id ID of the group.
+ * @param int  $event_id ID of the event.
  * @param bool $single   Optional. Whether to return a single type string. If multiple types are found
- *                       for the group, the oldest one will be returned. Default: true.
- * @return string|array|bool On success, returns a single group type (if `$single` is true) or an array of group
+ *                       for the event, the oldest one will be returned. Default: true.
+ * @return string|array|bool On success, returns a single event type (if `$single` is true) or an array of event
  *                           types (if `$single` is false). Returns false on failure.
  */
-function sz_groups_get_group_type( $group_id, $single = true ) {
-	$types = wp_cache_get( $group_id, 'sz_groups_group_type' );
+function sz_events_get_event_type( $event_id, $single = true ) {
+	$types = wp_cache_get( $event_id, 'sz_events_event_type' );
 
 	if ( false === $types ) {
-		$raw_types = sz_get_object_terms( $group_id, 'sz_group_type' );
+		$raw_types = sz_get_object_terms( $event_id, 'sz_event_type' );
 
 		if ( ! is_wp_error( $raw_types ) ) {
 			$types = array();
 
-			// Only include currently registered group types.
+			// Only include currently registered event types.
 			foreach ( $raw_types as $gtype ) {
-				if ( sz_groups_get_group_type_object( $gtype->name ) ) {
+				if ( sz_events_get_event_type_object( $gtype->name ) ) {
 					$types[] = $gtype->name;
 				}
 			}
 
-			wp_cache_set( $group_id, $types, 'sz_groups_group_type' );
+			wp_cache_set( $event_id, $types, 'sz_events_event_type' );
 		}
 	}
 
@@ -2578,124 +2578,160 @@ function sz_groups_get_group_type( $group_id, $single = true ) {
 	}
 
 	/**
-	 * Filters a groups's group type(s).
+	 * Filters a events's event type(s).
 	 *
 	 * @since 2.6.0
 	 *
-	 * @param string|array $type     Group type.
-	 * @param int          $group_id ID of the group.
+	 * @param string|array $type     Event type.
+	 * @param int          $event_id ID of the event.
 	 * @param bool         $single   Whether to return a single type string, or an array.
 	 */
-	return apply_filters( 'sz_groups_get_group_type', $type, $group_id, $single );
+	return apply_filters( 'sz_events_get_event_type', $type, $event_id, $single );
 }
 
 /**
- * Remove type for a group.
+ * Remove type for a event.
  *
  * @since 2.6.0
  *
- * @param int            $group_id   ID of the user.
- * @param string         $group_type Group type.
+ * @param int            $event_id   ID of the user.
+ * @param string         $event_type Event type.
  * @return bool|WP_Error $deleted    True on success. False or WP_Error on failure.
  */
-function sz_groups_remove_group_type( $group_id, $group_type ) {
-	if ( empty( $group_type ) || ! sz_groups_get_group_type_object( $group_type ) ) {
+function sz_events_remove_event_type( $event_id, $event_type ) {
+	if ( empty( $event_type ) || ! sz_events_get_event_type_object( $event_type ) ) {
 		return false;
 	}
 
-	$deleted = sz_remove_object_terms( $group_id, $group_type, 'sz_group_type' );
+	$deleted = sz_remove_object_terms( $event_id, $event_type, 'sz_event_type' );
 
 	// Bust the case, if the type has been removed.
 	if ( ! is_wp_error( $deleted ) ) {
-		wp_cache_delete( $group_id, 'sz_groups_group_type' );
+		wp_cache_delete( $event_id, 'sz_events_event_type' );
 
 		/**
-		 * Fires just after a group's group type has been removed.
+		 * Fires just after a event's event type has been removed.
 		 *
 		 * @since 2.6.0
 		 *
-		 * @param int    $group      ID of the group whose group type has been removed.
-		 * @param string $group_type Group type.
+		 * @param int    $event      ID of the event whose event type has been removed.
+		 * @param string $event_type Event type.
 		 */
-		do_action( 'sz_groups_remove_group_type', $group_id, $group_type );
+		do_action( 'sz_events_remove_event_type', $event_id, $event_type );
 	}
 
 	return $deleted;
 }
 
 /**
- * Check whether the given group has a certain group type.
+ * Check whether the given event has a certain event type.
  *
  * @since 2.6.0
  *
- * @param  int    $group_id   ID of the group.
- * @param  string $group_type Group type.
- * @return bool   Whether the group has the give group type.
+ * @param  int    $event_id   ID of the event.
+ * @param  string $event_type Event type.
+ * @return bool   Whether the event has the give event type.
  */
-function sz_groups_has_group_type( $group_id, $group_type ) {
-	if ( empty( $group_type ) || ! sz_groups_get_group_type_object( $group_type ) ) {
+function sz_events_has_event_type( $event_id, $event_type ) {
+	if ( empty( $event_type ) || ! sz_events_get_event_type_object( $event_type ) ) {
 		return false;
 	}
 
-	// Get all group's group types.
-	$types = sz_groups_get_group_type( $group_id, false );
+	// Get all event's event types.
+	$types = sz_events_get_event_type( $event_id, false );
 
 	if ( ! is_array( $types ) ) {
 		return false;
 	}
 
-	return in_array( $group_type, $types );
+	return in_array( $event_type, $types );
 }
 
 /**
- * Get the "current" group type, if one is provided, in group directories.
+ * Check whether the given event has team registered with it.
+ *
+ * @since 2.6.0
+ *
+ * @param  int    $event_id   ID of the event.
+ * @param  string $event_type Event type.
+ * @return bool   Whether the event has the give event type.
+ */
+function sz_event_has_team( $event_id, $event_team ) {
+	if ( empty( $event_team ) ) {
+		return false;
+	}
+	// Get all event's event types.
+	$teams = (array) events_get_eventmeta( $event_id, 'event_teams' );
+	
+	if ( ! is_array( $teams ) ) {
+		return false;
+	}
+	if(in_array( $event_team, $teams )) {
+		return true;
+	}
+	
+}
+
+/**
+ * Get the "current" event type, if one is provided, in event directories.
  *
  * @since 2.7.0
  *
  * @return string
  */
-function sz_get_current_group_directory_type() {
+function sz_get_current_event_directory_type() {
 
 	/**
-	 * Filters the "current" group type, if one is provided, in group directories.
+	 * Filters the "current" event type, if one is provided, in event directories.
 	 *
 	 * @since 2.7.0
 	 *
-	 * @param string $value "Current" group type.
+	 * @param string $value "Current" event type.
 	 */
-	return apply_filters( 'sz_get_current_group_directory_type', sportszone()->groups->current_directory_type );
+	return apply_filters( 'sz_get_current_event_directory_type', sportszone()->events->current_directory_type );
 }
 
 /**
- * Delete a group's type when the group is deleted.
+ * Delete a event's type when the event is deleted.
  *
  * @since 2.6.0
  *
- * @param  int   $group_id ID of the group.
- * @return array|null $value    See {@see sz_groups_set_group_type()}.
+ * @param  int   $event_id ID of the event.
+ * @return array|null $value    See {@see sz_events_set_event_type()}.
  */
-function sz_remove_group_type_on_group_delete( $group_id = 0 ) {
-	sz_groups_set_group_type( $group_id, '' );
+function sz_remove_event_type_on_event_delete( $event_id = 0 ) {
+	sz_events_set_event_type( $event_id, '' );
 }
-add_action( 'groups_delete_group', 'sz_remove_group_type_on_group_delete' );
+add_action( 'events_delete_event', 'sz_remove_event_type_on_event_delete' );
 
 
 
 /**
  *	
- * -------------- ADDITONAL GROUP FIELDS --------------------*
+ * -------------- ADDITONAL EVENT FIELDS --------------------*
  *
  */
  
-function sz_additional_fields_group_extension() {
-	if ( class_exists( 'SZ_Group_Extension' ) ) :
+ 
+add_action( 'sz_init', 'sz_additional_fields_select_teams_event_extension' );
+add_action( 'sz_init', 'sz_additional_fields_add_matches_event_extension' );
 
-	class SZ_Additional_Fields_Group_Extension extends SZ_Group_Extension {
+/**
+ * Add the Teams select tab to the Event Creation
+ *
+ * @since 3.1.0
+ *
+ * @return bool   Whether the event has the give event type.
+ */
+function sz_additional_fields_select_teams_event_extension() {
+	if ( class_exists( 'SZ_Event_Extension' ) ) :
+
+	class SZ_Additional_Fields_Select_Teams_Event_Extension extends SZ_Event_Extension {
 
 		function __construct() {
 			$args = array(
-				'slug' => 'add-additional-info',
-				'name' => 'Additional Info',
+				'slug' => 'add-teams',
+				'name' => 'Teams',
 				'nav_item_position'	=> 2,
 				'screens'	=> array(
 					'create'	=> array(
@@ -2706,98 +2742,307 @@ function sz_additional_fields_group_extension() {
 			parent::init( $args );
 		}
 
-		function display($group_id = NULL) {
-			$group_id = sz_get_group_id();
-			$email 		= groups_get_groupmeta( $group_id, 'group_email' );
-			$phone 		= groups_get_groupmeta( $group_id, 'group_phone' );
-			$location 	= groups_get_groupmeta( $group_id, 'group_location' );
-			$facebook	= groups_get_groupmeta( $group_id, 'group_facebook' );
-			$twitter 	= groups_get_groupmeta( $group_id, 'group_twitter' );
-			$website 	= groups_get_groupmeta( $group_id, 'group_website' );
-			$colors 	= groups_get_groupmeta( $group_id, 'group_colors' );
+		function display($event_id = NULL) {
+			$event_id = sz_get_event_id();
+			$event_club 		= events_get_eventmeta( $event_id, 'event_club' );
 			
-			
-			if($email) echo "<h5>$email<h5>";
-			if($phone) echo "<h5>$phone<h5>";
-			if($location) echo "<h5>$location<h5>";
-			if($facebook) echo "<h5>$facebook<h5>";
-			if($twitter) echo "<h5>$twitter<h5>";
-			if($website) echo "<h5>$website<h5>";
-			if($colors) echo "<h5>$colors<h5>";	
+			// TODO: Change to display club name
+			if($event_club) echo "<h5>$event_club<h5>";
 			
 		}
 
-		function settings_screen( $group_id = NULL ) {
-			$email 		= groups_get_groupmeta( $group_id, 'group_email' );
-			$phone 		= groups_get_groupmeta( $group_id, 'group_phone' );
-			$location 	= groups_get_groupmeta( $group_id, 'group_location' );
-			$facebook	= groups_get_groupmeta( $group_id, 'group_facebook' );
-			$twitter 	= groups_get_groupmeta( $group_id, 'group_twitter' );
-			$website 	= groups_get_groupmeta( $group_id, 'group_website' );
-			$colors 	= groups_get_groupmeta( $group_id, 'group_colors' );
+		function settings_screen( $event_id = NULL ) {
+			$event_club 		= events_get_eventmeta( $event_id, 'event_club' );
 			?>
 			<div>
-				Email:<br />
-				<input type="text" name="group_email" value="<?php echo $email; ?>">
+				<label for="event-club"><?php esc_html_e( 'Associated Club', 'sportszone' ); ?></label>
+				<?php
+				$clubs_args = array(
+					'user_id'		=> get_current_user_id( ),
+					'group_type'	=> 'club'
+				);
+				if(sz_has_groups($clubs_args)):
+					echo '<select name="event-club" id="event-club">';
+					while(sz_groups()): sz_the_group();
+						$selected = ($event_club == sz_get_group_id())?'selected="selected"':'';
+						echo '<option value="'.sz_get_group_id().'" '.$selected.'>'.sz_get_group_name().'</option>';
+					endwhile;
+					echo '</select>';
+				else:
+					echo '<p>You arn\'t apart of any Clubs currently.';
+				endif;
+				
+			?>
 			</div>
 			<div>
-				Phone:<br />
-				<input type="text" name="group_phone" value="<?php echo $phone; ?>">
-			</div>
-			<div>
-				Location:<br />
-				<input type="text" name="group_location" value="<?php echo $location; ?>">
-			</div>
-			<div>
-				Facebook:<br />
-				<input type="text" name="group_facebook" value="<?php echo $facebook; ?>">
-			</div>
-			<div>
-				Twitter:<br />
-				<input type="text" name="group_twitter" value="<?php echo $twitter; ?>">
-			</div>
-			<div>
-				Website:<br />
-				<input type="text" name="group_website" value="<?php echo $website; ?>">
-			</div>
-			<div>
-				Colors:<br />
-				<input type="text" name="group_colors" value="<?php echo $colors; ?>">
+			<?php
+			if( sz_events_has_event_type( $event_id, 'tour' ) ):
+				/*
+				 *	Main Team
+				 */
+				 // TODO: Only show main team if Tour type is selected
+				 // TODO: Show teams that are associated with a club the user is a member of.
+				$event_main_team 		= events_get_eventmeta( $event_id, 'event_main_team' );
+				echo '<label for="event-main-team">';
+					esc_html_e( 'Main Team', 'sportszone' );
+				echo '</label>';
+				
+				$teams_args = array(
+					'user_id'		=> get_current_user_id( ),
+					'group_type'	=> 'team'
+				);
+				if(sz_has_groups($teams_args)):
+					echo '<select name="event-main-team" id="event-main-team">';
+					while(sz_groups()): sz_the_group();
+						$selected = ($event_main_team == sz_get_group_id())?'selected="selected"':'';
+						echo '<option value="'.sz_get_group_id().'" '.$selected.'>'.sz_get_group_name().'</option>';
+					endwhile;
+					echo '</select>';
+				else:
+					echo '<p>You arn\'t apart of any Teams currently.';
+				endif;
+			
+			endif;
+				?>
 			</div>
 			<?php 
+			/*
+			 *	Teams Loop
+			 */
+			 // TODO: Only show main team if Tour type is selected
+			 // TODO: Show teams that are associated with a club the user is a member of.
+			if ( sz_has_groups( array( 'group_type'	=> 'team') ) ) : ?>
+
+				<?php sz_nouveau_pagination( 'top' ); ?>
+			
+				<ul id="groups-list" class="<?php sz_nouveau_loop_classes(); ?>">
+			
+				<?php
+				while ( sz_groups() ) :
+					sz_the_group();
+				?>
+			
+					<li <?php sz_group_class( array( 'item-entry' ) ); ?> data-sz-item-id="<?php sz_group_id(); ?>" data-sz-item-component="groups">
+						<label class="list-wrap" for="<?php printf( 'event-team-%s', sz_group_slug() ); ?>">
+							<input type="checkbox" name="event-teams[]" id="<?php printf( 'event-team-%s', sz_group_slug() ); ?>" value="<?php echo esc_attr( sz_group_slug() ); ?>" <?php checked( sz_event_has_team( sz_get_current_event_id(), sz_get_group_slug() ) ); ?>/>
+							<?php 
+								if ( ! sz_disable_group_avatar_uploads() ) : ?>
+								<div class="item-avatar">
+									<?php sz_group_avatar( sz_nouveau_avatar_args() ); ?>
+								</div>
+							<?php endif; ?>
+			
+							<div class="item">
+			
+								<div class="item-block">
+			
+									<h2 class="list-title groups-title"><?php sz_group_name(); ?></h2>
+			
+									<?php if ( sz_nouveau_group_has_meta() ) : ?>
+			
+										<p class="item-meta group-details"><?php sz_nouveau_group_meta(); ?></p>
+			
+									<?php endif; ?>
+			
+			
+								</div>
+								<?php sz_nouveau_groups_loop_item(); ?>
+							</div>
+			
+			
+						</label>
+					</li>
+			
+				<?php endwhile; ?>
+			
+				</ul>
+			
+				<?php sz_nouveau_pagination( 'bottom' );
+			
+			else :
+				sz_nouveau_user_feedback( 'groups-loop-none' );
+			endif; 
+				
+			
 		}
 
-		function settings_screen_save( $group_id = NULL ) {
-		
-			if ( isset( $_POST['group_email'] ) ) {
-				groups_update_groupmeta( $group_id, 'group_email', sanitize_text_field($_POST['group_email']) );
+		function settings_screen_save( $event_id = NULL ) {
+			
+			if ( isset( $_POST['event-club'] ) ) {
+				events_update_eventmeta( $event_id, 'event_club', sanitize_text_field($_POST['event-club']) );
 			}
-			if ( isset( $_POST['group_phone'] ) ) {
-				groups_update_groupmeta( $group_id, 'group_phone', sanitize_text_field($_POST['group_phone']) );
+			if ( isset( $_POST['event-main-team'] ) ) {
+				events_update_eventmeta( $event_id, 'event_main_team', sanitize_text_field($_POST['event-main-team']) );
 			}
-			if ( isset( $_POST['group_location'] ) ) {
-				groups_update_groupmeta( $group_id, 'group_location', sanitize_text_field($_POST['group_location']) );
-			}
-			if ( isset( $_POST['group_facebook'] ) ) {
-				groups_update_groupmeta( $group_id, 'group_facebook', sanitize_text_field($_POST['group_facebook']) );
-			}
-			if ( isset( $_POST['group_twitter'] ) ) {
-				groups_update_groupmeta( $group_id, 'group_twitter', sanitize_text_field($_POST['group_twitter']) );
-			}
-			if ( isset( $_POST['group_website'] ) ) {
-				groups_update_groupmeta( $group_id, 'group_website', sanitize_text_field($_POST['group_website']) );
-			}
-			if ( isset( $_POST['group_colors'] ) ) {
-				groups_update_groupmeta( $group_id, 'group_colors', sanitize_text_field($_POST['group_colors']) );
+			if ( isset( $_POST['event-teams'] ) ) {
+				events_update_eventmeta( $event_id, 'event_teams', $_POST['event-teams'] );
 			}
 		}
 	}
-	sz_register_group_extension( 'SZ_Additional_Fields_Group_Extension' );
+	sz_register_event_extension( 'SZ_Additional_Fields_Select_Teams_Event_Extension' );
 	
 	
 	
-	endif; // if ( class_exists( 'BP_Group_Extension' ) )
+	endif; // if ( class_exists( 'SZ_Additional_Fields_Select_Teams_Event_Extension' ) )
 }
-//add_action('sz_init', 'sz_additional_fields_group_extension');
 
 
+/**
+ * Add the additional fields for the Matches tab when creating Events
+ *
+ * @since 3.1.0
+ *
+ * @param  int    $event_id   ID of the event.
+ * @param  string $event_type Event type.
+ * @return bool   Whether the event has the give event type.
+ */
+function sz_additional_fields_add_matches_event_extension() {
+	if ( class_exists( 'SZ_Event_Extension' ) ) :
+
+	class SZ_Additional_Fields_Add_Matches_Event_Extension extends SZ_Event_Extension {
+
+		function __construct() {
+			$args = array(
+				'slug' => 'add-matches',
+				'name' => 'Matches',
+				'nav_item_position'	=> 2,
+				'screens'	=> array(
+					'create'	=> array(
+						'position'	=> 2
+					),	
+				),
+			);
+			parent::init( $args );
+		}
+
+		function display($event_id = NULL) {
+			$event_id = sz_get_event_id();
+			$event_matches 		= events_get_eventmeta( $event_id, 'event_matches' );
+			
+			// TODO: Change to display club name
+			if($event_matches) print_r($event_matches);
+			
+		}
+
+		function settings_screen( $event_id = NULL ) {
+			$event_club 		= events_get_eventmeta( $event_id, 'event_club' );
+			$user_id = get_current_user_id( );
+				
+			//$is_mod = SZ_Groups_Member::get_is_mod_of( $user_id );
+			
+			$is_admin_of = SZ_Groups_Member::get_is_admin_of( $user_id ); // Get list of all groups user is a admin of
+			
+			// if user is admin of any groups
+			if(is_array($is_admin_of)){
+				$accepted_types = array('team', 'club', 'union');
+				$can_create = false;
+				
+				// Loop through each group and check its type
+				foreach($is_admin_of['groups'] as $group){
+					$type = sz_groups_get_group_type($group->id);
+					if(in_array($type, $accepted_types) ) {
+						$can_create = true;
+					}
+				}
+				if($can_create) {
+					
+					cmb2_metabox_form( 'matches_metabox', $event_id );
+					
+				} else {
+					echo '<h3>You must be a admin of a Team, Club, or Union to create an event.</h3>';
+				}
+			} else {
+				echo '<h3>You must be a admin of a Team, Club, or Union to create an event.</h3>';
+			}
+			
+		}
+
+		function settings_screen_save( $event_id = NULL ) {
+			//print_r($_POST);
+			if ( isset( $_POST['sz_matches_group'] ) ) {
+				events_update_eventmeta( $event_id, 'sz_matches_group', $_POST['sz_matches_group'] );
+			}
+		}
+	}
+	sz_register_event_extension( 'SZ_Additional_Fields_Add_Matches_Event_Extension' );
+	
+	
+	
+	endif; // if ( class_exists( 'SZ_Event_Extension' ) )
+}
+
+
+
+add_action( 'cmb2_init', 'cmb2_events_matches_metaboxes' );
+/**
+ * Define the metabox and field configurations.
+ */
+function cmb2_events_matches_metaboxes() {
+	// Start with an underscore to hide fields from custom fields list
+	$prefix = 'sz_';
+
+	/**
+	 * Initiate the metabox
+	 */
+	$cmb = new_cmb2_box( array(
+		'id'            => 'matches_metabox',
+		'title'         => __( 'Matches Metabox', 'cmb2' ),
+		'object_types'  => array( 'event', ), // Post type
+		'context'       => 'normal',
+		'priority'      => 'high',
+		'show_names'    => true, 
+	) );
+	
+	$group_field_id = $cmb->add_field( array(
+		'id'          => 'sz_matches_group',
+		'type'        => 'group',
+		'description' => __( 'Add your matches', 'cmb2' ),
+		// 'repeatable'  => false, // use false if you want non-repeatable group
+		'options'     => array(
+			'group_title'   => __( 'Match {#}', 'cmb2' ), // since version 1.1.4, {#} gets replaced by row number
+			'add_button'    => __( 'Add Another MAtch', 'cmb2' ),
+			'remove_button' => __( 'Remove Match', 'cmb2' ),
+			'sortable'      => true, // beta
+			// 'closed'     => true, // true to have the groups closed by default
+		),
+	) );
+	
+	// Id's for group's fields only need to be unique for the group. Prefix is not needed.
+	$cmb->add_group_field( $group_field_id, array(
+		'name' => 'Venue',
+		'id'   => 'match_venue',
+		'type' => 'text',
+	) );
+	
+	$cmb->add_group_field( $group_field_id, array(
+		'name' => 'Date/Time',
+		'id'   => 'match_date',
+		'type' => 'text_datetime_timestamp_timezone',
+	) );
+	
+	$cmb->add_group_field( $group_field_id, array(
+		'name' => 'Host',
+		'id'   => 'match_host',
+		'type' => 'text',
+	) );
+	$cmb->add_group_field( $group_field_id, array(
+		'name' => 'Sponsor',
+		'id'   => 'match_sponsor',
+		'type' => 'text',
+	) );
+	$cmb->add_group_field( $group_field_id, array(
+		'name' => 'Referee',
+		'id'   => 'match_referee',
+		'type' => 'text',
+	) );
+	$cmb->add_group_field( $group_field_id, array(
+		'name' => 'Team 1',
+		'id'   => 'match_team1',
+		'type' => 'text',
+	) );
+	$cmb->add_group_field( $group_field_id, array(
+		'name' => 'Team 2',
+		'id'   => 'match_team2',
+		'type' => 'text',
+	) );
+}

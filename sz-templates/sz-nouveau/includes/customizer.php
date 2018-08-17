@@ -20,7 +20,7 @@ function sz_nouveau_customize_register( WP_Customize_Manager $wp_customize ) {
 
 	require_once( trailingslashit( sz_nouveau()->includes_dir ) . 'customizer-controls.php' );
 	$wp_customize->register_control_type( 'SZ_Nouveau_Nav_Customize_Control' );
-	$sz_nouveau_options = sz_nouveau_get_appearance_settings();
+	$sz_nouveau_options = sz_nouveau_get_appearance_settings(); 
 
 	$wp_customize->add_panel( 'sz_nouveau_panel', array(
 		'description' => __( 'Customize the appearance of SportsZone Nouveau Template pack.', 'sportszone' ),
@@ -144,6 +144,13 @@ function sz_nouveau_customize_register( WP_Customize_Manager $wp_customize ) {
 			'transport'         => 'refresh',
 			'type'              => 'option',
 		),
+		'sz_nouveau_appearance[members_event_layout]' => array(
+			'index'             => 'members_event_layout',
+			'capability'        => 'sz_moderate',
+			'sanitize_callback' => 'absint',
+			'transport'         => 'refresh',
+			'type'              => 'option',
+		),
 		'sz_nouveau_appearance[members_friends_layout]' => array(
 			'index'             => 'members_friends_layout',
 			'capability'        => 'sz_moderate',
@@ -181,6 +188,13 @@ function sz_nouveau_customize_register( WP_Customize_Manager $wp_customize ) {
 		),
 		'sz_nouveau_appearance[groups_dir_layout]' => array(
 			'index'             => 'groups_dir_layout',
+			'capability'        => 'sz_moderate',
+			'sanitize_callback' => 'absint',
+			'transport'         => 'refresh',
+			'type'              => 'option',
+		),
+		'sz_nouveau_appearance[events_dir_layout]' => array(
+			'index'             => 'events_dir_layout',
 			'capability'        => 'sz_moderate',
 			'sanitize_callback' => 'absint',
 			'transport'         => 'refresh',

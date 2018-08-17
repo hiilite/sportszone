@@ -1,73 +1,73 @@
-body.toplevel_page_sz-groups table.groups th#status,
-body.toplevel_page_sz-groups table.groups th#members {
+body.toplevel_page_sz-events table.events th#status,
+body.toplevel_page_sz-events table.events th#members {
 	width: 10%;
 }
 
-body.toplevel_page_sz-groups table.groups th#last_active {
+body.toplevel_page_sz-events table.events th#last_active {
 	width: 15%;
 }
 
-#sz-groups-form .avatar {
+#sz-events-form .avatar {
 	float: right;
 	margin-left: 10px;
 	margin-top: 1px;
 }
 
-#sz-groups-edit-form input {
+#sz-events-edit-form input {
 	outline: medium none;
 }
 
-#sz-groups-edit-form input#sz-groups-name {
+#sz-events-edit-form input#sz-events-name {
 	font-size: 1.7em;
 	width: 100%;
 	margin-bottom: 6px;
 }
 
-#sz-groups-edit-form input#sz-groups-new-members {
+#sz-events-edit-form input#sz-events-new-members {
 	border: 1px solid #e5e5e5;
 	margin-top: 6px;
 	width: 100%;
 }
 
-#sz-groups-new-members-list {
+#sz-events-new-members-list {
 	margin: 0;
 }
 
-.sz-groups-settings-section {
+.sz-events-settings-section {
 	margin-top: 10px;
 	line-height: 2;
 }
 
-.sz-groups-settings-section legend {
+.sz-events-settings-section legend {
 	margin-top: 10px;
 	font-weight: 700;
 }
 
-.sz-groups-settings-section label {
+.sz-events-settings-section label {
 	clear: right;
 	display: block;
 	float: right;
 	vertical-align: middle;
 }
 
-#sz-groups-permalink-box {
+#sz-events-permalink-box {
 	line-height: 24px;
 	color: #666;
 }
 
-#sz-groups-permalink {
+#sz-events-permalink {
 	margin-left: 24px;
 }
 
-.sz-groups-member-type {
+.sz-events-member-type {
 	position: relative;
 }
 
-.sz-groups-member-type > h4 {
+.sz-events-member-type > h4 {
 	margin-bottom: 0.5em;
 }
 
-ul.sz-group-delete-list {
+ul.sz-event-delete-list {
 	list-style-type: disc;
 	margin: 4px 26px;
 }
@@ -75,32 +75,32 @@ ul.sz-group-delete-list {
 /*
  * Members Pagination
  */
-.sz-group-admin-pagination {
+.sz-event-admin-pagination {
 	position: absolute;
 	text-align: left;
 	width: 100%;
 }
 
-.sz-group-admin-pagination.table-top {
+.sz-event-admin-pagination.table-top {
 	top: 0;
 }
 
-.sz-group-admin-pagination.table-bottom {
+.sz-event-admin-pagination.table-bottom {
 	bottom: 0;
 }
 
-.sz-group-admin-pagination-viewing {
+.sz-event-admin-pagination-viewing {
 	color: #777;
 	font-size: 12px;
 	font-style: italic;
 }
 
-.sz-group-admin-pagination-links {
+.sz-event-admin-pagination-links {
 	white-space: nowrap;
 	padding-right: 15px;
 }
 
-.sz-group-admin-pagination-links .page-numbers {
+.sz-event-admin-pagination-links .page-numbers {
 	display: inline-block;
 	min-width: 12px;
 	border: 1px solid #ccc;
@@ -112,12 +112,12 @@ ul.sz-group-delete-list {
 	text-decoration: none;
 }
 
-.sz-group-admin-pagination-links a.page-numbers:hover {
+.sz-event-admin-pagination-links a.page-numbers:hover {
 	text-decoration: underline;
 }
 
-.sz-group-admin-pagination-links .page-numbers.current,
-.sz-group-admin-pagination-links .page-numbers.dots {
+.sz-event-admin-pagination-links .page-numbers.current,
+.sz-event-admin-pagination-links .page-numbers.dots {
 	border-color: #ddd;
 	background: #f7f7f7;
 	color: #a0a5aa;
@@ -126,23 +126,23 @@ ul.sz-group-delete-list {
 /*
  * Members List
  */
-table.sz-group-members .uid-column {
+table.sz-event-members .uid-column {
 	padding-right: 20px;
 	padding-left: 20px;
 }
 
-table.sz-group-members .uname-column {
+table.sz-event-members .uname-column {
 	width: 70%;
 }
 
-table.sz-group-members .urole-column {
+table.sz-event-members .urole-column {
 	padding-right: 20px;
 	padding-left: 20px;
 }
 
 @media screen and (max-width: 782px) {
 
-	.sz-groups-settings-section label {
+	.sz-events-settings-section label {
 		margin: 0.25em 0;
 	}
 }

@@ -333,7 +333,6 @@ class SZ_Core_Nav {
 		}
 
 		$primary_nav = wp_list_filter( $this->nav[ $this->object_id ], $params );
-
 		if ( ! $primary_nav ) {
 			return false;
 		}

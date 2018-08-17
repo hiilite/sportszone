@@ -5,8 +5,8 @@
  * @link       https://wbcomdesigns.com/
  * @since      1.0.0
  *
- * @package    SZ_Add_Group_Types
- * @subpackage SZ_Add_Group_Types/public
+ * @package    SZ_Add_Event_Types
+ * @subpackage SZ_Add_Event_Types/public
  */
 
 /**
@@ -15,11 +15,11 @@
  * Defines the plugin name, version, and two examples hooks for how to
  * enqueue the admin-specific stylesheet and JavaScript.
  *
- * @package    SZ_Add_Group_Types
- * @subpackage SZ_Add_Group_Types/public
+ * @package    SZ_Add_Event_Types
+ * @subpackage SZ_Add_Event_Types/public
  * @author     Wbcom Designs <admin@wbcomdesigns.com>
  */
-class SZ_Add_Group_Types_Public {
+class SZ_Add_Event_Types_Public {
 
 	/**
 	 * The ID of this plugin.
@@ -63,15 +63,15 @@ class SZ_Add_Group_Types_Public {
 		 * This function is provided for demonstration purposes only.
 		 *
 		 * An instance of this class should be passed to the run() function
-		 * defined in SZ_Add_Group_Types_Loader as all of the hooks are defined
+		 * defined in SZ_Add_Event_Types_Loader as all of the hooks are defined
 		 * in that particular class.
 		 *
-		 * The SZ_Add_Group_Types_Loader will then create the relationship
+		 * The SZ_Add_Event_Types_Loader will then create the relationship
 		 * between the defined hooks and the functions defined in this
 		 * class.
 		 */
 
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/sz-add-group-types-public.css', array(), $this->version, 'all' );
+		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/sz-add-event-types-public.css', array(), $this->version, 'all' );
 	}
 
 	/**
@@ -85,19 +85,19 @@ class SZ_Add_Group_Types_Public {
 		 * This function is provided for demonstration purposes only.
 		 *
 		 * An instance of this class should be passed to the run() function
-		 * defined in SZ_Add_Group_Types_Loader as all of the hooks are defined
+		 * defined in SZ_Add_Event_Types_Loader as all of the hooks are defined
 		 * in that particular class.
 		 *
-		 * The SZ_Add_Group_Types_Loader will then create the relationship
+		 * The SZ_Add_Event_Types_Loader will then create the relationship
 		 * between the defined hooks and the functions defined in this
 		 * class.
 		 */
 
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/sz-add-group-types-public.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/sz-add-event-types-public.js', array( 'jquery' ), $this->version, false );
 
 		wp_localize_script(
 			$this->plugin_name,
-			'szgt_front_js_object',
+			'szet_front_js_object',
 			array(
 				'ajaxurl' => admin_url( 'admin-ajax.php' ),
 			)
@@ -105,78 +105,78 @@ class SZ_Add_Group_Types_Public {
 	}
 
 	/**
-	 * Change the group search template.
+	 * Change the event search template.
 	 *
 	 * @param string $search_form_html The seach form html.
 	 * @since    1.0.0
 	 */
-	public function szgt_modified_group_search_form( $search_form_html ) {
-		global $sz_grp_types;
-		if ( isset( $sz_grp_types->group_type_search_template ) && 'textbox' === $sz_grp_types->group_type_search_template ) {
+	public function szet_modified_event_search_form( $search_form_html ) {
+		global $sz_evt_types;
+		if ( isset( $sz_evt_types->event_type_search_template ) && 'textbox' === $sz_evt_types->event_type_search_template ) {
 			$search_form_html = $search_form_html;
 		} else {
-			$group_types       = sz_groups_get_group_types( array(), 'objects' );
-			$group_select_html = '';
-			if ( ! empty( $group_types ) && is_array( $group_types ) ) {
-				$group_select_html .= '<div class="szgt-groups-search-group-type"><select class="szgt-groups-search-group-type">';
-				$group_select_html .= '<option value="">' . __( 'All Types', 'sz-add-group-types' ) . '</option>';
-				foreach ( $group_types as $group_type_slug => $group_type ) {
-					$group_select_html .= '<option value="' . $group_type_slug . '">' . $group_type->labels['name'] . '</option>';
+			$event_types       = sz_events_get_event_types( array(), 'objects' );
+			$event_select_html = '';
+			if ( ! empty( $event_types ) && is_array( $event_types ) ) {
+				$event_select_html .= '<div class="szgt-events-search-event-type"><select class="szgt-events-search-event-type">';
+				$event_select_html .= '<option value="">' . __( 'All Types', 'sz-add-event-types' ) . '</option>';
+				foreach ( $event_types as $event_type_slug => $event_type ) {
+					$event_select_html .= '<option value="' . $event_type_slug . '">' . $event_type->labels['name'] . '</option>';
 				}
-				$group_select_html .= '</select></div>';
+				$event_select_html .= '</select></div>';
 			}
 
-			if ( isset( $sz_grp_types->group_type_search_template ) && 'both' === $sz_grp_types->group_type_search_template ) {
+			if ( isset( $sz_evt_types->event_type_search_template ) && 'both' === $sz_evt_types->event_type_search_template ) {
 				$search_html       = $search_form_html;
 				$search_form_html  = '';
-				$search_form_html .= $group_select_html;
+				$search_form_html .= $event_select_html;
 				$search_form_html .= $search_html;
 			} else {
-				$search_form_html = $group_select_html;
+				$search_form_html = $event_select_html;
 			}
 		}
 		return $search_form_html;
 	}
 
 	/**
-	 * Change the group search template.
+	 * Change the event search template.
 	 *
 	 * @param string $sz_ajax_querystring The seach form html.
 	 * @param string $object The seach form html.
 	 * @since    1.0.0
 	 */
-	public function szgt_alter_sz_ajax_querystring( $sz_ajax_querystring, $object ) {
+	public function szet_alter_sz_ajax_querystring( $sz_ajax_querystring, $object ) {
 		global $sz;
 		$object       = filter_input( INPUT_POST, 'object' );
 		$query_extras = filter_input( INPUT_POST, 'extras' );
 		$scope        = filter_input( INPUT_POST, 'scope' );
-		if ( ( null !== $object ) && ( 'groups' === $object ) && ( null !== $query_extras ) && ! empty( $query_extras ) ) {
+		if ( ( null !== $object ) && ( 'events' === $object ) && ( null !== $query_extras ) && ! empty( $query_extras ) ) {
 			parse_str( $query_extras, $extras );
 			if ( ! empty( $extras ) && is_array( $extras ) ) {
-				if ( ! empty( $extras['group_type'] ) ) {
-					$sz_ajax_querystring = add_query_arg( 'group_type', $extras['group_type'], $sz_ajax_querystring );
+				if ( ! empty( $extras['event_type'] ) ) {
+					$sz_ajax_querystring = add_query_arg( 'event_type', $extras['event_type'], $sz_ajax_querystring );
 					if ( ! empty( $scope ) && 'all' !== $scope ) {
-						if ( 'all' !== $extras['group_type'] && ! empty( $extras['group_type'] ) ) {
-							$allgroups = groups_get_groups();
-							if ( ! empty( $allgroups ) && array_key_exists( 'groups', $allgroups ) ) {
-								$include_groups = array();
-								$exclude_groups = array();
-								foreach ( $allgroups['groups'] as $group ) {
-									$group_type = (array) sz_groups_get_group_type( $group->id, false );
-									if ( ! empty( $group_type ) && is_array( $group_type ) ) {
-										if ( in_array( $extras['group_type'], $group_type, true ) && in_array( $scope, $group_type, true ) ) {
-											array_push( $include_groups, $group->id );
+						if ( 'all' !== $extras['event_type'] && ! empty( $extras['event_type'] ) ) {
+							$allevents = events_get_events();
+							if ( ! empty( $allevents ) && array_key_exists( 'events', $allevents ) ) {
+								$include_events = array();
+								$exclude_events = array();
+								foreach ( $allevents['events'] as $event ) {
+									$event_type = (array) sz_events_get_event_type( $event->id, false );
+									if ( ! empty( $event_type ) && is_array( $event_type ) ) {
+										if ( in_array( $extras['event_type'], $event_type, true ) && in_array( $scope, $event_type, true ) ) {
+											array_push( $include_events, $event->id );
 										}
 									}
-									array_push( $exclude_groups, $group->id );
+									array_push( $exclude_events, $event->id );
 								}
 
-								if ( ! empty( $include_groups ) ) {
-									$include_groups      = implode( ',', $include_groups );
-									$sz_ajax_querystring = add_query_arg( 'include', $include_groups, $sz_ajax_querystring );
-								} elseif ( ! empty( $exclude_groups ) ) {
-									$exclude_groups      = implode( ',', $exclude_groups );
-									$sz_ajax_querystring = add_query_arg( 'exclude', $exclude_groups, $sz_ajax_querystring );
+								if ( ! empty( $include_events ) ) {
+									$include_events      = implode( ',', $include_events );
+									$sz_ajax_querystring = add_query_arg( 'include', $include_events, $sz_ajax_querystring );
+								} elseif ( ! empty( $exclude_events ) ) {
+									$exclude_events      = implode( ',', $exclude_events );
+									$sz_ajax_querystring = add_query_arg( 'exclude', $exclude_events, $sz_ajax_querystring );
 								}
 							}
 						}
@@ -189,29 +189,29 @@ class SZ_Add_Group_Types_Public {
 
 
 	/**
-	 * Ajax served to search groups
+	 * Ajax served to search events
 	 */
-	public function szgt_search_groups() {
-		if ( ( null !== filter_input( INPUT_POST, 'action' ) ) && 'szgt_search_groups' === filter_input( INPUT_POST, 'action' ) ) {
-			$_POST['object'] = 'groups';
+	public function szet_search_events() {
+		if ( ( null !== filter_input( INPUT_POST, 'action' ) ) && 'szet_search_events' === filter_input( INPUT_POST, 'action' ) ) {
+			$_POST['object'] = 'events';
 			sz_legacy_theme_object_template_loader();
 			die;
 		}
 	}
 
 	/**
-	 * Add group type tabs.
+	 * Add event type tabs.
 	 */
 	public function bb_display_directory_tabs() {
-		$display_group_types = get_site_option( 'szgt_type_display_settings' );
-		$group_types         = sz_groups_get_group_types( array(), 'objects' );
-		// Loop in group types to build the tabs.
-		if ( ! empty( $display_group_types ) && is_array( $display_group_types ) ) {
-			foreach ( $group_types as $key => $group_type ) :
-				if ( in_array( $key, $display_group_types, true ) ) {
+		$display_event_types = get_site_option( 'szet_type_display_settings' );
+		$event_types         = sz_events_get_event_types( array(), 'objects' );
+		// Loop in event types to build the tabs.
+		if ( ! empty( $display_event_types ) && is_array( $display_event_types ) ) {
+			foreach ( $event_types as $key => $event_type ) :
+				if ( in_array( $key, $display_event_types, true ) ) {
 					?>
-			<li id="groups-<?php echo esc_attr( $group_type->name ); ?>" class="szgt-type-tab">
-				<a href="<?php sz_groups_directory_permalink(); ?>"><?php printf( '%s <span>%d</span>', esc_attr( $group_type->labels['name'] ), esc_attr( $this->bb_count_group_types( $group_type->name ) ) ); ?></a>
+			<li id="events-<?php echo esc_attr( $event_type->name ); ?>" class="szgt-type-tab">
+				<a href="<?php sz_events_directory_permalink(); ?>"><?php printf( '%s <span>%d</span>', esc_attr( $event_type->labels['name'] ), esc_attr( $this->bb_count_event_types( $event_type->name ) ) ); ?></a>
 			</li>
 				<?php
 				}
@@ -220,18 +220,18 @@ class SZ_Add_Group_Types_Public {
 	}
 
 	/**
-	 * Get group count of group type tabs groups.
+	 * Get event count of event type tabs events.
 	 *
-	 * @param string $group_type The group type.
-	 * @param string $taxonomy The group taxonomy.
+	 * @param string $event_type The event type.
+	 * @param string $taxonomy The event taxonomy.
 	 */
-	public function bb_count_group_types( $group_type = '', $taxonomy = 'sz_group_type' ) {
+	public function bb_count_event_types( $event_type = '', $taxonomy = 'sz_event_type' ) {
 		global $wpdb;
-		$group_types = sz_groups_get_group_types();
-		if ( empty( $group_type ) || empty( $group_types[ $group_type ] ) ) {
+		$event_types = sz_events_get_event_types();
+		if ( empty( $event_type ) || empty( $event_types[ $event_type ] ) ) {
 			return false;
 		}
-		$count_types = wp_cache_get( 'bpex_count_group_types', 'using_gt_sz_group_type' );
+		$count_types = wp_cache_get( 'bpex_count_event_types', 'using_gt_sz_event_type' );
 		if ( ! $count_types ) {
 			if ( ! sz_is_root_blog() ) {
 				switch_to_blog( sz_get_root_blog_id() );
@@ -242,10 +242,10 @@ class SZ_Add_Group_Types_Public {
 				'where'  => $wpdb->prepare( 'WHERE tt.taxonomy = %s', $taxonomy ),
 			);
 			$count_types = $wpdb->get_results( join( ' ', $sql ) );
-			wp_cache_set( 'bpex_count_group_types', $count_types, 'using_gt_sz_group_type' );
+			wp_cache_set( 'bpex_count_event_types', $count_types, 'using_gt_sz_event_type' );
 			restore_current_blog();
 		}
-		$type_count = wp_filter_object_list( $count_types, array( 'slug' => $group_type ), 'and', 'count' );
+		$type_count = wp_filter_object_list( $count_types, array( 'slug' => $event_type ), 'and', 'count' );
 		$type_count = array_values( $type_count );
 		if ( empty( $type_count ) ) {
 			return 0;
@@ -254,40 +254,40 @@ class SZ_Add_Group_Types_Public {
 	}
 
 	/**
-	 * Get group type args.
+	 * Get event type args.
 	 *
-	 * @param array $args The group type.
+	 * @param array $args The event type.
 	 */
-	public function bb_set_has_groups_type_arg( $args = array() ) {
-		$display_group_types = get_site_option( 'szgt_type_display_settings' );
-		if ( ! empty( $display_group_types ) && is_array( $display_group_types ) ) {
-			// Get group types to check scope.
-			$group_types = sz_groups_get_group_types();
-			// Set the group type arg if scope match one of the registered group type.
-			if ( ! empty( $args['scope'] ) && ! empty( $group_types[ $args['scope'] ] ) ) {
-				$args['group_type'] = $args['scope'];
+	public function bb_set_has_events_type_arg( $args = array() ) {
+		$display_event_types = get_site_option( 'szet_type_display_settings' );
+		if ( ! empty( $display_event_types ) && is_array( $display_event_types ) ) {
+			// Get event types to check scope.
+			$event_types = sz_events_get_event_types();
+			// Set the event type arg if scope match one of the registered event type.
+			if ( ! empty( $args['scope'] ) && ! empty( $event_types[ $args['scope'] ] ) ) {
+				$args['event_type'] = $args['scope'];
 			}
 		}
 		return $args;
 	}
 
 	/**
-	 * Display group type.
+	 * Display event type.
 	 *
-	 * @param string $group_id The group id.
+	 * @param string $event_id The event id.
 	 */
-	public function bb_group_directory_show_group_type( $group_id = null ) {
-		if ( empty( $group_id ) ) {
-			$group_id = sz_get_group_id();
+	public function bb_event_directory_show_event_type( $event_id = null ) {
+		if ( empty( $event_id ) ) {
+			$event_id = sz_get_event_id();
 		}
-		// Group directory.
-		if ( sz_is_active( 'groups' ) && sz_is_groups_directory() ) {
-			// Passing false means supporting multiple group types.
-			$group_type = (array) sz_groups_get_group_type( $group_id, false );
+		// Event directory.
+		if ( sz_is_active( 'events' ) && sz_is_events_directory() ) {
+			// Passing false means supporting multiple event types.
+			$event_type = (array) sz_events_get_event_type( $event_id, false );
 			$sep        = '&ndash;';
-			foreach ( $group_type as $type ) {
-				$obj = sz_groups_get_group_type_object( $type );
-				// Group type name/description.
+			foreach ( $event_type as $type ) {
+				$obj = sz_events_get_event_type_object( $type );
+				// Event type name/description.
 				if ( ! empty( $obj->description ) ) {
 					printf( '<div class="dir-desc-' . esc_attr( $obj->labels['singular_name'] ) . '"><span class="dir-desc-span-name">%1$s</span><span class="dir-desc-span-sep">%2$s</span><span class="dir-desc-span-desc">%3$s</span>.', esc_attr( $obj->labels['singular_name'] ), esc_attr( $sep ), esc_html( $obj->description ) . '</div>' );
 				}

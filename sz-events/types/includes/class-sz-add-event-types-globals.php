@@ -5,8 +5,8 @@
  * @link       https://wbcomdesigns.com/
  * @since      1.0.0
  *
- * @package    SZ_Add_Group_Types
- * @subpackage SZ_Add_Group_Types/includes
+ * @package    SZ_Add_Event_Types
+ * @subpackage SZ_Add_Event_Types/includes
  * @author     Wbcom Designs <admin@wbcomdesigns.com>
  */
 
@@ -16,11 +16,11 @@
  * @link       https://wbcomdesigns.com/
  * @since      1.0.0
  *
- * @package    SZ_Add_Group_Types
- * @subpackage SZ_Add_Group_Types/includes
+ * @package    SZ_Add_Event_Types
+ * @subpackage SZ_Add_Event_Types/includes
  * @author     Wbcom Designs <admin@wbcomdesigns.com>
  */
-class SZ_Add_Group_Types_Globals {
+class SZ_Add_Event_Types_Globals {
 	/**
 	 * The unique identifier of this plugin.
 	 *
@@ -40,40 +40,40 @@ class SZ_Add_Group_Types_Globals {
 	protected $version;
 
 	/**
-	 * Whether the group types appear as pre selected.
+	 * Whether the event types appear as pre selected.
 	 *
 	 * @since    1.0.0
 	 * @access   public
-	 * @var      string    $group_types_pre_selected
+	 * @var      string    $event_types_pre_selected
 	 */
-	public $group_types_pre_selected;
+	public $event_types_pre_selected;
 
 	/**
-	 * Enable the group type search functionality on front-end.
+	 * Enable the event type search functionality on front-end.
 	 *
 	 * @since    1.0.0
 	 * @access   public
-	 * @var      string    $group_type_search_enabled
+	 * @var      string    $event_type_search_enabled
 	 */
-	public $group_type_search_enabled;
+	public $event_type_search_enabled;
 
 	/**
-	 * List of all the saved group types
+	 * List of all the saved event types
 	 *
 	 * @since    1.0.0
 	 * @access   public
-	 * @var      string    $group_types
+	 * @var      string    $event_types
 	 */
-	public $group_types;
+	public $event_types;
 
 	/**
 	 * The change in the search template
 	 *
 	 * @since    1.0.0
 	 * @access   public
-	 * @var      string    $group_type_search_template
+	 * @var      string    $event_type_search_template
 	 */
-	public $group_type_search_template;
+	public $event_type_search_template;
 
 	/**
 	 * Define the core functionality of the plugin.
@@ -86,7 +86,7 @@ class SZ_Add_Group_Types_Globals {
 	 */
 	public function __construct() {
 
-		$this->plugin_name = 'sz-add-group-types';
+		$this->plugin_name = 'sz-add-event-types';
 		$this->version     = '1.0.0';
 		$this->setup_plugin_global();
 	}
@@ -94,52 +94,52 @@ class SZ_Add_Group_Types_Globals {
 	/**
 	 * Include the following files that make up the plugin:
 	 *
-	 * - SZ_Add_Group_Types_Globals.
+	 * - SZ_Add_Event_Types_Globals.
 	 *
 	 * @since    1.0.0
 	 * @access   public
 	 */
 	public function setup_plugin_global() {
-		global $sz_grp_types;
+		global $sz_evt_types;
 
-		$szgt_settings = get_site_option( 'szgt_general_settings' );
+		$szet_settings = get_site_option( 'szet_general_settings' );
 
-		$this->group_types_pre_selected = 'no';
-		if ( isset( $szgt_settings['group_types_pre_selected'] ) ) {
-			$this->group_types_pre_selected = $szgt_settings['group_types_pre_selected'];
+		$this->event_types_pre_selected = 'no';
+		if ( isset( $szet_settings['event_types_pre_selected'] ) ) {
+			$this->event_types_pre_selected = $szet_settings['event_types_pre_selected'];
 		}
 
-		$this->group_type_search_enabled = 'no';
-		if ( isset( $szgt_settings['group_type_search_enabled'] ) ) {
-			$this->group_type_search_enabled = $szgt_settings['group_type_search_enabled'];
+		$this->event_type_search_enabled = 'no';
+		if ( isset( $szet_settings['event_type_search_enabled'] ) ) {
+			$this->event_type_search_enabled = $szet_settings['event_type_search_enabled'];
 		}
 
-		$this->group_types = array();
-		$group_types       = get_site_option( 'szgt_group_types' );
-		if ( ! empty( $group_types ) ) {
-			$this->group_types = $group_types;
+		$this->event_types = array();
+		$event_types       = get_site_option( 'szet_event_types' );
+		if ( ! empty( $event_types ) ) {
+			$this->event_types = $event_types;
 		}
 
-		$szgt_search_settings             =get_site_option( 'szgt_group_type_search_settings' );
-		$this->group_type_search_template = 'both';
-		if ( isset( $szgt_search_settings['group_type_search_template'] ) ) {
-			$this->group_type_search_template = $szgt_search_settings['group_type_search_template'];
+		$szet_search_settings             =get_site_option( 'szet_event_type_search_settings' );
+		$this->event_type_search_template = 'both';
+		if ( isset( $szet_search_settings['event_type_search_template'] ) ) {
+			$this->event_type_search_template = $szet_search_settings['event_type_search_template'];
 		}
 
-		$szgt_type_display_settings = get_site_option( 'szgt_type_display_settings' );
+		$szet_type_display_settings = get_site_option( 'szet_type_display_settings' );
 
-		if ( ! is_array( $szgt_type_display_settings ) && empty( $szgt_type_display_settings ) ) {
-			$dis_group_types      = $this->group_types;
+		if ( ! is_array( $szet_type_display_settings ) && empty( $szet_type_display_settings ) ) {
+			$dis_event_types      = $this->event_types;
 			$display_default_type = array();
 			$count                = 0;
-			foreach ( $dis_group_types as $type ) {
+			foreach ( $dis_event_types as $type ) {
 				if ( $count < 2 ) {
 					array_push( $display_default_type, $type['slug'] );
 					$count++;
 				}
 			}
 			if ( $count > 0 ) {
-				update_site_option( 'szgt_type_display_settings', $display_default_type );
+				update_site_option( 'szet_type_display_settings', $display_default_type );
 			}
 		}
 	}

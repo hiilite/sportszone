@@ -51,6 +51,11 @@ function sz_core_install( $active_components = false ) {
 	if ( !empty( $active_components['groups'] ) ) {
 		sz_core_install_groups();
 	}
+	
+	// Extensible Events.
+	if ( !empty( $active_components['events'] ) ) {
+		sz_core_install_events();
+	}
 
 	// Private Messaging.
 	if ( !empty( $active_components['messages'] ) ) {
@@ -237,6 +242,65 @@ function sz_core_install_groups() {
 				meta_key varchar(255) DEFAULT NULL,
 				meta_value longtext DEFAULT NULL,
 				KEY group_id (group_id),
+				KEY meta_key (meta_key(191))
+			) {$charset_collate};";
+
+	dbDelta( $sql );
+}
+
+/**
+ * Install database tables for the Events component.
+ *
+ * @since 1.0.0
+ *
+ */
+function sz_core_install_events() {
+	$sql             = array();
+	$charset_collate = $GLOBALS['wpdb']->get_charset_collate();
+	$sz_prefix       = sz_core_get_table_prefix();
+
+	$sql[] = "CREATE TABLE {$sz_prefix}sz_events (
+				id bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+				creator_id bigint(20) NOT NULL,
+				name varchar(100) NOT NULL,
+				slug varchar(200) NOT NULL,
+				description longtext NOT NULL,
+				status varchar(10) NOT NULL DEFAULT 'public',
+				parent_id bigint(20) NOT NULL DEFAULT 0,
+				enable_forum tinyint(1) NOT NULL DEFAULT '1',
+				date_created datetime NOT NULL,
+				KEY creator_id (creator_id),
+				KEY status (status),
+				KEY parent_id (parent_id)
+			) {$charset_collate};";
+
+	$sql[] = "CREATE TABLE {$sz_prefix}sz_events_members (
+				id bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+				event_id bigint(20) NOT NULL,
+				user_id bigint(20) NOT NULL,
+				inviter_id bigint(20) NOT NULL,
+				is_admin tinyint(1) NOT NULL DEFAULT '0',
+				is_mod tinyint(1) NOT NULL DEFAULT '0',
+				user_title varchar(100) NOT NULL,
+				date_modified datetime NOT NULL,
+				comments longtext NOT NULL,
+				is_confirmed tinyint(1) NOT NULL DEFAULT '0',
+				is_banned tinyint(1) NOT NULL DEFAULT '0',
+				invite_sent tinyint(1) NOT NULL DEFAULT '0',
+				KEY event_id (event_id),
+				KEY is_admin (is_admin),
+				KEY is_mod (is_mod),
+				KEY user_id (user_id),
+				KEY inviter_id (inviter_id),
+				KEY is_confirmed (is_confirmed)
+			) {$charset_collate};";
+
+	$sql[] = "CREATE TABLE {$sz_prefix}sz_events_eventmeta (
+				id bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+				event_id bigint(20) NOT NULL,
+				meta_key varchar(255) DEFAULT NULL,
+				meta_value longtext DEFAULT NULL,
+				KEY event_id (event_id),
 				KEY meta_key (meta_key(191))
 			) {$charset_collate};";
 

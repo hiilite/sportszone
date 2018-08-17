@@ -434,6 +434,19 @@ class SZ_Admin {
 				register_setting( 'sportszone', 'sz-disable-group-cover-image-uploads', 'intval' );
 			}
 		}
+		
+		/* Events Section ****************************************************/
+
+		if ( sz_is_active( 'events' ) ) {
+
+			// Add the main section.
+			add_settings_section( 'sz_events', __( 'Events Settings',  'sportszone' ), 'sz_admin_setting_callback_events_section', 'sportszone' );
+
+			// Allow subscriptions setting.
+			add_settings_field( 'sz_restrict_event_creation', __( 'Event Creation', 'sportszone' ), 'sz_admin_setting_callback_event_creation',   'sportszone', 'sz_events' );
+			register_setting( 'sportszone', 'sz_restrict_event_creation', 'intval' );
+
+		}
 
 		/* Activity Section **************************************************/
 
