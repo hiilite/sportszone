@@ -2680,12 +2680,77 @@ function sz_remove_group_type_on_group_delete( $group_id = 0 ) {
 add_action( 'groups_delete_group', 'sz_remove_group_type_on_group_delete' );
 
 
+add_action( 'cmb2_init', 'cmb2_groups_details_metaboxes' );
+/**
+ * Define the metabox and field configurations.
+ */
+function cmb2_groups_details_metaboxes() {
+	global $sz;
+	
+	// Start with an underscore to hide fields from custom fields list
+	$prefix = 'sz_';
+	/**
+	 * Initiate the metabox
+	 */
+	$cmb = new_cmb2_box( array(
+		'id'            => 'group_details_metabox',
+		'title'         => __( 'Group Detials Metabox', 'cmb2' ),
+		'object_types'  => array( 'group', ), // Post type
+		'context'       => 'normal',
+		'priority'      => 'high',
+		'show_names'    => true, 
+	) );
+	
+	$cmb->add_field( array(
+		'id'          => 'sz_group_email',
+		'type'        => 'text_email',
+		'name'		  => __('Group Email', 'cmb2' ),
+	) );
+	
+	$cmb->add_field( array(
+		'id'          => 'sz_group_website',
+		'type'        => 'text_url',
+		'name'		  => __('Website', 'cmb2' ),
+	) );
+	
+	$cmb->add_field( array(
+		'id'          => 'sz_group_facebook',
+		'type'        => 'text_url',
+		'name'		  => __('Facebook Page', 'cmb2' ),
+	) );
+	
+	$cmb->add_field( array(
+		'id'          => 'sz_group_twitter',
+		'type'        => 'text_url',
+		'name'		  => __('Twitter Page', 'cmb2' ),
+	) );
+	
+	$cmb->add_field( array(
+		'id'          => 'sz_group_country',
+		'type'        => 'select_country',
+		'name'		  => __('Country', 'cmb2' ),
+		'attributes'  => array(
+			'region_id' => 'sz_group_province',
+		),
+	) );
+	$cmb->add_field( array(
+		'id'          => 'sz_group_province',
+		'type'        => 'select_province',
+		'name'		  => __('Province', 'cmb2' ),
+	) );
+	
+	$cmb->add_field( array(
+		'id'          => 'sz_group_colors',
+		'type'        => 'multi_colorpicker',
+		'name'		  => __('Group Colors', 'cmb2' ),
+	) );
+}
 
 /**
  *	
  * -------------- ADDITONAL GROUP FIELDS --------------------*
  *
- */
+ *
  
 function sz_additional_fields_group_extension() {
 	if ( class_exists( 'SZ_Group_Extension' ) ) :
@@ -2796,8 +2861,8 @@ function sz_additional_fields_group_extension() {
 	
 	
 	
-	endif; // if ( class_exists( 'BP_Group_Extension' ) )
+	endif; // if ( class_exists( 'SZ_Group_Extension' ) )
 }
 //add_action('sz_init', 'sz_additional_fields_group_extension');
 
-
+*/

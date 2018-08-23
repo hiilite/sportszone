@@ -73,31 +73,28 @@ function groups_screen_group_admin_edit_details() {
 			/*
 			 * Save Additinal Info Fields
 			 */
-			 
-			$group_id = sz_get_current_group_id();
-			if ( isset( $_POST['group-email'] ) ) {
-				groups_update_groupmeta( $group_id, 'group_email', sanitize_text_field($_POST['group-email']) );
+			 $group_id = sz_get_current_group_id();
+			// New set
+			if ( isset( $_POST['sz_group_email'] ) ) {
+				groups_update_groupmeta( $group_id, 'sz_group_email', sanitize_text_field($_POST['sz_group_email']) );
 			}
-			if ( isset( $_POST['group-phone'] ) ) {
-				groups_update_groupmeta( $group_id, 'group_phone', sanitize_text_field($_POST['group-phone']) );
+			if ( isset( $_POST['sz_group_website'] ) ) {
+				groups_update_groupmeta( $group_id, 'sz_group_website', sanitize_text_field($_POST['sz_group_website']) );
 			}
-			if ( isset( $_POST['group-country'] ) ) {
-				groups_update_groupmeta( $group_id, 'group_country', sanitize_text_field($_POST['group-country']) );
+			if ( isset( $_POST['sz_group_facebook'] ) ) {
+				groups_update_groupmeta( $group_id, 'sz_group_facebook', sanitize_text_field($_POST['sz_group_facebook']) );
 			}
-			if ( isset( $_POST['group-province'] ) ) {
-				groups_update_groupmeta( $group_id, 'group_province', sanitize_text_field($_POST['group-province']) );
+			if ( isset( $_POST['sz_group_twitter'] ) ) {
+				groups_update_groupmeta( $group_id, 'sz_group_twitter', sanitize_text_field($_POST['sz_group_twitter']) );
 			}
-			if ( isset( $_POST['group-facebook'] ) ) {
-				groups_update_groupmeta( $group_id, 'group_facebook', sanitize_text_field($_POST['group-facebook']) );
+			if ( isset( $_POST['sz_group_country'] ) ) {
+				groups_update_groupmeta( $group_id, 'sz_group_country', $_POST['sz_group_country'] );
 			}
-			if ( isset( $_POST['group-twitter'] ) ) {
-				groups_update_groupmeta( $group_id, 'group_twitter', sanitize_text_field($_POST['group-twitter']) );
+			if ( isset( $_POST['sz_group_province'] ) ) {
+				groups_update_groupmeta( $group_id, 'sz_group_province', $_POST['sz_group_province'] );
 			}
-			if ( isset( $_POST['group-website'] ) ) {
-				groups_update_groupmeta( $group_id, 'group_website', sanitize_text_field($_POST['group-website']) );
-			}
-			if ( isset( $_POST['group-colors'] ) ) {
-				groups_update_groupmeta( $group_id, 'group_colors', sanitize_text_field($_POST['group-colors']) );
+			if ( isset( $_POST['sz_group_colors'] ) ) {
+				groups_update_groupmeta( $group_id, 'sz_group_colors', $_POST['sz_group_colors'] );
 			}
 			
 			/**

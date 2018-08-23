@@ -3672,10 +3672,6 @@ div.sz-navs#subsubnav.sz-messages-filters .user-messages-bulk-actions {
 	box-shadow: 0 0 8px #eaeaea;
 }
 
-.sportszone-wrap select {
-	height: auto;
-}
-
 .sportszone-wrap textarea {
 	resize: vertical;
 }
@@ -3897,66 +3893,7 @@ body.no-js .sportszone #messages-bulk-management #select-all-messages {
 	padding: 0 8px 1px;
 }
 
-.sportszone-wrap .select-wrap {
-	border: 1px solid #eee;
-}
 
-.sportszone-wrap .select-wrap label {
-	display: inline;
-}
-
-.sportszone-wrap .select-wrap select::-ms-expand {
-	display: none;
-}
-
-.sportszone-wrap .select-wrap select {
-	-moz-appearance: none;
-	-webkit-appearance: none;
-	-o-appearance: none;
-	appearance: none;
-	border: 0;
-	cursor: pointer;
-	margin-right: -25px;
-	padding: 6px 25px 6px 10px;
-	position: relative;
-	text-indent: -2px;
-	z-index: 1;
-	width: 100%;
-}
-
-.sportszone-wrap .select-wrap select,
-.sportszone-wrap .select-wrap select:focus,
-.sportszone-wrap .select-wrap select:active {
-	background: transparent;
-}
-
-.sportszone-wrap .select-wrap span.select-arrow {
-	display: inline-block;
-	position: relative;
-	z-index: 0;
-}
-
-.sportszone-wrap .select-wrap span.select-arrow:before {
-	color: #ccc;
-	content: "\25BC";
-}
-
-.sportszone-wrap .select-wrap:focus .select-arrow:before, .sportszone-wrap .select-wrap:hover .select-arrow:before {
-	color: #a6a6a6;
-}
-
-.sportszone-wrap .select-wrap:focus, .sportszone-wrap .select-wrap:hover,
-.sportszone-wrap .sz-search form:focus,
-.sportszone-wrap .sz-search form:hover {
-	border: 1px solid #d5d4d4;
-	box-shadow: inset 0 0 3px #eee;
-}
-
-@media screen and (min-width: 32em) {
-	.sportszone-wrap .notifications-options-nav .select-wrap {
-		float: left;
-	}
-}
 
 /**
 *----------------------------------------------------------

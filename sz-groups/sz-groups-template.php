@@ -1980,9 +1980,9 @@ function sz_group_search_form() {
 	$label = __('Filter Groups', 'sportszone');
 	$name = 'group-filter-box';
 
-	$search_form_html = '<form action="' . $action . '" id="group-search-form" method="post">
+	$search_form_html = '<form action="' . $action . '" id="group-search-form" method="post" class="input-group mb-3">
 		<label for="'. $name .'" id="'. $name .'-label">'. $label .'</label>
-		<input type="search" name="'. $name . '" id="'. $name .'" value="'. $value .'"'.  $disabled .' />
+		<input type="search class="form-control" " name="'. $name . '" id="'. $name .'" value="'. $value .'"'.  $disabled .' />
 
 		'. wp_nonce_field( 'group-filter-box', '_wpnonce_group_filter', true, false ) .'
 		</form>';

@@ -227,7 +227,7 @@ class SZ_Nouveau extends SZ_Theme_Compat {
 		 *
 		 * @param array $value Array of style dependencies. Default Dashicons.
 		 */
-		$css_dependencies = apply_filters( 'sz_nouveau_css_dependencies', array( 'dashicons' ) );
+		$css_dependencies = apply_filters( 'sz_nouveau_css_dependencies', array( 'dashicons', 'bootstrap' ) );
 
 		/**
 		 * Filters the styles to enqueue for SportsZone Nouveau.
@@ -447,6 +447,8 @@ class SZ_Nouveau extends SZ_Theme_Compat {
 
 			if ( 'groups' === $object ) {
 				$supported_objects = array_merge( $supported_objects, array( 'group_members', 'group_requests' ) );
+			} elseif ( 'events' === $object ) {
+				$supported_objects = array_merge( $supported_objects, array( 'event_members', 'event_requests' ) );
 			}
 
 			$object_nonces[ $object ] = wp_create_nonce( 'sz_nouveau_' . $object );

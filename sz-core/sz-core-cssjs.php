@@ -71,8 +71,8 @@ function sz_core_register_common_scripts() {
 		'sz-livestamp' => array( 'file' => "{$url}vendor/livestamp{$min}.js", 'dependencies' => array( 'jquery', 'sz-moment' ), 'footer' => true ),
 		
 		// Version 3.1.0
-		//'sz-jquery-crs' => array( 'file' => "{$url}vendor/jquery.crs{$min}.js", 'dependencies' => array( 'jquery' ), 'footer' => true ),
-		'sz-crs' => array( 'file' => "{$url}vendor/crs{$min}.js", 'dependencies' => array( 'jquery' ), 'footer' => true ),
+		'sz-crs' 	=> array( 'file' => "{$url}vendor/crs{$min}.js", 'dependencies' => array( 'jquery' ), 'footer' => true ),
+		'bootstrap' => array( 'file' => "{$url}bootstrap.bundle{$min}.js", 'dependencies' => array('jquery'), 'footer' => true),
 	);
 
 	// Version 2.7 - Add Moment.js locale to our $scripts array if we found one.
@@ -142,6 +142,10 @@ function sz_core_register_common_styles() {
 		'sz-cover-image' => array(
 			'file'         => "{$url}cover-image{$min}.css",
 			'dependencies' => array( 'jcrop' )
+		),
+		'bootstrap' => array(
+			'file'         => "{$url}bootstrap{$min}.css",
+			'dependencies' => false
 		),
 	) );
 
@@ -470,7 +474,7 @@ function sz_core_add_cropper_inline_css() {
 		#avatar-crop-pane img,
 		#avatar-upload-form img,
 		#create-group-form img,
-		#group-settings-form img { border: none !important; max-width: none !important; }
+		#group-settings-form img { border: none !important; }
 	</style>
 
 <?php
@@ -552,12 +556,15 @@ function sz_core_get_js_dependencies() {
 	 */
 	return apply_filters( 'sz_core_get_js_dependencies', array(
 		'jquery',
+		'jquery-ui-core',
+		'jquery-ui-tabs',
 		'sz-confirm',
 		'sz-widget-members',
 		'sz-jquery-query',
 		'sz-jquery-cookie',
 		'sz-jquery-scroll-to',
-		'sz-crs'
+		'sz-crs',
+		'bootstrap'
 	) );
 }
 

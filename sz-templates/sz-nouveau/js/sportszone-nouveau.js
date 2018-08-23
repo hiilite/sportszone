@@ -5,13 +5,36 @@
 window.wp = window.wp || {};
 window.bp = window.bp || {};
 
+function copyLink(link){
+	var copyText = document.getElementById(link);
+	copyText.select();
+	document.execCommand("copy");
+	
+}
+
 ( function( exports, $ ) {
 
 	// Bail if not set
 	if ( typeof SZ_Nouveau === 'undefined' ) {
 		return;
 	}
-
+	
+	/**
+	 * Activate jQuery-Tabs
+	 */
+	//$( ".sz-tabs" ).tabs();
+	var hash = window.location.hash;
+	  hash && $('.sz-tabs ul.nav a[href="' + hash + '"]').tab('show');
+	
+	  $('.nav-tabs a').click(function (e) {
+	    $(this).tab('show');
+	    var scrollmem = $('body').scrollTop();
+	    window.location.hash = this.hash;
+	    $('html,body').scrollTop(scrollmem);
+	  });
+	
+	
+	  
 	/**
 	 * [Nouveau description]
 	 * @type {Object}
@@ -251,7 +274,7 @@ window.bp = window.bp || {};
 				this.setStorage( 'sz-' + data.object, 'extras', data.extras );
 			}
 
-			/* Set the correct selected nav and filter */
+			/* Set the correct selected nav and filter */ 
 			$( this.objectNavParent + ' [data-sz-object]' ).each( function() {
 				$( this ).removeClass( 'selected loading' );
 			} );
@@ -265,6 +288,12 @@ window.bp = window.bp || {};
 			} else if ( 'group_requests' === data.object ) {
 				data.object = 'groups';
 				data.template = 'group_requests';
+			} else if ( 'friends' === data.object || 'event_members' === data.object ) {
+				data.template = data.object;
+				data.object   = 'members';
+			} else if ( 'event_requests' === data.object ) {
+				data.object = 'events';
+				data.template = 'event_requests';
 			} else if ( 'notifications' === data.object ) {
 				data.object = 'members';
 				data.template = 'member_notifications';
@@ -685,6 +714,12 @@ window.bp = window.bp || {};
 
 						// Group's header button
 						if ( undefined !== response.data.is_group && response.data.is_group ) {
+							return window.location.reload();
+						}
+					} else if ( 'events' === object ) {
+
+						// Events's header button
+						if ( undefined !== response.data.is_event && response.data.is_event ) {
 							return window.location.reload();
 						}
 					}

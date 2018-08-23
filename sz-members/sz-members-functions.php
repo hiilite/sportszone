@@ -1379,6 +1379,7 @@ function sz_core_get_illegal_names( $value = '', $oldvalue = '' ) {
 	// Add the core components' slugs to the banned list even if their components aren't active.
 	$sz_component_slugs = array(
 		'groups',
+		'events',
 		'members',
 		'forums',
 		'blogs',
@@ -1395,6 +1396,7 @@ function sz_core_get_illegal_names( $value = '', $oldvalue = '' ) {
 	// Core constants.
 	$slug_constants = array(
 		'SZ_GROUPS_SLUG',
+		'SZ_EVENTS_SLUG',
 		'SZ_MEMBERS_SLUG',
 		'SZ_FORUMS_SLUG',
 		'SZ_BLOGS_SLUG',

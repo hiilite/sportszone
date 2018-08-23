@@ -858,6 +858,8 @@ function sz_activity_get_current_context() {
 	if ( sz_is_user() ) {
 		if ( sz_is_active( 'groups' ) && sz_is_current_action( sz_get_groups_slug() ) ) {
 			$context = 'member_groups';
+		} elseif ( sz_is_active( 'events' ) && sz_is_current_action( sz_get_events_slug() ) ) {
+			$context = 'member_events';
 		} else {
 			$context = 'member';
 		}
@@ -865,6 +867,9 @@ function sz_activity_get_current_context() {
 	// On individual group pages, default to 'group'.
 	} elseif ( sz_is_active( 'groups' ) && sz_is_group() ) {
 		$context = 'group';
+
+	} elseif ( sz_is_active( 'events' ) && sz_is_event() ) {
+		$context = 'event';
 
 	// 'activity' everywhere else.
 	} else {
@@ -1447,7 +1452,7 @@ function sz_activity_register_activity_actions() {
 		__( 'Posted a status update', 'sportszone' ),
 		'sz_activity_format_activity_action_activity_update',
 		__( 'Updates', 'sportszone' ),
-		array( 'activity', 'group', 'member', 'member_groups' )
+		array( 'activity', 'group', 'event', 'member', 'member_groups', 'member_events' )
 	);
 
 	sz_activity_set_action(
@@ -3132,6 +3137,24 @@ function sz_activity_user_can_read( $activity, $user_id = 0 ) {
 			}
 		}
 	}
+	// If activity is from a event, do extra cap checks.
+	elseif ( sz_is_active( 'events' ) && sportszone()->events->id === $activity->component ) {
+		// Check to see if the user has access to the activity's parent event.
+		$event = events_get_event( $activity->item_id );
+		if ( $event ) {
+			// For logged-in user, we can check against the 'user_has_access' prop.
+			if ( sz_loggedin_user_id() === $user_id ) {
+				$retval = $event->user_has_access;
+
+			// Manually check status.
+			} elseif ( 'private' === $event->status || 'hidden' === $event->status ) {
+				// Only event members that are not banned can view.
+				if ( ! events_is_user_member( $user_id, $activity->item_id ) || events_is_user_banned( $user_id, $activity->item_id ) ) {
+					$retval = false;
+				}
+			}
+		}
+	}
 
 	// Spammed items are not visible to the public.
 	if ( $activity->is_spam ) {
@@ -3586,6 +3609,9 @@ function sz_activity_at_message_notification( $activity_id, $receiver_user_id ) 
 		if ( sz_is_active( 'groups' ) && sz_is_group() ) {
 			$email_type = 'groups-at-message';
 			$group_name = sz_get_current_group_name();
+		} elseif ( sz_is_active( 'events' ) && sz_is_event() ) {
+			$email_type = 'events-at-message';
+			$group_name = sz_get_current_event_name();
 		}
 
 		$unsubscribe_args = array(
@@ -3902,7 +3928,7 @@ function sz_embed_activity_save_cache( $cache, $cachekey, $id ) {
 function sz_activity_do_heartbeat() {
 	$retval = false;
 
-	if ( sz_is_activity_heartbeat_active() && ( sz_is_activity_directory() || sz_is_group_activity() ) ) {
+	if ( sz_is_activity_heartbeat_active() && ( sz_is_activity_directory() || sz_is_group_activity() || sz_is_event_activity() ) ) {
 		$retval = true;
 	}
 
@@ -3935,6 +3961,10 @@ function sz_ajax_get_suggestions() {
 	// Support per-Group suggestions.
 	if ( ! empty( $_GET['group-id'] ) ) {
 		$args['group_id'] = absint( $_GET['group-id'] );
+	}
+	// Support per-Group suggestions.
+	if ( ! empty( $_GET['event-id'] ) ) {
+		$args['event_id'] = absint( $_GET['event-id'] );
 	}
 
 	$results = sz_core_get_suggestions( $args );

@@ -47,6 +47,9 @@ get_header( 'sportszone' ); ?>
 
 				elseif ( sz_is_user_groups() ) :
 					locate_template( array( 'members/single/groups.php'    ), true );
+				
+				elseif ( sz_is_user_events() ) :
+					locate_template( array( 'members/single/events.php'    ), true );
 
 				elseif ( sz_is_user_messages() ) :
 					locate_template( array( 'members/single/messages.php'  ), true );

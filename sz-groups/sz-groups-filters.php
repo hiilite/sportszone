@@ -181,9 +181,9 @@ function sz_groups_disable_at_mention_notification_for_non_public_groups( $send,
 function sz_groups_default_avatar( $avatar, $params ) {
 	if ( isset( $params['object'] ) && 'group' === $params['object'] ) {
 		if ( isset( $params['type'] ) && 'thumb' === $params['type'] ) {
-			$file = 'mystery-group-50.png';
+			$file = 'player-avatar.png';
 		} else {
-			$file = 'mystery-group.png';
+			$file = 'player-avatar.png';
 		}
 
 		$avatar = sportszone()->plugin_url . "sz-core/images/$file";
@@ -205,9 +205,9 @@ function sz_groups_default_avatar( $avatar, $params ) {
 function sz_groups_default_cover_image( $cover_image, $params ) {
 	if ( isset( $params['object'] ) && 'group' === $params['object'] ) {
 		if ( isset( $params['type'] ) && 'thumb' === $params['type'] ) {
-			$file = 'mystery-group-50.png';
+			$file = 'rugby-group.jpg';
 		} else {
-			$file = 'mystery-group.png';
+			$file = 'rugby-group.jpg';
 		}
 
 		$cover_image = sportszone()->plugin_url . "sz-core/images/$file";

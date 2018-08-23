@@ -1439,7 +1439,7 @@ class SZ_Members_Admin {
 		}
 
 		$url     = add_query_arg( 'page', 'sz-signups', $base_url );
-		$text    = sprintf( _x( 'Pending %s', 'signup users', 'sportszone' ), '<span class="count">(' . number_format_i18n( $signups ) . ')</span>' );
+		$text    = sprintf( _x( 'Pending %s', 'signup users', 'sportszone' ), '<span class="count badge badge-primary badge-pill">(' . number_format_i18n( $signups ) . ')</span>' );
 
 		$views['registered'] = sprintf( '<a href="%1$s" class="%2$s">%3$s</a>', esc_url( $url ), $class, $text );
 

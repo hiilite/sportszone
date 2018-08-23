@@ -103,7 +103,7 @@ function sz_nouveau_notifications_bulk_management_dropdown() {
 			esc_html_e( 'Select Bulk Action', 'sportszone' );
 		?></label>
 
-		<select name="notification_bulk_action" id="notification-select">
+		<select name="notification_bulk_action" id="notification-select" class="form-control">
 			<option value="" selected="selected"><?php echo esc_html( 'Bulk Actions', 'sportszone' ); ?></option>
 
 			<?php if ( sz_is_current_action( 'unread' ) ) : ?>

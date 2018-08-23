@@ -124,6 +124,7 @@ if ( ! class_exists( 'CMB2_Bootstrap_242_Trunk', false ) ) {
 			}
 
 			add_action( 'init', array( $this, 'include_cmb' ), self::PRIORITY );
+			add_filter( 'pw_cmb2_field_select2_asset_path', array( $this, 'pw_cmb2_field_select2_asset_path' ) );
 		}
 
 		/**
@@ -151,6 +152,7 @@ if ( ! class_exists( 'CMB2_Bootstrap_242_Trunk', false ) ) {
 			require_once CMB2_DIR . 'includes/CMB2_Base.php';
 			require_once CMB2_DIR . 'includes/CMB2.php';
 			require_once CMB2_DIR . 'includes/helper-functions.php';
+			require_once CMB2_DIR . 'addon-fields/select2/cmb-field-select2.php';
 
 			// Now kick off the class autoloader.
 			spl_autoload_register( 'cmb2_autoload_classes' );
@@ -159,6 +161,16 @@ if ( ! class_exists( 'CMB2_Bootstrap_242_Trunk', false ) ) {
 			require_once( cmb2_dir( 'bootstrap.php' ) );
 			cmb2_bootstrap();
 		}
+		
+		/**
+		 * CMB2 Field Type: Select2 asset path
+		 *
+		 * Filter the path to front end assets (JS/CSS).
+		 */
+		public function pw_cmb2_field_select2_asset_path() {
+				return SZ_PLUGIN_URL . 'sz-cmb2/addon-fields/select2';
+		}
+		
 
 		/**
 		 * Registers CMB2 text domain path

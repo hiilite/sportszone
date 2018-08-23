@@ -54,6 +54,22 @@ function sz_activity_action_permalink_router() {
 		}
 
 	// Set redirect to users' activity stream.
+	} elseif ( sz_is_active( 'events' ) && $activity->component == sportszone()->events->id ) {
+
+		// Activity is a user update.
+		if ( ! empty( $activity->user_id ) ) {
+			$redirect = sz_core_get_user_domain( $activity->user_id, $activity->user_nicename, $activity->user_login ) . sz_get_activity_slug() . '/' . $activity->id . '/';
+
+		// Activity is something else.
+		} else {
+
+			// Set redirect to event activity stream.
+			if ( $event = events_get_event( $activity->item_id ) ) {
+				$redirect = sz_get_event_permalink( $event ) . sz_get_activity_slug() . '/' . $activity->id . '/';
+			}
+		}
+
+	// Set redirect to users' activity stream.
 	} elseif ( ! empty( $activity->user_id ) ) {
 		$redirect = sz_core_get_user_domain( $activity->user_id, $activity->user_nicename, $activity->user_login ) . sz_get_activity_slug() . '/' . $activity->id . '/';
 	}

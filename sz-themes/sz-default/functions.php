@@ -132,6 +132,13 @@ function sz_dtheme_setup() {
 			add_action( 'sz_group_header_actions',     'sz_group_new_topic_button',      20 );
 			add_action( 'sz_directory_groups_actions', 'sz_group_join_button' );
 		}
+		
+		// Group buttons
+		if ( sz_is_active( 'events' ) ) {
+			add_action( 'sz_event_header_actions',     'sz_event_join_button',           5 );
+			add_action( 'sz_event_header_actions',     'sz_event_new_topic_button',      20 );
+			add_action( 'sz_directory_events_actions', 'sz_event_join_button' );
+		}
 
 		// Blog button
 		if ( sz_is_active( 'blogs' ) )
@@ -560,6 +567,7 @@ if ( !function_exists( 'sz_dtheme_activity_secondary_avatars' ) ) :
 function sz_dtheme_activity_secondary_avatars( $action, $activity ) {
 	switch ( $activity->component ) {
 		case 'groups' :
+		case 'events' :
 		case 'friends' :
 			// Only insert avatar if one exists
 			if ( $secondary_avatar = sz_get_activity_secondary_avatar() ) {

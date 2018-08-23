@@ -257,7 +257,6 @@ div.sz-cover-image-nav {
 #create-group-form img,
 #group-settings-form img {
 	border: none !important;
-	max-width: none !important;
 }
 
 #sz-webcam-cover-image video {

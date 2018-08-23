@@ -43,7 +43,7 @@ function sz_nouveau_activity_register_scripts( $scripts = array() ) {
  * @since 3.0.0
  */
 function sz_nouveau_activity_enqueue_scripts() {
-	if ( ! sz_is_activity_component() && ! sz_is_group_activity() ) {
+	if ( ! sz_is_activity_component() && ! sz_is_group_activity() && ! sz_is_event_activity() ) {
 		return;
 	}
 
@@ -60,7 +60,7 @@ function sz_nouveau_activity_enqueue_scripts() {
  * @return array The same array with specific strings for the Activity Post form UI if needed.
  */
 function sz_nouveau_activity_localize_scripts( $params = array() ) {
-	if ( ! sz_is_activity_component() && ! sz_is_group_activity() ) {
+	if ( ! sz_is_activity_component() && ! sz_is_group_activity() && ! sz_is_event_activity() ) {
 		return $params;
 	}
 
@@ -147,6 +147,12 @@ function sz_nouveau_activity_localize_scripts( $params = array() ) {
 				'autocomplete_placeholder' => __( 'Start typing the group name...', 'sportszone' ),
 				'priority'                 => 10,
 			);
+		} elseif ( sz_is_active( 'events' ) && sz_has_events( array( 'user_id' => sz_loggedin_user_id(), 'max' => 1 ) ) ) {
+			$activity_objects['event'] = array(
+				'text'                     => __( 'Post in: Event', 'sportszone' ),
+				'autocomplete_placeholder' => __( 'Start typing the event name...', 'sportszone' ),
+				'priority'                 => 10,
+			);
 		}
 
 		/**
@@ -175,7 +181,16 @@ function sz_nouveau_activity_localize_scripts( $params = array() ) {
 				'item_id' => sz_get_current_group_id(),
 			)
 		);
+	} elseif ( sz_is_event() ) {
+		$activity_params = array_merge(
+			$activity_params,
+			array(
+				'object'  => 'event',
+				'item_id' => sz_get_current_event_id(),
+			)
+		);
 	}
+
 
 	$params['activity'] = array(
 		'params'  => $activity_params,
@@ -251,6 +266,18 @@ function sz_nouveau_get_activity_directory_nav_items() {
 				'li_class'  => array( 'dynamic' ),
 				'link'      => sz_loggedin_user_domain() . sz_get_activity_slug() . '/' . sz_get_groups_slug() . '/',
 				'text'      => __( 'My Groups', 'sportszone' ),
+				'count'     => '',
+				'position'  => 25,
+			);
+		}
+		// The events component is active and user has events
+		elseif ( sz_is_active( 'events' ) && sz_get_total_event_count_for_user( sz_loggedin_user_id() ) ) {
+			$nav_items['events'] = array(
+				'component' => 'activity',
+				'slug'      => 'events', // slug is used because SZ_Core_Nav requires it, but it's the scope
+				'li_class'  => array( 'dynamic' ),
+				'link'      => sz_loggedin_user_domain() . sz_get_activity_slug() . '/' . sz_get_events_slug() . '/',
+				'text'      => __( 'My Events', 'sportszone' ),
 				'count'     => '',
 				'position'  => 25,
 			);
@@ -336,7 +363,9 @@ function sz_nouveau_get_activity_filters() {
 	$action = '';
 	if ( 'group' === $filters_data['context'] ) {
 		$action = 'sz_group_activity_filter_options';
-	} elseif ( 'member' === $filters_data['context'] || 'member_groups' === $filters_data['context'] ) {
+	} elseif ( 'event' === $filters_data['context'] ) {
+		$action = 'sz_event_activity_filter_options';
+	} elseif ( 'member' === $filters_data['context'] || 'member_groups' === $filters_data['context'] || 'member_events' === $filters_data['context'] ) {
 		$action = 'sz_member_activity_filter_options';
 	} else {
 		$action = 'sz_activity_filter_options';
@@ -357,6 +386,7 @@ function sz_nouveau_get_activity_filters() {
 function sz_nouveau_activity_secondary_avatars( $action, $activity ) {
 	switch ( $activity->component ) {
 		case 'groups':
+		case 'events':
 		case 'friends':
 			// Only insert avatar if one exists.
 			if ( $secondary_avatar = sz_get_activity_secondary_avatar() ) {
@@ -406,6 +436,13 @@ function sz_nouveau_activity_scope_newest_class( $classes = '' ) {
 					$my_classes[] = 'sz-my-groups';
 				}
 			}
+			
+			if ( 'events' === $component && sz_is_active( $component ) ) {
+				// Is the current user a member of the event the activity is attached to?
+				if ( events_is_user_member( $user_id, sz_get_activity_item_id() ) ) {
+					$my_classes[] = 'sz-my-events';
+				}
+			}
 
 			// Friends can post in groups the user is a member of
 			if ( sz_is_active( 'friends' ) && (int) $user_id !== (int) sz_get_activity_user_id() ) {
@@ -428,7 +465,7 @@ function sz_nouveau_activity_scope_newest_class( $classes = '' ) {
 		 * This class will be used to highlight the newest activities when
 		 * viewing the 'Mentions', 'My Groups' or the 'My Friends' tabs
 		 */
-		} elseif ( 'friends' === $scope || 'groups' === $scope || 'mentions' === $scope ) {
+		} elseif ( 'friends' === $scope || 'groups' === $scope || 'events' === $scope || 'mentions' === $scope ) {
 			$my_classes[] = 'newest_' . $scope . '_activity';
 		}
 

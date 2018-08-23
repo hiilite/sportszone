@@ -3,7 +3,7 @@
 	var group_all_clicked = true;
 
 	var object = 'groups';// wbcom_agt_sz_filter_request
-	jq.cookie(
+	$.cookie(
 		'sz-' + object + '-extras', '', {
 			path: '/'
 		}
@@ -45,7 +45,7 @@
 				'',
 				''
 			);
-			jq.cookie(
+			$.cookie(
 				'sz-' + object + '-extras', '', {
 					path: '/'
 				}
@@ -105,14 +105,14 @@
 			scope = 'all';
 		}
 		/* Set the correct selected nav and filter */
-		jq( '.item-list-tabs li' ).each(
+		$( '.item-list-tabs li' ).each(
 			function() {
 					jq( this ).removeClass( 'selected' );
 			}
 		);
-		jq( '#' + object + '-' + scope + ', #object-nav li.current' ).addClass( 'selected' );
-		jq( '.item-list-tabs li.selected' ).addClass( 'loading' );
-		jq( '.item-list-tabs select option[value="' + filter + '"]' ).prop( 'selected', true );
+		$( '#' + object + '-' + scope + ', #object-nav li.current' ).addClass( 'selected' );
+		$( '.item-list-tabs li.selected' ).addClass( 'loading' );
+		$( '.item-list-tabs select option[value="' + filter + '"]' ).prop( 'selected', true );
 		if ( 'friends' === object || 'group_members' === object ) {
 			object = 'members';
 		}
@@ -135,10 +135,10 @@
 			{
 				/* animate to top if called from bottom pagination */
 				if ( caller === 'pag-bottom' && jq( '#subnav' ).length ) {
-					var top = jq( '#subnav' ).parent();
-					jq( 'html,body' ).animate(
+					var top = $( '#subnav' ).parent();
+					$( 'html,body' ).animate(
 						{scrollTop: top.offset().top}, 'slow', function() {
-							jq( target ).fadeOut(
+							$( target ).fadeOut(
 								100, function() {
 									jq( this ).html( response );
 
@@ -154,10 +154,10 @@
 					);
 
 				} else {
-					jq( target ).fadeOut(
+					$( target ).fadeOut(
 						100, function() {
-							jq( this ).html( response );
-							jq( this ).fadeIn(
+							$( this ).html( response );
+							$( this ).fadeIn(
 								100, function(){
 									/* KLEO added */
 									jq( "body" ).trigger( 'gridloaded' );
@@ -167,7 +167,7 @@
 					);
 				}
 
-				jq( '.item-list-tabs li.selected' ).removeClass( 'loading' );
+				$( '.item-list-tabs li.selected' ).removeClass( 'loading' );
 
 			}
 		);

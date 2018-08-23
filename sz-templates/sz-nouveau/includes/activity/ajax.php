@@ -438,6 +438,17 @@ function sz_nouveau_ajax_get_activity_objects() {
 		);
 
 		wp_send_json_success( array_map( 'sz_nouveau_prepare_group_for_js', $groups['groups'] ) );
+	} elseif ( 'event' === $_POST['type'] ) {
+		$events = events_get_events(
+			array(
+				'user_id'      => sz_loggedin_user_id(),
+				'search_terms' => $_POST['search'],
+				'show_hidden'  => true,
+				'per_page'     => 2,
+			)
+		);
+
+		wp_send_json_success( array_map( 'sz_nouveau_prepare_event_for_js', $events['events'] ) );
 	} else {
 
 		/**
@@ -499,6 +510,10 @@ function sz_nouveau_ajax_post_update() {
 		$item_id = sz_get_current_group_id();
 		$object  = 'group';
 		$status  = groups_get_current_group()->status;
+	} elseif ( sz_is_event() ) {
+		$item_id = sz_get_current_event_id();
+		$object  = 'event';
+		$status  = events_get_current_event()->status;
 	}
 
 	if ( 'user' === $object && sz_is_active( 'activity' ) ) {
@@ -520,6 +535,28 @@ function sz_nouveau_ajax_post_update() {
 				} else {
 					$group  = groups_get_group( array( 'group_id' => $group_id ) );
 					$status = $group->status;
+				}
+
+				$is_private = 'public' !== $status;
+			}
+		}
+
+	} elseif ( 'event' === $object ) {
+		if ( $item_id && sz_is_active( 'events' ) ) {
+			// This function is setting the current event!
+			$activity_id = events_post_update(
+				array(
+					'content'  => $_POST['content'],
+					'event_id' => $item_id,
+				)
+			);
+
+			if ( empty( $status ) ) {
+				if ( ! empty( $sz->events->current_event->status ) ) {
+					$status = $sz->events->current_event->status;
+				} else {
+					$event  = events_get_event( array( 'event_id' => $event_id ) );
+					$status = $event->status;
 				}
 
 				$is_private = 'public' !== $status;

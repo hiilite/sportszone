@@ -17,7 +17,7 @@
 function sz_activity_action_sitewide_feed() {
 	$sz = sportszone();
 
-	if ( ! sz_is_activity_component() || ! sz_is_current_action( 'feed' ) || sz_is_user() || ! empty( $sz->groups->current_group ) )
+	if ( ! sz_is_activity_component() || ! sz_is_current_action( 'feed' ) || sz_is_user() || ! empty( $sz->groups->current_group ) || ! empty( $sz->events->current_event ) )
 		return false;
 
 	// Setup the feed.
@@ -119,6 +119,40 @@ function sz_activity_action_my_groups_feed() {
 	) );
 }
 add_action( 'sz_actions', 'sz_activity_action_my_groups_feed' );
+
+/**
+ * Load the activity feed for a user's events.
+ *
+ * @since 1.2.0
+ *
+ * @return bool False on failure.
+ */
+function sz_activity_action_my_events_feed() {
+	if ( ! sz_is_active( 'events' ) || ! sz_is_user_activity() || ! sz_is_current_action( sz_get_events_slug() ) || ! sz_is_action_variable( 'feed', 0 ) ) {
+		return false;
+	}
+
+	// Get displayed user's event IDs.
+	$events    = events_get_user_events();
+	$event_ids = implode( ',', $events['events'] );
+
+	// Setup the feed.
+	sportszone()->activity->feed = new SZ_Activity_Feed( array(
+		'id'            => 'myevents',
+
+		/* translators: Member events activity RSS title - "[Site Name] | [User Display Name] | Events Activity" */
+		'title'         => sprintf( __( '%1$s | %2$s | Event Activity', 'sportszone' ), sz_get_site_name(), sz_get_displayed_user_fullname() ),
+
+		'link'          => trailingslashit( sz_displayed_user_domain() . sz_get_activity_slug() . '/' . sz_get_events_slug() ),
+		'description'   => sprintf( __( "Public event activity feed of which %s is a member.", 'sportszone' ), sz_get_displayed_user_fullname() ),
+		'activity_args' => array(
+			'object'           => sportszone()->events->id,
+			'primary_id'       => $event_ids,
+			'display_comments' => 'threaded'
+		)
+	) );
+}
+add_action( 'sz_actions', 'sz_activity_action_my_events_feed' );
 
 /**
  * Load a user's @mentions feed.

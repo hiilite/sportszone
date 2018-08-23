@@ -19,7 +19,7 @@
 		
 			<?php sz_get_template_part( 'members/single/parts/item-nav' ); ?>
 
-		<div id="item-body" class="item-body">
+		<div id="item-body" class="item-body members-single-home">
 
 			<?php sz_nouveau_member_template_part(); ?>
 

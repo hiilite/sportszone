@@ -27,7 +27,7 @@ sz_nouveau_activity_hook( 'before', 'entry' ); ?>
 
 		<div class="activity-header">
 
-			<?php sz_activity_action(); ?>
+			<?php sz_activity_action(); ?> 
 
 		</div>
 

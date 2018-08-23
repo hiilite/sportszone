@@ -125,7 +125,7 @@ class SZ_Activity_Component extends SZ_Component {
 			}
 
 			// Screens - User secondary nav.
-			if ( sz_is_user() && in_array( sz_current_action(), array( 'friends', 'groups', 'favorites', 'mentions' ), true ) ) {
+			if ( sz_is_user() && in_array( sz_current_action(), array( 'friends', 'groups', 'events', 'favorites', 'mentions' ), true ) ) {
 				require $this->path . 'sz-activity/screens/' . sz_current_action() . '.php';
 			}
 
@@ -291,6 +291,19 @@ class SZ_Activity_Component extends SZ_Component {
 			);
 		}
 
+
+		if ( sz_is_active( 'events' ) ) {
+			$sub_nav[] = array(
+				'name'            => _x( 'Events', 'Profile activity screen sub nav', 'sportszone' ),
+				'slug'            => sz_get_events_slug(),
+				'parent_url'      => $activity_link,
+				'parent_slug'     => $slug,
+				'screen_function' => 'sz_activity_screen_events',
+				'position'        => 50,
+				'item_css_id'     => 'activity-events'
+			);
+		}
+
 		parent::setup_nav( $main_nav, $sub_nav );
 	}
 
@@ -384,6 +397,17 @@ class SZ_Activity_Component extends SZ_Component {
 					'id'       => 'my-account-' . $this->id . '-groups',
 					'title'    => _x( 'Groups', 'My Account Activity sub nav', 'sportszone' ),
 					'href'     => trailingslashit( $activity_link . sz_get_groups_slug() ),
+					'position' => 50
+				);
+			}
+			
+			// Events?
+			if ( sz_is_active( 'events' ) ) {
+				$wp_admin_nav[] = array(
+					'parent'   => 'my-account-' . $this->id,
+					'id'       => 'my-account-' . $this->id . '-events',
+					'title'    => _x( 'Events', 'My Account Activity sub nav', 'sportszone' ),
+					'href'     => trailingslashit( $activity_link . sz_get_events_slug() ),
 					'position' => 50
 				);
 			}

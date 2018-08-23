@@ -3,7 +3,7 @@
 	var event_all_clicked = true;
 
 	var object = 'events';// wbcom_agt_sz_filter_request
-	jq.cookie(
+	$.cookie(
 		'sz-' + object + '-extras', '', {
 			path: '/'
 		}
@@ -17,8 +17,8 @@
 			}
 			sz_filter_request(
 				object,
-				jq.cookie( 'sz-' + object + '-filter' ),
-				jq.cookie( 'sz-' + object + '-scope' ),
+				$.cookie( 'sz-' + object + '-filter' ),
+				$.cookie( 'sz-' + object + '-scope' ),
 				'div.' + object,
 				$( '#' + object + '_search' ).val(),// ( '#szgt-events-search-text' ).val(),
 				1,
@@ -36,8 +36,8 @@
 			var object = 'events';// wbcom_agt_sz_filter_request.
 			sz_filter_request(
 				object,
-				jq.cookie( 'sz-' + object + '-filter' ),
-				jq.cookie( 'sz-' + object + '-scope' ),
+				$.cookie( 'sz-' + object + '-filter' ),
+				$.cookie( 'sz-' + object + '-scope' ),
 				'div.' + object,
 				$( '#szgt-events-search-text' ).val(),
 				1,
@@ -45,7 +45,7 @@
 				'',
 				''
 			);
-			jq.cookie(
+			$.cookie(
 				'sz-' + object + '-extras', '', {
 					path: '/'
 				}
@@ -119,7 +119,7 @@
 		if ( sz_ajax_request ) {
 			sz_ajax_request.abort();
 		}
-		sz_ajax_request = jq.post(
+		sz_ajax_request = $.post(
 			ajaxurl, {
 				action: object + '_filter',
 					// 'cookie': sz_get_cookies(),

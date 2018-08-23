@@ -226,7 +226,7 @@ function hgsz_child_group_section() {
 				if ( empty( $label ) ) {
 					$label = _x( 'Child groups %s', 'Label for the control on hierarchical group directories that shows or hides the child groups. %s will be replaced with the number of child groups.', 'hierarchical-groups-for-sz' );
 				}
-				$label = sprintf( esc_html( $label ), '<span class="count">' . $number_children . '</span>' );
+				$label = sprintf( esc_html( $label ), '<span class="count badge badge-primary badge-pill">' . $number_children . '</span>' );
 
 				/**
 				 * Filters the "Child groups" toggle text for a group's entry on the

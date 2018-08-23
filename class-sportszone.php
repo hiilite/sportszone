@@ -25,7 +25,7 @@ class SportsZone {
 	 * @see SportsZone::setup_globals()
 	 * @var array
 	 */
-	private $data;
+	public $data;
 
 	/** Not Magic *************************************************************/
 
@@ -517,6 +517,11 @@ class SportsZone {
 		if ( defined( 'WP_CLI' ) && file_exists( $this->plugin_dir . 'cli/wp-cli-bp.php' ) ) {
 			require( $this->plugin_dir . 'cli/wp-cli-bp.php' );
 		}
+		
+		// Custom Addons
+		require_once( $this->plugin_dir . 'sz-cmb2/sz-custom-fields.php' );
+		require_once( $this->plugin_dir . 'sz-activity/hashbuddy/loader.php' );
+		require_once( $this->plugin_dir . 'sz-xprofile/xprofile-custom-field-types/sz-xprofile-custom-field-types.php' );
 	}
 
 	/**

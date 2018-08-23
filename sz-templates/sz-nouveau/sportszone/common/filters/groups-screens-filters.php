@@ -12,7 +12,7 @@
 				<span ><?php sz_nouveau_filter_label(); ?></span>
 			</label>
 			<div class="select-wrap">
-				<select id="<?php sz_nouveau_filter_id(); ?>" data-sz-filter="<?php sz_nouveau_filter_component(); ?>">
+				<select id="<?php sz_nouveau_filter_id(); ?>" data-sz-filter="<?php sz_nouveau_filter_component(); ?>"  class="form-control">
 
 					<?php sz_nouveau_filter_options(); ?>
 

@@ -785,7 +785,7 @@ class SZ_Events_Component extends SZ_Component {
 				$title = sprintf(
 					/* translators: %s: Event invitation count for the current user */
 					_x( 'Events %s', 'My Account Events nav', 'sportszone' ),
-					'<span class="count">' . sz_core_number_format( $count ) . '</span>'
+					'<span class="count badge badge-primary badge-pill">' . sz_core_number_format( $count ) . '</span>'
 				);
 
 				$pending = sprintf(

@@ -189,6 +189,10 @@ function sz_nouveau_members_loop_buttons( $args = array() ) {
 		$args['type'] = 'group_member';
 		$action       = 'sz_group_members_list_item_action';
 
+	} elseif ( sz_is_active( 'events' ) && sz_is_event_members() ) {
+		$args['type'] = 'event_member';
+		$action       = 'sz_event_members_list_item_action';
+
 	} elseif ( sz_is_active( 'friends' ) && sz_is_user_friend_requests() ) {
 		$args['type'] = 'friendship_request';
 		$action       = 'sz_friend_requests_item_action';
@@ -234,6 +238,8 @@ function sz_nouveau_members_loop_buttons( $args = array() ) {
 			$user_id = sz_get_member_user_id();
 		} elseif ( 'group_member' === $type ) {
 			$user_id = sz_get_group_member_id();
+		} elseif ( 'event_member' === $type ) {
+			$user_id = sz_get_event_member_id();
 		}
 
 		if ( ! $user_id ) {
@@ -622,6 +628,8 @@ function sz_nouveau_member_template_part() {
 			$template = 'friends';
 		} elseif ( sz_is_user_groups() ) {
 			$template = 'groups';
+		} elseif ( sz_is_user_events() ) {
+			$template = 'events';
 		} elseif ( sz_is_user_messages() ) {
 			$template = 'messages';
 		} elseif ( sz_is_user_profile() ) {

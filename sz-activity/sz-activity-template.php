@@ -217,6 +217,10 @@ function sz_has_activities( $args = '' ) {
 		$object      = $sz->groups->id;
 		$primary_id  = sz_get_current_group_id();
 		$show_hidden = (bool) ( groups_is_user_member( sz_loggedin_user_id(), $primary_id ) || sz_current_user_can( 'sz_moderate' ) );
+	} elseif ( sz_is_event() ) {
+		$object      = $sz->events->id;
+		$primary_id  = sz_get_current_event_id();
+		$show_hidden = (bool) ( events_is_user_member( sz_loggedin_user_id(), $primary_id ) || sz_current_user_can( 'sz_moderate' ) );
 	} else {
 		$object      = false;
 		$primary_id  = false;
@@ -1187,6 +1191,32 @@ function sz_activity_secondary_avatar( $args = '' ) {
 				}
 
 				break;
+			case 'events' :
+				if ( sz_disable_event_avatar_uploads() ) {
+					return false;
+				}
+
+				$object  = 'event';
+				$item_id = $activities_template->activity->item_id;
+				$link    = '';
+				$name    = '';
+
+				// Only if groups is active.
+				if ( sz_is_active( 'events' ) ) {
+					$event = events_get_event( $item_id );
+					$link  = sz_get_event_permalink( $event );
+					$name  = $event->name;
+				}
+
+				if ( empty( $alt ) ) {
+					$alt = __( 'Event logo', 'sportszone' );
+
+					if ( ! empty( $name ) ) {
+						$alt = sprintf( __( 'Event logo of %s', 'sportszone' ), $name );
+					}
+				}
+
+				break;
 			case 'blogs' :
 				$object  = 'blog';
 				$item_id = $activities_template->activity->item_id;
@@ -1321,7 +1351,8 @@ function sz_activity_action( $args = array() ) {
 		$r = wp_parse_args( $args, array(
 			'no_timestamp' => false,
 		) );
-
+		
+		
 		/**
 		 * Filters the activity action before the action is inserted as meta.
 		 *
@@ -1329,12 +1360,15 @@ function sz_activity_action( $args = array() ) {
 		 *
 		 * @param array $value Array containing the current action, the current activity, and the $args array passed into the function.
 		 */
-		$action = apply_filters_ref_array( 'sz_get_activity_action_pre_meta', array(
+		 $action_args = array(
 			$activities_template->activity->action,
-			&$activities_template->activity,
+			$activities_template->activity,
 			$r
-		) );
-
+		);
+		//var_dump($action_args);
+		//$action = '';
+		$action = apply_filters_ref_array( 'sz_get_activity_action_pre_meta',  $action_args);
+		
 		// Prepend the activity action meta (link, time since, etc...).
 		if ( ! empty( $action ) && empty( $r['no_timestamp'] ) ) {
 			$action = sz_insert_activity_meta( $action );
@@ -2586,6 +2620,8 @@ function sz_activity_css_class() {
 			'new_blog',
 			'joined_group',
 			'created_group',
+			'joined_event',
+			'created_event',
 			'new_member'
 		) );
 
@@ -3568,7 +3604,11 @@ function sz_activities_member_rss_link() { echo sz_get_member_activity_feed_link
 		// Group feed link.
 		} elseif ( sz_is_active( 'groups'  ) && sz_is_current_action( sz_get_groups_slug()  ) ) {
 			$link = sz_displayed_user_domain() . sz_get_activity_slug() . '/' . sz_get_groups_slug() . '/feed/';
-
+		
+		// Event feed link.
+		} elseif ( sz_is_active( 'events'  ) && sz_is_current_action( sz_get_events_slug()  ) ) {
+			$link = sz_displayed_user_domain() . sz_get_activity_slug() . '/' . sz_get_events_slug() . '/feed/';
+			
 		// Favorites activity feed link.
 		} elseif ( 'favorites' === sz_current_action() ) {
 			$link = sz_displayed_user_domain() . sz_get_activity_slug() . '/favorites/feed/';

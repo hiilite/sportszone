@@ -31,7 +31,7 @@ if ( sz_has_events() ) :
 
 				<?php sz_get_template_part( 'events/single/parts/item-nav' ); ?>
 
-			<div id="item-body" class="item-body">
+			<div id="item-body" class="item-body event-single-home">
 
 				<?php sz_nouveau_event_template_part(); ?>
 

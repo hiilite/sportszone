@@ -70,6 +70,12 @@ function sz_activity_action_post_update() {
 		if ( (int) $item_id ) {
 			$activity_id = groups_post_update( array( 'content' => $content, 'group_id' => $item_id ) );
 		}
+	
+	// Post to events object.
+	} elseif ( 'events' == $object && sz_is_active( 'events' ) ) {
+		if ( (int) $item_id ) {
+			$activity_id = events_post_update( array( 'content' => $content, 'event_id' => $item_id ) );
+		}
 
 	} else {
 

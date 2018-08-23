@@ -237,7 +237,7 @@ class SZ_Friends_Component extends SZ_Component {
 				$title = sprintf(
 					/* translators: %s: Pending friend request count for the current user */
 					_x( 'Friends %s', 'My Account Friends menu', 'sportszone' ),
-					'<span class="count">' . sz_core_number_format( $count ) . '</span>'
+					'<span class="count badge badge-primary badge-pill">' . sz_core_number_format( $count ) . '</span>'
 				);
 				$pending = sprintf(
 					/* translators: %s: Pending friend request count for the current user */

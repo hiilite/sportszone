@@ -14,14 +14,13 @@ class CMB2_Type_Text_Datetime_Timestamp extends CMB2_Type_Picker_Base {
 
 	public function render( $args = array() ) {
 		$field = $this->field;
-
 		$args = wp_parse_args( $this->args, array(
 			'value'      => $field->escaped_value(),
 			'desc'       => $this->_desc(),
 			'datepicker' => array(),
 			'timepicker' => array(),
 		) );
-
+		
 		if ( empty( $args['value'] ) ) {
 			$args['value'] = $field->escaped_value();
 			// This will be used if there is a select_timezone set for this field
@@ -30,9 +29,12 @@ class CMB2_Type_Text_Datetime_Timestamp extends CMB2_Type_Picker_Base {
 				$args['value'] -= $tz_offset;
 			}
 		}
+		if(is_array($args['value'])){
+			$args['value'] = implode(' ', $args['value']);
+		}
 
 		$has_good_value = ! empty( $args['value'] ) && ! is_array( $args['value'] );
-
+		
 		$date_input = parent::render( $this->date_args( $args, $has_good_value ) );
 		$time_input = parent::render( $this->time_args( $args, $has_good_value ) );
 

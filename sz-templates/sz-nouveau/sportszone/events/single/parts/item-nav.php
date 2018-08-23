@@ -21,7 +21,7 @@
 						<?php sz_nouveau_nav_link_text(); ?>
 
 						<?php if ( sz_nouveau_nav_has_count() ) : ?>
-							<span class="count"><?php sz_nouveau_nav_count(); ?></span>
+							<span class="count badge badge-primary badge-pill"><?php sz_nouveau_nav_count(); ?></span>
 						<?php endif; ?>
 					</a>
 				</li>

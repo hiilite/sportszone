@@ -226,7 +226,7 @@ function hgsz_child_event_section() {
 				if ( empty( $label ) ) {
 					$label = _x( 'Child events %s', 'Label for the control on hierarchical event directories that shows or hides the child events. %s will be replaced with the number of child events.', 'hierarchical-events-for-sz' );
 				}
-				$label = sprintf( esc_html( $label ), '<span class="count">' . $number_children . '</span>' );
+				$label = sprintf( esc_html( $label ), '<span class="count badge badge-primary badge-pill">' . $number_children . '</span>' );
 
 				/**
 				 * Filters the "Child events" toggle text for a event's entry on the

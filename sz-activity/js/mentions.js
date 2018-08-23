@@ -153,7 +153,7 @@ window.bp = window.bp || {};
 		 * Default options for our @mentions; see https://github.com/ichord/At.js/.
 		 */
 		mentionsDefaults = {
-			callbacks: {
+			callbacks: { 
 				/**
 				 * If there are no matches for the query in this.data, then query SportsZone.
 				 *
@@ -180,6 +180,8 @@ window.bp = window.bp || {};
 
 					if ( $.isNumeric( this.$inputor.data( 'suggestions-group-id' ) ) ) {
 						params['group-id'] = parseInt( this.$inputor.data( 'suggestions-group-id' ), 10 );
+					} else if ( $.isNumeric( this.$inputor.data( 'suggestions-event-id' ) ) ) {
+						params['event-id'] = parseInt( this.$inputor.data( 'suggestions-event-id' ), 10 );
 					}
 
 					self.xhr = $.getJSON( ajaxurl, params )

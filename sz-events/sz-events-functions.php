@@ -2747,7 +2747,9 @@ function sz_additional_fields_select_teams_event_extension() {
 			$event_club 		= events_get_eventmeta( $event_id, 'event_club' );
 			
 			// TODO: Change to display club name
-			if($event_club) echo "<h5>$event_club<h5>";
+			if($event_club) echo "<h5>$event_club</h5>";
+			
+			echo 'Add Event Teams';
 			
 		}
 
@@ -2917,10 +2919,13 @@ function sz_additional_fields_add_matches_event_extension() {
 
 		function display($event_id = NULL) {
 			$event_id = sz_get_event_id();
-			$event_matches 		= events_get_eventmeta( $event_id, 'event_matches' );
+			$event_matches 		= events_get_eventmeta( $event_id, 'sz_matches_group' );
 			
 			// TODO: Change to display club name
+			
+			echo '<pre>';
 			if($event_matches) print_r($event_matches);
+			echo 'Add Matches Here';
 			
 		}
 
@@ -2958,7 +2963,6 @@ function sz_additional_fields_add_matches_event_extension() {
 		}
 
 		function settings_screen_save( $event_id = NULL ) {
-			//print_r($_POST);
 			if ( isset( $_POST['sz_matches_group'] ) ) {
 				events_update_eventmeta( $event_id, 'sz_matches_group', $_POST['sz_matches_group'] );
 			}
@@ -2978,9 +2982,10 @@ add_action( 'cmb2_init', 'cmb2_events_matches_metaboxes' );
  * Define the metabox and field configurations.
  */
 function cmb2_events_matches_metaboxes() {
+	global $sz;
+	
 	// Start with an underscore to hide fields from custom fields list
 	$prefix = 'sz_';
-
 	/**
 	 * Initiate the metabox
 	 */
@@ -2997,27 +3002,38 @@ function cmb2_events_matches_metaboxes() {
 		'id'          => 'sz_matches_group',
 		'type'        => 'group',
 		'description' => __( 'Add your matches', 'cmb2' ),
-		// 'repeatable'  => false, // use false if you want non-repeatable group
 		'options'     => array(
 			'group_title'   => __( 'Match {#}', 'cmb2' ), // since version 1.1.4, {#} gets replaced by row number
 			'add_button'    => __( 'Add Another MAtch', 'cmb2' ),
 			'remove_button' => __( 'Remove Match', 'cmb2' ),
 			'sortable'      => true, // beta
-			// 'closed'     => true, // true to have the groups closed by default
+			'closed'     	=> true, // true to have the groups closed by default
 		),
 	) );
 	
-	// Id's for group's fields only need to be unique for the group. Prefix is not needed.
+	$cmb->add_group_field( $group_field_id, array(
+		'name' => 'Match Type',
+		'id'   => 'match_type',
+		'type' => 'radio_inline',
+		'options' => array(
+			'friendly' 		=> __( 'Friendly', 'cmb2' ),
+			'round-robin' 	=> __( 'Round Robin', 'cmb2' ),
+			'semi-final'    => __( 'Semi-Final', 'cmb2' ),
+			'final'    		=> __( 'Final', 'cmb2' ),
+			'league-play'   => __( 'League Play', 'cmb2' ),
+		),
+	) );
+	
 	$cmb->add_group_field( $group_field_id, array(
 		'name' => 'Venue',
 		'id'   => 'match_venue',
 		'type' => 'text',
 	) );
 	
-	$cmb->add_group_field( $group_field_id, array(
+	$cmb->add_group_field( $group_field_id, array( 
 		'name' => 'Date/Time',
 		'id'   => 'match_date',
-		'type' => 'text_datetime_timestamp_timezone',
+		'type' => 'text_datetime_timestamp',
 	) );
 	
 	$cmb->add_group_field( $group_field_id, array(
@@ -3025,24 +3041,48 @@ function cmb2_events_matches_metaboxes() {
 		'id'   => 'match_host',
 		'type' => 'text',
 	) );
+	
 	$cmb->add_group_field( $group_field_id, array(
 		'name' => 'Sponsor',
 		'id'   => 'match_sponsor',
 		'type' => 'text',
 	) );
+	
 	$cmb->add_group_field( $group_field_id, array(
 		'name' => 'Referee',
 		'id'   => 'match_referee',
-		'type' => 'text',
+		'type' => 'pw_select',
+		'options' => array(
+			'flour'  => 'Flour',
+			'salt'   => 'Salt',
+			'eggs'   => 'Eggs',
+			'milk'   => 'Milk',
+			'butter' => 'Butter',
+		),
+		'attributes' => array(
+			'tags' => true,
+		),
 	) );
+	
+	// If tour type, set the default of the first team to the main team
+	$event_id = 0;
+	if(isset($sz->events->current_event->id)) {
+		$event_id = $sz->events->current_event->id;
+	}
+	$default_team = ( sz_events_get_event_type($event_id) == 'tour' ) ? (string) events_get_eventmeta( $event_id, 'event_main_team' ) : 0;
 	$cmb->add_group_field( $group_field_id, array(
 		'name' => 'Team 1',
 		'id'   => 'match_team1',
-		'type' => 'text',
+		'type' => 'select_team',
+		'default'	=> $default_team
 	) );
+
+		
+	
 	$cmb->add_group_field( $group_field_id, array(
 		'name' => 'Team 2',
 		'id'   => 'match_team2',
-		'type' => 'text',
+		'type' => 'select_team',
+		
 	) );
 }
