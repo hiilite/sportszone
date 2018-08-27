@@ -2912,6 +2912,94 @@ function sz_get_email_post_type_supports() {
 }
 
 
+/**
+ * Output the name of the match post type.
+ *
+ * @since 3.1.0
+ */
+function sz_match_post_type() {
+	echo sz_get_match_post_type();
+}
+	/**
+	 * Returns the name of the match post type.
+	 *
+	 * @since 3.1.0
+	 *
+	 * @return string The name of the match post type.
+	 */
+	function sz_get_match_post_type() {
+
+		/**
+		 * Filters the name of the match post type.
+		 *
+		 * @since 3.1.0
+		 *
+		 * @param string $value Match post type name.
+		 */
+		return apply_filters( 'sz_get_match_post_type', sportszone()->match_post_type );
+	}
+
+/**
+ * Return labels used by the match post type.
+ *
+ * @since 3.1.0
+ *
+ * @return array
+ */
+function sz_get_match_post_type_labels() {
+
+	/**
+	 * Filters match post type labels.
+	 *
+	 * @since 3.1.0
+	 *
+	 * @param array $value Associative array (name => label).
+	 */
+	return apply_filters( 'sz_get_match_post_type_labels', array(
+		'add_new'               => _x( 'Add New', 'match post type label', 'sportszone' ),
+		'add_new_item'          => _x( 'Create a New Match', 'match post type label', 'sportszone' ),
+		'all_items'             => _x( 'All Matches', 'match post type label', 'sportszone' ),
+		'edit_item'             => _x( 'Edit Match', 'match post type label', 'sportszone' ),
+		'filter_items_list'     => _x( 'Filter match list', 'match post type label', 'sportszone' ),
+		'items_list'            => _x( 'Match list', 'match post type label', 'sportszone' ),
+		'items_list_navigation' => _x( 'Match list navigation', 'match post type label', 'sportszone' ),
+		'menu_name'             => _x( 'Matches', 'match post type name', 'sportszone' ),
+		'name'                  => _x( 'SportsZone Matches', 'match post type label', 'sportszone' ),
+		'new_item'              => _x( 'New Match', 'match post type label', 'sportszone' ),
+		'not_found'             => _x( 'No matchs found', 'match post type label', 'sportszone' ),
+		'not_found_in_trash'    => _x( 'No matchs found in Trash', 'match post type label', 'sportszone' ),
+		'search_items'          => _x( 'Search Matches', 'match post type label', 'sportszone' ),
+		'singular_name'         => _x( 'Match', 'match post type singular name', 'sportszone' ),
+		'uploaded_to_this_item' => _x( 'Uploaded to this match', 'match post type label', 'sportszone' ),
+		'view_item'             => _x( 'View Match', 'match post type label', 'sportszone' ),
+	) );
+}
+
+/**
+ * Return array of features that the match post type supports.
+ *
+ * @since 2.5.0
+ *
+ * @return array
+ */
+function sz_get_match_post_type_supports() {
+
+	/**
+	 * Filters the features that the match post type supports.
+	 *
+	 * @since 2.5.0
+	 *
+	 * @param array $value Supported features.
+	 */
+	return apply_filters( 'sz_get_match_post_type_supports', array(
+		'custom-fields',
+		'editor',
+		'excerpt',
+		'revisions',
+		'title',
+	) );
+}
+
 /** Taxonomies *****************************************************************/
 
 /**
@@ -3858,4 +3946,1387 @@ function sz_get_allowedtags() {
  */
 function sz_strip_script_and_style_tags( $string ) {
 	return preg_replace( '@<(script|style)[^>]*?>.*?</\\1>@si', '', $string );
+}
+
+
+
+if ( !function_exists( 'sz_taxonomy_field' ) ) {
+	function sz_taxonomy_field( $taxonomy = 'category', $post = null, $multiple = false, $trigger = false, $placeholder = null ) {
+		$obj = get_taxonomy( $taxonomy );
+		if ( $obj ) {
+			$post_type = get_post_type( $post );
+			?>
+			<div class="<?php echo $post_type; ?>-<?php echo $taxonomy; ?>-field">
+				<p><strong><?php echo $obj->labels->singular_name; ?></strong></p>
+				<p>
+					<?php
+					$terms = get_the_terms( $post->ID, $taxonomy );
+					$term_ids = array();
+					if ( $terms ):
+						foreach ( $terms as $term ):
+							$term_ids[] = $term->term_id;
+						endforeach;
+					endif;
+
+					// Set auto option
+					$auto = false;
+					if ( in_array( $post_type, sz_secondary_post_types() ) ) {
+						switch ( $taxonomy ) {
+							case 'sz_league':
+								$auto = __( 'Main League', 'sportszone' );
+								if ( get_post_meta( $post->ID, 'sz_main_league', true ) ) $term_ids[] = 'auto';
+								break;
+							case 'sz_season':
+								$auto = __( 'Current Season', 'sportszone' );
+								if ( get_post_meta( $post->ID, 'sz_current_season', true ) ) $term_ids[] = 'auto';
+								break;
+						}
+					}
+
+					$args = array(
+						'show_option_auto' => $auto,
+						'taxonomy' => $taxonomy,
+						'name' => 'tax_input[' . $taxonomy . '][]',
+						'selected' => $term_ids,
+						'values' => 'term_id',
+						'class' => 'sp-has-dummy widefat' . ( $trigger ? ' sz-ajax-trigger' : '' ),
+						'chosen' => true,
+						'placeholder' => $placeholder ? $placeholder : __( 'All', 'sportszone' ),
+					);
+					if ( $multiple ) {
+						$args['property'] = 'multiple';
+					}
+					if ( ! sz_dropdown_taxonomies( $args ) ):
+						sz_taxonomy_adder( $taxonomy, $post_type, $obj->labels->add_new_item );
+					endif;
+					?>
+				</p>
+			</div>
+			<?php
+		}
+	}
+}
+/**
+ * sz_post_types - Returns array of SP post types
+ *
+ * @access public
+ * @return array
+ */
+if ( ! function_exists( 'sz_post_types' ) ) {
+	function sz_post_types() {
+		return apply_filters( 'sportszone_post_types', array( 'sz_match',  'sz_table' ) );
+	}
+}
+
+/**
+ * sz_primary_post_types - Returns array of SP primary post types
+ *
+ * @access public
+ * @return array
+ */
+if ( ! function_exists( 'sz_primary_post_types' ) ) {
+	function sz_primary_post_types() {
+		return apply_filters( 'sportszone_primary_post_types',  array( 'sz_match' ) );
+	}
+}
+/**
+ * sz_secondary_post_types - Returns array of SZ secondary post types
+ *
+ * @access public
+ * @return array
+ */
+if ( ! function_exists( 'sz_secondary_post_types' ) ) {
+	function sz_secondary_post_types() {
+		return apply_filters( 'sportszone_secondary_post_types', array_diff( sz_post_types(), sz_primary_post_types() ) );
+	}
+}
+
+if ( !function_exists( 'sz_dropdown_taxonomies' ) ) {
+	function sz_dropdown_taxonomies( $args = array() ) {
+		$defaults = array(
+			'show_option_blank' => false,
+			'show_option_all' => false,
+			'show_option_none' => false,
+			'show_option_auto' => false,
+			'taxonomy' => null,
+			'name' => null,
+			'id' => null,
+			'selected' => null,
+			'hide_empty' => false,
+			'values' => 'slug',
+			'class' => null,
+			'property' => null,
+			'placeholder' => null,
+			'chosen' => false,
+			'parent' => 0,
+			'include_children' => true,
+		);
+		$args = array_merge( $defaults, $args ); 
+		if ( ! $args['taxonomy'] ) return false;
+
+		$name = ( $args['name'] ) ? $args['name'] : $args['taxonomy'];
+		$id = ( $args['id'] ) ? $args['id'] : $name;
+
+		unset( $args['name'] );
+		unset( $args['id'] );
+
+		$class = $args['class'];
+		unset( $args['class'] );
+
+		$property = $args['property'];
+		unset( $args['property'] );
+
+		$placeholder = $args['placeholder'];
+		unset( $args['placeholder'] );
+
+		$selected = $args['selected'];
+		unset( $args['selected'] );
+
+		$chosen = $args['chosen'];
+		unset( $args['chosen'] );
+		
+		$terms = get_terms( $args['taxonomy'], $args );
+
+		printf( '<input type="hidden" name="tax_input[%s][]" value="0">', $args['taxonomy'] );
+
+		if ( $terms ):
+			printf( '<select name="%s" class="postform %s" %s>', $name, $class . ( $chosen ? ' chosen-select' . ( is_rtl() ? ' chosen-rtl' : '' ) : '' ), ( $placeholder != null ? 'data-placeholder="' . $placeholder . '" ' : '' ) . $property );
+
+			if ( strpos( $property, 'multiple' ) === false ):
+				if ( $args['show_option_blank'] ):
+					echo '<option value="">' . ( is_bool( $args['show_option_blank'] ) ? '' : $args['show_option_blank'] ) . '</option>';
+				endif;
+				if ( $args['show_option_all'] ):
+					printf( '<option value="0" ' . selected( '0', $selected, false ) . '>%s</option>', $args['show_option_all'] );
+				endif;
+				if ( $args['show_option_none'] ):
+					printf( '<option value="-1" ' . selected( '-1', $selected, false ) . '>%s</option>', $args['show_option_none'] );
+				endif;
+			endif;
+
+			if ( $args['show_option_auto'] ):
+				if ( strpos( $property, 'multiple' ) !== false ):
+					$selected_prop = in_array( 'auto', $selected ) ? 'selected' : '';
+				else:
+					$selected_prop = selected( 'auto', $selected, false );
+				endif;
+				printf( '<option value="auto" ' . $selected_prop . '>%s</option>', $args['show_option_auto'] . ' ' . __( '(Auto)', 'sportszone' ) );
+			endif;
+
+			foreach ( $terms as $term ):
+
+				if ( $args['values'] == 'term_id' ):
+					$this_value = $term->term_id;
+				else:
+					$this_value = $term->slug;
+				endif;
+
+				if ( strpos( $property, 'multiple' ) !== false ):
+					$selected_prop = in_array( $this_value, $selected ) ? 'selected' : '';
+				else:
+					$selected_prop = selected( $this_value, $selected, false );
+				endif;
+
+				printf( '<option value="%s" %s>%s</option>', $this_value, $selected_prop, $term->name );
+
+				if ( $args['include_children'] ):
+					$term_children = get_term_children( $term->term_id, $args['taxonomy'] );
+
+					foreach ( $term_children as $term_child_id ):
+						$term_child = get_term_by( 'id', $term_child_id, $args['taxonomy'] );
+
+						if ( $args['values'] == 'term_id' ):
+							$this_value = $term_child->term_id;
+						else:
+							$this_value = $term_child->slug;
+						endif;
+
+						if ( strpos( $property, 'multiple' ) !== false ):
+							$selected_prop = in_array( $this_value, $selected ) ? 'selected' : '';
+						else:
+							$selected_prop = selected( $this_value, $selected, false );
+						endif;
+
+						printf( '<option value="%s" %s>%s</option>', $this_value, $selected_prop, '— ' . $term_child->name );
+					endforeach;
+				endif;
+			endforeach;
+			print( '</select>' );
+			return true;
+		else:
+			return false;
+		endif;
+	}
+}
+
+if ( !function_exists( 'sz_taxonomy_adder' ) ) {
+	function sz_taxonomy_adder( $taxonomy = 'category', $post_type = null, $label = null ) {
+		$obj = get_taxonomy( $taxonomy );
+		if ( $label == null )
+			$label = __( 'Add New', 'sportszone' );
+		?>
+		<div id="<?php echo $taxonomy; ?>-adder">
+			<h4>
+				<a title="<?php echo esc_attr( $label ); ?>" href="<?php echo admin_url( 'edit-tags.php?taxonomy=' . $taxonomy . ( $post_type ? '&post_type=' . $post_type : '' ) ); ?>" target="_blank">
+					+ <?php echo $label; ?>
+				</a>
+			</h4>
+		</div>
+		<?php
+	}
+}
+
+
+if ( !function_exists( 'sz_column_active' ) ) {
+	function sz_column_active( $array = null, $value = null ) {
+		return $array == null || in_array( $value, $array );
+	}
+}
+
+if ( !function_exists( 'sz_get_the_term_id' ) ) {
+	function sz_get_the_term_id( $post_id, $taxonomy ) {
+		$terms = get_the_terms( $post_id, $taxonomy );
+		if ( is_array( $terms ) && sizeof( $terms ) > 0 ):
+			$term = reset( $terms );
+			if ( is_object( $term ) && property_exists( $term, 'term_id' ) )
+				return $term->term_id;
+			else
+				return 0;
+		else:
+			return 0;
+		endif;
+	}
+}
+
+if ( !function_exists( 'sz_get_the_term_ids' ) ) {
+	function sz_get_the_term_ids( $post_id, $taxonomy ) {
+		$terms = get_the_terms( $post_id, $taxonomy );
+		$term_ids = array();
+
+		if ( is_array( $terms ) && sizeof( $terms ) > 0 ) {
+			$term_ids = wp_list_pluck( $terms, 'term_id' );
+		}
+
+		$term_ids = sz_add_auto_term( $term_ids, $post_id, $taxonomy );
+
+		return $term_ids;
+	}
+}
+
+if ( !function_exists( 'sz_get_the_term_id_or_meta' ) ) {
+	function sz_get_the_term_id_or_meta( $post_id, $taxonomy ) {
+		$terms = get_the_terms( $post_id, $taxonomy );
+		if ( is_array( $terms ) && sizeof( $terms ) > 0 ):
+			$term = reset( $terms );
+			if ( is_object( $term ) && property_exists( $term, 'term_id' ) )
+				return $term->term_id;
+			else
+				return 0;
+		else:
+			return get_post_meta( $post_id, $taxonomy, true );
+		endif;
+	}
+}
+
+
+
+if ( !function_exists( 'sz_array_combine' ) ) {
+	function sz_array_combine( $keys = array(), $values = array(), $key_order = false ) {
+		if ( ! is_array( $keys ) ) return array();
+		if ( ! is_array( $values ) ) $values = array();
+
+		$output = array();
+
+		if ( $key_order ):
+			foreach( $keys as $key ):
+				if ( array_key_exists( $key, $values ) )
+					$output[ $key ] = $values[ $key ];
+				else
+					$output[ $key ] = array();
+			endforeach;
+		else:
+			foreach ( $values as $key => $value ):
+				if ( in_array( $key, $keys ) ):
+					$output[ $key ] = $value;
+				endif;
+			endforeach;
+
+			foreach ( $keys as $key ):
+				if ( $key !== false && ! array_key_exists( $key, $output ) )
+					$output[ $key ] = array();
+			endforeach;
+		endif;
+		return $output;
+	}
+}
+
+if ( !function_exists( 'sz_get_default_mode' ) ) {
+	function sz_get_default_mode() {
+		$mode = get_option( 'sportszone_mode', 'team' );
+
+		if ( empty( $mode ) ) {
+			$mode = 'team';
+		}
+
+		return $mode;
+	}
+}
+
+if ( !function_exists( 'sz_get_post_mode' ) ) {
+	function sz_get_post_mode( $post_id ) {
+    $mode = get_post_meta( $post_id, 'sz_mode', true );
+
+    if ( empty( $mode ) ) {
+    	$mode = sz_get_default_mode();
+    }
+
+    return $mode;
+  }
+}
+
+if ( !function_exists( 'sz_get_post_mode_type' ) ) {
+	function sz_get_post_mode_type( $post_id ) {
+		$mode = sz_get_post_mode( $post_id );
+
+		$post_type = "sz_$mode";
+
+		if ( ! in_array( $post_type, sz_primary_post_types() ) ) {
+			$post_type = sz_get_default_mode();
+		}
+
+		return $post_type;
+  }
+}
+
+if ( !function_exists( 'sz_get_post_mode_label' ) ) {
+	function sz_get_post_mode_label( $post_id, $singular = false ) {
+		$labels = array(
+			'club' => array(
+				__( 'Clubs', 'sportszone' ),
+				__( 'Club', 'sportszone' ),
+			),
+			'team' => array(
+				__( 'Teams', 'sportszone' ),
+				__( 'Team', 'sportszone' ),
+			),
+			'player' => array(
+				__( 'Players', 'sportszone' ),
+				__( 'Player', 'sportszone' ),
+			),
+		);
+
+		$mode = sz_get_post_mode( $post_id );
+
+		if ( ! array_key_exists( $mode, $labels ) ) {
+			$mode = 'team';
+		}
+
+		$index = intval( $singular );
+
+		return $labels[ $mode ][ $index ];
+  }
+}
+
+
+if ( !function_exists( 'sz_dropdown_pages' ) ) {
+	function sz_dropdown_pages( $args = array() ) {
+		$defaults = array(
+			'prepend_options' => null,
+			'append_options' => null,
+			'show_option_blank' => false,
+			'show_option_all' => false,
+			'show_option_none' => false,
+			'show_dates' => false,
+			'option_all_value' => 0,
+			'option_none_value' => -1,
+			'name' => 'page_id',
+			'id' => null,
+			'selected' => null,
+			'numberposts' => -1,
+			'posts_per_page' => -1,
+			'child_of' => 0,
+			'order' => 'ASC',
+		    'orderby' => 'title',
+		    'hierarchical' => 1,
+		    'exclude' => null,
+		    'include' => null,
+		    'meta_key' => null,
+		    'meta_value' => null,
+		    'authors' => null,
+		    'exclude_tree' => null,
+		    'post_type' => 'page',
+			'post_status' => 'publish',
+		    'values' => 'post_name',
+		    'class' => null,
+		    'property' => null,
+		    'placeholder' => null,
+		    'chosen' => false,
+		    'filter' => false,
+		);
+		$args = array_merge( $defaults, $args );
+
+		$name = $args['name'];
+		unset( $args['name'] );
+
+		$id = ( $args['id'] ) ? $args['id'] : $name;
+		unset( $args['id'] );
+
+		$values = $args['values'];
+		unset( $args['values'] );
+
+		$class = $args['class'];
+		unset( $args['class'] );
+
+		$property = $args['property'];
+		unset( $args['property'] );
+
+		$placeholder = $args['placeholder'];
+		unset( $args['placeholder'] );
+
+		$selected = $args['selected'];
+		unset( $args['selected'] );
+
+		$chosen = $args['chosen'];
+		unset( $args['chosen'] );
+
+		$filter = $args['filter'];
+		unset( $args['filter'] );
+		
+		$posts = get_posts( $args );
+		
+		///////////////////
+		// TESTING
+		///////////////////
+		$group_args = array(
+		    'group_type' => array( $args['post_type'] ),
+		);
+		if ( sz_has_groups( $group_args ) ) :
+			printf( '<select name="%s" id="%s" class="postform %s" %s>', $name, $id, $class . ( $chosen ? ' chosen-select' . ( is_rtl() ? ' chosen-rtl' : '' ) : '' ), ( $placeholder != null ? 'data-placeholder="' . $placeholder . '" ' : '' ) . $property );
+			
+			if ( strpos( $property, 'multiple' ) === false ):
+				if ( $args['show_option_blank'] ):
+					printf( '<option value=""></option>' );
+				endif;
+				if ( $args['show_option_none'] ):
+					printf( '<option value="%s" %s>%s</option>', $args['option_none_value'], selected( $selected, $args['option_none_value'], false ), ( $args['show_option_none'] === true ? '' : $args['show_option_none'] ) );
+				endif;
+				if ( $args['show_option_all'] ):
+					printf( '<option value="%s" %s>%s</option>', $args['option_all_value'], selected( $selected, $args['option_all_value'], false ), $args['show_option_all'] );
+				endif;
+				if ( $args['prepend_options'] && is_array( $args['prepend_options'] ) ):
+					foreach( $args['prepend_options'] as $slug => $label ):
+						printf( '<option value="%s" %s>%s</option>', $slug, selected( $selected, $slug, false ), $label );
+					endforeach;
+				endif;
+			endif;
+			
+			while ( sz_groups() ) :
+				sz_the_group();
+				
+				//$groups[] = (array) $groups_template->group;
+				
+				if ( $values == 'ID' ):
+					$this_value = sz_get_group_id();
+				else:
+					$this_value = sz_get_group_name();
+				endif;
+
+				if ( strpos( $property, 'multiple' ) !== false ):
+					$selected_prop = in_array( $this_value, $selected ) ? 'selected' : '';
+				else:
+					$selected_prop = selected( $this_value, $selected, false );
+				endif;
+
+				if ( $filter !== false ):
+					$class = 'sp-post sp-filter-0';
+					$filter_values = get_post_meta( sz_get_group_id(), $filter, false );
+					foreach ( $filter_values as $filter_value ):
+						$class .= ' sp-filter-' . $filter_value;
+					endforeach;
+				else:
+					$class = '';
+				endif;
+
+				printf( '<option value="%s" class="%s" %s>%s</option>', $this_value, $class, $selected_prop, sz_get_group_name() . ( $args['show_dates'] ? ' (' . $post->post_date . ')' : '' ) );
+
+				
+			endwhile;
+			
+			print( '</select>' );
+			return true;
+		else:
+			return false;
+		endif;
+
+		///////////////////
+		// END TESTING
+		///////////////////
+		/*
+		if ( $posts || $args['prepend_options'] || $args['append_options'] ):
+			printf( '<select name="%s" id="%s" class="postform %s" %s>', $name, $id, $class . ( $chosen ? ' chosen-select' . ( is_rtl() ? ' chosen-rtl' : '' ) : '' ), ( $placeholder != null ? 'data-placeholder="' . $placeholder . '" ' : '' ) . $property );
+
+			if ( strpos( $property, 'multiple' ) === false ):
+				if ( $args['show_option_blank'] ):
+					printf( '<option value=""></option>' );
+				endif;
+				if ( $args['show_option_none'] ):
+					printf( '<option value="%s" %s>%s</option>', $args['option_none_value'], selected( $selected, $args['option_none_value'], false ), ( $args['show_option_none'] === true ? '' : $args['show_option_none'] ) );
+				endif;
+				if ( $args['show_option_all'] ):
+					printf( '<option value="%s" %s>%s</option>', $args['option_all_value'], selected( $selected, $args['option_all_value'], false ), $args['show_option_all'] );
+				endif;
+				if ( $args['prepend_options'] && is_array( $args['prepend_options'] ) ):
+					foreach( $args['prepend_options'] as $slug => $label ):
+						printf( '<option value="%s" %s>%s</option>', $slug, selected( $selected, $slug, false ), $label );
+					endforeach;
+				endif;
+			endif;
+
+			foreach ( $posts as $post ):
+				setup_postdata( $post );
+
+				if ( $values == 'ID' ):
+					$this_value = $post->ID;
+				else:
+					$this_value = $post->post_name;
+				endif;
+
+				if ( strpos( $property, 'multiple' ) !== false ):
+					$selected_prop = in_array( $this_value, $selected ) ? 'selected' : '';
+				else:
+					$selected_prop = selected( $this_value, $selected, false );
+				endif;
+
+				if ( $filter !== false ):
+					$class = 'sp-post sp-filter-0';
+					$filter_values = get_post_meta( $post->ID, $filter, false );
+					foreach ( $filter_values as $filter_value ):
+						$class .= ' sp-filter-' . $filter_value;
+					endforeach;
+				else:
+					$class = '';
+				endif;
+
+				printf( '<option value="%s" class="%s" %s>%s</option>', $this_value, $class, $selected_prop, $post->post_title . ( $args['show_dates'] ? ' (' . $post->post_date . ')' : '' ) );
+			endforeach;
+			wp_reset_postdata();
+
+			if ( strpos( $property, 'multiple' ) === false ):
+				if ( $args['append_options'] && is_array( $args['append_options'] ) ):
+					foreach( $args['append_options'] as $slug => $label ):
+						printf( '<option value="%s" %s>%s</option>', $slug, selected( $selected, $slug, false ), $label );
+					endforeach;
+				endif;
+			endif;
+			print( '</select>' );
+			return true;
+		else:
+			return false;
+		endif;
+		*/
+	}
+}
+
+if ( !function_exists( 'sz_posts' ) ) {
+	function sz_posts( $post_id = null, $meta = 'post' ) {
+		if ( ! isset( $post_id ) )
+			global $post_id;
+		$ids = get_post_meta( $post_id, $meta, false );
+		if ( ( $key = array_search( 0, $ids ) ) !== false )
+		    unset( $ids[ $key ] );
+		$i = 0;
+		$count = count( $ids );
+		if ( isset( $ids ) && $ids && is_array( $ids ) && !empty( $ids ) ):
+			foreach ( $ids as $id ):
+				if ( !$id ) continue;
+				$parents = get_post_ancestors( $id );
+				$keys = array_keys( $parents );
+				$values = array_reverse( array_values( $parents ) );
+				if ( ! empty( $keys ) && ! empty( $values ) ):
+					$parents = array_combine( $keys, $values );
+					foreach ( $parents as $parent ):
+						if ( !in_array( $parent, $ids ) )
+							edit_post_link( get_the_title( $parent ), '', '', $parent );
+						echo ' - ';
+					endforeach;
+				endif;
+				$title = get_the_title( $id );
+				if ( ! $title )
+					continue;
+				if ( empty( $title ) )
+					$title = __( '(no title)', 'sportszone' );
+				edit_post_link( $title, '', '', $id );
+				if ( ++$i !== $count )
+					echo ', ';
+			endforeach;
+		endif;
+	}
+}
+
+if ( !function_exists( 'sz_post_checklist' ) ) {
+	function sz_post_checklist( $post_id = null, $meta = 'post', $display = 'block', $filters = null, $index = null, $slug = null ) {
+		if ( ! isset( $post_id ) )
+			global $post_id;
+		if ( ! isset( $slug ) )
+			$slug = $meta;
+		?>
+		<div id="<?php echo $slug; ?>-all" class="posttypediv tabs-panel wp-tab-panel sp-tab-panel sp-tab-filter-panel sp-select-all-range" style="display: <?php echo $display; ?>;">
+			<input type="hidden" value="0" name="<?php echo $slug; ?><?php if ( isset( $index ) ) echo '[' . $index . ']'; ?>[]" />
+			<ul class="categorychecklist form-no-clear">
+				<li class="sp-select-all-container"><label class="selectit"><input type="checkbox" class="sp-select-all"> <strong><?php _e( 'Select All', 'sportszone' ); ?></strong></label></li>
+				<?php
+				$selected = (array)get_post_meta( $post_id, $slug, false );
+				if ( ! sizeof( $selected ) ) {
+					$selected = (array)get_post_meta( $post_id, $meta, false );
+				}
+				$selected = sz_array_between( $selected, 0, $index );
+				if ( empty( $posts ) ):
+					$query = array( 'post_type' => $meta, 'numberposts' => -1, 'post_per_page' => -1, 'orderby' => 'menu_order' );
+					if ( $meta == 'sz_player' ):
+						$query['meta_key'] = 'sz_number';
+						$query['orderby'] = 'meta_value_num';
+						$query['order'] = 'ASC';
+					endif;
+					$posts = get_posts( $query );
+				endif;
+				foreach ( $posts as $post ):
+					$parents = get_post_ancestors( $post );
+					if ( $filters ):
+						if ( is_array( $filters ) ):
+							$filter_values = array();
+							foreach ( $filters as $filter ):
+								if ( get_taxonomy( $filter ) ):
+									$terms = (array)get_the_terms( $post->ID, $filter );
+									foreach ( $terms as $term ):
+										if ( is_object( $term ) && property_exists( $term, 'term_id' ) )
+											$filter_values[] = $term->term_id;
+									endforeach;
+								else:
+									$filter_values = array_merge( $filter_values, (array)get_post_meta( $post->ID, $filter, false ) );
+								endif;
+							endforeach;
+						else:
+							$filter = $filters;
+							if ( get_taxonomy( $filter ) ):
+								$terms = (array)get_the_terms( $post->ID, $filter );
+								foreach ( $terms as $term ):
+									if ( is_object( $term ) && property_exists( $term, 'term_id' ) )
+										$filter_values[] = $term->term_id;
+								endforeach;
+							else:
+								$filter_values = (array)get_post_meta( $post->ID, $filter, false );
+							endif;
+						endif;
+					endif;
+					?>
+					<li class="sp-post sp-filter-0<?php
+						if ( $filters ):
+							foreach ( $filter_values as $filter_value ):
+								echo ' sp-filter-' . $filter_value;
+							endforeach;
+						endif;
+					?>">
+						<?php echo str_repeat( '<ul><li>', sizeof( $parents ) ); ?>
+						<label class="selectit">
+							<input type="checkbox" value="<?php echo $post->ID; ?>" name="<?php echo $slug; ?><?php if ( isset( $index ) ) echo '[' . $index . ']'; ?>[]"<?php if ( in_array( $post->ID, $selected ) ) echo ' checked="checked"'; ?>>
+							<?php echo sz_get_player_name_with_number( $post->ID ); ?>
+						</label>
+						<?php echo str_repeat( '</li></ul>', sizeof( $parents ) ); ?>
+					</li>
+					<?php
+				endforeach;
+				?>
+				<li class="sp-not-found-container">
+					<?php _e( 'No results found.', 'sportszone' ); ?>
+					<?php if ( sizeof( $posts ) ): ?><a class="sp-show-all" href="#show-all-<?php echo $slug; ?>s"><?php _e( 'Show all', 'sportszone' ); ?></a><?php endif; ?>
+				</li>
+				<?php if ( sizeof( $posts ) ): ?>
+					<li class="sp-show-all-container"><a class="sp-show-all" href="#show-all-<?php echo $slug; ?>s"><?php _e( 'Show all', 'sportszone' ); ?></a></li>
+				<?php endif; ?>
+			</ul>
+		</div>
+		<?php
+	}
+}
+
+if ( !function_exists( 'sz_column_checklist' ) ) {
+	function sz_column_checklist( $post_id = null, $meta = 'post', $display = 'block', $selected = array(), $default_checked = false ) {
+		if ( ! isset( $post_id ) )
+			global $post_id;
+		?>
+		<div id="<?php echo $meta; ?>-all" class="posttypediv tabs-panel wp-tab-panel sp-tab-panel sp-select-all-range" style="display: <?php echo $display; ?>;">
+			<input type="hidden" value="0" name="sz_columns[]" />
+			<ul class="categorychecklist form-no-clear">
+				<li class="sp-select-all-container"><label class="selectit"><input type="checkbox" class="sp-select-all"> <strong><?php _e( 'Select All', 'sportszone' ); ?></strong></label></li>
+				<?php
+				$posts = get_pages( array( 'post_type' => $meta, 'number' => 0 ) );
+				if ( empty( $posts ) ):
+					$query = array(
+						'post_type' => $meta,
+						'numberposts' => -1,
+						'post_per_page' => -1,
+						'order' => 'ASC',
+						'orderby' => 'menu_order',
+						'meta_query' => array(
+			        		'relation' => 'OR',
+							array(
+								'key' => 'sz_format',
+								'value' => 'number',
+								'compare' => 'NOT EXISTS',
+							),
+							array(
+								'key' => 'sz_format',
+								'value' => array( 'equation', 'text' ),
+								'compare' => 'NOT IN',
+							),
+						),
+					);
+					$posts = get_posts( $query );
+				endif;
+				if ( sizeof( $posts ) ):
+					foreach ( $posts as $post ):
+						if ( 'sz_performance' == $meta ) {
+							$format = get_post_meta( $post->ID, 'sz_format', true );
+							if ( 'text' === $format ) continue;
+						}
+						?>
+						<li class="sp-post">
+							<label class="selectit">
+								<input type="checkbox" value="<?php echo $post->post_name; ?>" name="sz_columns[]"<?php if ( ( ! is_array( $selected ) && $default_checked ) || in_array( $post->post_name, $selected ) ) echo ' checked="checked"'; ?>>
+								<?php echo sz_draft_or_post_title( $post ); ?>
+							</label>
+						</li>
+						<?php
+					endforeach;
+				else:
+				?>
+				<li class="sp-not-found-container"><?php _e( 'No results found.', 'sportszone' ); ?></li>
+				<?php endif; ?>
+			</ul>
+		</div>
+		<?php
+	}
+}
+
+
+/**
+ * Get the post title.
+ *
+ * The post title is fetched and if it is blank then a default string is
+ * returned.
+ *
+ * @since 2.7.0
+ * @param mixed $post Post id or object. If not supplied the global $post is used.
+ * @return string The post title if set
+ */
+if ( !function_exists( 'sz_draft_or_post_title' ) ) {
+	function sz_draft_or_post_title( $post = 0 ) {
+		$title = get_the_title( $post );
+		if ( empty( $title ) )
+			$title = __( '(no title)', 'sportszone' );
+		return $title;
+	}
+}
+
+
+
+
+if ( !function_exists( 'sz_get_var_labels' ) ) {
+	function sz_get_var_labels( $post_type, $neg = null, $all = true ) {
+		$args = array(
+			'post_type' => $post_type,
+			'numberposts' => -1,
+			'posts_per_page' => -1,
+			'orderby' => 'menu_order',
+			'order' => 'ASC',
+		);
+
+		if ( ! $all ) {
+			$args['meta_query'] = array(
+				array(
+					'key' => 'sz_visible',
+					'value' => 1,
+				),
+				array(
+					'key' => 'sz_visible',
+					'value' => 1,
+					'compare' => 'NOT EXISTS',
+				),
+				'relation' => 'OR',
+			);
+		}
+
+		$vars = get_posts( $args );
+
+		$output = array();
+		foreach ( $vars as $var ):
+			if ( $neg === null || ( $neg && $var->menu_order < 0 ) || ( ! $neg && $var->menu_order >= 0 ) )
+				$output[ $var->post_name ] = $var->post_title;
+		endforeach;
+
+		return $output;
+	}
+}
+
+if ( !function_exists( 'sz_get_var_equations' ) ) {
+	function sz_get_var_equations( $post_type ) {
+		$args = array(
+			'post_type' => $post_type,
+			'numberposts' => -1,
+			'posts_per_page' => -1,
+			'orderby' => 'menu_order',
+			'order' => 'ASC'
+		);
+
+		$vars = get_posts( $args );
+
+		$output = array();
+		foreach ( $vars as $var ):
+			$equation = get_post_meta( $var->ID, 'sz_equation', true );
+			if ( ! $equation ) $equation = 0;
+			$precision = get_post_meta( $var->ID, 'sz_precision', true );
+			if ( ! $precision ) $precision = 0;
+			$output[ $var->post_name ] = array(
+				'equation' => $equation,
+				'precision' => $precision,
+			);
+		endforeach;
+
+		return $output;
+	}
+}
+
+if ( !function_exists( 'sz_post_adder' ) ) {
+	function sz_post_adder( $post_type = 'post', $label = null, $attributes = array() ) {
+		$obj = get_post_type_object( $post_type );
+		if ( $label == null )
+			$label = __( 'Add New', 'sportszone' );
+		?>
+		<div id="<?php echo $post_type; ?>-adder">
+			<h4>
+				<a title="<?php echo esc_attr( $label ); ?>" href="<?php echo admin_url( add_query_arg( $attributes, 'post-new.php?post_type=' . $post_type ) ); ?>" target="_blank">
+					+ <?php echo $label; ?>
+				</a>
+			</h4>
+		</div>
+		<?php
+	}
+}
+
+if ( !function_exists( 'sz_update_post_meta' ) ) {
+	function sz_update_post_meta( $post_id, $meta_key, $meta_value, $default = null ) {
+		if ( !isset( $meta_value ) && isset( $default ) )
+			$meta_value = $default;
+		add_post_meta( $post_id, $meta_key, $meta_value, true );
+	}
+}
+
+if ( !function_exists( 'sz_add_post_meta_recursive' ) ) {
+	function sz_add_post_meta_recursive( $post_id, $meta_key, $meta_value ) {
+		$values = new RecursiveIteratorIterator( new RecursiveArrayIterator( $meta_value ) );
+		foreach ( $values as $value ):
+			add_post_meta( $post_id, $meta_key, $value, false );
+		endforeach;
+	}
+}
+
+if ( !function_exists( 'sz_update_post_meta_recursive' ) ) {
+	function sz_update_post_meta_recursive( $post_id, $meta_key, $meta_value ) {
+		delete_post_meta( $post_id, $meta_key );
+		sz_add_post_meta_recursive( $post_id, $meta_key, $meta_value );
+	}
+}
+
+if ( !function_exists( 'sz_update_user_meta_recursive' ) ) {
+	function sz_update_user_meta_recursive( $user_id, $meta_key, $meta_value ) {
+		delete_user_meta( $user_id, $meta_key );
+		$values = new RecursiveIteratorIterator( new RecursiveArrayIterator( $meta_value ) );
+		foreach ( $values as $value ):
+			add_user_meta( $user_id, $meta_key, $value, false );
+		endforeach;
+	}
+}
+
+if ( !function_exists( 'sz_get_eos_safe_slug' ) ) {
+	function sz_get_eos_safe_slug( $title, $post_id = 'var' ) {
+
+		// String to lowercase
+		$title = strtolower( $title );
+
+		// Replace all numbers with words
+		$title = sz_numbers_to_words( $title );
+
+		// Remove all other non-alphabet characters
+		$title = preg_replace( "/[^a-z_]/", '', $title );
+
+		// Convert post ID to words if title is empty
+		if ( $title == '' ):
+
+			$title = sz_numbers_to_words( $post_id );
+
+		endif;
+
+		return $title;
+
+	}
+}
+
+if ( !function_exists( 'sz_solve' ) ) {
+	function sz_solve( $equation, $vars, $precision = 0, $default = 0 ) {
+
+		if ( $equation == null )
+			return $default;
+
+		if ( strpos( $equation, '$gamesback' ) !== false ):
+
+			// Return placeholder
+			return $default;
+
+		elseif ( strpos( $equation, '$streak' ) !== false ):
+
+			// Return direct value
+			return sz_array_value( $vars, 'streak', $default );
+
+		elseif ( strpos( $equation, '$form' ) !== false ):
+
+			// Return direct value
+			return sz_array_value( $vars, 'form', $default );
+
+		elseif ( strpos( $equation, '$last5' ) !== false ):
+
+			// Return imploded string
+			$last5 = sz_array_value( $vars, 'last5', array( 0 ) );
+			if ( array_sum( $last5 ) > 0 ):
+				return implode( '-', $last5 );
+			else:
+				return $default;
+			endif;
+
+		elseif ( strpos( $equation, '$last10' ) !== false ):
+
+			// Return imploded string
+			$last10 = sz_array_value( $vars, 'last10', array( 0 ) );
+			if ( array_sum( $last10 ) > 0 ):
+				return implode( '-', $last10 );
+			else:
+				return $default;
+			endif;
+
+		elseif ( strpos( $equation, '$homerecord' ) !== false ):
+
+			// Return imploded string
+			$homerecord = sz_array_value( $vars, 'homerecord', array( 0 ) );
+			return implode( '-', $homerecord );
+
+		elseif ( strpos( $equation, '$awayrecord' ) !== false ):
+
+			// Return imploded string
+			$awayrecord = sz_array_value( $vars, 'awayrecord', array( 0 ) );
+			return implode( '-', $awayrecord );
+
+		endif;
+
+		// Remove unnecessary variables from vars before calculating
+		unset( $vars['gamesback'] );
+		unset( $vars['streak'] );
+		unset( $vars['last5'] );
+		unset( $vars['last10'] );
+
+		// Equation Operating System
+        if ( ! class_exists( 'phpStack' ) )
+            include_once( SP()->plugin_path() . '/includes/libraries/class-phpstack.php' );
+        if ( ! class_exists( 'eqEOS' ) )
+            include_once( SP()->plugin_path() . '/includes/libraries/class-eqeos.php' );
+		$eos = new eqEOS();
+
+		// Remove spaces from equation
+		$equation = str_replace( ' ', '', $equation );
+
+		// Create temporary equation replacing operators with spaces
+		$temp = str_replace( array( '+', '-', '*', '/', '(', ')' ), ' ', $equation );
+
+		// Check if each variable part is in vars
+		$parts = explode( ' ', $temp );
+		foreach( $parts as $key => $value ):
+			if ( substr( $value, 0, 1 ) == '$' ):
+				if ( ! array_key_exists( preg_replace( "/[^a-z0-9_]/", '', $value ), $vars ) )
+					return 0;
+			endif;
+		endforeach;
+
+		// Remove space between equation parts
+		$equation = str_replace( ' ', '', $equation );
+
+		// Initialize Subequations
+		$subequations = array( $equation );
+
+		// Find all equation parts contained in parentheses
+		if ( preg_match_all( '~\((.*?)\)~', $equation, $results ) ) {
+			foreach ( sz_array_value( $results, 1, array() ) as $result ) {
+				if ( ! empty( $result ) ) {
+					$subequations[] = $result;
+				}
+			}
+		}
+
+		// Initialize subequation
+		$subequation = $equation;
+
+		// Check each subequation separated by division
+		foreach ( $subequations as $subequation ) {
+			while ( $pos = strpos( $subequation, '/' ) ) {
+				$subequation = substr( $subequation, $pos + 1 );
+
+				// Make sure paretheses match
+				if ( substr_count( $subequation, '(' ) === substr_count( $subequation, ')' ) ) {
+
+					// Return zero if denominator is zero
+					if ( $eos->solveIF( $subequation, $vars ) == 0 ) {
+						return 0;
+					}
+				}
+			}
+		}
+
+		// Return solution
+		return number_format( $eos->solveIF( str_replace( ' ', '', $equation ), $vars ), $precision, '.', '' );
+
+	}
+}
+
+if ( !function_exists( 'sz_sort_table_teams' ) ) {
+	function sz_sort_table_teams ( $a, $b ) {
+
+		global $sportszone_column_priorities;
+
+		// Loop through priorities
+		foreach( $sportszone_column_priorities as $priority ):
+
+			// Proceed if columns are not equal
+			if ( sz_array_value( $a, $priority['column'], 0 ) != sz_array_value( $b, $priority['column'], 0 ) ):
+
+				// Compare column values
+				$output = sz_array_value( $a, $priority['column'], 0 ) - sz_array_value( $b, $priority['column'], 0 );
+
+				// Flip value if descending order
+				if ( $priority['order'] == 'DESC' ) $output = 0 - $output;
+
+				return ( $output > 0 );
+
+			endif;
+
+		endforeach;
+
+		// Default sort by alphabetical
+		return strcmp( sz_array_value( $a, 'name', '' ), sz_array_value( $b, 'name', '' ) );
+	}
+}
+
+if ( !function_exists( 'sz_get_next_event' ) ) {
+	function sz_get_next_event( $args = array() ) {
+		$options = array(
+			'post_type' => 'sz_event',
+			'posts_per_page' => 1,
+			'order' => 'ASC',
+			'post_status' => 'future',
+		);
+		$options = array_merge( $options, $args );
+		$posts = get_posts( $options );
+		if ( $posts && is_array( $posts ) ) return array_pop( $posts );
+		else return false;
+	}
+}
+
+
+/**
+ * Get an array of text options per context.
+ * @return array
+ */
+function sz_get_text_options() {
+	$strings = apply_filters( 'sportszone_text', array(
+		__( 'Article', 'sportszone' ),
+		__( 'Away', 'sportszone' ),
+		__( 'Box Score', 'sportszone' ),
+		__( 'Canceled', 'sportszone' ),
+		__( 'Career Total', 'sportszone' ),
+		__( 'Current Team', 'sportszone' ),
+		__( 'Date', 'sportszone' ),
+		__( 'Defense', 'sportszone' ),
+		__( 'Details', 'sportszone' ),
+		__( 'Event', 'sportszone' ),
+		__( 'Events', 'sportszone' ),
+		__( 'Excerpt', 'sportszone' ),
+		__( 'Fixtures', 'sportszone' ),
+		__( 'Full Time', 'sportszone' ),
+		__( 'Home', 'sportszone' ),
+		__( 'League', 'sportszone' ),
+		__( 'League Table', 'sportszone' ),
+		__( 'Match Day', 'sportszone' ),
+		__( 'Nationality', 'sportszone' ),
+		__( 'Offense', 'sportszone' ),
+		__( 'Outcome', 'sportszone' ),
+		__( 'Past Teams', 'sportszone' ),
+		__( 'Photo', 'sportszone' ),
+		__( 'Player', 'sportszone' ),
+		__( 'Player of the Match', 'sportszone' ),
+		__( 'Players', 'sportszone' ),
+		__( 'Pos', 'sportszone' ),
+		__( 'Position', 'sportszone' ),
+		__( 'Postponed', 'sportszone' ),
+		__( 'Preview', 'sportszone' ),
+		__( 'Profile', 'sportszone' ),
+		__( 'Rank', 'sportszone' ),
+		__( 'Recap', 'sportszone' ),
+		__( 'Results', 'sportszone' ),
+		__( 'Season', 'sportszone' ),
+		__( 'Staff', 'sportszone' ),
+		__( 'Statistics', 'sportszone' ),
+		__( 'TBD', 'sportszone' ),
+		__( 'Club', 'sportszone' ),
+		__( 'Clubs', 'sportszone' ),
+		__( 'Team', 'sportszone' ),
+		__( 'Teams', 'sportszone' ),
+		__( 'Time', 'sportszone' ),
+		__( 'Time/Results', 'sportszone' ),
+		__( 'Total', 'sportszone' ),
+		__( 'Venue', 'sportszone' ),
+		__( 'Video', 'sportszone' ),
+		__( 'View all events', 'sportszone' ),
+		__( 'View all players', 'sportszone' ),
+		__( 'View full table', 'sportszone' ),
+		__( 'Visit Site', 'sportszone' ),
+	));
+	
+	asort( $strings );
+	return array_unique( $strings );
+}
+
+/**
+ * Display a link to review SportsPress
+ * @return null
+ */
+function sz_review_link() {
+	?>
+	<p>
+		<a href="https://wordpress.org/support/plugin/sportszone/reviews/?rate=5#new-post">
+			<?php _e( 'Love SportsZone? Help spread the word by rating us 5★ on WordPress.org', 'sportszone' ); ?>
+		</a>
+	</p>
+	<?php
+}
+
+/**
+ * Return shortcode template for meta boxes
+ * @return null
+ */
+function sz_get_shortcode_template( $shortcode, $id = null, $args = array() ) {
+	$args = apply_filters( 'sportszone_shortcode_template_args', $args );
+	$output = '[' . $shortcode;
+	if ( $id ) {
+		$output .= ' ' . $id;
+	}
+	if ( sizeof( $args ) ) {
+		foreach ( $args as $key => $value ) {
+			$output .= ' ' . $key . '="' . $value . '"';
+		}
+	}
+	$output .= ']';
+	return esc_attr( $output );
+}
+
+/**
+ * Display shortcode template for meta boxes
+ * @return null
+ */
+function sz_shortcode_template( $shortcode, $id = null, $args = array() ) {
+	echo sz_get_shortcode_template( $shortcode, $id, $args );
+}
+
+if ( !function_exists( 'sz_nonce' ) ) {
+	function sz_nonce() {
+		wp_nonce_field( 'sportszone_save_data', 'sportszone_meta_nonce' );
+	}
+}
+
+if ( !function_exists( 'sz_array_between' ) ) {
+	function sz_array_between ( $array = array(), $delimiter = 0, $index = 0 ) {
+		$keys = array_keys( $array, $delimiter );
+		if ( array_key_exists( $index, $keys ) ):
+			$offset = $keys[ $index ];
+			$end = sizeof( $array );
+			if ( array_key_exists( $index + 1, $keys ) )
+				$end = $keys[ $index + 1 ];
+			$length = $end - $offset;
+			$array = array_slice( $array, $offset, $length );
+		endif;
+		return $array;
+	}
+}
+
+if ( !function_exists( 'sz_array_value' ) ) {
+	function sz_array_value( $arr = array(), $key = 0, $default = null ) {
+		return ( isset( $arr[ $key ] ) ? $arr[ $key ] : $default );
+	}
+}
+
+
+///////////////////
+// Contditional Functions
+//////////////////////////
+
+/**
+ * sz_post_types - Returns array of SP post types
+ *
+ * @access public
+ * @return array
+ */
+if ( ! function_exists( 'sz_post_types' ) ) {
+	function sz_post_types() {
+		return apply_filters( 'sportszone_post_types', array( 'sz_match', 'sz_calendar', 'sz_table') );
+	}
+}
+
+/**
+ * sz_primary_post_types - Returns array of SP primary post types
+ *
+ * @access public
+ * @return array
+ */
+if ( ! function_exists( 'sz_primary_post_types' ) ) {
+	function sz_primary_post_types() {
+		return apply_filters( 'sportszone_primary_post_types',  array( 'sz_match' ) );
+	}
+}
+
+/**
+ * sz_secondary_post_types - Returns array of SP secondary post types
+ *
+ * @access public
+ * @return array
+ */
+if ( ! function_exists( 'sz_secondary_post_types' ) ) {
+	function sz_secondary_post_types() {
+		return apply_filters( 'sportszone_secondary_post_types', array_diff( sz_post_types(), sz_primary_post_types() ) );
+	}
+}
+
+/**
+ * sz_importable_post_types - Returns array of SP post types with importers
+ *
+ * @access public
+ * @return array
+ */
+if ( ! function_exists( 'sz_importable_post_types' ) ) {
+	function sz_importable_post_types() {
+		return apply_filters( 'sportszone_importable_post_types',  array( 'sz_match' ) );
+	}
+}
+
+/**
+ * sz_config_types - Returns array of SP config types
+ *
+ * @access public
+ * @return array
+ */
+if ( ! function_exists( 'sz_config_types' ) ) {
+	function sz_config_types() {
+		return apply_filters( 'sportszone_config_types', array( 'sz_result', 'sz_outcome', 'sz_column', 'sz_performance', 'sz_metric', 'sz_statistic' ) );
+	}
+}
+
+/**
+ * sz_taxonomies - Returns array of SP taxonomies
+ *
+ * @access public
+ * @return array
+ */
+if ( ! function_exists( 'sz_taxonomies' ) ) {
+	function sz_taxonomies() {
+		return apply_filters( 'sportszone_taxonomies', array( 'sz_league', 'sz_season', 'sz_venue', 'sz_position', 'sz_role' ) );
+	}
+}
+
+/**
+ * sz_post_type_hierarchy - Returns array of SP primary post types
+ *
+ * @access public
+ * @return array
+ */
+if ( ! function_exists( 'sz_post_type_hierarchy' ) ) {
+	function sz_post_type_hierarchy() {
+		return apply_filters(
+			'sportszone_post_type_hierarchy',
+			array(
+				'sz_match' => array( 'sz_calendar' ),
+				'sz_team' => array( 'sz_table' ),
+			)
+		);
+	}
+}
+
+/**
+ * is_sz_post_type - Returns true if post is SportsPress post type
+ *
+ * @access public
+ * @return bool
+ */
+if ( ! function_exists( 'is_sz_post_type' ) ) {
+	function is_sz_post_type( $typenow = null ) {
+		if ( $typenow == null ) global $typenow;
+		
+		$post_types = sz_post_types();
+
+		if ( in_array( $typenow, $post_types ) )
+			return true;
+		return false;
+	}
+}
+
+/**
+ * is_sz_config_type - Returns true if post is SportsPress config type
+ *
+ * @access public
+ * @return bool
+ */
+if ( ! function_exists( 'is_sz_config_type' ) ) {
+	function is_sz_config_type( $typenow = null ) {
+		if ( $typenow == null ) global $typenow;
+		
+		$post_types = sz_config_types();
+
+		if ( in_array( $typenow, $post_types ) )
+			return true;
+		return false;
+	}
+}
+
+/**
+ * is_sz_taxonomy - Returns true if post is SportsPress taxonomy
+ *
+ * @access public
+ * @return bool
+ */
+if ( ! function_exists( 'is_sz_taxonomy' ) ) {
+	function is_sz_taxonomy( $typenow = null ) {
+		if ( $typenow == null ) global $typenow;
+		
+		$taxonomies = sz_taxonomies();
+
+		if ( in_array( $typenow, $taxonomies ) )
+			return true;
+		return false;
+	}
+}
+
+if ( ! function_exists( 'is_ajax' ) ) {
+
+	/**
+	 * is_ajax - Returns true when the page is loaded via ajax.
+	 *
+	 * @access public
+	 * @return bool
+	 */
+	function is_ajax() {
+		return defined( 'DOING_AJAX' );
+	}
 }

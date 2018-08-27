@@ -141,7 +141,16 @@ class SportsZone {
 	 * @see SportsZone::instance()
 	 * @see sportszone()
 	 */
-	private function __construct() { /* Do nothing here */ }
+	private function __construct() { 
+		// Auto-load classes on demand
+		/*
+		if ( function_exists( "__autoload" ) ) {
+			spl_autoload_register( "__autoload" );
+		}
+
+		spl_autoload_register( array( $this, 'autoload' ) );
+		*/
+	}
 
 	/**
 	 * A dummy magic method to prevent SportsZone from being cloned.
@@ -292,6 +301,7 @@ class SportsZone {
 			define( 'SZ_SEARCH_SLUG', 'search' );
 		}
 	}
+	
 
 	/**
 	 * Component global variables.
@@ -487,12 +497,15 @@ class SportsZone {
 		require( $this->plugin_dir . 'sz-core/sz-core-widgets.php'          );
 		require( $this->plugin_dir . 'sz-core/sz-core-template.php'         );
 		require( $this->plugin_dir . 'sz-core/sz-core-adminbar.php'         );
+		require( $this->plugin_dir . 'sz-core/sz-core-admin-menus.php'         );
 		require( $this->plugin_dir . 'sz-core/sz-core-buddybar.php'         );
 		require( $this->plugin_dir . 'sz-core/sz-core-catchuri.php'         );
 		require( $this->plugin_dir . 'sz-core/sz-core-functions.php'        );
+		require( $this->plugin_dir . 'sz-core/sz-core-api-functions.php'        );
 		require( $this->plugin_dir . 'sz-core/sz-core-moderation.php'       );
 		require( $this->plugin_dir . 'sz-core/sz-core-loader.php'           );
 		require( $this->plugin_dir . 'sz-core/sz-core-customizer-email.php' );
+		require( $this->plugin_dir . 'sz-core/sz-core-custom-post.php' );
 
 		// Maybe load deprecated functionality (this double negative is proof positive!)
 		if ( ! sz_get_option( '_sz_ignore_deprecated_code', ! $this->load_deprecated ) ) {
@@ -519,9 +532,10 @@ class SportsZone {
 		}
 		
 		// Custom Addons
+		require_once( $this->plugin_dir . 'sz-core/classes/class-sz-core-lazy-loading.php' );
 		require_once( $this->plugin_dir . 'sz-cmb2/sz-custom-fields.php' );
 		require_once( $this->plugin_dir . 'sz-activity/hashbuddy/loader.php' );
-		require_once( $this->plugin_dir . 'sz-xprofile/xprofile-custom-field-types/sz-xprofile-custom-field-types.php' );
+		require_once( $this->plugin_dir . 'sz-xprofile/xprofile-custom-field-types/sz-xprofile-custom-field-types.php' ); 
 	}
 
 	/**
@@ -557,6 +571,7 @@ class SportsZone {
 			'SZ_Akismet' => 'activity',
 
 			'SZ_Admin'                     => 'core',
+			'SZ_Admin_Menus'               => 'core',
 			'SZ_Attachment_Avatar'         => 'core',
 			'SZ_Attachment_Cover_Image'    => 'core',
 			'SZ_Attachment'                => 'core',
@@ -603,7 +618,7 @@ class SportsZone {
 		// Next chunk is usually the component name.
 		} elseif ( in_array( $class_parts[1], $components, true ) ) {
 			$component = $class_parts[1];
-		}
+		} 
 
 		if ( ! $component ) {
 			return;
@@ -613,7 +628,8 @@ class SportsZone {
 		$class = strtolower( str_replace( '_', '-', $class ) );
 
 		$path = dirname( __FILE__ ) . "/sz-{$component}/classes/class-{$class}.php";
-
+		
+		
 		// Sanity check.
 		if ( ! file_exists( $path ) ) {
 			return;
@@ -630,8 +646,13 @@ class SportsZone {
 		) {
 			return;
 		}
-
+		
 		require $path;
+		
+		//SportsZone Meta-boxes for Matches
+		foreach (glob($this->plugin_dir."sz-core/admin/meta-boxes/class-sz-meta-box-*.php") as $filename) {
+		    include_once( $filename );
+		}
 	}
 
 	/**

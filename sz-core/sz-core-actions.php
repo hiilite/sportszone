@@ -121,6 +121,7 @@ add_action( 'sz_after_setup_theme', 'sz_register_theme_compat_default_features',
 // Load the admin.
 if ( is_admin() ) {
 	add_action( 'sz_loaded', 'sz_admin' );
+	add_action( 'sz_loaded', 'sz_admin_menus' );
 }
 
 // Activation redirect.

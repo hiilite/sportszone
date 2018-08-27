@@ -73,6 +73,13 @@ function sz_core_register_common_scripts() {
 		// Version 3.1.0
 		'sz-crs' 	=> array( 'file' => "{$url}vendor/crs{$min}.js", 'dependencies' => array( 'jquery' ), 'footer' => true ),
 		'bootstrap' => array( 'file' => "{$url}bootstrap.bundle{$min}.js", 'dependencies' => array('jquery'), 'footer' => true),
+		
+		// SportsPress imports
+		'chosen' 			=> array( 'file' => "{$url}chosen.jquery{$min}.js", 'dependencies' => array('jquery'), 'footer' => true),
+		'jquery-tiptip' 	=> array( 'file' => "{$url}jquery.tipTip{$min}.js", 'dependencies' => array('jquery'), 'footer' => true),
+		'jquery-countdown'  => array( 'file' => "{$url}jquery.countdown{$min}.js", 'dependencies' => array('jquery'), 'footer' => true),
+		'jquery-fitvids' 	=> array( 'file' => "{$url}jquery.fitvids.js", 'dependencies' => array('jquery'), 'footer' => true),
+		'sportszone-admin'	=> array( 'file' => "{$url}admin/sportszone-admin.js", 'dependencies' => array( 'jquery', 'chosen', 'jquery-ui-core', 'jquery-ui-datepicker', 'jquery-ui-draggable', 'jquery-ui-droppable', 'jquery-ui-sortable', 'jquery-tiptip', 'jquery-caret', 'jquery-countdown', 'jquery-fitvids' ), 'footer' => true ),
 	);
 
 	// Version 2.7 - Add Moment.js locale to our $scripts array if we found one.
@@ -147,6 +154,10 @@ function sz_core_register_common_styles() {
 			'file'         => "{$url}bootstrap{$min}.css",
 			'dependencies' => false
 		),
+		'jquery-chosen'	=> array(
+			'file'         => "{$url}chosen.css",
+			'dependencies' => false
+		)
 	) );
 
 	foreach ( $styles as $id => $style ) {

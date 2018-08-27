@@ -130,7 +130,8 @@ class SZ_Events_Component extends SZ_Component {
 			'functions',
 			'notifications',
 			'hierarchy',
-			'types'
+			'types',
+			'match'
 		);
 
 		// Conditional includes.

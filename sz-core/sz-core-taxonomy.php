@@ -24,6 +24,8 @@ function sz_register_default_taxonomies() {
 	register_taxonomy( sz_get_member_type_tax_name(), 'user', array(
 		'public' => false,
 	) );
+	
+	$show = true;
 
 	// Email type.
 	register_taxonomy(
@@ -41,6 +43,75 @@ function sz_register_default_taxonomies() {
 			'show_ui'       => sz_is_root_blog() && sz_current_user_can( 'sz_moderate' ),
 		) )
 	);
+	
+	$labels = array(
+		'name' => __( 'Leagues', 'sportszone' ),
+		'singular_name' => __( 'League', 'sportszone' ),
+		'all_items' => __( 'All', 'sportszone' ),
+		'edit_item' => __( 'Edit League', 'sportszone' ),
+		'view_item' => __( 'View', 'sportszone' ),
+		'update_item' => __( 'Update', 'sportszone' ),
+		'add_new_item' => __( 'Add New', 'sportszone' ),
+		'new_item_name' => __( 'Name', 'sportszone' ),
+		'parent_item' => __( 'Parent', 'sportszone' ),
+		'parent_item_colon' => __( 'Parent:', 'sportszone' ),
+		'search_items' =>  __( 'Search', 'sportszone' ),
+		'not_found' => __( 'No results found.', 'sportszone' ),
+	);
+	$args = apply_filters( 'sportszone_register_taxonomy_league', array(
+		'label' => __( 'Leagues', 'sportszone' ),
+		'labels' => $labels,
+		'public' => true,
+		'show_ui' => $show,
+		'show_in_menu' => $show,
+		'show_in_nav_menus' => false,
+		'show_tagcloud' => false,
+		'hierarchical' => true,
+		'rewrite' => array( 'slug' => 'league' ),
+		'show_in_rest' => true,
+		//'rest_controller_class' => 'SP_REST_Terms_Controller',
+		'rest_base' => 'leagues',
+	) );
+	$object_types = apply_filters( 'sportszone_league_object_types', array( 'sz_match', 'sz_table' ) );
+	register_taxonomy( 'sz_league', $object_types, $args );
+	foreach ( $object_types as $object_type ):
+		register_taxonomy_for_object_type( 'sz_league', $object_type );
+	endforeach;
+	
+	$labels = array(
+		'name' => __( 'Venues', 'sportszone' ),
+		'singular_name' => __( 'Venue', 'sportszone' ),
+		'all_items' => __( 'All', 'sportszone' ),
+		'edit_item' => __( 'Edit Venue', 'sportszone' ),
+		'view_item' => __( 'View', 'sportszone' ),
+		'update_item' => __( 'Update', 'sportszone' ),
+		'add_new_item' => __( 'Add New', 'sportszone' ),
+		'new_item_name' => __( 'Name', 'sportszone' ),
+		'parent_item' => __( 'Parent', 'sportszone' ),
+		'parent_item_colon' => __( 'Parent:', 'sportszone' ),
+		'search_items' =>  __( 'Search', 'sportszone' ),
+		'not_found' => __( 'No results found.', 'sportszone' ),
+	);
+	$args = apply_filters( 'sportszone_register_taxonomy_venue', array(
+		'label' => __( 'Venues', 'sportszone' ),
+		'labels' => $labels,
+		'public' => true,
+		'show_ui' => $show,
+		'show_in_menu' => $show,
+		'show_in_nav_menus' => false,
+		'show_tagcloud' => false,
+		'hierarchical' => true,
+		'rewrite' => array( 'slug' => get_option( 'sportszone_venue_slug', 'venue' ) ),
+		'show_in_rest' => true,
+		//'rest_controller_class' => 'SP_REST_Terms_Controller',
+		'rest_base' => 'venues',
+	) );
+	$object_types = apply_filters( 'sportszone_event_object_types', array( 'sz_match') );
+	register_taxonomy( 'sz_venue', $object_types, $args );
+	foreach ( $object_types as $object_type ):
+		register_taxonomy_for_object_type( 'sz_venue', $object_type );
+	endforeach;
+
 }
 add_action( 'sz_register_taxonomies', 'sz_register_default_taxonomies' );
 

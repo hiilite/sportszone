@@ -123,6 +123,8 @@ class SZ_Admin {
 		require( $this->admin_dir . 'sz-core-admin-components.php' );
 		require( $this->admin_dir . 'sz-core-admin-slugs.php'      );
 		require( $this->admin_dir . 'sz-core-admin-tools.php'      );
+		require( $this->admin_dir . 'sz-core-admin-meta-boxes.php' );
+		
 	}
 
 	/**
@@ -545,6 +547,32 @@ class SZ_Admin {
 	 */
 	public function enqueue_scripts() {
 		wp_enqueue_style( 'sz-admin-common-css' );
+		wp_enqueue_style( 'jquery-chosen' );
+		
+		wp_enqueue_script( 'chosen' );
+    	wp_enqueue_script( 'jquery-ui-core' );
+    	wp_enqueue_script( 'jquery-ui-draggable' );
+    	wp_enqueue_script( 'jquery-ui-droppable' );
+    	wp_enqueue_script( 'jquery-ui-sortable' );
+    	wp_enqueue_script( 'jquery-tiptip' );
+    	wp_enqueue_script( 'jquery-caret' );
+    	wp_enqueue_script( 'jquery-countdown' );
+    	wp_enqueue_script( 'jquery-fitvids' );
+    	
+    	wp_enqueue_script( 'sportszone-admin' );
+    	
+    	$strings = apply_filters( 'sportszone_localized_strings', array(
+			'none' => __( 'None', 'sportszone' ),
+			'remove_text' => __( '&mdash; Remove &mdash;', 'sportszone' ),
+			'days' => __( 'days', 'sportszone' ),
+			'hrs' => __( 'hrs', 'sportszone' ),
+			'mins' => __( 'mins', 'sportszone' ),
+			'secs' => __( 'secs', 'sportszone' ),
+			'displaying_posts' => html_entity_decode( __( 'Displaying %s&#8211;%s of %s', 'sportszone' ) ),
+    	) );
+
+    	// Localize scripts
+		wp_localize_script( 'sportszone-admin', 'localized_strings', $strings );
 
 		// SportsZone Hello
 		if ( 0 === strpos( get_current_screen()->id, 'dashboard' ) && ! empty( $_GET['hello'] ) && $_GET['hello'] === 'sportszone' ) {
