@@ -27,7 +27,6 @@ class SZ_Meta_Box_Match_Results {
 
 		$match = new SZ_Match( $post );
 		list( $columns, $usecolumns, $data ) = $match->results( true );
-		print_r($match->results( true ));
 		self::table( $columns, $usecolumns, $data, $has_checkboxes );
 	}
 

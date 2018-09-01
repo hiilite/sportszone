@@ -1,83 +1,83 @@
 /* SportsPress RTL */
 
 /* Thumbnails and Details */
-.sz-template-logo,
-.sz-template-photo {
+.sp-template-logo,
+.sp-template-photo {
 	float: right;
 	margin-right: 0;
 	margin-left: 2em;
 }
 
 /* Profile selector */
-.sz-template-profile-selector {
+.sp-template-profile-selector {
 	text-align: left;
 }
 
 /* Data Tables */
-.sz-data-table .data-name {
+.sp-data-table .data-name {
 	text-align: right;
 }
 
 /* Pagination */
-.sz-table-wrapper .dataTables_paginate .previous {
+.sp-table-wrapper .dataTables_paginate .previous {
 	float: right;
 	margin-left: 0.5em;
 	margin-right: 0;
 }
-.sz-table-wrapper .dataTables_paginate .next {
+.sp-table-wrapper .dataTables_paginate .next {
 	float: left;
 	margin-right: 0.5em;
 	margin-left: 0;
 }
 
 /* League Table and Player List */
-.sz-league-table .data-name .team-logo,
-.sz-player-list .data-name .player-photo,
-.sz-player-list .data-name .player-flag {
+.sp-league-table .data-name .team-logo,
+.sp-player-list .data-name .player-photo,
+.sp-player-list .data-name .player-flag {
 	margin-right: 0;
 	margin-left: 0.5em;
 }
 
 /* Event Calendar */
-.sz-event-calendar #next {
+.sp-event-calendar #next {
 	text-align: left;
 }
-.sz-event-calendar #prev {
+.sp-event-calendar #prev {
 	text-align: right;
 }
 
 /* Event List */
-.sz-event-list .data-article a .dashicons {
+.sp-event-list .data-article a .dashicons {
 	padding-right: 0;
 	padding-left: 3px;
 }
-.sz-event-list .data-home {
+.sp-event-list .data-home {
 	text-align: left;
 }
-.sz-event-list .data-away {
+.sp-event-list .data-away {
 	text-align: right;
 }
-.sz-event-list .data-home img {
+.sp-event-list .data-home img {
 	float: left;
 	margin-left: 0;
 	margin-right: 8px;
 }
-.sz-event-list .data-away img {
+.sp-event-list .data-away img {
 	float: right;
 	margin-right: 0;
 	margin-left: 8px;
 }
 
 /* Event Blocks */
-.sz-event-blocks .logo-odd {
+.sp-event-blocks .logo-odd {
 	float: right;
 }
-.sz-event-blocks .logo-even {
+.sp-event-blocks .logo-even {
 	float: left;
 }
 
 @media only screen and (min-width: 601px) {
-	.sz-template-logo + .sz-post-content {
+	.sp-template-logo + .sp-post-content {
 		clear: right;
 	}
 }

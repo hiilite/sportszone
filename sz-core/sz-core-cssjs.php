@@ -80,6 +80,7 @@ function sz_core_register_common_scripts() {
 		'jquery-countdown'  => array( 'file' => "{$url}jquery.countdown{$min}.js", 'dependencies' => array('jquery'), 'footer' => true),
 		'jquery-fitvids' 	=> array( 'file' => "{$url}jquery.fitvids.js", 'dependencies' => array('jquery'), 'footer' => true),
 		'sportszone-admin'	=> array( 'file' => "{$url}admin/sportszone-admin.js", 'dependencies' => array( 'jquery', 'chosen', 'jquery-ui-core', 'jquery-ui-datepicker', 'jquery-ui-draggable', 'jquery-ui-droppable', 'jquery-ui-sortable', 'jquery-tiptip', 'jquery-caret', 'jquery-countdown', 'jquery-fitvids' ), 'footer' => true ),
+		'sportspress-admin-equationbuilder'	=> array( 'file' => "{$url}admin/equationbuilder.js", 'dependencies' => array( 'jquery', 'jquery-ui-core', 'jquery-ui-draggable', 'jquery-ui-droppable' ), 'footer' => true ),
 	);
 
 	// Version 2.7 - Add Moment.js locale to our $scripts array if we found one.
@@ -156,6 +157,22 @@ function sz_core_register_common_styles() {
 		),
 		'jquery-chosen'	=> array(
 			'file'         => "{$url}chosen.css",
+			'dependencies' => false
+		),
+		'sportszone-admin'	=> array(
+			'file'         => "{$url}admin.css",
+			'dependencies' => false
+		),
+		'sportszone-admin-slickmap'	=> array(
+			'file'         => "{$url}slickmap.css",
+			'dependencies' => false
+		),
+		'sportszone-admin-equation-styles'	=> array(
+			'file'         => "{$url}equation.css",
+			'dependencies' => false
+		),
+		'sportszone-admin-datepicker-styles'	=> array(
+			'file'         => "{$url}datepicker.css",
 			'dependencies' => false
 		)
 	) );

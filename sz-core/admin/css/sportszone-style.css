@@ -1,12 +1,12 @@
 /* SportsPress Templates */
 
-.sz-template,
-.sz-data-table,
-.sz-table-caption {
+.sp-template,
+.sp-data-table,
+.sp-table-caption {
     font-family: "Roboto", "Helvetica", sans-serif;
 }
 
-.sz-template {
+.sp-template {
     clear: both;
     overflow: hidden;
 }
@@ -16,34 +16,34 @@
  * This stylesheet can be disabled via SportsPress General Settings.
  */
 
-.sz-template h1,
-.sz-template h2,
-.sz-template h3,
-.sz-template h4,
-.sz-template h5,
-.sz-template h6,
-.sz-data-table h1,
-.sz-data-table h2,
-.sz-data-table h3,
-.sz-data-table h4,
-.sz-data-table h5,
-.sz-data-table h6,
-.sz-table-caption h1,
-.sz-table-caption h2,
-.sz-table-caption h3,
-.sz-table-caption h4,
-.sz-table-caption h5,
-.sz-table-caption h6 {
+.sp-template h1,
+.sp-template h2,
+.sp-template h3,
+.sp-template h4,
+.sp-template h5,
+.sp-template h6,
+.sp-data-table h1,
+.sp-data-table h2,
+.sp-data-table h3,
+.sp-data-table h4,
+.sp-data-table h5,
+.sp-data-table h6,
+.sp-table-caption h1,
+.sp-table-caption h2,
+.sp-table-caption h3,
+.sp-table-caption h4,
+.sp-table-caption h5,
+.sp-table-caption h6 {
     font-family: "Roboto", "Helvetica", sans-serif !important;
 }
 
-.sz-template {
+.sp-template {
     margin-bottom: 20px !important;
 }
 
-.sz-template *,
-.sz-data-table *,
-.sz-table-caption {
+.sp-template *,
+.sp-data-table *,
+.sp-table-caption {
     box-sizing: border-box !important;
     font-weight: 400 !important;
     text-transform: none !important;
@@ -51,7 +51,7 @@
     color: #333 !important;
 }
 
-.sz-table-caption {
+.sp-table-caption {
     margin: 0 !important;
     padding: 15px !important;
     background: #fff !important;
@@ -66,17 +66,17 @@
 
 /* Color Resets */
 
-.sz-template input,
-.sz-data-table input,
-.sz-template .sz-event-logos,
-.sz-template .sz-event-staff {
+.sp-template input,
+.sp-data-table input,
+.sp-template .sp-event-logos,
+.sp-template .sp-event-staff {
     color: initial !important;
 }
 
 /* Links */
 
-.sz-template a,
-.sz-data-table a {
+.sp-template a,
+.sp-data-table a {
     box-shadow: none !important;
     border: none !important;
     text-decoration: none !important;
@@ -84,19 +84,19 @@
     color: #00a69c !important;
 }
 
-.sz-template a:hover,
-.sz-data-table a:hover {
+.sp-template a:hover,
+.sp-data-table a:hover {
     text-decoration: underline !important;
 }
 
-.sz-template a:hover .dashicons,
-.sz-template a:hover [class^="sz-icon-"], [class*=" sz-icon-"],
-.sz-data-table a:hover .dashicons,
-.sz-data-table a:hover [class^="sz-icon-"], [class*=" sz-icon-"] {
+.sp-template a:hover .dashicons,
+.sp-template a:hover [class^="sp-icon-"], [class*=" sp-icon-"],
+.sp-data-table a:hover .dashicons,
+.sp-data-table a:hover [class^="sp-icon-"], [class*=" sp-icon-"] {
     text-decoration: none !important;
 }
 
-.sz-view-all-link {
+.sp-view-all-link {
     padding: 10px 15px !important;
     margin: 0 !important;
     background: #fff !important;
@@ -108,7 +108,7 @@
     text-align: right !important;
 }
 
-.sz-view-all-link a {
+.sp-view-all-link a {
     font-size: 12px !important;
     font-weight: 400 !important;
     line-height: 1.5 !important;
@@ -116,26 +116,26 @@
     color: rgba(51,51,51,0.5) !important;
 }
 
-.sz-view-all-link a:hover {
+.sp-view-all-link a:hover {
     color: #333 !important;
     text-decoration: none !important;
 }
 
-.sz-form-events a:hover {
+.sp-form-events a:hover {
     color: #fff !important;
     text-decoration: none !important;
 }
 
 /* Images */
 
-.sz-template img {
+.sp-template img {
     display: inline-block !important;
     box-shadow: none !important;
 }
 
 /* Tables */
 
-.sz-data-table {
+.sp-data-table {
     margin: 0 !important;
     background: #fff !important;
     border-collapse: collapse !important;
@@ -143,12 +143,12 @@
     width: 100% !important;
 }
 
-.sz-data-table tr {
+.sp-data-table tr {
     border: none !important;
 }
 
-.sz-data-table th,
-.sz-data-table td {
+.sp-data-table th,
+.sp-data-table td {
     font-size: 13px !important;
     font-weight: 400 !important;
     line-height: 1.5 !important;
@@ -157,7 +157,7 @@
     text-align: center !important;
 }
 
-.sz-data-table th {
+.sp-data-table th {
     font-size: 12px !important;
     font-weight: 500 !important;
     background: #fff !important;
@@ -165,41 +165,41 @@
     border: none !important;
 }
 
-.sz-data-table th a {
+.sp-data-table th a {
     color: inherit !important;
 }
 
-.sz-data-table .data-name {
+.sp-data-table .data-name {
     text-align: left !important;
 }
 
-.sz-data-table .sz-highlight,
-.sz-data-table .highlighted td {
+.sp-data-table .sp-highlight,
+.sp-data-table .highlighted td {
     font-weight: 500 !important;
     background: #f9f9f9 !important;
 }
 
 /* Galleries */
 
-.sz-template-gallery .sz-gallery-wrapper {
+.sp-template-gallery .sp-gallery-wrapper {
     border: 1px solid #e5e5e5 !important;
     background: #fff !important;
     display: table !important;
     width: 100% !important;
 }
 
-.sz-template-gallery .gallery-item {
+.sp-template-gallery .gallery-item {
     padding: 0 !important;
     margin: 0 !important;
     position: relative !important;
 }
 
-.sz-template-gallery .gallery-item a {
+.sp-template-gallery .gallery-item a {
     display: block !important;
     color: #999 !important;
 }
 
-.sz-template-gallery .gallery-item img {
+.sp-template-gallery .gallery-item img {
     display: block !important;
     border: none !important;
     padding: 0 !important;
@@ -207,7 +207,7 @@
     border-radius: 0 !important;
 }
 
-.sz-template-gallery .gallery-caption {
+.sp-template-gallery .gallery-caption {
     padding: 0 !important;
     margin: 0 !important;
     font-size: 12px !important;
@@ -219,7 +219,7 @@
     padding: 5px 10px !important;
 }
 
-.sz-template-gallery .gallery-caption strong {
+.sp-template-gallery .gallery-caption strong {
     color: #fff !important;
     background: #00a69c !important;
     display: block !important;
@@ -232,11 +232,11 @@
     padding: 5px 10px !important;
 }
 
-.sz-template-staff-gallery .gallery-caption strong {
+.sp-template-staff-gallery .gallery-caption strong {
     display: none !important;
 }
 
-.sz-template-gallery .sz-gallery-group-name {
+.sp-template-gallery .sp-gallery-group-name {
     margin: 0 !important;
     padding: 15px !important;
     background: #fff !important;
@@ -249,9 +249,9 @@
 
 /* Countdowns */
 
-.sz-template-countdown .sz-event-name,
-.sz-template-countdown .sz-event-venue,
-.sz-template-countdown .sz-event-league {
+.sp-template-countdown .sp-event-name,
+.sp-template-countdown .sp-event-venue,
+.sp-template-countdown .sp-event-league {
     margin: 0 !important;
     padding: 5px 10px !important;
     text-align: center !important;
@@ -263,26 +263,26 @@
     border-bottom: none !important;
 }
 
-.sz-template-countdown .sz-event-name {
+.sp-template-countdown .sp-event-name {
     font-size: 13px !important;
     font-weight: 400 !important;
     color: #333 !important;
 }
 
-.sz-template-countdown .sz-event-venue,
-.sz-template-countdown .sz-event-league {
+.sp-template-countdown .sp-event-venue,
+.sp-template-countdown .sp-event-league {
     font-size: 12px !important;
     font-weight: 500 !important;
     background: #fff !important;
     color: #999 !important;
 }
 
-.sz-template-countdown .sz-event-venue a,
-.sz-template-countdown .sz-event-league a {
+.sp-template-countdown .sp-event-venue a,
+.sp-template-countdown .sp-event-league a {
     color: inherit !important;
 }
 
-.sz-countdown time {
+.sp-countdown time {
     display: table !important;
     background: #fff !important;
     border: 1px solid #e5e5e5 !important;
@@ -290,7 +290,7 @@
     width: 100% !important;
 }
 
-.sz-countdown span {
+.sp-countdown span {
     font-size: 20px !important;
     font-weight: 400 !important;
     line-height: 1.5 !important;
@@ -300,7 +300,7 @@
     text-align: center !important;
 }
 
-.sz-countdown span small {
+.sp-countdown span small {
     font-size: 12px !important;
     font-weight: 400 !important;
     line-height: 1.5 !important;
@@ -311,28 +311,28 @@
 
 /* Event Calendars */
 
-.sz-template-event-calendar .sz-table-caption {
+.sp-template-event-calendar .sp-table-caption {
     display: table-caption !important;
 }
 
-.sz-template-event-calendar td {
+.sp-template-event-calendar td {
     padding: 10px 5px !important;
 }
 
-.sz-template-event-calendar tfoot td {
+.sp-template-event-calendar tfoot td {
     padding: 10px 15px !important;
     border: none !important;
 }
 
-.sz-template-event-calendar .sz-previous-month {
+.sp-template-event-calendar .sp-previous-month {
     text-align: left !important;
 }
 
-.sz-template-event-calendar .sz-next-month {
+.sp-template-event-calendar .sp-next-month {
     text-align: right !important;
 }
 
-.sz-template-event-calendar tfoot a {
+.sp-template-event-calendar tfoot a {
     font-size: 12px !important;
     font-weight: 400 !important;
     line-height: 1.5 !important;
@@ -340,16 +340,16 @@
     color: rgba(51,51,51,0.5) !important;
 }
 
-.sz-template-event-calendar tfoot a:hover {
+.sp-template-event-calendar tfoot a:hover {
     color: #333 !important;
     text-decoration: none !important;
 }
 
-.sz-template-event-calendar tbody td {
+.sp-template-event-calendar tbody td {
     position: relative !important;
 }
 
-.sz-template-event-calendar tbody td a:before {
+.sp-template-event-calendar tbody td a:before {
     content: '•' !important;
     position: absolute !important;
     font-size: 20px !important;
@@ -361,33 +361,33 @@
 
 /* Event Lists */
 
-.sz-template-event-list .data-home {
+.sp-template-event-list .data-home {
     text-align: right !important;
 }
 
-.sz-template-event-list .data-away {
+.sp-template-event-list .data-away {
     text-align: left !important;
 }
 
 /* Event Blocks */
 
-.sz-template-event-blocks td {
+.sp-template-event-blocks td {
     padding: 0 !important;
 }
 
-.sz-template-event-blocks .sz-event-date {
+.sp-template-event-blocks .sp-event-date {
     color: rgba(51,51,51,0.5) !important;
     font-weight: 500 !important;
     font-size: 12px !important;
     margin: 10px !important;
 }
 
-.sz-template-event-blocks .sz-event-date a,
-.sz-template-event-blocks .sz-event-date a:hover {
+.sp-template-event-blocks .sp-event-date a,
+.sp-template-event-blocks .sp-event-date a:hover {
     color: inherit !important;
 }
 
-.sz-template-event-blocks .sz-event-results {
+.sp-template-event-blocks .sp-event-results {
     font-size: 20px !important;
     font-weight: 400 !important;
     padding: 0 !important;
@@ -395,17 +395,17 @@
     color: #333 !important;
 }
 
-.sz-template-event-blocks .sz-event-results a {
+.sp-template-event-blocks .sp-event-results a {
     color: inherit !important;
 }
 
-.sz-template-event-blocks .sz-event-results a:hover {
+.sp-template-event-blocks .sp-event-results a:hover {
     color: inherit !important;
     text-decoration: none !important;
 }
 
-.sz-template-event-blocks .sz-event-title,
-.sz-template-event-blocks .sz-event-status {
+.sp-template-event-blocks .sp-event-title,
+.sp-template-event-blocks .sp-event-status {
     display: block !important;
     padding: 0 !important;
     margin: 10px !important;
@@ -415,8 +415,8 @@
 
 /* Event Logos */
 
-.sz-template-event-logos .sz-team-name,
-.sz-template-event-logos .sz-team-result {
+.sp-template-event-logos .sp-team-name,
+.sp-template-event-logos .sp-team-result {
     font-size: 20px !important;
     font-weight: 400 !important;
     padding: 0 !important;
@@ -424,70 +424,70 @@
     color: #333 !important;
 }
 
-.sz-template-event-logos a,
-.sz-template-event-logos a:hover {
+.sp-template-event-logos a,
+.sp-template-event-logos a:hover {
     border: none !important;
     text-decoration: none !important;
 }
 
 /* Event Performance */
 
-.sz-template-event-performance-icons td {
+.sp-template-event-performance-icons td {
     border: none !important;
 }
 
-.sz-template-event-performance-icons tr:first-child td {
+.sp-template-event-performance-icons tr:first-child td {
     border-top: 1px solid #e5e5e5 !important;
 }
 
 /* Videos */
-.sz-template-event-video iframe {
+.sp-template-event-video iframe {
     width: 100% !important;
 }
 
 /*  Match Stats */
 
-.sz-template-event-statistics .sz-statistic-label {
+.sp-template-event-statistics .sp-statistic-label {
     font-size: 12px !important;
     font-weight: 500 !important;
     color: inherit !important;
     opacity: 0.5 !important;
 }
 
-.sz-event-statistics {
+.sp-event-statistics {
     background: transparent !important;
     margin: 0 0 10px !important;
 }
 
-.sz-event-statistics,
-.sz-event-statistics tr,
-.sz-event-statistics td {
+.sp-event-statistics,
+.sp-event-statistics tr,
+.sp-event-statistics td {
     border: none !important;
 }
 
-.sz-event-statistics .sz-statistic-ratio {
+.sp-event-statistics .sp-statistic-ratio {
     padding: 0 !important;
 }
 
-.sz-event-statistics .sz-statistic-bar {
+.sp-event-statistics .sp-statistic-bar {
     border: 1px solid #e5e5e5 !important;
     background: #f9f9f9 !important;
 }
 
 /* Venues */
 
-.sz-event-venue-map-row td {
+.sp-event-venue-map-row td {
     padding: 0 !important;
 }
 
-.sz-event-venue-map-row .sz-google-map {
+.sp-event-venue-map-row .sp-google-map {
     display: block !important;
     margin: 0 !important;
 }
 
 /* Teams */
 
-.sz-template-logo {
+.sp-template-logo {
     float: right !important;
     margin: 0 0 20px 20px !important;
     clear: none !important;
@@ -495,103 +495,103 @@
 
 /* Profiles */
 
-.sz-template-details dl {
+.sp-template-details dl {
     margin: 0 0 20px !important;
     padding: 15px !important;
     border: 1px solid #e5e5e5 !important;
     background: #fff !important;
 }
 
-.sz-template-details dt,
-.sz-template-details dd {
+.sp-template-details dt,
+.sp-template-details dd {
     margin: 0 !important;
     padding: 0 !important;
 }
 
-.sz-template-details dt {
+.sp-template-details dt {
     font-size: 12px !important;
     font-weight: 500 !important;
     color: rgba(51,51,51,0.5) !important;
 }
 
-.sz-template-details dd {
+.sp-template-details dd {
     font-size: 16px !important;
     font-weight: 400 !important;
     color: #333 !important;
     margin-bottom: 10px !important;
 }
 
-.sz-template-details dd:last-child {
+.sp-template-details dd:last-child {
     margin-bottom: 0 !important;
 }
 
 /* Twitter */
 
-.sz-tweets {
+.sp-tweets {
     border: 1px solid #e5e5e5 !important;
     border-top: none !important;
 }
 
 /* Scoreboards */
 
-.sz-header-scoreboard .sz-template-scoreboard {
+.sp-header-scoreboard .sp-template-scoreboard {
     margin-bottom: 0 !important;
 }
 
-.sz-template-scoreboard td {
+.sp-template-scoreboard td {
     padding: 0 !important;
 }
 
-.sz-template-scoreboard td:hover {
+.sp-template-scoreboard td:hover {
     background: #f9f9f9 !important;
 }
 
-.sz-template-scoreboard a,
-.sz-template-scoreboard a:hover {
+.sp-template-scoreboard a,
+.sp-template-scoreboard a:hover {
     text-decoration: none !important;
     color: #333 !important;
 }
 
-.sz-template-scoreboard .sz-scoreboard-date {
+.sp-template-scoreboard .sp-scoreboard-date {
     font-size: 12px !important;
     font-weight: 500 !important;
     color: rgba(51,51,51,0.5) !important;
 }
 
-.sz-template-scoreboard .sz-scoreboard-nav {
+.sp-template-scoreboard .sp-scoreboard-nav {
     color: #fff !important;
     background: #00a69c !important;
 }
 
 /* Timelines */
 
-.sz-template-timeline .sz-timeline * {
+.sp-template-timeline .sp-timeline * {
     color: initial !important;
 }
 
 /* Tournaments */
 
-.sz-tournament-bracket {
+.sp-tournament-bracket {
     color: #333 !important;
     background: transparent !important;
     width: 100% !important;
     border-collapse: separate !important;
 }
 
-.sz-tournament-bracket a,
-.sz-tournament-bracket a:hover {
+.sp-tournament-bracket a,
+.sp-tournament-bracket a:hover {
     text-decoration: none !important;
     color: inherit !important;
     border: none! important;
 }
 
-.sz-tournament-bracket tr,
-.sz-tournament-bracket th,
-.sz-tournament-bracket td {
+.sp-tournament-bracket tr,
+.sp-tournament-bracket th,
+.sp-tournament-bracket td {
     border: none !important;
 }
 
-.sz-tournament-bracket thead th {
+.sp-tournament-bracket thead th {
     font-size: 12px !important;
     font-weight: 500 !important;
     color: rgba(51,51,51,0.5) !important;
@@ -599,7 +599,7 @@
     border-bottom: 1px solid #e5e5e5 !important;
 }
 
-.sz-tournament-bracket .sz-team-name {
+.sp-tournament-bracket .sp-team-name {
     font-size: 13px !important;
     font-weight: 400 !important;
     text-align: center !important;
@@ -607,36 +607,36 @@
     border: 1px solid #e5e5e5 !important;
 }
 
-.sz-tournament-bracket .sz-team-name:hover {
+.sp-tournament-bracket .sp-team-name:hover {
     border: 1px solid #e5e5e5 !important;
 }
 
-.sz-tournament-bracket .sz-heading,
-.sz-tournament-bracket .sz-heading:hover {
+.sp-tournament-bracket .sp-heading,
+.sp-tournament-bracket .sp-heading:hover {
     color: #fff !important;
     background: #00a69c !important;
     border-color: #00a69c !important;
 }
 
-.sz-tournament-bracket .sz-event {
+.sp-tournament-bracket .sp-event {
     border-color: #e5e5e5 !important;
     border-width: 1px !important;
 }
 
-.sz-tournament-bracket .sz-event .sz-event-title {
+.sp-tournament-bracket .sp-event .sp-event-title {
     font-size: 12px !important;
     font-weight: 400 !important;
     color: rgba(51,51,51,0.5) !important;
     text-align: center !important;
 }
 
-.sz-tournament-bracket .sz-event .sz-event-title:hover {
+.sp-tournament-bracket .sp-event .sp-event-title:hover {
     color: #333 !important;
 }
 
 /* Tabs */
 
-.sz-tab-menu {
+.sp-tab-menu {
     display: block !important;
     clear: both !important;
     margin: 0 0 20px !important;
@@ -644,79 +644,79 @@
     list-style: none !important;
 }
 
-.sz-tab-menu-item {
+.sp-tab-menu-item {
     display: inline-block !important;
     margin: 0 !important;
     padding: 0 !important;
 }
 
-.sz-tab-menu-item a {
+.sp-tab-menu-item a {
     margin: 0 !important;
     padding: 5px 10px;
     border-bottom: 2px solid transparent !important;
     box-shadow: none !important;
 }
 
-.sz-tab-menu-item a:hover {
+.sp-tab-menu-item a:hover {
     text-decoration: none !important;
 }
 
-.sz-tab-menu-item-active a,
-.sz-tab-menu-item-active a:hover {
+.sp-tab-menu-item-active a,
+.sp-tab-menu-item-active a:hover {
     color: #00a69c !important;
     border-bottom-color: #00a69c !important;
 }
 
 /* Messages */
-.sz-template .sz-message {
+.sp-template .sp-message {
     color: #00a69c !important;
     border-color: #00a69c !important;
 }
 
 /* Post Content */
 
-.single-sz_team .has-post-thumbnail .sz-post-content {
+.single-sp_team .has-post-thumbnail .sp-post-content {
     clear: none;
 }
 
 /* Media Queries */
 
 @media screen and (min-width: 601px) {
-    .sz-template-event-calendar tbody td {
+    .sp-template-event-calendar tbody td {
         padding: 15px 5px !important;
     }
 
-    .sz-template-event-calendar tbody td a:before {
+    .sp-template-event-calendar tbody td a:before {
         font-size: 25px !important;
     }
 
-    .widget .sz-template-event-calendar tbody td {
+    .widget .sp-template-event-calendar tbody td {
         padding: 10px 5px !important;
     }
 
-    .widget .sz-template-event-calendar tbody td a:before {
+    .widget .sp-template-event-calendar tbody td a:before {
         font-size: 20px !important;
     }
 }
 
 @media screen and (min-width: 801px) {
-    .sz-template-event-calendar tbody td {
+    .sp-template-event-calendar tbody td {
         padding: 20px 5px !important;
     }
 
-    .sz-template-event-calendar tbody td a:before {
+    .sp-template-event-calendar tbody td a:before {
         font-size: 30px !important;
     }
 
-    .widget .sz-template-event-calendar tbody td {
+    .widget .sp-template-event-calendar tbody td {
         padding: 10px 5px !important;
     }
 
-    .widget .sz-template-event-calendar tbody td a:before {
+    .widget .sp-template-event-calendar tbody td a:before {
         font-size: 20px !important;
     }
 
-    .sz-template-event-performance-icons.sz-template-event-performance-section:nth-child(2n) {
+    .sp-template-event-performance-icons.sp-template-event-performance-section:nth-child(2n) {
         padding-top: 61px !important;
     }
 }

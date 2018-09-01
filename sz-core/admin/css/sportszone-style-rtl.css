@@ -5,25 +5,25 @@
  * This stylesheet can be disabled via SportsPress General Settings.
  */
 
-.sz-tournament-bracket .sz-team .sz-team-name:before {
+.sp-tournament-bracket .sp-team .sp-team-name:before {
     border-right-color: #e5e5e5 !important;
     border-left-color: #e5e5e5 !important;
     right: -10px !important;
 }
 
-.sz-tournament-bracket .sz-team-flip .sz-team-name:before {
+.sp-tournament-bracket .sp-team-flip .sp-team-name:before {
     right: auto !important;
     left: -10px !important;
 }
 
-.sz-tournament-bracket .sz-team.sz-first-round .sz-team-name {
+.sp-tournament-bracket .sp-team.sp-first-round .sp-team-name {
     margin-right: -1px !important;
 }
 
-.sz-tournament-bracket .sz-team.sz-last-round .sz-team-name {
+.sp-tournament-bracket .sp-team.sp-last-round .sp-team-name {
     margin-left: -1px !important;
 }
 
-.sz-template-event-performance-icons .sz-performance-icons {
+.sp-template-event-performance-icons .sp-performance-icons {
     text-align: left !important;
 }

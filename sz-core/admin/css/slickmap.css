@@ -10,7 +10,7 @@ Copyright (c) 2009 Astuteo, LLC http://astuteo.com
 	margin-right: 0;
 }
 
-.sz-sitemap {
+.sp-sitemap {
 	margin: 40px 0;
 	float: left;
 	width: 100%;
@@ -21,14 +21,14 @@ Copyright (c) 2009 Astuteo, LLC http://astuteo.com
 	Reset Styles (adapted from meyerweb.com)
 ------------------------------------------------------------ */
 
-.sz-sitemap div, .sz-sitemap span, .sz-sitemap applet, .sz-sitemap object, .sz-sitemap iframe, .sz-sitemap
-h1, .sz-sitemap h2, .sz-sitemap h3, .sz-sitemap h4, .sz-sitemap h5, .sz-sitemap h6, .sz-sitemap p, .sz-sitemap blockquote, .sz-sitemap pre, .sz-sitemap
-a, .sz-sitemap abbr, .sz-sitemap acronym, .sz-sitemap address, .sz-sitemap big, .sz-sitemap cite, .sz-sitemap code, .sz-sitemap
-del, .sz-sitemap dfn, .sz-sitemap em, .sz-sitemap font, .sz-sitemap img, .sz-sitemap ins, .sz-sitemap kbd, .sz-sitemap q, .sz-sitemap s, .sz-sitemap samp, .sz-sitemap
-small, .sz-sitemap strike, .sz-sitemap strong, .sz-sitemap sub, .sz-sitemap sup, .sz-sitemap tt, .sz-sitemap var, .sz-sitemap
-dl, .sz-sitemap dt, .sz-sitemap dd, .sz-sitemap ol, .sz-sitemap ul, .sz-sitemap li, .sz-sitemap
-fieldset, .sz-sitemap form, .sz-sitemap label, .sz-sitemap legend, .sz-sitemap
-table, .sz-sitemap caption, .sz-sitemap tbody, .sz-sitemap tfoot, .sz-sitemap thead, .sz-sitemap tr, .sz-sitemap th, .sz-sitemap td {
+.sp-sitemap div, .sp-sitemap span, .sp-sitemap applet, .sp-sitemap object, .sp-sitemap iframe, .sp-sitemap
+h1, .sp-sitemap h2, .sp-sitemap h3, .sp-sitemap h4, .sp-sitemap h5, .sp-sitemap h6, .sp-sitemap p, .sp-sitemap blockquote, .sp-sitemap pre, .sp-sitemap
+a, .sp-sitemap abbr, .sp-sitemap acronym, .sp-sitemap address, .sp-sitemap big, .sp-sitemap cite, .sp-sitemap code, .sp-sitemap
+del, .sp-sitemap dfn, .sp-sitemap em, .sp-sitemap font, .sp-sitemap img, .sp-sitemap ins, .sp-sitemap kbd, .sp-sitemap q, .sp-sitemap s, .sp-sitemap samp, .sp-sitemap
+small, .sp-sitemap strike, .sp-sitemap strong, .sp-sitemap sub, .sp-sitemap sup, .sp-sitemap tt, .sp-sitemap var, .sp-sitemap
+dl, .sp-sitemap dt, .sp-sitemap dd, .sp-sitemap ol, .sp-sitemap ul, .sp-sitemap li, .sp-sitemap
+fieldset, .sp-sitemap form, .sp-sitemap label, .sp-sitemap legend, .sp-sitemap
+table, .sp-sitemap caption, .sp-sitemap tbody, .sp-sitemap tfoot, .sp-sitemap thead, .sp-sitemap tr, .sp-sitemap th, .sp-sitemap td {
 	margin: 0;
 	padding: 0;
 	border: 0;
@@ -40,79 +40,79 @@ table, .sz-sitemap caption, .sz-sitemap tbody, .sz-sitemap tfoot, .sz-sitemap th
 	Number of Columns
 ------------------------------------------------------------ */
 
-.sz-sitemap li {
+.sp-sitemap li {
 	width: 12.5%;
 }
 
-.sz-sitemap li ul li {
+.sp-sitemap li ul li {
 	width:100% !important;
 }
 
-.sz-sitemap .sz-primary { max-width: 1600px; }
-.sz-sitemap .col0 { max-width: 200px; }
-.sz-sitemap .col1 { max-width: 200px; }
-.sz-sitemap .col2 { max-width: 400px; }
-.sz-sitemap .col3 { max-width: 600px; }
-.sz-sitemap .col4 { max-width: 800px; }
-.sz-sitemap .col5 { max-width: 1000px; }
-.sz-sitemap .col6 { max-width: 1200px; }
-.sz-sitemap .col7 { max-width: 1400px; }
-.sz-sitemap .col8 { max-width: 1600px; }
+.sp-sitemap .sp-primary { max-width: 1600px; }
+.sp-sitemap .col0 { max-width: 200px; }
+.sp-sitemap .col1 { max-width: 200px; }
+.sp-sitemap .col2 { max-width: 400px; }
+.sp-sitemap .col3 { max-width: 600px; }
+.sp-sitemap .col4 { max-width: 800px; }
+.sp-sitemap .col5 { max-width: 1000px; }
+.sp-sitemap .col6 { max-width: 1200px; }
+.sp-sitemap .col7 { max-width: 1400px; }
+.sp-sitemap .col8 { max-width: 1600px; }
 
-.sz-sitemap .col1 li { width:99.9%; }
-.sz-sitemap .col2 li { width:50%; }
-.sz-sitemap .col3 li { width:33.3%; }
-.sz-sitemap .col4 li { width:25%; }
-.sz-sitemap .col5 li { width:20%; }
-.sz-sitemap .col6 li { width:16.6%; }
-.sz-sitemap .col7 li { width:14.2%; }
-.sz-sitemap .col8 li { width:12.5%; }
+.sp-sitemap .col1 li { width:99.9%; }
+.sp-sitemap .col2 li { width:50%; }
+.sp-sitemap .col3 li { width:33.3%; }
+.sp-sitemap .col4 li { width:25%; }
+.sp-sitemap .col5 li { width:20%; }
+.sp-sitemap .col6 li { width:16.6%; }
+.sp-sitemap .col7 li { width:14.2%; }
+.sp-sitemap .col8 li { width:12.5%; }
 
 /* ------------------------------------------------------------
 	General Styles
 ------------------------------------------------------------ */
 
-.sz-sitemap h1 {
+.sp-sitemap h1 {
 	font-weight: bold;
 	text-transform: uppercase;
 	font-size: 20px;
 	margin: 0 0 5px 0;
 }
-.sz-sitemap h2 {
+.sp-sitemap h2 {
 	font-size: 10px;
 	color: #777777;
 	margin: 0 0 20px 0;
 }
-.sz-sitemap a {
+.sp-sitemap a {
 	text-decoration: none;
 }
-.sz-sitemap ol, .sz-sitemap ul {
+.sp-sitemap ol, .sp-sitemap ul {
 	list-style: none;
 }
-.sz-sitemap li {
+.sp-sitemap li {
 	margin: 0;
 }
-.sz-sitemap li a.button {
+.sp-sitemap li a.button {
 	white-space: normal;
 	position: relative;
 	text-align: center;
 	padding: 10px 0;
 }
-.sz-sitemap li a.action {
+.sp-sitemap li a.action {
 	white-space: normal;
 	position: relative;
 	text-align: center;
 	padding: 10px 28px;
 }
-.sz-sitemap li a.button span {
+.sp-sitemap li a.button span {
 	position: absolute;
 	left: 9px;
 	top: 9px;
 }
-.sz-sitemap li a.button span.dashicons-plus {
+.sp-sitemap li a.button span.dashicons-plus {
 	top: 12px;
 }
-.sz-sitemap li a.button-primary span {
+.sp-sitemap li a.button-primary span {
 	opacity: 0.55;
 }
 
@@ -123,7 +123,7 @@ table, .sz-sitemap caption, .sz-sitemap tbody, .sz-sitemap tfoot, .sz-sitemap th
 
 /* --------	Top Level --------- */
 
-.sz-sitemap .sz-primary .sz-home {
+.sp-sitemap .sp-primary .sp-home {
 	display: block;
 	float: none;
 	background: #f1f1f1 url('../images/slickmap/L1-left.png') center bottom no-repeat;
@@ -131,7 +131,7 @@ table, .sz-sitemap caption, .sz-sitemap tbody, .sz-sitemap tfoot, .sz-sitemap th
 	z-index: 2;
 	padding: 0 0 30px 0;
 }
-.sz-sitemap .sz-primary .sz-breadcrumb {
+.sp-sitemap .sp-primary .sp-breadcrumb {
 	display: block;
 	float: none;
 	background: #f1f1f1 url('../images/slickmap/vertical-line.png') center bottom repeat-y;
@@ -140,14 +140,14 @@ table, .sz-sitemap caption, .sz-sitemap tbody, .sz-sitemap tfoot, .sz-sitemap th
 	padding: 0 0 30px 0;
 	margin-bottom: 30px;
 }
-.sz-sitemap .sz-primary li {
+.sp-sitemap .sp-primary li {
 	min-width: 149px;
 	float: left;
 	background: url('../images/slickmap/L1-center.png') center top no-repeat;
 	padding: 30px 0;
 	margin-top: -30px;
 }
-.sz-sitemap .sz-primary li a.button {
+.sp-sitemap .sp-primary li a.button {
 	margin: 0 20px 0 0;
 	display: block;
 	font-size: 13px;
@@ -155,48 +155,48 @@ table, .sz-sitemap caption, .sz-sitemap tbody, .sz-sitemap tfoot, .sz-sitemap th
 	height: auto;
 	line-height: normal;
 }
-.sz-sitemap .sz-primary li:last-child {
+.sp-sitemap .sp-primary li:last-child {
 	background: url('../images/slickmap/L1-right.png') center top no-repeat;
 }
 
 /* --------	Second Level --------- */
 
-.sz-sitemap .sz-primary li li {
+.sp-sitemap .sp-primary li li {
 	width: 100%;
 	clear: left;
 	margin-top: 0;
 	padding: 10px 0 0 0;
 	background: url('../images/slickmap/vertical-line.png') center bottom repeat-y;
 }
-.sz-sitemap .sz-primary li li:first-child {
+.sp-sitemap .sp-primary li li:first-child {
 	padding-top: 30px;
 }
-.sz-sitemap .sz-primary li li:last-child {
+.sp-sitemap .sp-primary li li:last-child {
 	background: url('../images/slickmap/vertical-line.png') center bottom repeat-y;
 }
 
 /* --------	Third Level --------- */
 
-.sz-sitemap .sz-primary li li ul {
+.sp-sitemap .sp-primary li li ul {
 	margin: 10px 0 0 0;
 	width: 100%;
 	float: right;
 	padding: 9px 0 10px 0;
 	background: #f1f1f1 url('../images/slickmap/L3-ul-top.png') center top no-repeat;
 }
-.sz-sitemap .sz-primary li li li {
+.sp-sitemap .sp-primary li li li {
 	background: url('../images/slickmap/L3-center.png') left center no-repeat;
 	padding: 5px 0;
 }
-.sz-sitemap .sz-primary li li li a {
+.sp-sitemap .sp-primary li li li a {
 	width: 80%;
 	float: right;
 }
-.sz-sitemap .sz-primary li li li:first-child {
+.sp-sitemap .sp-primary li li li:first-child {
 	padding: 15px 0 5px 0;
 	background: url('../images/slickmap/L3-li-top.png') left center no-repeat;
 }
-.sz-sitemap .sz-primary li li li:last-child {
+.sp-sitemap .sp-primary li li li:last-child {
 	background: url('../images/slickmap/L3-bottom.png') left center no-repeat;
 }
 
@@ -205,18 +205,18 @@ table, .sz-sitemap caption, .sz-sitemap tbody, .sz-sitemap tfoot, .sz-sitemap th
 	Utility Navigation
 ------------------------------------------------------------ */
 
-.sz-sitemap .sz-utility {
+.sp-sitemap .sp-utility {
 	float: right;
 	max-width: 80%;
 	margin-top: -30px;
 	margin-right: 10px;
 }
-.sz-sitemap .sz-utility li {
+.sp-sitemap .sp-utility li {
 	float: left;
 	margin-bottom: 10px;
 	width: auto;
 }
-.sz-sitemap .sz-utility li a.button {
+.sp-sitemap .sp-utility li a.button {
 	margin: 0 10px 0 0;
 	padding: 10px 16px;
 	display: block;
@@ -227,17 +227,17 @@ table, .sz-sitemap caption, .sz-sitemap tbody, .sz-sitemap tfoot, .sz-sitemap th
 	position: relative;
 	z-index: 10;
 }
-.sz-sitemap .sz-utility li a:link:before,
-.sz-sitemap .sz-utility li a:visited:before {
+.sp-sitemap .sp-utility li a:link:before,
+.sp-sitemap .sp-utility li a:visited:before {
 	margin-bottom: 3px;
 }
 
 @media screen and ( max-width: 782px ) {
-	.sz-sitemap .sz-primary {
+	.sp-sitemap .sp-primary {
 		clear: both;
 		padding-top: 50px;
 	}
-	.sz-sitemap .sz-utility {
+	.sp-sitemap .sp-utility {
 		max-width: none;
 	}
 }

@@ -11,7 +11,7 @@
 	font-style: normal;
 }
 
-[class^="sz-icon-"], [class*=" sz-icon-"] {
+[class^="sp-icon-"], [class*=" sp-icon-"] {
 	font-family: sportspress, dashicons;
 	speak: none;
 	font-style: normal;
@@ -31,81 +31,81 @@
 }
 
 /* Performance Icons */
-.sz-icon-sub:before {
+.sp-icon-sub:before {
 	content: "\f503";
 }
-.sz-icon-star-filled:before {
+.sp-icon-star-filled:before {
 	content: "\f155";
 }
-.sz-icon-update:before {
+.sp-icon-update:before {
 	content: "\f113";
 }
-.sz-icon-undo:before {
+.sp-icon-undo:before {
 	content: "\f171";
 }
-.sz-icon-redo:before {
+.sp-icon-redo:before {
 	content: "\f172";
 }
-.sz-icon-marker:before {
+.sp-icon-marker:before {
 	content: "\f159";
 }
-.sz-icon-no:before {
+.sp-icon-no:before {
 	content: "\f158";
 }
-.sz-icon-heart:before {
+.sp-icon-heart:before {
 	content: "\f487";
 }
 
 /* Performance Icons - Sports */
-.sz-icon-soccerball:before {
+.sp-icon-soccerball:before {
 	content: "\e700";
 }
-.sz-icon-baseball:before {
+.sp-icon-baseball:before {
 	content: "\e701";
 }
-.sz-icon-basketball:before {
+.sp-icon-basketball:before {
 	content: "\e602";
 }
-.sz-icon-golfball:before {
+.sp-icon-golfball:before {
 	content: "\e603";
 }
-.sz-icon-cricketball:before {
+.sp-icon-cricketball:before {
 	content: "\e604";
 }
-.sz-icon-bowling:before {
+.sp-icon-bowling:before {
 	content: "\e605";
 }
-.sz-icon-ice-hockey:before {
+.sp-icon-ice-hockey:before {
 	content: "\e606";
 }
-.sz-icon-football:before {
+.sp-icon-football:before {
 	content: "\e607";
 }
-.sz-icon-poolball:before {
+.sp-icon-poolball:before {
 	content: "\e608";
 }
-.sz-icon-table-tennis:before {
+.sp-icon-table-tennis:before {
 	content: "\e609";
 }
-.sz-icon-tennis:before {
+.sp-icon-tennis:before {
 	content: "\e610";
 }
-.sz-icon-racing-flag:before {
+.sp-icon-racing-flag:before {
 	content: "\e611";
 }
 
 /* Performance Icons - Sports (Alt) */
-.sz-icon-soccerball-alt:before {
+.sp-icon-soccerball-alt:before {
 	content: "\e600";
 }
-.sz-icon-baseball-alt:before {
+.sp-icon-baseball-alt:before {
 	content: "\e601";
 }
 
 /* Performance Icons - Misc */
-.sz-icon-shoe:before {
+.sp-icon-shoe:before {
 	content: "\e800";
 }
-.sz-icon-card:before {
+.sp-icon-card:before {
 	content: "\e801";
 }

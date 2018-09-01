@@ -1,182 +1,182 @@
 /* SportsPress */
 
-.sz-align-left {
+.sp-align-left {
 	text-align: left;
 }
 
-.sz-align-right {
+.sp-align-right {
 	text-align: right;
 }
 
-.sz-align-center {
+.sp-align-center {
 	text-align: center;
 }
 
 /* Header */
-.sz-header {
+.sp-header {
 	position: relative;
 	overflow: visible;
 	z-index: 10000;
 }
 
 /* Templates */
-.sz-template {
+.sp-template {
 	margin-bottom: 1.5em;
 }
-.sz-template-profile-selector {
+.sp-template-profile-selector {
 	clear: both;
 	overflow: hidden;
 }
-.sz-template-logo,
-.sz-template-photo {
+.sp-template-logo,
+.sp-template-photo {
 	float: left;
 	margin-bottom: 2em;
 	margin-right: 2em;
 	max-width: 50%;
 }
-.sz-template-event-logos {
+.sp-template-event-logos {
 	text-align: center;
 }
-.sz-template-details {
+.sp-template-details {
 	display: inline;
 }
-.sz-template-details dl {
+.sp-template-details dl {
 	overflow: hidden;
 }
 
 /* Tabs */
-.sz-tab-menu {
+.sp-tab-menu {
 	display: block;
 	clear: both;
 	padding: 0 5px;
 	margin: 0 0 1.5em;
 	list-style: none;
 }
-.sz-tab-menu-item {
+.sp-tab-menu-item {
 	display: inline-block;
 	margin: 0;
 }
-.sz-tab-menu-item a {
+.sp-tab-menu-item a {
 	display: block;
 	margin: 0 10px;
 	color: inherit;
 	opacity: 0.5;
     transition: all .3s;
 }
-.sz-tab-menu-item a:focus {
+.sp-tab-menu-item a:focus {
     outline: none;
 }
-.sz-tab-menu-item-active a,
-.sz-tab-menu-item a:hover {
+.sp-tab-menu-item-active a,
+.sp-tab-menu-item a:hover {
 	color: inherit;
 	opacity: 1;
 }
-.sz-tab-content {
+.sp-tab-content {
 	display: none;
 }
 
 /* Profile selector */
-.sz-template-profile-selector {
+.sp-template-profile-selector {
 	text-align: right;
 	margin-bottom: 0.5em;
 }
 
 /* Data Tables */
-.sz-scrollable-table-wrapper {
+.sp-scrollable-table-wrapper {
 	width: 100%;
 	overflow: hidden;
 	overflow-x: auto;
 }
-.sz-data-table {
+.sp-data-table {
 	width: 100%;
 	table-layout: auto;
     border-spacing: 0;
 }
-.sz-paginated-table {
+.sp-paginated-table {
 	margin-bottom: 0;
 }
-.sz-data-table thead th {
+.sp-data-table thead th {
 	white-space: nowrap;
 }
-.sz-data-table thead .sorting,
-.sz-data-table thead .sorting_asc,
-.sz-data-table thead .sorting_desc,
-.sz-data-table thead .sorting_asc_disabled,
-.sz-data-table thead .sorting_desc_disabled {
+.sp-data-table thead .sorting,
+.sp-data-table thead .sorting_asc,
+.sp-data-table thead .sorting_desc,
+.sp-data-table thead .sorting_asc_disabled,
+.sp-data-table thead .sorting_desc_disabled {
 	cursor: pointer;
 }
-.sz-data-table tbody a {
+.sp-data-table tbody a {
 	text-decoration: none;
 }
-.sz-data-table .sorting:after,
-.sz-data-table .sorting_asc:after,
-.sz-data-table .sorting_desc:after {
+.sp-data-table .sorting:after,
+.sp-data-table .sorting_asc:after,
+.sp-data-table .sorting_desc:after {
 	font-family: dashicons;
 }
-.sz-data-table .sorting:after {
+.sp-data-table .sorting:after {
 	content: "\f156";
 	color: transparent;
 	position: absolute;
 }
-.sz-data-table .sorting_asc:after {
+.sp-data-table .sorting_asc:after {
 	content: "\f142";
 	position: absolute;
 }
-.sz-data-table .sorting_desc:after {
+.sp-data-table .sorting_desc:after {
 	content: "\f140";
 	position: absolute;
 }
-.sz-data-table .data-name {
+.sp-data-table .data-name {
 	text-align: left;
 }
-.sz-data-table .data-number,
-.sz-data-table .data-rank {
+.sp-data-table .data-number,
+.sp-data-table .data-rank {
 	width: 1px;
 }
 
 /* Post Content */
-.sz-post-content {
+.sp-post-content {
 	clear: both;
 }
 
 /* Pagination */
-.sz-table-wrapper .dataTables_paginate {
+.sp-table-wrapper .dataTables_paginate {
 	text-align: center;
 }
-.sz-table-wrapper .dataTables_paginate .paginate_button {
+.sp-table-wrapper .dataTables_paginate .paginate_button {
 	margin: 0.5em;
 	cursor: pointer;
 	display: inline-block;
 }
-.sz-table-wrapper .dataTables_paginate .previous {
+.sp-table-wrapper .dataTables_paginate .previous {
 	float: left;
 	margin-left: 0;
 }
-.sz-table-wrapper .dataTables_paginate .next {
+.sp-table-wrapper .dataTables_paginate .next {
 	float: right;
 	margin-right: 0;
 }
-.sz-table-wrapper .dataTables_paginate .current {
+.sp-table-wrapper .dataTables_paginate .current {
 	opacity: 0.5;
 	color: inherit;
 	cursor: default;
 }
-.sz-table-wrapper .dataTables_paginate .disabled {
+.sp-table-wrapper .dataTables_paginate .disabled {
 	opacity: 0;
 	cursor: default;
 }
 
 /* Post Excerpt */
-.sz-excerpt {
+.sp-excerpt {
 	display: block;
 	margin-bottom: 1em;
 }
 
 /* League Table */
-.sz-league-table td.has-logo {
+.sp-league-table td.has-logo {
 	line-height: 2em;
 }
-.sz-league-table .data-name .team-logo {
+.sp-league-table .data-name .team-logo {
 	width: 2em;
 	height: 2em;
 	margin-right: 0.5em;
@@ -184,7 +184,7 @@
 	vertical-align: middle;
 	text-align: center;
 }
-.sz-league-table .data-name .team-logo img {
+.sp-league-table .data-name .team-logo img {
 	width: auto;
 	height: auto;
 	max-width: 2em;
@@ -192,16 +192,16 @@
 }
 
 /* Team Gallery */
-.sz-template-team-gallery img {
+.sp-template-team-gallery img {
   padding: 1em;
 }
 
 /* Player List */
-.sz-player-list td {
+.sp-player-list td {
 	line-height: 2em;
 }
-.sz-player-list .data-name .player-photo,
-.sz-player-list .data-name .player-flag {
+.sp-player-list .data-name .player-photo,
+.sp-player-list .data-name .player-flag {
 	width: 2em;
 	height: 2em;
 	margin-right: 0.5em;
@@ -209,8 +209,8 @@
 	vertical-align: middle;
 	text-align: center;
 }
-.sz-player-list .data-name .player-photo img,
-.sz-player-list .data-name .player-flag img {
+.sp-player-list .data-name .player-photo img,
+.sp-player-list .data-name .player-flag img {
 	width: auto;
 	height: auto;
 	max-width: 2em;
@@ -218,85 +218,85 @@
 }
 
 /* Staff */
-.sz-staff-role-delimiter {
+.sp-staff-role-delimiter {
 	margin: 0 0.125em;
 }
 
 /* Button */
-.sz-button {
+.sp-button {
 	border: none;
 	cursor: pointer;
 }
 
 /* Messages */
-.sz-message {
+.sp-message {
 	padding: 1em;
 	border: 1px solid transparent;
 	text-align: center;
 }
 
 /* Event Logos */
-.sz-event-logos a {
+.sp-event-logos a {
 	text-decoration: none;
 	color: inherit;
 }
 
-.sz-event-logos img {
+.sp-event-logos img {
 	display: inline !important;
 	vertical-align: middle;
 }
 
 /* Events */
-.sz-event-overview,
-.sz-event-performance-tables {
+.sp-event-overview,
+.sp-event-performance-tables {
 	overflow: hidden;
 	clear: both;
 }
 
 /* Event Logos */
-.sz-event-logos .sz-team-logo {
+.sp-event-logos .sp-team-logo {
 	white-space: nowrap;
 	display: block;
 }
 
-.sz-event-logos .sz-team-logo .sz-team-result {
+.sp-event-logos .sp-team-logo .sp-team-result {
 	display: block;
 	margin: 0.5em 0;
 }
 
 /* Event Venue */
-.sz-event-venue thead th {
+.sp-event-venue thead th {
 	white-space: normal;
 }
 
 /* Event Performance */
-.sz-template-event-performance-icons thead {
+.sp-template-event-performance-icons thead {
 	display: none;
 }
-.sz-event-performance .sub {
+.sp-event-performance .sub {
 	background: rgba(0,0,0,0.05);
 }
-.sz-event-performance .sub-in,
-.sz-event-performance .sub-out {
+.sp-event-performance .sub-in,
+.sp-event-performance .sub-out {
 	cursor: default;
 }
-.sz-event-performance .sub-in:before,
-.sz-event-performance .sub-out:before {
+.sp-event-performance .sub-in:before,
+.sp-event-performance .sub-out:before {
 	font-family: dashicons;
 }
-.sz-event-performance .sub-in:before {
+.sp-event-performance .sub-in:before {
 	content: "\f140";
 }
-.sz-event-performance .sub-out:before {
+.sp-event-performance .sub-out:before {
 	content: "\f142";
 }
-.sz-event-performance .sz-performance-icons {
+.sp-event-performance .sp-performance-icons {
 	width: 25%;
 }
-.sz-event-performance .sz-event-star {
+.sp-event-performance .sp-event-star {
 	color: #f4d014;
 }
-.sz-event-performance .sz-event-star-number {
+.sp-event-performance .sp-event-star-number {
     margin-left: -20px;
     width: 20px;
     text-align: center;
@@ -306,7 +306,7 @@
 }
 
 /* Event Performance (Icons) */
-.sz-event-performance-teams .sz-template-event-performance-icons {
+.sp-event-performance-teams .sp-template-event-performance-icons {
 	box-sizing: border-box;
 	width: 50%;
 	float: left;
@@ -314,60 +314,60 @@
 	padding-right: 10px;
 }
 
-.sz-event-performance-teams .sz-template-event-performance-icons:nth-child(2n) {
+.sp-event-performance-teams .sp-template-event-performance-icons:nth-child(2n) {
 	float: right;
 	clear: right;
 	padding-right: 0;
 	padding-left: 10px;
 }
 
-.sz-template-event-performance-icons .sz-player-position {
+.sp-template-event-performance-icons .sp-player-position {
     display: block;
 }
 
 /* Event Calendar */
-.sz-event-calendar {
+.sp-event-calendar {
     border-spacing: 0;
 }
-.sz-event-calendar a {
+.sp-event-calendar a {
 	text-decoration: none;
 }
-.sz-event-calendar tbody td,
-.sz-event-calendar thead th {
+.sp-event-calendar tbody td,
+.sp-event-calendar thead th {
 	text-align: center;
 }
-.sz-event-calendar #next {
+.sp-event-calendar #next {
 	text-align: right;
 }
-.sz-event-calendar #prev {
+.sp-event-calendar #prev {
 	text-align: left;
 }
 
 /* Event List */
-.sz-event-list .data-date date,
-.sz-event-list .data-time date {
+.sp-event-list .data-date date,
+.sp-event-list .data-time date {
 	display: none !important;
 }
-.sz-event-list .data-article {
+.sp-event-list .data-article {
 	white-space: nowrap;
 }
-.sz-event-list .data-article a .dashicons {
+.sp-event-list .data-article a .dashicons {
 	padding-right: 3px;
 }
-.sz-event-list .data-time,
-.sz-event-list .data-results {
+.sp-event-list .data-time,
+.sp-event-list .data-results {
 	white-space: nowrap;
 }
-.sz-event-list .data-home {
+.sp-event-list .data-home {
 	text-align: right;
 }
-.sz-event-list .data-away {
+.sp-event-list .data-away {
 	text-align: left;
 }
-.sz-event-list td.has-logo {
+.sp-event-list td.has-logo {
 	line-height: 2em;
 }
-.sz-event-list .team-logo {
+.sp-event-list .team-logo {
 	width: 2em;
 	height: 2em;
 	margin-right: 0.5em;
@@ -375,79 +375,79 @@
 	vertical-align: middle;
 	text-align: center;
 }
-.sz-event-list .team-logo img {
+.sp-event-list .team-logo img {
 	width: auto;
 	height: auto;
 	max-width: 2em;
 	max-height: 2em;
 }
-.sz-event-list .data-home img,
-.sz-event-list .data-away img {
+.sp-event-list .data-home img,
+.sp-event-list .data-away img {
 	display: inline-block;
 	vertical-align: middle;
 }
-.sz-event-list .data-home img {
+.sp-event-list .data-home img {
 	margin-left: 8px;
 }
-.sz-event-list .data-away img {
+.sp-event-list .data-away img {
 	margin-right: 8px;
 }
-.sz-event-list-format-homeaway .data-time {
+.sp-event-list-format-homeaway .data-time {
 	text-align: center;
 	padding-left: 1em;
 	padding-right: 1em;
 }
 
 /* Event Blocks */
-.sz-event-blocks thead {
+.sp-event-blocks thead {
 	display: none;
 }
-.sz-event-blocks .sz-event-date,
-.sz-event-blocks .sz-event-time,
-.sz-event-blocks .sz-event-results,
-.sz-event-blocks .sz-event-title {
+.sp-event-blocks .sp-event-date,
+.sp-event-blocks .sp-event-time,
+.sp-event-blocks .sp-event-results,
+.sp-event-blocks .sp-event-title {
 	text-align: center;
 	display: block;
 	margin: 10px 0;
 	clear: none;
 }
-.sz-event-blocks .sz-event-league,
-.sz-event-blocks .sz-event-season,
-.sz-event-blocks .sz-event-venue {
+.sp-event-blocks .sp-event-league,
+.sp-event-blocks .sp-event-season,
+.sp-event-blocks .sp-event-venue {
 	text-align: center;
 	margin: 0 20%;
 	padding: 0 20px;
 }
-.sz-event-blocks .team-logo {
+.sp-event-blocks .team-logo {
 	margin: 10px;
 	width: 20%;
 	height: 4em;
 	max-width: 6em;
 	text-align: center;
 }
-.sz-event-blocks .logo-odd {
+.sp-event-blocks .logo-odd {
 	float: left;
 }
-.sz-event-blocks .logo-even {
+.sp-event-blocks .logo-even {
 	float: right;
 }
-.sz-event-blocks .team-logo img {
+.sp-event-blocks .team-logo img {
 	max-width: 100%;
 	max-height: 100%;
 	width: auto;
 	height: auto;
 }
-.sz-fixtures-results {
+.sp-fixtures-results {
 	clear: both;
 }
-.widget .sz-event-blocks .sz-event-title {
+.widget .sp-event-blocks .sp-event-title {
 	margin: 10px;
 	padding: 0;
 	clear: both;
 }
 
 /* Event Logos Block */
-.sz-template-event-logos-block .team-logo {
+.sp-template-event-logos-block .team-logo {
 	float: none;
 	max-width: none;
 	width: 100%;
@@ -455,27 +455,27 @@
 	color: inherit;
 }
 
-.sz-template-event-logos-block .team-logo img {
+.sp-template-event-logos-block .team-logo img {
 	vertical-align: middle;
 }
 
-.sz-template-event-logos-block .sz-team-name {
+.sp-template-event-logos-block .sp-team-name {
 	display: block;
 	clear: both;
 	vertical-align: middle;
 	font-size: 28px;
 }
 
-.sz-template-event-logos-block .sz-event-results {
+.sp-template-event-logos-block .sp-event-results {
 	font-size: 36px;
 }
 
 /* Event Form */
-.sz-form-events {
+.sp-form-events {
 	text-align: center;
 }
 
-.sz-form-events .sz-form-event-link {
+.sp-form-events .sp-form-event-link {
 	display: inline-block;
 	text-align: center;
 	vertical-align: text-top;
@@ -486,64 +486,64 @@
 	font-weight: normal;
 }
 
-.sz-form-events .sz-form-event-link:hover {
+.sp-form-events .sp-form-event-link:hover {
 	color: #fff !important;
 }
 
 /* Countdowns */
-.sz-template-countdown .event-name {
+.sp-template-countdown .event-name {
 	clear: both;
 	overflow: hidden;
 }
-.sz-template-countdown .team-logo {
+.sp-template-countdown .team-logo {
 	width: 20%;
 	height: auto;
 	max-width: 4em;
 }
-.sz-template-countdown .logo-odd {
+.sp-template-countdown .logo-odd {
 	float: left;
 	margin-right: 10px;
 }
-.sz-template-countdown .logo-even {
+.sp-template-countdown .logo-even {
 	float: right;
 	margin-left: 10px;
 }
-.sz-template-countdown .team-logo img {
+.sp-template-countdown .team-logo img {
 	max-width: 100%;
 	max-height: 100%;
 	width: auto;
 	height: auto;
 }
-.sz-template-countdown .sz-countdown {
+.sp-template-countdown .sp-countdown {
 	clear: both;
 }
 
 /* Google Maps */
-.sz-google-map {
+.sp-google-map {
 	width: 100%;
 	height: 320px;
 }
-.sz-google-map img {
+.sp-google-map img {
 	max-width: none !important;
 }
-.sz-venue-map {
+.sp-venue-map {
 	margin-bottom: 4em;
 }
 
 /* View All */
-.sz-view-all-link {
+.sp-view-all-link {
 	display: block;
 	margin-top: 0.5em;
 }
 
 /* Highlight & Heading */
-.sz-highlight,
-.sz-heading {
+.sp-highlight,
+.sp-heading {
 	font-weight: bold;
 }
 
 /* Hidden Responsive Element */
-.sz-desktop {
+.sp-desktop {
 	display: none;
 }
 
@@ -560,17 +560,17 @@
 /* Media Queries */
 @media screen and (min-width: 801px) {
 	/* Widget Alignment */
-	.sz-widget-align-none {
+	.sp-widget-align-none {
 		clear: both;
 	}
-	.sz-widget-align-left {
+	.sp-widget-align-left {
 		width: 50%;
 		float: left;
 		clear: left;
 		padding-right: 10px;
 		box-sizing: border-box;
 	}
-	.sz-widget-align-right {
+	.sp-widget-align-right {
 		width: 50%;
 		float: right;
 		clear: right;
@@ -579,66 +579,66 @@
 	}
 
 	/* Hidden Responsive Element */
-	.sz-desktop {
+	.sp-desktop {
 		display: block;
 	}
-	.sz-mobile {
+	.sp-mobile {
 		display: none;
 	}
 }
 
 @media screen and (min-width: 601px) {
-	.sz-event-logos .sz-team-logo {
+	.sp-event-logos .sp-team-logo {
 		display: inline-block;
 	}
 
-	.sz-event-logos-2 .sz-team-logo {
+	.sp-event-logos-2 .sp-team-logo {
 		display: inline;
 	}
 
-	.sz-event-logos-2 .sz-team-logo .sz-team-result {
+	.sp-event-logos-2 .sp-team-logo .sp-team-result {
 		display: inline-block;
 		margin: 0 0.25em;
 	}
 	
-	.sz-template-logo + .sz-post-content {
+	.sp-template-logo + .sp-post-content {
 		clear: left;
 	}
 	
-	.sz-template-photo + .sz-post-content {
+	.sp-template-photo + .sp-post-content {
 		clear: none;
 	}
 
-	.sz-template-event-logos-block .team-logo {
+	.sp-template-event-logos-block .team-logo {
 		width: 33%;
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
 	}
 
-	.sz-template-event-logos-block .team-logo img {
+	.sp-template-event-logos-block .team-logo img {
 		height: 100px;
 	}
 
-	.sz-template-event-logos-block .logo-odd {
+	.sp-template-event-logos-block .logo-odd {
 		text-align: left;
 		float: left;
 	}
 
-	.sz-template-event-logos-block .logo-even {
+	.sp-template-event-logos-block .logo-even {
 		text-align: right;
 		float: right;
 	}
 	
-	.sz-template-event-logos-block .logo-odd img {
+	.sp-template-event-logos-block .logo-odd img {
 		margin-right: 10px;
 	}
 	
-	.sz-template-event-logos-block .logo-even img {
+	.sp-template-event-logos-block .logo-even img {
 		margin-left: 10px;
 	}
 	
-	.sz-template-event-logos-block .sz-team-name {
+	.sp-template-event-logos-block .sp-team-name {
 		display: inline;
 		clear: none;
 	}

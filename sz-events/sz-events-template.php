@@ -515,11 +515,11 @@ function sz_event_id( $event = false ) {
 	 */
 	function sz_get_event_id( $event = false ) {
 		global $events_template;
-
+		
 		if ( empty( $event ) ) {
 			$event =& $events_template->event;
 		}
-
+		if( empty($event)) return;
 		/**
 		 * Filters the ID of the current event in the loop.
 		 *

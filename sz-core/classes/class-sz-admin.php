@@ -548,6 +548,9 @@ class SZ_Admin {
 	public function enqueue_scripts() {
 		wp_enqueue_style( 'sz-admin-common-css' );
 		wp_enqueue_style( 'jquery-chosen' );
+		wp_enqueue_style( 'sportszone-admin' );
+    	wp_enqueue_style( 'sportszone-admin-slickmap' );
+    	wp_enqueue_style( 'sportszone-admin-equation-styles' );
 		
 		wp_enqueue_script( 'chosen' );
     	wp_enqueue_script( 'jquery-ui-core' );
@@ -560,6 +563,8 @@ class SZ_Admin {
     	wp_enqueue_script( 'jquery-fitvids' );
     	
     	wp_enqueue_script( 'sportszone-admin' );
+    	wp_enqueue_script( 'sportspress-admin-equationbuilder' );
+    	
     	
     	$strings = apply_filters( 'sportszone_localized_strings', array(
 			'none' => __( 'None', 'sportszone' ),

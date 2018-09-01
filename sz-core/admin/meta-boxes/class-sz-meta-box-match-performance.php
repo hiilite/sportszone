@@ -86,7 +86,8 @@ class SZ_Meta_Box_Match_Performance {
 	public static function tables( $post_id, $stats = array(), $labels = array(), $columns = array(), $teams = array(), $has_checkboxes = false, $positions = array(), $status = true, $formats = array(), $order = array(), $numbers = true, $is_individual = false, $timeline = array(), $timed = array(), $stars = array() ) {
 		$sections = get_option( 'sportszone_event_performance_sections', -1 );
 		global $pagenow;
-
+		
+		
 		if ( $pagenow === 'post-new.php' || $is_individual ) {
 			?>
 			<div class="sz-data-table-container">
@@ -134,6 +135,7 @@ class SZ_Meta_Box_Match_Performance {
 				if ( -1 == $team_id ) continue;
 				
 				if ( -1 == $sections ) {
+					$group = groups_get_group( array( 'group_id' => $team_id) );
 					// Get results for players in the team
 					$players = sz_array_between( (array)get_post_meta( $post_id, 'sz_player', false ), 0, $key );
 					$players[] = -1;
@@ -148,7 +150,7 @@ class SZ_Meta_Box_Match_Performance {
 					?>
 					<div>
 						<p>
-							<strong><?php echo get_the_title( $team_id ); ?></strong>
+							<strong><?php echo $group->name; ?></strong>
 							<a class="add-new-h2 sz-add-new-h2" href="<?php echo esc_url( admin_url( add_query_arg( array( 'import' => 'sz_match_performance_csv', 'event' => $post_id, 'team' => $team_id, 'teams' => sizeof( $teams ), 'index' => $key ), 'admin.php' ) ) ); ?>"><?php _e( 'Import', 'sportszone' ); ?></a>
 						</p>
 						<?php self::table( $labels, $columns, $data, $team_id, $has_checkboxes && $i === 0, $positions, $status, -1, $formats, $order, $numbers, $team_timeline, $timed, $stars ); ?>
@@ -404,7 +406,7 @@ class SZ_Meta_Box_Match_Performance {
 				</td>
 			<?php } ?>
 			<td>
-				<?php echo apply_filters( 'sportszone_event_performance_player_selection', get_the_title( $player_id ), $player_id ); ?>
+				<?php echo apply_filters( 'sportszone_event_performance_player_selection', sz_get_player_name_then_number( $player_id ), $player_id ); ?>
 				<?php if ( 1 == $section ) { ?>
 					<input type="hidden" name="sz_order[<?php echo $team_id; ?>][]" value="<?php echo $player_id; ?>">
 				<?php } ?>

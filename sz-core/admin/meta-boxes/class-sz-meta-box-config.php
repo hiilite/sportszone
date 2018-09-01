@@ -26,18 +26,19 @@ class SZ_Meta_Box_Config {
 		global $wpdb;
 
 		$key = isset( $post['sz_key'] ) ? $post['sz_key'] : null;
-		if ( ! $key ) $key = $post['post_title'];
+		if ( ! $key && isset($post['post_title'])) $key = $post['post_title'];
 		$id = sz_array_value( $post, 'post_ID', 'var' );
 		$title = sz_get_eos_safe_slug( $key, $id );
-
-		$check_sql = "SELECT ID FROM $wpdb->posts WHERE post_name = %s AND post_type = %s AND ID != %d LIMIT 1";
-		$post_name_check = $wpdb->get_var( $wpdb->prepare( $check_sql, $title, $post['post_type'], $id ) );
-
-		if ( $post_name_check ):
-			wp_delete_post( $post_name_check, true );
-			$post['post_status'] = 'draft';
+		if(isset($post['post_title'])):
+			$check_sql = "SELECT ID FROM $wpdb->posts WHERE post_name = %s AND post_type = %s AND ID != %d LIMIT 1";
+			$post_name_check = $wpdb->get_var( $wpdb->prepare( $check_sql, $title, $post['post_type'], $id ) );
+	
+			if ( $post_name_check ):
+				wp_delete_post( $post_name_check, true );
+				$post['post_status'] = 'draft';
+			endif;
+			
+			return $post_name_check;
 		endif;
-
-		return $post_name_check;
 	}
 }

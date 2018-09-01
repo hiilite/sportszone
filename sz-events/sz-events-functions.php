@@ -2961,10 +2961,33 @@ function sz_additional_fields_add_matches_event_extension() {
 			}
 			
 		}
-
+		
+		/**
+		 * Save all Match Settings
+		 */
 		function settings_screen_save( $event_id = NULL ) {
 			if ( isset( $_POST['sz_matches_group'] ) ) {
-				events_update_eventmeta( $event_id, 'sz_matches_group', $_POST['sz_matches_group'] );
+				$matches = $_POST['sz_matches_group'];
+				events_update_eventmeta( $event_id, 'sz_matches_group', $matches);
+				
+				foreach($matches as $match) :
+					$match_data = array(
+						'post_type'		=> 'sz_match',
+						'post_title'	=> 'Test Title',
+						'post_status'	=> 'publish',
+						'post_author'	=> get_current_user_id(),
+						'meta_input'	=> array(
+							'sz_team'		=> array(
+								(int) $match['match_team1']['team'],
+								(int) $match['match_team2']['team']
+							),
+							'sz_day'		=>  $match['match_date']['date']
+						)
+					);
+					
+					
+					$new_match_id = wp_insert_post( $match_data, true );
+				endforeach;
 			}
 		}
 	}

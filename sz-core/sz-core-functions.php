@@ -3989,7 +3989,7 @@ if ( !function_exists( 'sz_taxonomy_field' ) ) {
 						'name' => 'tax_input[' . $taxonomy . '][]',
 						'selected' => $term_ids,
 						'values' => 'term_id',
-						'class' => 'sp-has-dummy widefat' . ( $trigger ? ' sz-ajax-trigger' : '' ),
+						'class' => 'sz-has-dummy widefat' . ( $trigger ? ' sz-ajax-trigger' : '' ),
 						'chosen' => true,
 						'placeholder' => $placeholder ? $placeholder : __( 'All', 'sportszone' ),
 					);
@@ -4260,6 +4260,158 @@ if ( !function_exists( 'sz_array_combine' ) ) {
 	}
 }
 
+
+if ( !function_exists( 'sz_get_url' ) ) {
+	function sz_get_url( $post_id ) {
+		$url = get_post_meta( $post_id, 'sz_url', true );
+		if ( ! $url ) return;
+		return ' <a class="sz-link" href="' . $url . '" target="_blank" title="' . __( 'Visit Site', 'sportszone' ) . '">' . $url . '</a>';
+	}
+}
+
+if ( !function_exists( 'sz_get_post_abbreviation' ) ) {
+	function sz_get_post_abbreviation( $post_id ) {
+		$abbreviation = get_post_meta ( $post_id, 'sz_abbreviation', true );
+		if ( $abbreviation ):
+			return $abbreviation;
+		else:
+			return substr( get_the_title( $post_id ), 0, 1 );
+		endif;
+	}
+}
+
+if ( !function_exists( 'sz_get_post_condition' ) ) {
+	function sz_get_post_condition( $post_id ) {
+		$condition = get_post_meta ( $post_id, 'sz_condition', true );
+		$main_result = get_option( 'sportszone_primary_result', null );
+		$result = get_page_by_path( $main_result, ARRAY_A, 'sz_result' );
+		$label = sz_array_value( $result, 'post_title', __( 'Primary', 'sportszone' ) );
+		if ( $condition ):
+			$conditions = array(
+				'0' => '&mdash;',
+				'>' => sprintf( __( 'Most %s', 'sportszone' ), $label ),
+				'<' => sprintf( __( 'Least %s', 'sportszone' ), $label ),
+				'=' => sprintf( __( 'Equal %s', 'sportszone' ), $label ),
+				'else' => sprintf( __( 'Default', 'sportszone' ), $label ),
+			);
+			return sz_array_value( $conditions, $condition, '&mdash;' );
+		else:
+			return '&mdash;';
+		endif;
+	}
+}
+
+if ( !function_exists( 'sz_get_post_precision' ) ) {
+	function sz_get_post_precision( $post_id ) {
+		$precision = get_post_meta ( $post_id, 'sz_precision', true );
+		if ( $precision ):
+			return $precision;
+		else:
+			return 0;
+		endif;
+	}
+}
+
+if ( !function_exists( 'sz_get_post_calculate' ) ) {
+	function sz_get_post_calculate( $post_id ) {
+		$calculate = get_post_meta ( $post_id, 'sz_calculate', true );
+		if ( $calculate ):
+			return str_replace(
+				array( 'total', 'average' ),
+				array( __( 'Total', 'sportszone' ), __( 'Average', 'sportszone' ) ),
+				$calculate
+			);
+		else:
+			return __( 'Total', 'sportszone' );
+		endif;
+	}
+}
+
+if ( !function_exists( 'sz_get_post_equation' ) ) {
+	function sz_get_post_equation( $post_id ) {
+		$equation = get_post_meta ( $post_id, 'sz_equation', true );
+		if ( $equation ):
+			$equation = str_replace(
+				array( '/', '(', ')', '+', '-', '*', '_', '$' ),
+				array( '&divide;', '(', ')', '&plus;', '&minus;', '&times;', '@', '' ),
+				trim( $equation )
+			);
+			return '<code>' . implode( '</code> <code>', explode( ' ', $equation ) ) . '</code>';
+		else:
+			return '&mdash;';
+		endif;
+	}
+}
+
+if ( !function_exists( 'sz_get_post_order' ) ) {
+	function sz_get_post_order( $post_id ) {
+		$priority = get_post_meta ( $post_id, 'sz_priority', true );
+		if ( $priority ):
+			return $priority . ' ' . str_replace(
+				array( 'DESC', 'ASC' ),
+				array( '&darr;', '&uarr;' ),
+				get_post_meta ( $post_id, 'sz_order', true )
+			);
+		else:
+			return '&mdash;';
+		endif;
+	}
+}
+
+if ( !function_exists( 'sz_get_post_section' ) ) {
+	function sz_get_post_section( $post_id ) {
+		$section = get_post_meta ( $post_id, 'sz_section', true );
+		if ( isset( $section ) ):
+			$options = apply_filters( 'sportszone_performance_sections', array( -1 => __( 'All', 'sportszone' ), 0 => __( 'Offense', 'sportszone' ), 1 => __( 'Defense', 'sportszone' ) ) );
+			return sz_array_value( $options, $section, __( 'All', 'sportszone' ) );
+		else:
+			return __( 'All', 'sportszone' );
+		endif;
+	}
+}
+
+if ( !function_exists( 'sz_get_post_format' ) ) {
+	function sz_get_post_format( $post_id ) {
+		$format = get_post_meta ( $post_id, 'sz_format', true );
+		if ( isset( $format ) ):
+			$options = apply_filters( 'sportszone_performance_formats', array( 'number' => __( 'Number', 'sportszone' ), 'time' => __( 'Time', 'sportszone' ), 'text' => __( 'Text', 'sportszone' ), 'equation' => __( 'Equation', 'sportszone' ) ) );
+			return sz_array_value( $options, $format, __( 'Number', 'sportszone' ) );
+		else:
+			return __( 'Number', 'sportszone' );
+		endif;
+	}
+}
+
+if ( !function_exists( 'sz_get_format_placeholder' ) ) {
+	function sz_get_format_placeholder( $key = 'number' ) {
+		$placeholders = apply_filters( 'sportszone_format_placeholders', array(
+			'number' => 0,
+			'time' => '0:00',
+			'text' => '&nbsp;',
+		) );
+		return sz_array_value( $placeholders, $key, 0 );
+	}
+}
+
+if ( !function_exists( 'sz_get_term_sections' ) ) {
+	function sz_get_term_sections( $t_id ) {
+		$term_meta = get_option( "taxonomy_$t_id" );
+		if ( isset( $term_meta['sz_sections'] ) ) {
+			$sections = $term_meta['sz_sections'];
+		} else {
+			$sections = apply_filters( 'sportszone_performance_sections', array( 0 => __( 'Offense', 'sportszone' ), 1 => __( 'Defense', 'sportszone' ) ) );
+			$sections = array_keys( $sections );
+		}
+		
+		if ( '' === $sections ) {
+			$sections = array();
+		}
+		
+		return $sections;
+	}
+}
+	
+
 if ( !function_exists( 'sz_get_default_mode' ) ) {
 	function sz_get_default_mode() {
 		$mode = get_option( 'sportszone_mode', 'team' );
@@ -4438,10 +4590,10 @@ if ( !function_exists( 'sz_dropdown_pages' ) ) {
 				endif;
 
 				if ( $filter !== false ):
-					$class = 'sp-post sp-filter-0';
+					$class = 'sz-post sz-filter-0';
 					$filter_values = get_post_meta( sz_get_group_id(), $filter, false );
 					foreach ( $filter_values as $filter_value ):
-						$class .= ' sp-filter-' . $filter_value;
+						$class .= ' sz-filter-' . $filter_value;
 					endforeach;
 				else:
 					$class = '';
@@ -4498,10 +4650,10 @@ if ( !function_exists( 'sz_dropdown_pages' ) ) {
 				endif;
 
 				if ( $filter !== false ):
-					$class = 'sp-post sp-filter-0';
+					$class = 'sz-post sz-filter-0';
 					$filter_values = get_post_meta( $post->ID, $filter, false );
 					foreach ( $filter_values as $filter_value ):
-						$class .= ' sp-filter-' . $filter_value;
+						$class .= ' sz-filter-' . $filter_value;
 					endforeach;
 				else:
 					$class = '';
@@ -4570,10 +4722,10 @@ if ( !function_exists( 'sz_post_checklist' ) ) {
 		if ( ! isset( $slug ) )
 			$slug = $meta;
 		?>
-		<div id="<?php echo $slug; ?>-all" class="posttypediv tabs-panel wp-tab-panel sp-tab-panel sp-tab-filter-panel sp-select-all-range" style="display: <?php echo $display; ?>;">
+		<div id="<?php echo $slug; ?>-all" class="posttypediv tabs-panel wp-tab-panel sz-tab-panel sz-tab-filter-panel sz-select-all-range" style="display: <?php echo $display; ?>;">
 			<input type="hidden" value="0" name="<?php echo $slug; ?><?php if ( isset( $index ) ) echo '[' . $index . ']'; ?>[]" />
 			<ul class="categorychecklist form-no-clear">
-				<li class="sp-select-all-container"><label class="selectit"><input type="checkbox" class="sp-select-all"> <strong><?php _e( 'Select All', 'sportszone' ); ?></strong></label></li>
+				<li class="sz-select-all-container"><label class="selectit"><input type="checkbox" class="sz-select-all"> <strong><?php _e( 'Select All', 'sportszone' ); ?></strong></label></li>
 				<?php
 				$selected = (array)get_post_meta( $post_id, $slug, false );
 				if ( ! sizeof( $selected ) ) {
@@ -4619,10 +4771,10 @@ if ( !function_exists( 'sz_post_checklist' ) ) {
 						endif;
 					endif;
 					?>
-					<li class="sp-post sp-filter-0<?php
+					<li class="sz-post sz-filter-0<?php
 						if ( $filters ):
 							foreach ( $filter_values as $filter_value ):
-								echo ' sp-filter-' . $filter_value;
+								echo ' sz-filter-' . $filter_value;
 							endforeach;
 						endif;
 					?>">
@@ -4636,12 +4788,12 @@ if ( !function_exists( 'sz_post_checklist' ) ) {
 					<?php
 				endforeach;
 				?>
-				<li class="sp-not-found-container">
+				<li class="sz-not-found-container">
 					<?php _e( 'No results found.', 'sportszone' ); ?>
-					<?php if ( sizeof( $posts ) ): ?><a class="sp-show-all" href="#show-all-<?php echo $slug; ?>s"><?php _e( 'Show all', 'sportszone' ); ?></a><?php endif; ?>
+					<?php if ( sizeof( $posts ) ): ?><a class="sz-show-all" href="#show-all-<?php echo $slug; ?>s"><?php _e( 'Show all', 'sportszone' ); ?></a><?php endif; ?>
 				</li>
 				<?php if ( sizeof( $posts ) ): ?>
-					<li class="sp-show-all-container"><a class="sp-show-all" href="#show-all-<?php echo $slug; ?>s"><?php _e( 'Show all', 'sportszone' ); ?></a></li>
+					<li class="sz-show-all-container"><a class="sz-show-all" href="#show-all-<?php echo $slug; ?>s"><?php _e( 'Show all', 'sportszone' ); ?></a></li>
 				<?php endif; ?>
 			</ul>
 		</div>
@@ -4654,10 +4806,10 @@ if ( !function_exists( 'sz_column_checklist' ) ) {
 		if ( ! isset( $post_id ) )
 			global $post_id;
 		?>
-		<div id="<?php echo $meta; ?>-all" class="posttypediv tabs-panel wp-tab-panel sp-tab-panel sp-select-all-range" style="display: <?php echo $display; ?>;">
+		<div id="<?php echo $meta; ?>-all" class="posttypediv tabs-panel wp-tab-panel sz-tab-panel sz-select-all-range" style="display: <?php echo $display; ?>;">
 			<input type="hidden" value="0" name="sz_columns[]" />
 			<ul class="categorychecklist form-no-clear">
-				<li class="sp-select-all-container"><label class="selectit"><input type="checkbox" class="sp-select-all"> <strong><?php _e( 'Select All', 'sportszone' ); ?></strong></label></li>
+				<li class="sz-select-all-container"><label class="selectit"><input type="checkbox" class="sz-select-all"> <strong><?php _e( 'Select All', 'sportszone' ); ?></strong></label></li>
 				<?php
 				$posts = get_pages( array( 'post_type' => $meta, 'number' => 0 ) );
 				if ( empty( $posts ) ):
@@ -4690,7 +4842,7 @@ if ( !function_exists( 'sz_column_checklist' ) ) {
 							if ( 'text' === $format ) continue;
 						}
 						?>
-						<li class="sp-post">
+						<li class="sz-post">
 							<label class="selectit">
 								<input type="checkbox" value="<?php echo $post->post_name; ?>" name="sz_columns[]"<?php if ( ( ! is_array( $selected ) && $default_checked ) || in_array( $post->post_name, $selected ) ) echo ' checked="checked"'; ?>>
 								<?php echo sz_draft_or_post_title( $post ); ?>
@@ -4700,7 +4852,7 @@ if ( !function_exists( 'sz_column_checklist' ) ) {
 					endforeach;
 				else:
 				?>
-				<li class="sp-not-found-container"><?php _e( 'No results found.', 'sportszone' ); ?></li>
+				<li class="sz-not-found-container"><?php _e( 'No results found.', 'sportszone' ); ?></li>
 				<?php endif; ?>
 			</ul>
 		</div>
@@ -5328,5 +5480,37 @@ if ( ! function_exists( 'is_ajax' ) ) {
 	 */
 	function is_ajax() {
 		return defined( 'DOING_AJAX' );
+	}
+}
+
+
+if ( !function_exists( 'sz_numbers_to_words' ) ) {
+	function sz_numbers_to_words( $str ) {
+	    $output = str_replace( array( '%', '1st', '2nd', '3rd', '5th', '8th', '9th', '10', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' ), array( 'percent', 'first', 'second', 'third', 'fifth', 'eight', 'ninth', 'ten', 'zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine' ), $str );
+	    return $output;
+    }
+}
+
+if ( !function_exists( 'sz_get_eos_safe_slug' ) ) {
+	function sz_get_eos_safe_slug( $title, $post_id = 'var' ) {
+
+		// String to lowercase
+		$title = strtolower( $title );
+
+		// Replace all numbers with words
+		$title = sz_numbers_to_words( $title );
+
+		// Remove all other non-alphabet characters
+		$title = preg_replace( "/[^a-z_]/", '', $title );
+
+		// Convert post ID to words if title is empty
+		if ( $title == '' ):
+
+			$title = sz_numbers_to_words( $post_id );
+
+		endif;
+
+		return $title;
+
 	}
 }

@@ -12,7 +12,7 @@ jQuery(document).ready(function($){
       distance: 10,
       containment: "#sz_equationdiv",
     }).click(function() {
-    	$("<label class='button'></label>").text( $(this).text() ).append("<span class='remove'>&times;</span><input name='sz_equation[]' type='hidden' value='" + $(this).data("variable") + "'>").appendTo( $(".sz-equation-formula") );
+    	$("<label class='button'></label>").text( $(this).text() ).append("<span class='remove'>&times;</span><input name='sp_equation[]' type='hidden' value='" + $(this).data("variable") + "'>").appendTo( $(".sz-equation-formula") );
     });
 
     $(".sz-equation").droppable({
@@ -20,12 +20,12 @@ jQuery(document).ready(function($){
       hoverClass: "ui-state-hover",
       accept: ".button:not(.ui-sortable-helper)",
       drop: function( event, ui ) {
-        $("<label class='button'></label>").text( ui.draggable.text() ).append("<span class='remove'>&times;</span><input name='sz_equation[]' type='hidden' value='" + ui.draggable.data("variable") + "'>").appendTo( $(".sz-equation-formula") );
+        $("<label class='button'></label>").text( ui.draggable.text() ).append("<span class='remove'>&times;</span><input name='sp_equation[]' type='hidden' value='" + ui.draggable.data("variable") + "'>").appendTo( $(".sz-equation-formula") );
       }
     }).sortable({
       items: ".button",
       tolerance: "pointer",
-      containment: "#sz_equationdiv",
+      containment: "#sp_equationdiv",
       sort: function() {
         $( this ).removeClass( "ui-state-active" );
       }
