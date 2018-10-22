@@ -129,7 +129,8 @@
 				'scope': scope,
 				'page': page,
 				'extras': extras,
-				'template': template
+				'template': template,
+				'blarg' :	1
 			},
 			function(response)
 			{
@@ -184,5 +185,18 @@ jQuery(document).ready(function($){
 
 	jQuery( '.item-list-tabs #event-all' ).on('click', function(){
 			event_all_clicked = true;
+	});
+});
+
+jQuery(document).ready(function($){
+	jQuery( '#events-types-select' ).on('change', function(){
+			var type = jQuery(this).val();
+			
+			if(type != 'all') {
+				window.location.href = "/events/type/"+type+"/";
+			}
+			else {
+				window.location.href = "/events/";
+			}
 	});
 });

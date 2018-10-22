@@ -99,7 +99,7 @@
 				</label>
 				<input type="search" id="user_messages_search" placeholder="<?php echo esc_attr_x( 'Search', 'search placeholder text', 'sportszone' ); ?>"/>
 				<button type="submit" id="user_messages_search_submit">
-					<span class="dashicons dashicons-search" aria-hidden="true"></span>
+					<i class="fa fa-search"></i>
 					<span class="sz-screen-reader-text"><?php echo esc_html_x( 'Search', 'button', 'sportszone' ); ?></span>
 				</button>
 			</form>
@@ -109,8 +109,10 @@
 </script>
 
 <script type="text/html" id="tmpl-sz-bulk-actions">
-	<input type="checkbox" id="user_messages_select_all" value="1"/>
-	<label for="user_messages_select_all"><?php esc_html_e( 'All Messages', 'sportszone' ); ?></label>
+	<div class="bulk-actions-checkbox-wrap sz-show">
+		<input type="checkbox" id="user_messages_select_all" value="1"/>
+		<label for="user_messages_select_all"><?php esc_html_e( 'All Messages', 'sportszone' ); ?></label>
+	</div>
 	<div class="bulk-actions-wrap sz-hide">
 		<div class="bulk-actions select-wrap">
 			<label for="user-messages-bulk-actions" class="sz-screen-reader-text">
@@ -124,7 +126,7 @@
 			<span class="select-arrow" aria-hidden="true"></span>
 		</div>
 		<button class="messages-button bulk-apply sz-tooltip" type="submit" data-sz-tooltip="<?php echo esc_attr_x( 'Apply', 'button', 'sportszone' ); ?>">
-			<span class="dashicons dashicons-yes" aria-hidden="true"></span>
+			Apply
 			<span class="sz-screen-reader-text"><?php echo esc_html_x( 'Apply', 'button', 'sportszone' ); ?></span>
 		</button>
 	</div>
@@ -162,8 +164,8 @@
 
 	<div class="thread-content" data-thread-id="{{data.id}}">
 		<div class="thread-subject">
-			<span class="thread-count">({{data.count}})</span>
 			<a class="subject" href="../view/{{data.id}}/">{{data.subject}}</a>
+			<span class="thread-count">({{data.count}})</span>
 		</div>
 		<p class="excerpt">{{data.excerpt}}</p>
 	</div>

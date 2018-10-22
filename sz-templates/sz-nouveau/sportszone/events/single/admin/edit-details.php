@@ -64,7 +64,7 @@ endif;
 <textarea name="event-desc" id="event-desc" aria-required="true"><?php sz_is_event_create() ? sz_new_event_description() : sz_event_description_editable(); ?></textarea>
 
 <?php
-
+cmb2_metabox_form( 'event_details_metabox', $event_id );
 if ( ! sz_is_event_create() ) : ?>
 	<p class="sz-controls-wrap">
 		<label for="event-notify-members" class="sz-label-text">

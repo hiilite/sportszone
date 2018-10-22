@@ -25,13 +25,17 @@ sz_nouveau_member_hook( 'before', 'plugin_template' ); ?>
 
 <?php endif; ?>
 
-<?php if ( has_action( 'sz_template_title' ) ) : ?>
-
-	<h2><?php sz_nouveau_plugin_hook( 'title' ); ?></h2>
-
-<?php endif; ?>
+<div class="sz-info-box">
+	<?php if ( has_action( 'sz_template_title' ) ) : ?>
+	
+		<h2 class="screen-heading"><?php sz_nouveau_plugin_hook( 'title' ); ?></h2>
+	
+	<?php endif; ?>
+	
+	<?php
+	sz_nouveau_plugin_hook( 'content' );
+?>
+</div>
 
 <?php
-sz_nouveau_plugin_hook( 'content' );
-
 sz_nouveau_member_hook( 'after', 'plugin_template' );

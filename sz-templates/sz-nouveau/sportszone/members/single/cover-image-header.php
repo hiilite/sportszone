@@ -21,30 +21,27 @@
 
 		<div id="item-header-content">
 
-			<?php if ( sz_is_active( 'activity' ) && sz_activity_do_mentions() ) : ?>
-				<h2 class="user-nicename">@<?php sz_displayed_user_mentionname(); ?></h2>
+			<?php if ( sz_is_active( 'activity' ) && sz_activity_do_mentions() ) : 
+			?>
+				<div class="team-color-one">
+
+					<h2 class="user-nicename"><?php echo sz_get_displayed_user_fullname(sz_displayed_user_id()); ?></h2>
+					
+					<?php sz_nouveau_member_hook( 'before', 'header_meta' ); ?>
+ 
+		            <?php if ( sz_nouveau_member_has_meta() ) : ?>
+		                <div class="item-meta">
+		 
+		                    <?php sz_nouveau_member_meta(); ?>
+		 
+						</div><!-- #item-meta -->
+					<?php endif; ?>
+				</div>
+				<div class="team-color-two">
+				</div>
+				<div class="team-color-three">
+				</div>
 			<?php endif; ?>
-
-			<?php
-			sz_nouveau_member_header_buttons(
-				array(
-					'container'         => 'ul',
-					'button_element'    => 'button',
-					'container_classes' => array( 'member-header-actions' ),
-				)
-			);
-?>
-
-			<?php sz_nouveau_member_hook( 'before', 'header_meta' ); ?>
-
-			<?php if ( sz_nouveau_member_has_meta() ) : ?>
-				<div class="item-meta">
-
-					<?php sz_nouveau_member_meta(); ?>
-
-				</div><!-- #item-meta -->
-			<?php endif; ?>
-
 		</div><!-- #item-header-content -->
 
 	</div><!-- #item-header-cover-image -->

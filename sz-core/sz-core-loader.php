@@ -19,5 +19,6 @@ defined( 'ABSPATH' ) || exit;
  */
 function sz_setup_core() {
 	sportszone()->core = new SZ_Core();
+	sportszone()->templates = new SZ_Templates();
 }
 add_action( 'sz_loaded', 'sz_setup_core', 0 );

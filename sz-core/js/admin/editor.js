@@ -3,7 +3,7 @@
 	tinymce.PluginManager.add( 'sz_shortcodes_button', function( editor, url ) {
 		var ed = tinymce.activeEditor;
 
-		var groups = ed.getLang( 'sportspress.shortcodes' ).split("]");
+		var groups = ed.getLang( 'sportszone.shortcodes' ).split("]");
 		var menu = new Array();
 
 		groups.forEach(function(g) {
@@ -15,24 +15,24 @@
 			var submenu = new Array();
 			shortcodes.forEach(function(s) {
 				submenu.push({
-					text: ed.getLang( 'sportspress.' + s ),
+					text: ed.getLang( 'sportszone.' + s ),
 					onclick: function() {
                         // triggers the thickbox
                         var width = jQuery(window).width(), H = jQuery(window).height(), W = ( 720 < width ) ? 720 : width;
                         W = W - 80;
                         H = H - 84;
-                        tb_show( ed.getLang( 'sportspress.' + label ) + ' - ' + ed.getLang( 'sportspress.' + s ), 'admin-ajax.php?action=sportspress_' + label + '_' + s + '_shortcode&width=' + W + '&height=' + H );
+                        tb_show( ed.getLang( 'sportszone.' + label ) + ' - ' + ed.getLang( 'sportszone.' + s ), 'admin-ajax.php?action=sportszone_' + label + '_' + s + '_shortcode&width=' + W + '&height=' + H );
 					}
 				});
 			});
 			menu.push({
-				text: ed.getLang( 'sportspress.' + label ),
+				text: ed.getLang( 'sportszone.' + label ),
 				menu: submenu
 			});
 		});
 
 		editor.addButton( 'sz_shortcodes_button', {
-			title: ed.getLang('sportspress.insert'),
+			title: ed.getLang('sportszone.insert'),
 			text: false,
 			icon: false,
 			type: 'menubutton',

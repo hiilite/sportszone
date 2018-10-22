@@ -75,7 +75,7 @@ function sz_core_ajax_widget_members() {
 
 	// Query for members.
 	if ( sz_has_members( $members_args ) ) : ?>
-		<?php echo '0[[SPLIT]]'; // Return valid result. TODO: remove this. ?>
+		<?php echo '0[[SPLIT]]'; // Return valid result. ?>
 		<?php while ( sz_members() ) : sz_the_member(); ?>
 			<li class="vcard">
 				<div class="item-avatar">

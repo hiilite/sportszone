@@ -1,13 +1,13 @@
 /* Messages */
-div.sportspress-message {
+div.sportszone-message {
 	border-left-color: #00a69c !important;
 }
 
-div.sportspress-message a.button-primary,
-p.sportspress-actions input.button-primary,
-p.sportspress-actions input.button-primary:active,
-p.sportspress-actions a.button-primary,
-p.sportspress-actions a.button-primary:active {
+div.sportszone-message a.button-primary,
+p.sportszone-actions input.button-primary,
+p.sportszone-actions input.button-primary:active,
+p.sportszone-actions a.button-primary,
+p.sportszone-actions a.button-primary:active {
 	background: #3bbab3;
 	border-color: #15a29a;
 	-webkit-box-shadow: inset 0 1px 0 rgba(255,255,255,.25),0 1px 0 rgba(0,0,0,.1);
@@ -17,11 +17,11 @@ p.sportspress-actions a.button-primary:active {
 	text-shadow: 0 -1px 1px #15a29a,1px 0 1px #15a29a,0 1px 1px #15a29a,-1px 0 1px #15a29a;
 }
 
-div.sportspress-message a.button-primary:hover,
-p.sportspress-actions input.button-primary:hover,
-p.sportspress-actions input.button-primary:focus,
-p.sportspress-actions a.button-primary:hover,
-p.sportspress-actions a.button-primary:focus {
+div.sportszone-message a.button-primary:hover,
+p.sportszone-actions input.button-primary:hover,
+p.sportszone-actions input.button-primary:focus,
+p.sportszone-actions a.button-primary:hover,
+p.sportszone-actions a.button-primary:focus {
 	background: #00a69c;
 	border-color: #009187;
 	-webkit-box-shadow: inset 0 1px 0 rgba(255,255,255,.25),0 1px 0 rgba(0,0,0,.1);
@@ -34,44 +34,44 @@ p.sportspress-actions a.button-primary:focus {
 	text-decoration: none;
 }
 
-.sz-feature p.sportspress-actions {
+.sz-feature p.sportszone-actions {
 	margin-top: 16px;
 }
 
-.about-sportspress-wrap div.updated {
+.about-sportszone-wrap div.updated {
 	display: block!important;
 }
 
-.about-sportspress-wrap .changelog .sportspress-steps {
+.about-sportszone-wrap .changelog .sportszone-steps {
 	margin-top: 24px;
 }
 
-.about-sportspress-wrap .changelog .sportspress-steps li {
+.about-sportszone-wrap .changelog .sportszone-steps li {
 	line-height: 16px;
 	list-style-type: none;
 	margin-left: 0;
 }
 
-.about-sportspress-wrap .changelog .sportspress-steps li a {
+.about-sportszone-wrap .changelog .sportszone-steps li a {
 	display: block;
 	padding: 0 0 8px;
 	background: transparent!important;
 }
 
-.sportspress-steps:before,
-.sportspress-steps:after {
+.sportszone-steps:before,
+.sportszone-steps:after {
     content: " ";
     display: table;
 }
 
-.sportspress-steps:after {
+.sportszone-steps:after {
     clear: both;
 }
 
-.sportspress-steps {
+.sportszone-steps {
     *zoom: 1;
 }
 
-.sportspress-steps .welcome-icon i:before {
+.sportszone-steps .welcome-icon i:before {
 	color: #888;
 }

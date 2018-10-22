@@ -20,7 +20,7 @@ sz_nouveau_xprofile_hook( 'before', 'edit_content' ); ?>
 			<?php sz_nouveau_xprofile_hook( 'before', 'field_content' ); ?>
 
 				<?php if ( sz_profile_has_multiple_groups() ) : ?>
-					<ul class="button-tabs button-nav">
+					<ul class="button-tabs button-nav nav nav-pills">
 
 						<?php sz_profile_group_tabs(); ?>
 

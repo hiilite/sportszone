@@ -10,6 +10,350 @@
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
+
+/**
+ * SportsZone templates
+ *
+ * The SportsZone templates class stores template layout data.
+ *
+ * @class 		SZ_Templates
+ * @version     2.2
+ * @package		SportsZone/Classes
+ * @category	Class
+ * @author 		ThemeBoy
+  * Added Clubs
+ */
+class SZ_Templates {
+
+	/** @var array Array of templates */
+	private $data = array();
+
+	/**
+	 * Constructor for the templates class - defines all templates.
+	 *
+	 * @access public
+	 * @return void
+	 */
+	public function __construct() {
+		$this->data = array(
+			'match' => array_merge(
+				apply_filters( 'sportszone_before_match_template', array(
+					'logos' => array(
+						'title' => __( 'Teams', 'sportszone' ),
+						'option' => 'sportszone_match_show_logos',
+						'action' => 'sportszone_output_match_logos',
+						'default' => 'yes',
+					),
+					'excerpt' => array(
+						'title' => __( 'Excerpt', 'sportszone' ),
+						'option' => 'sportszone_match_show_excerpt',
+						'action' => 'sportszone_output_post_excerpt',
+						'default' => 'yes',
+					),
+				) ),
+				
+				array(
+					'content' => array(
+						'title' => __( 'Article', 'sportszone' ),
+						'option' => 'sportszone_match_show_content',
+						'action' => 'sportszone_output_match_content',
+						'default' => 'yes',
+					),
+				),
+				
+				apply_filters( 'sportszone_after_match_template', array(
+					'video' => array(
+						'title' => __( 'Video', 'sportszone' ),
+						'option' => 'sportszone_match_show_video',
+						'action' => 'sportszone_output_match_video',
+						'default' => 'yes',
+					),
+					'details' => array(
+						'title' => __( 'Details', 'sportszone' ),
+						'option' => 'sportszone_match_show_details',
+						'action' => 'sportszone_output_match_details',
+						'default' => 'yes',
+					),
+					'venue' => array(
+						'title' => __( 'Venue', 'sportszone' ),
+						'option' => 'sportszone_match_show_venue',
+						'action' => 'sportszone_output_match_venue',
+						'default' => 'yes',
+					),
+					'results' => array(
+						'title' => __( 'Results', 'sportszone' ),
+						'option' => 'sportszone_match_show_results',
+						'action' => 'sportszone_output_match_results',
+						'default' => 'yes',
+					),
+					'performance' => array(
+						'title' => __( 'Box Score', 'sportszone' ),
+						'option' => 'sportszone_match_show_performance',
+						'action' => 'sportszone_output_match_performance',
+						'default' => 'yes',
+					),
+				) )
+			),
+			'calendar' => array_merge(
+				apply_filters( 'sportszone_before_calendar_template', array() ),
+				
+				array(
+					'content' => array(
+						'title' => __( 'Description', 'sportszone' ),
+						'option' => 'sportszone_calendar_show_content',
+						'action' => 'sportszone_output_calendar_content',
+						'default' => 'yes',
+					),
+				),
+				
+				apply_filters( 'sportszone_after_calendar_template', array(
+					'data' => array(
+						'title' => __( 'Calendar', 'sportszone' ),
+						'option' => 'sportszone_calendar_show_data',
+						'action' => 'sportszone_output_calendar',
+						'default' => 'yes',
+					),
+				) )
+			),
+			'club' => array_merge(
+				apply_filters( 'sportszone_before_club_template', array(
+					'logo' => array(
+						'title' => __( 'Logo', 'sportszone' ),
+						'option' => 'sportszone_club_show_logo',
+						'action' => 'sportszone_output_club_logo',
+						'default' => 'yes',
+					),
+					'excerpt' => array(
+						'title' => __( 'Excerpt', 'sportszone' ),
+						'option' => 'sportszone_club_show_excerpt',
+						'action' => 'sportszone_output_post_excerpt',
+						'default' => 'yes',
+					),
+				) ),
+				
+				array(
+					'content' => array(
+						'title' => __( 'Profile', 'sportszone' ),
+						'option' => 'sportszone_club_show_content',
+						'action' => 'sportszone_output_club_content',
+						'default' => 'yes',
+					),
+				),
+				
+				apply_filters( 'sportszone_after_club_template', array(
+					'link' => array(
+						'title' => __( 'Visit Site', 'sportszone' ),
+						'label' => __( 'Link', 'sportszone' ),
+						'option' => 'sportszone_club_show_link',
+						'action' => 'sportszone_output_club_link',
+						'default' => 'no',
+					),
+					'details' => array(
+						'title' => __( 'Details', 'sportszone' ),
+						'option' => 'sportszone_club_show_details',
+						'action' => 'sportszone_output_club_details',
+						'default' => 'no',
+					),
+					'staff' => array(
+						'title' => __( 'Staff', 'sportszone' ),
+						'option' => 'sportszone_club_show_staff',
+						'action' => 'sportszone_output_club_staff',
+						'default' => 'yes',
+					),
+				) )
+			),
+			'team' => array_merge(
+				apply_filters( 'sportszone_before_team_template', array(
+					'logo' => array(
+						'title' => __( 'Logo', 'sportszone' ),
+						'option' => 'sportszone_team_show_logo',
+						'action' => 'sportszone_output_team_logo',
+						'default' => 'yes',
+					),
+					'excerpt' => array(
+						'title' => __( 'Excerpt', 'sportszone' ),
+						'option' => 'sportszone_team_show_excerpt',
+						'action' => 'sportszone_output_post_excerpt',
+						'default' => 'yes',
+					),
+				) ),
+				
+				array(
+					'content' => array(
+						'title' => __( 'Profile', 'sportszone' ),
+						'option' => 'sportszone_team_show_content',
+						'action' => 'sportszone_output_team_content',
+						'default' => 'yes',
+					),
+				),
+				
+				apply_filters( 'sportszone_after_team_template', array(
+					'link' => array(
+						'title' => __( 'Visit Site', 'sportszone' ),
+						'label' => __( 'Link', 'sportszone' ),
+						'option' => 'sportszone_team_show_link',
+						'action' => 'sportszone_output_team_link',
+						'default' => 'no',
+					),
+					'details' => array(
+						'title' => __( 'Details', 'sportszone' ),
+						'option' => 'sportszone_team_show_details',
+						'action' => 'sportszone_output_team_details',
+						'default' => 'no',
+					),
+					'staff' => array(
+						'title' => __( 'Staff', 'sportszone' ),
+						'option' => 'sportszone_team_show_staff',
+						'action' => 'sportszone_output_team_staff',
+						'default' => 'yes',
+					),
+				) )
+			),
+			'table' => array_merge(
+				apply_filters( 'sportszone_before_table_template', array() ),
+				
+				array(
+					'content' => array(
+						'title' => __( 'Description', 'sportszone' ),
+						'option' => 'sportszone_table_show_content',
+						'action' => 'sportszone_output_table_content',
+						'default' => 'yes',
+					),
+				),
+				
+				apply_filters( 'sportszone_after_table_template', array(
+					'data' => array(
+						'title' => __( 'League Table', 'sportszone' ),
+						'option' => 'sportszone_table_show_data',
+						'action' => 'sportszone_output_league_table',
+						'default' => 'yes',
+					),
+				) )
+			),
+			'player' => array_merge(
+				apply_filters( 'sportszone_before_player_template', array(
+					'selector' => array(
+						'title' => __( 'Dropdown', 'sportszone' ),
+						'label' => __( 'Players', 'sportszone' ),
+						'option' => 'sportszone_player_show_selector',
+						'action' => 'sportszone_output_player_selector',
+						'default' => 'yes',
+					),
+					'photo' => array(
+						'title' => __( 'Photo', 'sportszone' ),
+						'option' => 'sportszone_player_show_photo',
+						'action' => 'sportszone_output_player_photo',
+						'default' => 'yes',
+					),
+					'details' => array(
+						'title' => __( 'Details', 'sportszone' ),
+						'option' => 'sportszone_player_show_details',
+						'action' => 'sportszone_output_player_details',
+						'default' => 'yes',
+					),
+					'excerpt' => array(
+						'title' => __( 'Excerpt', 'sportszone' ),
+						'option' => 'sportszone_player_show_excerpt',
+						'action' => 'sportszone_output_post_excerpt',
+						'default' => 'yes',
+					),
+				) ),
+				
+				array(
+					'content' => array(
+						'title' => __( 'Profile', 'sportszone' ),
+						'option' => 'sportszone_player_show_content',
+						'action' => 'sportszone_output_player_content',
+						'default' => 'yes',
+					),
+				),
+				
+				apply_filters( 'sportszone_after_player_template', array(
+					'statistics' => array(
+						'title' => __( 'Statistics', 'sportszone' ),
+						'option' => 'sportszone_player_show_statistics',
+						'action' => 'sportszone_output_player_statistics',
+						'default' => 'yes',
+					),
+				) )
+			),
+			'list' => array_merge(
+				apply_filters( 'sportszone_before_list_template', array() ),
+				
+				array(
+					'content' => array(
+						'title' => __( 'Description', 'sportszone' ),
+						'option' => 'sportszone_list_show_content',
+						'action' => 'sportszone_output_list_content',
+						'default' => 'yes',
+					),
+				),
+				
+				apply_filters( 'sportszone_after_list_template', array(
+					'data' => array(
+						'title' => __( 'Player List', 'sportszone' ),
+						'option' => 'sportszone_list_show_data',
+						'action' => 'sportszone_output_player_list',
+						'default' => 'yes',
+					),
+				) )
+			),
+			'staff' => array_merge(
+				apply_filters( 'sportszone_before_staff_template', array(
+					'selector' => array(
+						'title' => __( 'Dropdown', 'sportszone' ),
+						'label' => __( 'Staff', 'sportszone' ),
+						'option' => 'sportszone_staff_show_selector',
+						'action' => 'sportszone_output_staff_selector',
+						'default' => 'yes',
+					),
+					'photo' => array(
+						'title' => __( 'Photo', 'sportszone' ),
+						'option' => 'sportszone_staff_show_photo',
+						'action' => 'sportszone_output_staff_photo',
+						'default' => 'yes',
+					),
+					'details' => array(
+						'title' => __( 'Details', 'sportszone' ),
+						'option' => 'sportszone_staff_show_details',
+						'action' => 'sportszone_output_staff_details',
+						'default' => 'yes',
+					),
+					'excerpt' => array(
+						'title' => __( 'Excerpt', 'sportszone' ),
+						'option' => 'sportszone_staff_show_excerpt',
+						'action' => 'sportszone_output_post_excerpt',
+						'default' => 'yes',
+					),
+				) ),
+				
+				array(
+					'content' => array(
+						'title' => __( 'Profile', 'sportszone' ),
+						'option' => 'sportszone_staff_show_content',
+						'action' => 'sportszone_output_staff_content',
+						'default' => 'yes',
+					),
+				),
+				
+				apply_filters( 'sportszone_after_staff_template', array() )
+			),
+		);
+	}
+
+	public function __get( $key ) {
+		return ( array_key_exists( $key, $this->data ) ? $this->data[ $key ] : array() );
+	}
+
+	public function __set( $key, $value ){
+		$this->data[ $key ] = $value;
+	}
+}
+
+
+
+
+
 /**
  * Output the "options nav", the secondary-level single item navigation menu.
  *
@@ -1385,11 +1729,12 @@ function sz_ajax_querystring( $object = false ) {
  * @return string Component name.
  */
 function sz_current_component() {
+	global $post;
 	$sz                = sportszone();
 	$current_component = !empty( $sz->current_component )
 		? $sz->current_component
 		: false;
-
+		
 	/**
 	 * Filters the name of the current component.
 	 *
@@ -1753,7 +2098,7 @@ function sz_loggedin_user_id() {
  * @return bool Returns true if the component matches, or else false.
  */
 function sz_is_current_component( $component = '' ) {
-
+	global $post;
 	// Default is no match. We'll check a few places for matches.
 	$is_current_component = false;
 
@@ -1766,9 +2111,13 @@ function sz_is_current_component( $component = '' ) {
 	if ( 'xprofile' === $component ) {
 		$component = 'profile';
 	}
-
 	$sz = sportszone();
-
+	
+	if(get_post_type( $post ) == 'sz_match'){
+		$component = 'events';
+		$is_current_component = true;
+	}
+	
 	// Only check if SportsZone found a current_component.
 	if ( ! empty( $sz->current_component ) ) {
 
@@ -2305,13 +2654,24 @@ function sz_is_groups_component() {
 }
 
 /**
- * Check whether the current page is part of the Groups component.
+ * Check whether the current page is part of the Events component.
  *
  * @since 1.1.0
  *
- * @return bool True if the current page is part of the Groups component.
+ * @return bool True if the current page is part of the Events component.
  */
 function sz_is_events_component() {
+	return (bool) sz_is_current_component( 'events' );
+}
+
+/**
+ * Check whether the current page is part of the Events component.
+ *
+ * @since 1.1.0
+ *
+ * @return bool True if the current page is part of the Events component.
+ */
+function sz_is_matches_component() {
 	return (bool) sz_is_current_component( 'events' );
 }
 
@@ -3049,6 +3409,43 @@ function sz_is_events_directory() {
  * @return bool True if the current page is part of a single event.
  */
 function sz_is_event() {
+	global $post;
+	$retval = sz_is_active( 'events' );
+	
+	if ( ! empty( $retval ) ) {
+		$retval = sz_is_events_component() && events_get_current_event();
+	}
+	/*if(get_post_type( $post ) == 'sz_match'){
+		$retval = true;
+	}*/
+
+	return (bool) $retval;
+}
+
+/**
+ * Is the current page the matches directory?
+ *
+ * @since 2.0.0
+ *
+ * @return bool True if the current page is the events directory.
+ */
+function sz_is_matches_directory() {
+	if ( sz_is_matches_component() && ! sz_is_match() && ( ! sz_current_action() || ( sz_action_variable() && sz_is_current_action( sz_get_matches_match_type_base() ) ) ) ) {
+		return true;
+	}
+
+	return false;
+}
+/**
+ * Does the current page belong to a single event?
+ *
+ * Will return true for any subpage of a single event.
+ *
+ * @since 1.2.0
+ *
+ * @return bool True if the current page is part of a single event.
+ */
+function sz_is_match() {
 	$retval = sz_is_active( 'events' );
 
 	if ( ! empty( $retval ) ) {
@@ -3077,6 +3474,24 @@ function sz_is_event_home() {
 }
 
 /**
+ * Is the current page a single event's home page?
+ *
+ * URL will vary depending on which event tab is set to be the "home". By
+ * default, it's the event's recent activity.
+ *
+ * @since 1.1.0
+ *
+ * @return bool True if the current page is a single event's home page.
+ */
+function sz_is_match_home() {
+	if ( sz_is_single_item() && sz_is_matches_component() && ( ! sz_current_action() || sz_is_current_action( 'home' ) ) ) {
+		return true;
+	}
+
+	return false;
+}
+
+/**
  * Is the current page part of the event creation process?
  *
  * @since 1.1.0
@@ -3098,6 +3513,27 @@ function sz_is_event_create() {
  */
 function sz_is_event_admin_page() {
 	return (bool) ( sz_is_single_item() && sz_is_events_component() && sz_is_current_action( 'admin' ) );
+}
+
+/**
+ * Is the current page a event's activity page?
+ *
+ * @since 1.2.1
+ *
+ * @return bool True if the current page is a event's activity page.
+ */
+function sz_is_match_activity() {
+	$retval = false;
+
+	if ( sz_is_single_item() && sz_is_events_component() && sz_is_current_action( 'activity' ) ) {
+		$retval = true;
+	}
+
+	if ( sz_is_event_home() && sz_is_active( 'activity' ) && ! sz_is_event_custom_front() ) {
+		$retval = true;
+	}
+
+	return $retval;
 }
 
 /**
@@ -3169,6 +3605,29 @@ function sz_is_event_members() {
 }
 
 /**
+ * Is the current page a event's Members page?
+ *
+ * Eg http://example.com/events/myevent/members/.
+ *
+ * @since 1.1.0
+ *
+ * @return bool True if the current page is part of a event's Members page.
+ */
+function sz_is_match_members() {
+	$retval = false;
+
+	if ( sz_is_single_item() && sz_is_matches_component() && sz_is_current_action( 'members' ) ) {
+		$retval = true;
+	}
+
+	if ( sz_is_match_home() && ! sz_is_active( 'activity' ) && ! sz_is_match_custom_front() ) {
+		$retval = true;
+	}
+
+	return $retval;
+}
+
+/**
  * Is the current page a event's Invites page?
  *
  * Eg http://example.com/events/myevent/send-invites/.
@@ -3179,6 +3638,19 @@ function sz_is_event_members() {
  */
 function sz_is_event_invites() {
 	return (bool) ( sz_is_events_component() && sz_is_current_action( 'send-invites' ) );
+}
+
+/**
+ * Is the current page a match's Invites page?
+ *
+ * Eg http://example.com/events/myevent/send-invites/.
+ *
+ * @since 1.1.0
+ *
+ * @return bool True if the current page is a match's Send Invites page.
+ */
+function sz_is_match_invites() {
+	return (bool) ( sz_is_matches_component() && sz_is_current_action( 'send-invites' ) );
 }
 
 /**
@@ -3778,6 +4250,10 @@ function sz_the_body_class() {
 		if ( sz_is_single_activity() ) {
 			$sz_classes[] = 'activity-permalink';
 		}
+		
+		/* Matches ************************************************************/
+
+		
 
 		/* Registration ******************************************************/
 
@@ -4173,3 +4649,682 @@ function sz_email_the_salutation( $settings = array() ) {
 		 */
 		return apply_filters( 'sz_email_get_salutation', sprintf( _x( 'Hi %s,', 'recipient salutation', 'sportszone' ), $token ), $settings, $token );
 	}
+
+
+
+
+/**
+ * SportsZone Template
+ *
+ * Functions for the templating system.
+ *
+ * @author 		ThemeBoy
+ * @category 	Core
+ * @package 	SportsZone/Functions
+ * @version   2.5.5
+ */
+
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
+/**
+ * Output generator tag to aid debugging.
+ *
+ * @access public
+ * @return void
+ */
+function sz_generator_tag( $gen, $type ) {
+	switch ( $type ) {
+		case 'html':
+			$gen .= "\n" . '<meta name="generator" content="SportsZone ' . esc_attr( SP_VERSION ) . '">';
+			break;
+		case 'xhtml':
+			$gen .= "\n" . '<meta name="generator" content="SportsZone ' . esc_attr( SP_VERSION ) . '" />';
+			break;
+	}
+	return $gen;
+}
+
+/**
+ * Add body classes for SP pages
+ *
+ * @param  array $classes
+ * @return array
+ */
+function sz_body_class( $classes ) {
+	$classes = (array) $classes;
+
+	if ( is_sportszone() ) {
+		$classes[] = 'sportszone';
+		$classes[] = 'sportszone-page';
+	}
+
+	$post_type = get_post_type();
+
+	if ( 'sz_match' == $post_type ) {
+		$id = get_the_ID();
+		$show_venue = get_option( 'sportszone_match_show_venue', 'yes' ) == 'yes' ? true : false;
+		if ( $show_venue && get_the_terms( $id, 'sz_venue' ) ) {
+			if ( get_option( 'sportszone_match_show_maps', 'yes' ) == 'yes' ) {
+				$classes[] = 'sp-has-venue';
+			}
+		}
+		if ( 'results' == sz_get_status( $id ) ) {
+			if ( get_option( 'sportszone_event_show_results', 'yes' ) == 'yes' ) {
+				$classes[] = 'sp-has-results';
+			}
+		}
+		$classes[] = 'sz-performance-sections-' . get_option( 'sportszone_match_performance_sections', -1 );
+	} elseif ( 'sz_team' == $post_type && 'yes' == get_option( 'sportszone_team_show_logo', 'yes' ) ) {
+		$classes[] = 'sp-show-image';
+	} elseif ( 'sz_player' == $post_type && 'yes' == get_option( 'sportszone_player_show_photo', 'yes' ) ) {
+		$classes[] = 'sp-show-image';
+	} elseif ( 'sz_staff' == $post_type && 'yes' == get_option( 'sportszone_staff_show_photo', 'yes' ) ) {
+		$classes[] = 'sz-show-image';
+	}
+
+	return array_unique( $classes );
+}
+
+/** Template pages ********************************************************/
+
+if ( ! function_exists( 'sportszone_taxonomy_archive_description' ) ) {
+
+	/**
+	 * Show an archive description on taxonomy archives
+	 *
+	 * @access public
+	 * @subpackage	Archives
+	 * @return void
+	 */
+	function sportszone_taxonomy_archive_description() {
+		if ( is_tax( array( 'sz_season', 'sz_league', 'sz_venue', 'sz_position' ) ) && get_query_var( 'paged' ) == 0 ) {
+			$description = apply_filters( 'the_content', term_description() );
+			if ( $description ) {
+				echo '<div class="term-description">' . $description . '</div>';
+			}
+		}
+	}
+}
+
+/** Single Post ********************************************************/
+
+if ( ! function_exists( 'sportszone_output_post_excerpt' ) ) {
+
+	/**
+	 * Output the post excerpt.
+	 *
+	 * @access public
+	 * @subpackage	Excerpt
+	 * @return void
+	 */
+	function sportszone_output_post_excerpt() {
+		sz_get_template( 'post-excerpt.php' );
+	}
+}
+
+/** Single Event ********************************************************/
+
+if ( ! function_exists( 'sportszone_output_match_logos' ) ) {
+
+	/**
+	 * Output the match logos.
+	 *
+	 * @access public
+	 * @subpackage	Event/Logos
+	 * @return void
+	 */
+	function sportszone_output_match_logos() {
+		sz_get_template( 'match-logos.php' );
+	}
+}
+
+if ( ! function_exists( 'sportszone_output_match_video' ) ) {
+
+	/**
+	 * Output the match video.
+	 *
+	 * @access public
+	 * @subpackage	Event/Video
+	 * @return void
+	 */
+	function sportszone_output_match_video() {
+		sz_get_template( 'match-video.php' );
+	}
+}
+if ( ! function_exists( 'sportszone_output_match_results' ) ) {
+
+	/**
+	 * Output the match results.
+	 *
+	 * @access public
+	 * @subpackage	Event/Results
+	 * @return void
+	 */
+	function sportszone_output_match_results() {
+		sz_get_template( 'match-results.php' );
+	}
+}
+if ( ! function_exists( 'sportszone_output_match_details' ) ) {
+
+	/**
+	 * Output the match details.
+	 *
+	 * @access public
+	 * @subpackage	Event/Details
+	 * @return void
+	 */
+	function sportszone_output_match_details() {
+		sz_get_template( 'match-details.php' );
+	}
+}
+if ( ! function_exists( 'sportszone_output_match_overview' ) ) {
+
+	/**
+	 * Output the match details, venue, and results.
+	 *
+	 * @access public
+	 * @subpackage	Event/Overview
+	 * @return void
+	 */
+	function sportszone_output_match_overview() {
+		sz_get_template( 'match-overview.php' );
+	}
+}
+if ( ! function_exists( 'sportszone_output_match_venue' ) ) {
+
+	/**
+	 * Output the match venue.
+	 *
+	 * @access public
+	 * @subpackage	Event/Venue
+	 * @return void
+	 */
+	function sportszone_output_match_venue() {
+		sz_get_template( 'match-venue.php' );
+	}
+}
+if ( ! function_exists( 'sportszone_output_match_performance' ) ) {
+
+	/**
+	 * Output the match performance.
+	 *
+	 * @access public
+	 * @subpackage	Event/Performance
+	 * @return void
+	 */
+	function sportszone_output_match_performance() {
+		sz_get_template( 'match-performance.php' );
+	}
+}
+if ( ! function_exists( 'sportszone_output_match_officials' ) ) {
+
+	/**
+	 * Output the match officials.
+	 *
+	 * @access public
+	 * @subpackage	Event/Officials
+	 * @return void
+	 */
+	function sportszone_output_match_officials() {
+		sz_get_template( 'match-officials.php' );
+	}
+}
+
+/** Single Calendar ********************************************************/
+
+if ( ! function_exists( 'sportszone_output_calendar' ) ) {
+
+	/**
+	 * Output the calendar.
+	 *
+	 * @access public
+	 * @subpackage	Calendar
+	 * @return void
+	 */
+	function sportszone_output_calendar() {
+        $id = get_the_ID();
+        $format = get_post_meta( $id, 'sz_format', true );
+        if ( array_key_exists( $format, SP()->formats->calendar ) )
+			sz_get_template( 'match-' . $format . '.php', array( 'id' => $id ) );
+        else
+			sz_get_template( 'match-calendar.php', array( 'id' => $id ) );
+	}
+}
+/** Single Club ********************************************************/
+
+if ( ! function_exists( 'sportszone_output_club_link' ) ) {
+
+	/**
+	 * Output the club link.
+	 *
+	 * @access public
+	 * @subpackage	Club/Link
+	 * @return void
+	 */
+	function sportszone_output_club_link() {
+		sz_get_template( 'club-link.php' );
+	}
+}
+if ( ! function_exists( 'sportszone_output_club_logo' ) ) {
+
+	/**
+	 * Output the club logo.
+	 *
+	 * @access public
+	 * @subpackage	Club/Logo
+	 * @return void
+	 */
+	function sportszone_output_club_logo() {
+		sz_get_template( 'club-logo.php' );
+	}
+}
+if ( ! function_exists( 'sportszone_output_club_details' ) ) {
+
+	/**
+	 * Output the club details.
+	 *
+	 * @access public
+	 * @subpackage	Club/Details
+	 * @return void
+	 */
+	function sportszone_output_club_details() {
+		sz_get_template( 'club-details.php' );
+	}
+}
+if ( ! function_exists( 'sportszone_output_club_staff' ) ) {
+
+	/**
+	 * Output the club staff.
+	 *
+	 * @access public
+	 * @subpackage	Club/Staff
+	 * @return void
+	 */
+	function sportszone_output_club_staff() {
+		sz_get_template( 'club-staff.php' );
+	}
+}
+if ( ! function_exists( 'sportszone_output_club_tables' ) ) {
+
+	/**
+	 * Output the club tables.
+	 *
+	 * @access public
+	 * @subpackage	Club/Tables
+	 * @return void
+	 */
+	function sportszone_output_club_tables() {
+		sz_get_template( 'club-tables.php' );
+	}
+}
+if ( ! function_exists( 'sportszone_output_club_lists' ) ) {
+
+	/**
+	 * Output the club lists.
+	 *
+	 * @access public
+	 * @subpackage	Club/Lists
+	 * @return void
+	 */
+	function sportszone_output_club_lists() {
+		sz_get_template( 'club-lists.php' );
+	}
+}
+if ( ! function_exists( 'sportszone_output_club_matches' ) ) {
+
+	/**
+	 * Output the club matches.
+	 *
+	 * @access public
+	 * @subpackage	Club/Events
+	 * @return void
+	 */
+	function sportszone_output_club_matches() {
+		sz_get_template( 'club-matches.php' );
+	}
+}
+
+
+/** Single Team ********************************************************/
+
+if ( ! function_exists( 'sportszone_output_team_link' ) ) {
+
+	/**
+	 * Output the team link.
+	 *
+	 * @access public
+	 * @subpackage	Team/Link
+	 * @return void
+	 */
+	function sportszone_output_team_link() {
+		sz_get_template( 'team-link.php' );
+	}
+}
+if ( ! function_exists( 'sportszone_output_team_logo' ) ) {
+
+	/**
+	 * Output the team logo.
+	 *
+	 * @access public
+	 * @subpackage	Team/Logo
+	 * @return void
+	 */
+	function sportszone_output_team_logo() {
+		sz_get_template( 'team-logo.php' );
+	}
+}
+if ( ! function_exists( 'sportszone_output_team_details' ) ) {
+
+	/**
+	 * Output the team details.
+	 *
+	 * @access public
+	 * @subpackage	Team/Details
+	 * @return void
+	 */
+	function sportszone_output_team_details() {
+		sz_get_template( 'team-details.php' );
+	}
+}
+if ( ! function_exists( 'sportszone_output_team_staff' ) ) {
+
+	/**
+	 * Output the team staff.
+	 *
+	 * @access public
+	 * @subpackage	Team/Staff
+	 * @return void
+	 */
+	function sportszone_output_team_staff() {
+		sz_get_template( 'team-staff.php' );
+	}
+}
+if ( ! function_exists( 'sportszone_output_team_tables' ) ) {
+
+	/**
+	 * Output the team tables.
+	 *
+	 * @access public
+	 * @subpackage	Team/Tables
+	 * @return void
+	 */
+	function sportszone_output_team_tables() {
+		sz_get_template( 'team-tables.php' );
+	}
+}
+if ( ! function_exists( 'sportszone_output_team_lists' ) ) {
+
+	/**
+	 * Output the team lists.
+	 *
+	 * @access public
+	 * @subpackage	Team/Lists
+	 * @return void
+	 */
+	function sportszone_output_team_lists() {
+		sz_get_template( 'team-lists.php' );
+	}
+}
+if ( ! function_exists( 'sportszone_output_team_matches' ) ) {
+
+	/**
+	 * Output the team matches.
+	 *
+	 * @access public
+	 * @subpackage	Team/Events
+	 * @return void
+	 */
+	function sportszone_output_team_matches() {
+		sz_get_template( 'team-matches.php' );
+	}
+}
+
+/** Single League Table ********************************************************/
+
+if ( ! function_exists( 'sportszone_output_league_table' ) ) {
+
+	/**
+	 * Output the team columns.
+	 *
+	 * @access public
+	 * @subpackage	Table
+	 * @return void
+	 */
+	function sportszone_output_league_table() {
+		$id = get_the_ID();
+		$format = get_post_meta( $id, 'sz_format', true );
+		if ( array_key_exists( $format, SP()->formats->table ) && 'standings' !== $format )
+			sz_get_template( 'team-' . $format . '.php', array( 'id' => $id ) );
+		else
+			sz_get_template( 'league-table.php', array( 'id' => $id ) );
+	}
+}
+
+/** Single Player ********************************************************/
+
+if ( ! function_exists( 'sportszone_output_player_selector' ) ) {
+
+	/**
+	 * Output the player dropdown.
+	 *
+	 * @access public
+	 * @subpackage	Player/Dropdown
+	 * @return void
+	 */
+	function sportszone_output_player_selector() {
+		sz_get_template( 'player-selector.php' );
+	}
+}
+if ( ! function_exists( 'sportszone_output_player_photo' ) ) {
+
+	/**
+	 * Output the player photo.
+	 *
+	 * @access public
+	 * @subpackage	Player/Photo
+	 * @return void
+	 */
+	function sportszone_output_player_photo() {
+		sz_get_template( 'player-photo.php' );
+	}
+}
+if ( ! function_exists( 'sportszone_output_player_details' ) ) {
+
+	/**
+	 * Output the player details.
+	 *
+	 * @access public
+	 * @subpackage	Player/Details
+	 * @return void
+	 */
+	function sportszone_output_player_details() {
+		sz_get_template( 'player-details.php' );
+	}
+}
+if ( ! function_exists( 'sportszone_output_player_statistics' ) ) {
+
+	/**
+	 * Output the player statistics.
+	 *
+	 * @access public
+	 * @subpackage	Player/Statistics
+	 * @return void
+	 */
+	function sportszone_output_player_statistics() {
+		sz_get_template( 'player-statistics.php' );
+	}
+}
+if ( ! function_exists( 'sportszone_output_player_matches' ) ) {
+
+	/**
+	 * Output the player matches.
+	 *
+	 * @access public
+	 * @subpackage	Player/Events
+	 * @return void
+	 */
+	function sportszone_output_player_matches() {
+		sz_get_template( 'player-matches.php' );
+	}
+}
+
+/** Single Player List ********************************************************/
+
+if ( ! function_exists( 'sportszone_output_player_list' ) ) {
+
+	/**
+	 * Output the player list.
+	 *
+	 * @access public
+	 * @subpackage	List
+	 * @return void
+	 */
+	function sportszone_output_player_list() {
+        $id = get_the_ID();
+        $format = get_post_meta( $id, 'sz_format', true );
+        if ( array_key_exists( $format, SP()->formats->list ) )
+			sz_get_template( 'player-' . $format . '.php', array( 'id' => $id ) );
+        else
+			sz_get_template( 'player-list.php', array( 'id' => $id ) );
+	}
+}
+
+/** Single Staff ********************************************************/
+
+if ( ! function_exists( 'sportszone_output_staff_selector' ) ) {
+
+	/**
+	 * Output the staff dropdown.
+	 *
+	 * @access public
+	 * @subpackage	Staff/Dropdown
+	 * @return void
+	 */
+	function sportszone_output_staff_selector() {
+		sz_get_template( 'staff-selector.php' );
+	}
+}
+if ( ! function_exists( 'sportszone_output_staff_photo' ) ) {
+
+	/**
+	 * Output the staff photo.
+	 *
+	 * @access public
+	 * @subpackage	Staff/Photo
+	 * @return void
+	 */
+	function sportszone_output_staff_photo() {
+		sz_get_template( 'staff-photo.php' );
+	}
+}
+if ( ! function_exists( 'sportszone_output_staff_details' ) ) {
+
+	/**
+	 * Output the staff details.
+	 *
+	 * @access public
+	 * @subpackage	Staff/Details
+	 * @return void
+	 */
+	function sportszone_output_staff_details() {
+		sz_get_template( 'staff-details.php' );
+	}
+}
+
+/** Venue Archive ********************************************************/
+
+function sportszone_output_venue_map( $query ) {
+    if ( ! is_tax( 'sz_venue' ) )
+        return;
+
+    $slug = sz_array_value( $query->query, 'sz_venue', null );
+
+    if ( ! $slug )
+        return;
+
+    $venue = get_term_by( 'slug', $slug, 'sz_venue' );
+    $t_id = $venue->term_id;
+    $meta = get_option( "taxonomy_$t_id" );
+	sz_get_template( 'venue-map.php', array( 'meta' => $meta ) );
+}
+
+/** Misc ********************************************************/
+
+function sportszone_output_br_tag() {
+	?>
+	<br>
+	<?php
+}
+if ( ! function_exists( 'sportszone_responsive_tables_css' ) ) {
+
+	/**
+	 * Output the inlince css code for responsive tables.
+	 *
+	 * @access public
+	 * @subpackage	Responsive
+	 * @return void
+	 */
+	function sportszone_responsive_tables_css( $identity ) {
+		$custom_css = '/* 
+		Max width before this PARTICULAR table gets nasty
+		This query will take effect for any screen smaller than 760px
+		and also iPads specifically.
+		*/
+		@media 
+		only screen and (max-width: 800px) {
+		
+			/* Force table to not be like tables anymore */
+			table.'.$identity.', table.'.$identity.' thead, table.'.$identity.' tfoot, table.'.$identity.' tbody, table.'.$identity.' th, table.'.$identity.' td, table.'.$identity.' tr { 
+				display: block; 
+			}
+			
+			/* Hide table headers (but not display: none;, for accessibility) */
+			table.'.$identity.' thead tr { 
+				position: absolute;
+				top: -9999px;
+				left: -9999px;
+			}
+
+			/* Add subtle border to table rows */
+			table.'.$identity.' tbody tr { 
+				border-top: 1px solid rgba(0, 0, 0, 0.1);
+			}
+
+			.sp-data-table .data-number, .sp-data-table .data-rank {
+				width: auto !important;
+			}
+			
+			.sp-data-table th,
+			.sp-data-table td {
+				text-align: center !important;
+			}
+			
+			table.'.$identity.' td { 
+				/* Behave  like a "row" */
+				border: none;
+				position: relative;
+				padding-left: 50%;
+				vertical-align: middle;
+			}
+			
+			table.'.$identity.' td:before { 
+				/* Now like a table header */
+				position: absolute;
+				/* Label the data */
+				content: attr(data-label);
+				/* Top/left values mimic padding */
+				top: 6px;
+				left: 6px;
+				width: 45%; 
+				padding-right: 10px; 
+				white-space: nowrap;
+			}
+		}
+			';
+		
+		$dummystyle = 'sportszone-style-inline-'.$identity;
+		wp_register_style( $dummystyle, false );
+		wp_enqueue_style( $dummystyle );
+		wp_add_inline_style( $dummystyle, $custom_css );
+	}
+}

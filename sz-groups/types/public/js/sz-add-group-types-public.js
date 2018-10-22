@@ -186,3 +186,16 @@ jQuery(document).ready(function($){
 			group_all_clicked = true;
 	});
 });
+
+jQuery(document).ready(function($){
+	jQuery( '#groups-types-select' ).on('change', function(){
+			var type = jQuery(this).val();
+			
+			if(type != 'all') {
+				window.location.href = "/groups/type/"+type+"/";
+			}
+			else {
+				window.location.href = "/groups/";
+			}
+	});
+});

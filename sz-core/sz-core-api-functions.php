@@ -87,12 +87,12 @@ function sz_the_seasons( $post = 0, $delimiter = ', ' ) {
  */
 
 function sz_get_status( $post = 0 ) {
-	$event = new SP_Event( $post );
+	$event = new SZ_Match( $post );
 	return $event->status();
 }
 
 function sz_get_results( $post = 0 ) {
-	$event = new SP_Event( $post );
+	$event = new SZ_Match( $post );
 	return $event->results();
 }
 
@@ -115,7 +115,7 @@ function sz_get_main_result_option() {
 }
 
 function sz_get_main_results( $post = 0 ) {
-	$event = new SP_Event( $post );
+	$event = new SZ_Match( $post );
 	return $event->main_results();
 }
 
@@ -125,7 +125,7 @@ function sz_the_main_results( $post = 0, $delimiter = '-' ) {
 }
 
 function sz_update_main_results( $post = 0, $results = array() ) {
-	$event = new SP_Event( $post );
+	$event = new SZ_Match( $post );
 	return $event->update_main_results ( $results );
 }
 
@@ -143,17 +143,17 @@ function sz_the_main_results_or_time( $post = 0, $delimiter = '-' ) {
 }
 
 function sz_get_outcome( $post = 0 ) {
-	$event = new SP_Event( $post );
+	$event = new SZ_Match( $post );
 	return $event->outcome( true );
 }
 
 function sz_get_outcomes( $post = 0 ) {
-	$event = new SP_Event( $post );
+	$event = new SZ_Match( $post );
 	return $event->outcome( false );
 }
 
 function sz_get_winner( $post = 0 ) {
-	$event = new SP_Event( $post );
+	$event = new SZ_Match( $post );
 	return $event->winner();
 }
 
@@ -168,7 +168,7 @@ function sz_get_main_performance_option() {
 }
 
 function sz_get_performance( $post = 0 ) {
-	$event = new SP_Event( $post );
+	$event = new SZ_Match( $post );
 	return $event->performance();
 }
 
@@ -235,6 +235,7 @@ function sz_event_blocks( $post = 0 ) {
  */
 
 function sz_has_logo( $post = 0 ) {
+	// TODO: Change to pull group avatar
 	return has_post_thumbnail ( $post );
 }
 
@@ -249,6 +250,7 @@ function sz_get_logo_url( $post = 0, $size = 'icon' ) {
 }
 
 function sz_get_abbreviation( $post = 0 ) {
+	// TODO: Add abreviations to groups
 	return get_post_meta( $post, 'sz_abbreviation', true );
 }
 
@@ -296,31 +298,30 @@ function sz_team_logo( $post = 0 ) {
 }
 
 function sz_get_short_name( $post = 0 ) {
-	$abbreviation = sz_get_abbreviation( $post, 'sz_abbreviation', true );
+	// TODO: make a abbreviation system
+	/*$abbreviation = sz_get_abbreviation( $post, 'sz_abbreviation', true );
 	if ( $abbreviation ) {
 		return $abbreviation;
 	} else {
 		return get_the_title( $post );
-	}
+	}*/
+	return sz_get_team_name( $post );
 }
 
 function sz_short_name( $post = 0 ) {
 	echo sz_get_short_name( $post );
 }
-
+ 
 function sz_get_club_name( $post = 0, $short = true ) {
-	if ( $short ) {
-		return sz_get_short_name( $post );
-	} else {
-		return get_the_title( $post );
-	}
+	return sz_get_team_name( $post );
 }
 
 function sz_get_team_name( $post = 0, $short = true ) {
+	$group = groups_get_group( array( 'group_id' => $post) );
 	if ( $short ) {
-		return sz_get_short_name( $post );
+		return $group->name;
 	} else {
-		return get_the_title( $post );
+		return $group->name;
 	}
 }
 
@@ -378,6 +379,7 @@ function sz_get_player_number( $post = 0 ) {
 }
 
 function sz_get_player_name( $post = 0 ) {
+	// TODO: pull username  
 	return apply_filters( 'sportszone_player_name', sz_core_get_user_displayname( $post ), $post );
 }
 

@@ -15,7 +15,8 @@ class SZ_Match extends SZ_Custom_Post {
 	public function status() {
 		$post_status = $this->post->post_status;
 		$results = get_post_meta( $this->ID, 'sz_results', true );
-		if ( is_array( $results ) ) {
+
+		if ( is_array( $results ) && !empty($results)) {
 			foreach( $results as $result ) {
 				$result = array_filter( $result );
 				if ( count( $result ) > 0 ) {
@@ -23,6 +24,7 @@ class SZ_Match extends SZ_Custom_Post {
 				}
 			}
 		}
+
 		return $post_status;
 	}
 
@@ -38,9 +40,11 @@ class SZ_Match extends SZ_Custom_Post {
 	}
 
 	public function results( $admin = false ) {
-		$teams = (array)get_post_meta( $this->ID, 'sz_team', false );
-		$results = (array)get_post_meta( $this->ID, 'sz_results', true );
 
+		$teams = (array)get_post_meta( $this->ID, 'sz_team', false );
+		$teams = (is_array($teams[0]))? $teams[0] :$teams;
+		$results = (array)get_post_meta( $this->ID, 'sz_results', true );
+		
 		// Get columns from result variables
 		$columns = sz_get_var_labels( 'sz_result' );
 
@@ -49,7 +53,7 @@ class SZ_Match extends SZ_Custom_Post {
 
 		// Get results for all teams
 		$data = sz_array_combine( $teams, $results, true );
-		
+
 		if ( 'yes' === get_option( 'sportszone_match_reverse_teams', 'no' ) ) {
 			$data = array_reverse( $data, true );
 		}
@@ -69,7 +73,9 @@ class SZ_Match extends SZ_Custom_Post {
 				else:
 					$active_columns = array();
 					foreach ( $data as $team_results ):
+					
 						foreach ( $team_results as $key => $result ):
+							
 							if ( is_string( $result ) && strlen( $result ) ):
 								$active_columns[ $key ] = $key;
 							endif;
@@ -85,11 +91,17 @@ class SZ_Match extends SZ_Custom_Post {
 			$data[0] = $columns;
 			return $data;
 		endif;
+		
+
 	}
 
 	public function performance( $admin = false ) {
+		
+		// TODO: Change to use the teams group
 		$teams = get_post_meta( $this->ID, 'sz_team', false );
+		$teams = (is_array($teams[0]))? $teams[0] :$teams;
 		$performance = (array)get_post_meta( $this->ID, 'sz_players', true );
+		
 		
 		$args = array(
 			'post_type' => 'sz_performance',
@@ -100,13 +112,15 @@ class SZ_Match extends SZ_Custom_Post {
 		);
 
 		$vars = get_posts( $args );
-		
+
 		$labels = array();
 		$formats = array();
 		$timed = array();
 		$stars = array();
 		$equations = array();
+	
 		foreach ( $vars as $var ) {
+
 			$labels[ $var->post_name ] = $var->post_title;
 
 			$format = get_post_meta( $var->ID, 'sz_format', true );
@@ -133,41 +147,52 @@ class SZ_Match extends SZ_Custom_Post {
 				);
 			}
 		}
-		
+	
 		$order = (array)get_post_meta( $this->ID, 'sz_order', true );
 
-		if ( get_option( 'sportszone_event_performance_stars_type', 0 ) ) {
+		if ( get_option( 'sportszone_match_performance_stars_type', 0 ) ) {
 			$stars = (array)get_post_meta( $this->ID, 'sz_stars', true );
 		}
-		
-		$labels = apply_filters( 'sportszone_event_performance_labels', $labels, $this );
+
+		$labels = apply_filters( 'sportszone_match_performance_labels', $labels, $this );
+
 		$columns = get_post_meta( $this->ID, 'sz_columns', true );
+	
 		if ( is_array( $teams ) ):
+
 			foreach( $teams as $i => $team_id ):
-				$players = sz_array_between( (array)get_post_meta( $this->ID, 'sz_player', false ), 0, $i );
-				$data = sz_array_combine( $players, sz_array_value( $performance, $team_id, array() ) );
 
-				foreach( $data as $player_id => $player_performance ):
-					if ( ! $player_id ) continue;
+				$sz_players = get_post_meta( $this->ID, 'sz_player', true );
+				$players = $sz_players[$i];
 
-					if ( ! array_key_exists( 'number', $player_performance ) ):
-						$performance[ $team_id ][ $player_id ]['number'] = apply_filters( 'sportszone_event_performance_default_squad_number', get_post_meta( $player_id, 'sz_number', true ) );
-					endif;
-					if ( ! array_key_exists( 'position', $player_performance ) || $player_performance['position'] == null ):
-						$performance[ $team_id ][ $player_id ]['position'] = sz_get_the_term_id( $player_id, 'sz_position', null );
-					endif;
-				endforeach;
+				if(!empty($players)):
+					$data = sz_array_combine( $players, sz_array_value( $performance, $team_id, array() ) );
+
+					foreach( $data as $player_id => $player_performance ):
+						if ( ! $player_id || ! $player_performance) continue;
+	
+						if ( ! array_key_exists( 'number', $player_performance ) ):
+							$performance[ $team_id ][ $player_id ]['number'] = apply_filters( 'sportszone_match_performance_default_squad_number', get_post_meta( $player_id, 'sz_number', true ) );
+	
+						endif;
+						if ( ! array_key_exists( 'position', $player_performance ) || $player_performance['position'] == null ):
+							$performance[ $team_id ][ $player_id ]['position'] = sz_get_the_term_id( $player_id, 'sz_position', null );
+	
+						endif;
+					endforeach;
+				endif; //endif !empty $players
 			endforeach;
 		endif;
 
 		if ( $admin ):
 			return array( $labels, $columns, $performance, $teams, $formats, $order, $timed, $stars );
 		else:
+		
 			// Add position to performance labels
 			if ( taxonomy_exists( 'sz_position' ) ):
 				$labels = array_merge( array( 'position' => __( 'Position', 'sportszone' )  ), $labels );
 			endif;
-			if ( 'manual' == get_option( 'sportszone_event_performance_columns', 'auto' ) && is_array( $columns ) ):
+			if ( 'manual' == get_option( 'sportszone_match_performance_columns', 'auto' ) && is_array( $columns ) ):
 				foreach ( $labels as $key => $label ):
 					if ( ! in_array( $key, $columns ) ):
 						unset( $labels[ $key ] );
@@ -175,15 +200,16 @@ class SZ_Match extends SZ_Custom_Post {
 				endforeach;
 			endif;
 
-			if ( 'no' == get_option( 'sportszone_event_show_position', 'yes' ) ):
+			if ( 'no' == get_option( 'sportszone_match_show_position', 'yes' ) ):
 				unset( $labels['position'] );
 			endif;
-			if ( 'no' == get_option( 'sportszone_event_show_player_numbers', 'yes' ) ):
+			if ( 'no' == get_option( 'sportszone_match_show_player_numbers', 'yes' ) ):
 				unset( $labels['number'] );
 			endif;
 
 			// Calculate equation-based performance
 			if ( sizeof( $equations ) ):
+				
 				foreach ( $performance as $team => $players ):
 					if ( ! is_array( $players ) ) continue;
 
@@ -196,7 +222,7 @@ class SZ_Match extends SZ_Custom_Post {
 						foreach ( $vars as $key => $var ):
 							if ( empty( $var ) ) $vars[ $key ] = 0;
 						endforeach;
-						$vars = array_merge( $vars, array( 'eventsplayed' => 1 ) );
+						$vars = array_merge( $vars, array( 'matchesplayed' => 1 ) );
 
 						foreach ( $equations as $key => $equation ):
 							$performance[ $team ][ $player ][ $key ] = sz_solve( $equation['equation'], $vars, $equation['precision'] );
@@ -207,6 +233,7 @@ class SZ_Match extends SZ_Custom_Post {
 
 			// Convert to time notation
 			if ( in_array( 'time', $formats ) ):
+
 				foreach ( $performance as $team => $players ):
 					if ( ! is_array( $players ) ) continue;
 
@@ -234,7 +261,8 @@ class SZ_Match extends SZ_Custom_Post {
 			endif;
 
 			// Add minutes to box score values
-			if ( in_array( 'number', $formats ) && 'yes' == get_option( 'sportszone_event_performance_show_minutes', 'no' ) ):
+			if ( in_array( 'number', $formats ) && 'yes' == get_option( 'sportszone_match_performance_show_minutes', 'no' ) ):
+
 				$timeline = $this->timeline();
 				if ( ! empty( $timeline ) ):
 					foreach ( $performance as $team => $players ):
@@ -269,16 +297,17 @@ class SZ_Match extends SZ_Custom_Post {
 
 			// Add labels to box score
 			$performance[0] = $labels;
-			
-			return apply_filters( 'sportszone_get_event_performance', $performance );
+
+			return apply_filters( 'sportszone_get_match_performance', $performance );
 		endif;
+
 	}
 	
 	public function timeline( $admin = false, $linear = false ) {
 		$timeline = (array) get_post_meta( $this->ID, 'sz_timeline', true );
 
 		if ( ! $linear ) return $timeline;
-
+		
 		$performance = (array) get_post_meta( $this->ID, 'sz_players', true );
 		if ( empty( $timeline ) ) return array();
 
@@ -383,7 +412,7 @@ class SZ_Match extends SZ_Custom_Post {
 				if ( has_post_thumbnail( $post->ID ) ) {
 					$icon = get_the_post_thumbnail( $post->ID, 'sportszone-fit-mini', array( 'title' => sz_get_singular_name( $post->ID ) ) );
 				}
-				$performance_icons[ $post->post_name ] = apply_filters( 'sportszone_event_performance_icons', $icon, $post->ID, 1 );
+				$performance_icons[ $post->post_name ] = apply_filters( 'sportszone_match_performance_icons', $icon, $post->ID, 1 );
 			}
 		}
 
@@ -423,6 +452,7 @@ class SZ_Match extends SZ_Custom_Post {
 	}
 
 	public function main_results() {
+		
 		// Get main result option
 		$main_result = get_option( 'sportszone_primary_result', null );
 
@@ -476,6 +506,7 @@ class SZ_Match extends SZ_Custom_Post {
 	}
 
 	public function outcome( $single = true ) {
+		
 		// Get teams from event
 		$teams = get_post_meta( $this->ID, 'sz_team', false );
 		
@@ -519,6 +550,7 @@ class SZ_Match extends SZ_Custom_Post {
 	}
 
 	public function winner() {
+		
 		// Get the first configured outcome
 		$outcome = get_posts( array(
 			'post_type' => 'sz_outcome',

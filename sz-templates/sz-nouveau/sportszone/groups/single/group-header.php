@@ -7,9 +7,9 @@
  */
 ?>
 
-<?php sz_get_template_part( 'groups/single/parts/header-item-actions' ); ?>
+<?php sz_get_template_part( 'groups/single/parts/header-item-actions' );
 
-<?php if ( ! sz_disable_group_avatar_uploads() ) : ?>
+if ( ! sz_disable_group_avatar_uploads() ) : ?>
 	<div id="item-header-avatar">
 		<a href="<?php echo esc_url( sz_get_group_permalink() ); ?>" class="sz-tooltip" data-sz-tooltip="<?php echo esc_attr( sz_get_group_name() ); ?>">
 

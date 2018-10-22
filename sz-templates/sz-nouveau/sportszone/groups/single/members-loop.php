@@ -11,7 +11,7 @@
 
 	<?php sz_nouveau_group_hook( 'before', 'members_content' ); ?>
 
-	<?php sz_nouveau_pagination( 'top' ); ?>
+	<?php //sz_nouveau_pagination( 'top' ); ?>
 
 	<?php sz_nouveau_group_hook( 'before', 'members_list' ); ?>
 

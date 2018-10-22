@@ -1,4 +1,8 @@
 jQuery(document).ready(function($){
+	
+
+var localized_strings = {"none":"None","remove_text":"\u2014 Remove \u2014","days":"days","hrs":"hrs","mins":"mins","secs":"secs","displaying_posts":"Displaying %s\u2013%s of %s","no_results_found":"No results found.","select_all":"Select All","show_all":"Show all","loading":"Loading\u2026","option_filter_by_league":"no","option_filter_by_season":"no"};
+
 
 	// Tiptip
 	$(".sz-tip").tipTip({
@@ -768,12 +772,12 @@ jQuery(document).ready(function($){
 			nonce:          $("#sz-get-players-nonce").val()
 		}).done(function( response ) {
 			index = response.data.index;
-			console.log(index);
+
 			$target = $(".sz-instance").eq(index).find(".sz-ajax-checklist ul");
 			$target.find(".sz-ajax-show-all-container").hide();
 			if ( response.success ) {
 				i = 0;
-				console.log(response.data.sections);
+
 				if ( -1 == response.data.sections ) {
 					if(response.data.players.length) {
 						$(response.data.players).each(function( key, value ) {
@@ -862,4 +866,81 @@ jQuery(document).ready(function($){
 
 	// Trigger box score time converter
 	$('.sz-convert-time-input').change();
+	
+	
+	// Matches load team checklist on team selection 
+	
+	// loop through each match grouping
+
+		
+	
+	$("#sz_matches_group_repeat").on('change', '.cmb-repeat-group-field.cmb-type-select-team select', function(e) {
+		
+		var $team_select_container 		= $(this).closest(".cmb-repeat-group-field.cmb-type-select-team");
+		
+		var team_select_container_id	= $team_select_container.find('select').attr('team_index');
+		
+		var team_index					= (team_select_container_id[team_select_container_id.length - 1]) - 1;
+		var $player_select_container 	= $team_select_container.next();
+		
+		var data_iterator				= $team_select_container.closest(".cmb-repeatable-grouping").data('iterator');
+		
+		var match_id 					= $('#sz_matches_group_'+data_iterator+'_match_id').val();
+		
+		$player_select_container.find("ul").html("<li>" + localized_strings.loading + "</li>");
+		
+		$.post( ajaxurl, {
+			action:         "sz-get-players",
+			team: 			$(this).val(),
+			index: 			team_index,
+			nonce:          $("#_sz_event_edit_nonce_matches").val(),
+			match_id:		match_id
+		}).done(function( response ) {
+			index = response.data.index;
+			player_index = parseInt(index) + 1;
+			$target = $player_select_container.find("ul");
+			if ( response.success ) {
+				$target.html("");
+				i = 0;
+				if(-1 == response.data.sections) {
+					if(response.data.players.length) {
+						$target.eq(i).append("<li class=\"sz-select-all-container\" style=\"display:none;\"><label class=\"selectit\"><input type=\"checkbox\" class=\"sz-select-all\"><strong>" + localized_strings.select_all + "</strong></li>");
+						$(response.data.players).each(function( key, value ) {
+							if (response.data.selected.indexOf( value.ID + "") != -1) {
+								is_checked = 'checked=checked';
+							} else {
+								is_checked = '';
+							}
+							$target.eq(0).append("<li><label class=\"selectit\"><input type=\"checkbox\" value=\"" + value.ID + "\" name=\"sz_matches_group["+data_iterator+"][sz_players" + player_index + "][]\" "+is_checked+">" + value.post_title + "</li>");
+						});
+					} 
+				} else {
+					if ( 1 == response.data.sections ) {
+						defense = i;
+						offense = i+1;
+					} else {
+						offense = i;
+						defense = i+1;
+					}
+					if(response.data.players.length) {
+						
+						$(response.data.players).each(function( key, value ) {
+							$target.eq(offense).append("<li><label class=\"selectit\"><input type=\"checkbox\" value=\"" + value.ID + "\" name=\"sz_offense[" + index + "][]\">" + value.post_title + "</li>");
+							$target.eq(defense).append("<li><label class=\"selectit\"><input type=\"checkbox\" value=\"" + value.ID + "\" name=\"sz_defense[" + index + "][]\">" + value.post_title + "</li>");
+						});
+						
+					} 
+					i++;
+				}
+				i++;
+			} else {
+				$target.html("<li>" + localized_strings.no_results_found + "</li>");
+			}
+		});
+	});
+
+	$("#sz_matches_group_repeat").find('.cmb-repeat-group-field.cmb-type-select-team select').each( function(){
+		$(this).trigger('change'); 
+	});
+	
 });

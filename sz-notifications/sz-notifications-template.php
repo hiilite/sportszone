@@ -889,7 +889,7 @@ function sz_the_notification_action_links( $args = '' ) {
 		$r = wp_parse_args( $args, array(
 			'before' => '',
 			'after'  => '',
-			'sep'    => ' | ',
+			'sep'    => ' &nbsp; ',
 			'links'  => array(
 				sz_get_the_notification_mark_link( $user_id ),
 				sz_get_the_notification_delete_link( $user_id )

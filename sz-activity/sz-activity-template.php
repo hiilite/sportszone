@@ -217,11 +217,11 @@ function sz_has_activities( $args = '' ) {
 		$object      = $sz->groups->id;
 		$primary_id  = sz_get_current_group_id();
 		$show_hidden = (bool) ( groups_is_user_member( sz_loggedin_user_id(), $primary_id ) || sz_current_user_can( 'sz_moderate' ) );
-	} elseif ( sz_is_event() ) {
+	} /*elseif ( sz_is_event() ) {
 		$object      = $sz->events->id;
 		$primary_id  = sz_get_current_event_id();
 		$show_hidden = (bool) ( events_is_user_member( sz_loggedin_user_id(), $primary_id ) || sz_current_user_can( 'sz_moderate' ) );
-	} else {
+	}*/ else {
 		$object      = false;
 		$primary_id  = false;
 		$show_hidden = false;
@@ -1191,7 +1191,7 @@ function sz_activity_secondary_avatar( $args = '' ) {
 				}
 
 				break;
-			case 'events' :
+			/*case 'events' :
 				if ( sz_disable_event_avatar_uploads() ) {
 					return false;
 				}
@@ -1216,7 +1216,7 @@ function sz_activity_secondary_avatar( $args = '' ) {
 					}
 				}
 
-				break;
+				break;*/
 			case 'blogs' :
 				$object  = 'blog';
 				$item_id = $activities_template->activity->item_id;
@@ -1352,7 +1352,6 @@ function sz_activity_action( $args = array() ) {
 			'no_timestamp' => false,
 		) );
 		
-		
 		/**
 		 * Filters the activity action before the action is inserted as meta.
 		 *
@@ -1360,20 +1359,19 @@ function sz_activity_action( $args = array() ) {
 		 *
 		 * @param array $value Array containing the current action, the current activity, and the $args array passed into the function.
 		 */
+		 
 		 $action_args = array(
 			$activities_template->activity->action,
-			$activities_template->activity,
+			&$activities_template->activity,
 			$r
 		);
-		//var_dump($action_args);
-		//$action = '';
+		 
 		$action = apply_filters_ref_array( 'sz_get_activity_action_pre_meta',  $action_args);
-		
 		// Prepend the activity action meta (link, time since, etc...).
 		if ( ! empty( $action ) && empty( $r['no_timestamp'] ) ) {
 			$action = sz_insert_activity_meta( $action );
 		}
-
+		
 		/**
 		 * Filters the activity action after the action has been inserted as meta.
 		 *
@@ -2620,8 +2618,8 @@ function sz_activity_css_class() {
 			'new_blog',
 			'joined_group',
 			'created_group',
-			'joined_event',
-			'created_event',
+			//'joined_event',
+			//'created_event',
 			'new_member'
 		) );
 
@@ -3606,11 +3604,11 @@ function sz_activities_member_rss_link() { echo sz_get_member_activity_feed_link
 			$link = sz_displayed_user_domain() . sz_get_activity_slug() . '/' . sz_get_groups_slug() . '/feed/';
 		
 		// Event feed link.
-		} elseif ( sz_is_active( 'events'  ) && sz_is_current_action( sz_get_events_slug()  ) ) {
+		} /*elseif ( sz_is_active( 'events'  ) && sz_is_current_action( sz_get_events_slug()  ) ) {
 			$link = sz_displayed_user_domain() . sz_get_activity_slug() . '/' . sz_get_events_slug() . '/feed/';
 			
 		// Favorites activity feed link.
-		} elseif ( 'favorites' === sz_current_action() ) {
+		} */elseif ( 'favorites' === sz_current_action() ) {
 			$link = sz_displayed_user_domain() . sz_get_activity_slug() . '/favorites/feed/';
 
 		// Mentions activity feed link.

@@ -89,7 +89,7 @@ class SZ_Meta_Box_Team_Lists {
 									<td><?php echo sizeof( $players ); ?></td>
 									<td><?php echo get_the_terms ( $list->ID, 'sz_league' ) ? the_terms( $list->ID, 'sz_league' ) : '&mdash;'; ?></td>
 									<td><?php echo get_the_terms ( $list->ID, 'sz_season' ) ? the_terms( $list->ID, 'sz_season' ) : '&mdash;'; ?></td>
-									<td><?php echo sz_array_value( SP()->formats->list, $format, '&mdash;' ); ?></td>
+									<td><?php echo sz_array_value( SportsZone()->formats->list, $format, '&mdash;' ); ?></td>
 								</tr>
 								<?php
 								$i++;

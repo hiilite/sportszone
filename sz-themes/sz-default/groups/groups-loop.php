@@ -19,7 +19,7 @@
 
 		<div class="pag-count" id="group-dir-count-top">
 
-			<?php sz_groups_pagination_count(); ?>
+			<?php //sz_groups_pagination_count(); ?>
 
 		</div>
 
@@ -77,7 +77,7 @@
 
 		<div class="pag-count" id="group-dir-count-bottom">
 
-			<?php sz_groups_pagination_count(); ?>
+			<?php //sz_groups_pagination_count(); ?>
 
 		</div>
 

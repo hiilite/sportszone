@@ -80,6 +80,36 @@ function sz_get_asset_template_part( $slug, $name = null ) {
 }
 
 /**
+ * Get templates passing attributes and including the file.
+ *
+ * @access public
+ * @param mixed $template_name
+ * @param array $args (default: array())
+ * @param string $template_path (default: '')
+ * @param string $default_path (default: '')
+ * @return void
+ */
+function sz_get_template( $template_name, $args = array(), $template_path = '', $default_path = '' ) {
+	if ( $args && is_array( $args ) ) {
+		extract( $args );
+	}
+
+	$located = sz_locate_template( $template_name, $template_path, $default_path );
+	if ( ! file_exists( $located ) ) {
+		echo $template_name;
+		_doing_it_wrong( __FUNCTION__, sprintf( '<code>%s</code> does not exist.', $located ), '0.7' );
+		return;
+	}
+
+	do_action( 'sportszone_before_template', $template_name, $template_path, $located, $args );
+
+	include( $located );
+
+	do_action( 'sportszone_after_template', $template_name, $template_path, $located, $args );
+}
+
+
+/**
  * Retrieve the name of the highest priority template file that exists.
  *
  * Searches in the STYLESHEETPATH before TEMPLATEPATH so that themes which
@@ -116,10 +146,9 @@ function sz_locate_template( $template_names, $load = false, $require_once = tru
 
 		// Trim off any slashes from the template name.
 		$template_name  = ltrim( $template_name, '/' );
-
+		
 		// Loop through template stack.
 		foreach ( (array) $template_locations as $template_location ) {
-
 			// Continue if $template_location is empty.
 			if ( empty( $template_location ) ) {
 				continue;

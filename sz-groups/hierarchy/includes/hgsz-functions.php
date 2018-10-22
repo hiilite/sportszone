@@ -306,7 +306,6 @@ function hgsz_get_parent_group_id( $group_id = false, $user_id = false, $context
 	$parent_id = $group->parent_id;
 
 	// If the user is specified, is the parent group visible to that user?
-	// @TODO: This could make use of group visibility when available.
 	if ( false !== $user_id && ! sz_user_can( $user_id, 'sz_moderate' ) ) {
 		$parent_group = groups_get_group( $parent_id );
 		if ( ! hgsz_include_group_by_context( $parent_group, $user_id, $context ) ) {

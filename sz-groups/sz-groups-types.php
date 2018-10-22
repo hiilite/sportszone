@@ -192,7 +192,8 @@ class SZ_Add_Group_Types {
 
 		$this->loader->add_action( 'sz_ajax_querystring', $plugin_public, 'szgt_alter_sz_ajax_querystring', 100, 2 );
 
-		$this->loader->add_action( 'sz_groups_directory_group_types', $plugin_public, 'bb_display_directory_tabs' );
+		//$this->loader->add_action( 'sz_groups_directory_group_types', $plugin_public, 'bb_display_directory_tabs' );
+		$this->loader->add_action( 'sz_groups_directory_group_types', $plugin_public, 'sz_display_directory_select' );
 		$this->loader->add_filter( 'sz_before_has_groups_parse_args', $plugin_public, 'bb_set_has_groups_type_arg', 10, 2 );
 		$this->loader->add_action( 'sz_directory_groups_item', $plugin_public, 'bb_group_directory_show_group_type' );
 	}

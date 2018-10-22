@@ -15,6 +15,7 @@
  */
 do_action( 'sz_before_groups_loop' ); ?>
 
+
 <?php if ( sz_get_current_group_directory_type() ) : ?>
 	<p class="current-group-type"><?php sz_current_group_directory_type_message() ?></p>
 <?php endif; ?>

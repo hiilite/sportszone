@@ -133,7 +133,7 @@ class SZ_Admin_Settings {
 
 	    do_action( 'sportszone_settings_start' );
 
-	    wp_enqueue_script( 'sportszone_settings', SportsZone()->plugin_url() . '/assets/js/admin/settings.js', array( 'jquery', 'wp-color-picker', 'jquery-ui-datepicker', 'jquery-ui-sortable', 'iris', 'chosen' ), SP()->version, true );
+	    wp_enqueue_script( 'sportszone_settings', SportsZone()->plugin_url() . '/assets/js/admin/settings.js', array( 'jquery', 'wp-color-picker', 'jquery-ui-datepicker', 'jquery-ui-sortable', 'iris', 'chosen' ), SportsZone()->version, true );
 
 		wp_localize_script( 'sportszone_settings', 'localized_strings', array(
 			'none' => __( 'None', 'sportszone' )

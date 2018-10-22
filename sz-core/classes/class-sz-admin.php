@@ -563,7 +563,7 @@ class SZ_Admin {
     	wp_enqueue_script( 'jquery-fitvids' );
     	
     	wp_enqueue_script( 'sportszone-admin' );
-    	wp_enqueue_script( 'sportspress-admin-equationbuilder' );
+    	wp_enqueue_script( 'sportszone-admin-equationbuilder' );
     	
     	
     	$strings = apply_filters( 'sportszone_localized_strings', array(

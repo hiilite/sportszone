@@ -84,6 +84,11 @@ class SportsZone {
 	 * @var bool
 	 */
 	public $do_autoload = true;
+	
+	/**
+	 * @var SZ_Templates $templates
+	 */
+	public $templates = null;
 
 	/** Option Overload *******************************************************/
 
@@ -257,6 +262,11 @@ class SportsZone {
 		// Only applicable to those running trunk
 		if ( ! defined( 'SZ_SOURCE_SUBDIRECTORY' ) ) {
 			define( 'SZ_SOURCE_SUBDIRECTORY', '' );
+		}
+		
+		// Only applicable to those running trunk
+		if ( ! defined( 'SZ_TEMPLATE_PATH' ) ) {
+			define( 'SZ_TEMPLATE_PATH', 'sportszone/' );
 		}
 
 		// Define on which blog ID SportsZone should run
@@ -506,6 +516,8 @@ class SportsZone {
 		require( $this->plugin_dir . 'sz-core/sz-core-loader.php'           );
 		require( $this->plugin_dir . 'sz-core/sz-core-customizer-email.php' );
 		require( $this->plugin_dir . 'sz-core/sz-core-custom-post.php' );
+		require( $this->plugin_dir . 'sz-core/sz-core-player.php' );
+		require( $this->plugin_dir . 'sz-core/sz-core-formatting-functions.php' );
 
 		// Maybe load deprecated functionality (this double negative is proof positive!)
 		if ( ! sz_get_option( '_sz_ignore_deprecated_code', ! $this->load_deprecated ) ) {
@@ -559,6 +571,7 @@ class SportsZone {
 			'friends',
 			'groups',
 			'events',
+			'matches',
 			'members',
 			'messages',
 			'notifications',
@@ -598,8 +611,12 @@ class SportsZone {
 
 			'SZ_Group_Extension'    => 'groups',
 			'SZ_Group_Member_Query' => 'groups',
+			
 			'SZ_Event_Extension'    => 'events',
 			'SZ_Event_Member_Query' => 'events',
+			
+			//'SZ_Match_Extension'    => 'matches',
+			//'SZ_Match_Member_Query' => 'matches',
 
 			'SZ_Core_Members_Template'       => 'members',
 			'SZ_Core_Members_Widget'         => 'members',

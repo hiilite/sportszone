@@ -10,7 +10,7 @@ sz_nouveau_before_loop(); ?>
 
 <?php if ( sz_has_blogs( sz_ajax_querystring( 'blogs' ) ) ) : ?>
 
-	<?php sz_nouveau_pagination( 'top' ); ?>
+	<?php //sz_nouveau_pagination( 'top' ); ?>
 
 	<ul id="blogs-list" class="<?php sz_nouveau_loop_classes(); ?>">
 

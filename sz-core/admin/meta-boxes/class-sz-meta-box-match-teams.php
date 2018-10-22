@@ -21,11 +21,12 @@ class SZ_Meta_Box_Match_Teams {
 	public static function output( $post ) {
 		$limit = get_option( 'sportszone_match_teams', 2 );
 		$teams = (array) get_post_meta( $post->ID, 'sz_team', false );
-
+		$teams = (is_array($teams[0]))?$teams[0]:$teams;
 		$post_type = sz_get_post_mode_type( $post->ID );
 		if ( $limit && 'sz_player' !== $post_type ) {
 			for ( $i = 0; $i < $limit; $i ++ ):
-				$team = array_shift( $teams );
+				$team = $teams;
+				
 				?>
 				<div class="sz-instance">
 					<p class="sz-tab-select sz-title-generator">
@@ -36,7 +37,7 @@ class SZ_Meta_Box_Match_Teams {
 						'class' => 'sportszone-pages',
 						'show_option_none' => __( '&mdash; None &mdash;', 'sportszone' ),
 						'values' => 'ID',
-						'selected' => $team,
+						'selected' => $team[$i],
 						'chosen' => true,
 						'tax_query' => array(),
 					);
@@ -112,7 +113,7 @@ class SZ_Meta_Box_Match_Teams {
 					<?php
 						$j = 0;
 						foreach ( $tabs as $slug => $tab ) {
-							do_action( 'sz_match_teams_meta_box_checklist', $post->ID, $tab['post_type'], ( 0 == $j ? 'block' : 'none' ), $team, $i, $slug );
+							do_action( 'sz_match_teams_meta_box_checklist', $post->ID, $tab['post_type'], ( 0 == $j ? 'block' : 'none' ), $team[$i], $i, $slug );
 							SZ_Core_Lazy_Loading::$already_run = false;
 							$j++;
 						}

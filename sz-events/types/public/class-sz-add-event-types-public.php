@@ -218,6 +218,47 @@ class SZ_Add_Event_Types_Public {
 			endforeach;
 		}
 	}
+	
+	/**
+	 * Add event type tabs.
+	 */
+	public function sz_display_directory_select() {
+		$display_event_types = get_site_option( 'szet_type_display_settings' );
+		$event_types         = sz_events_get_event_types( array(), 'objects' );
+		
+		$page = explode("/",$_SERVER['REQUEST_URI']);
+		
+		if($page[2] == 'type') {
+			$type = $page[3];
+		}
+		else {
+			$type = 'all';
+		}
+		
+		?>
+		<!--form id="events-types-filter" method="post" action=""-->
+			<div class="select-wrap">
+				<select id="events-types-select" name="type">
+					<option value="<?php echo _('all'); ?>" <?php echo ($type == 'all' ? 'selected' : ''); ?>><?php echo _('All Events'); ?></option>
+		<?php
+		if ( ! empty( $display_event_types ) && is_array( $display_event_types ) ) {
+			foreach ( $event_types as $key => $event_type ) :
+				if ( in_array( $key, $display_event_types, true ) ) {
+					?>
+			<option value="<?php echo esc_attr( $event_type->name ); ?>" <?php echo ($type == esc_attr( $event_type->name ) ? 'selected' : ''); ?>>
+				<?php printf( '%s', esc_attr( $event_type->labels['name'] ) ); ?>
+			</option>
+				<?php
+				}
+			endforeach;
+		}
+		?>
+		</select>
+		<span class="select-arrow" aria-hidden="true"></span>
+		</div>
+		<!--/form-->
+		<?php
+	}
 
 	/**
 	 * Get event count of event type tabs events.

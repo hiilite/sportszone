@@ -5,6 +5,8 @@
  * @since 3.0.0
  * @version 3.0.0
  */
+ 
+echo '<!--sz-templates/sz-nouveau/sportszone/members/single/groups-->';
 ?>
 
 <nav class="<?php sz_nouveau_single_item_subnav_classes(); ?>" id="subnav" role="navigation" aria-label="<?php esc_attr_e( 'Groups menu', 'sportszone' ); ?>">

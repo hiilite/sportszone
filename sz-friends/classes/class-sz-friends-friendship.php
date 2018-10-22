@@ -530,9 +530,6 @@ class SZ_Friends_Friendship {
 	public static function search_friends( $filter, $user_id, $limit = null, $page = null ) {
 		global $wpdb;
 
-		/*
-		 * TODO: Optimize this function.
-		 */
 
 		if ( empty( $user_id ) )
 			$user_id = sz_loggedin_user_id();

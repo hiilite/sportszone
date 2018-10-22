@@ -2773,3 +2773,31 @@ function sz_get_current_member_type() {
 	 */
 	return apply_filters( 'sz_get_current_member_type', sportszone()->current_member_type );
 }
+
+
+/**
+ * Get users by BuddyPress xprofile data.
+ *
+ * @param int    $field_id The ID of the field to search in.
+ * @param string $value    The value to search for.
+ * 
+ * @return int[] The IDs of the users matching the search.
+ */
+function sz_get_users_by_xprofile( $field_id ) {
+ 
+    global $wpdb;
+ 
+    $user_ids = $wpdb->get_col(
+        $wpdb->prepare(
+            "
+                SELECT `user_id`
+                FROM `{$wpdb->prefix}sz_xprofile_data`
+                WHERE `field_id` = %d
+                    AND `value` IS NOT NULL
+            "
+            , $field_id
+            
+        )
+    );
+    return $user_ids;
+}

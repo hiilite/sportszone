@@ -155,7 +155,7 @@ $.Autocompleter = function(input, options) {
 			onChange(0, true);
 		}
 	}).bind("search", function() {
-		// TODO why not just specifying both arguments?
+
 		var fn = (arguments.length > 1) ? arguments[1] : null;
 		function findValueCallback(q, data) {
 			var result;

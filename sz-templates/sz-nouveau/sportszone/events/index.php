@@ -15,7 +15,8 @@
 
 	<div class="screen-content">
 
-	<?php sz_get_template_part( 'common/search-and-filters-bar' ); ?>
+	<?php 
+		sz_get_template_part( 'events/search-and-filters-bar' ); ?>
 
 		<div id="events-dir-list" class="events dir-list" data-sz-list="events">
 			<div id="sz-ajax-loader"><?php sz_nouveau_user_feedback( 'directory-events-loading' ); ?></div>

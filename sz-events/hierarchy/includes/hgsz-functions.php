@@ -306,7 +306,7 @@ function hgsz_get_parent_event_id( $event_id = false, $user_id = false, $context
 	$parent_id = $event->parent_id;
 
 	// If the user is specified, is the parent event visible to that user?
-	// @TODO: This could make use of event visibility when available.
+
 	if ( false !== $user_id && ! sz_user_can( $user_id, 'sz_moderate' ) ) {
 		$parent_event = events_get_event( $parent_id );
 		if ( ! hgsz_include_event_by_context( $parent_event, $user_id, $context ) ) {

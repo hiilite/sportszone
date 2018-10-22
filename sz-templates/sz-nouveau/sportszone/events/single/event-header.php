@@ -36,15 +36,6 @@
 		</div><!-- .item-meta -->
 	<?php endif; ?>
 
-
-		<?php if ( ! sz_nouveau_events_front_page_description() ) { ?>
-			<?php if ( sz_nouveau_event_meta()->description ) { ?>
-				<div class="event-description">
-					<?php echo sz_nouveau_event_meta()->description; ?>
-				</div><!-- //.event_description -->
-			<?php	} ?>
-		<?php } ?>
-
 </div><!-- #item-header-content -->
 
 <?php sz_nouveau_event_header_buttons(); ?>

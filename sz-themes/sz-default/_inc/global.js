@@ -1405,7 +1405,8 @@ function sz_filter_request( object, filter, scope, target, search_terms, page, e
 		'search_terms': search_terms,
 		'scope': scope,
 		'page': page,
-		'extras': extras
+		'extras': extras,
+		'blarg' : 1
 	},
 	function(response)
 	{

@@ -1,6 +1,6 @@
 /* SportsPress dashboard styles */
 
-#sportspress_dashboard_status .inside {
+#sportszone_dashboard_status .inside {
 	padding: 0;
 	margin: 0;
 }
@@ -16,7 +16,7 @@
 #dashboard_right_now .sz_staff-count span:before,
 #dashboard_right_now .sz_official-count a:before,
 #dashboard_right_now .sz_official-count span:before {
-	font-family: 'sportspress';
+	font-family: 'sportszone';
 }
 
 #dashboard_right_now .sz_event-count a:before,
@@ -44,12 +44,12 @@
 	content: "\f227";
 }
 
-#sportspress_dashboard_status .sz_status_list {
+#sportszone_dashboard_status .sz_status_list {
 	overflow: hidden;
 	margin: 0;
 }
 
-#sportspress_dashboard_status .sz_status_list li {
+#sportszone_dashboard_status .sz_status_list li {
 	width: 50%;
 	float: left;
 	padding: 0;
@@ -60,16 +60,16 @@
 	color: #aaa;
 }
 
-#sportspress_dashboard_status .sz_status_list li.countdown {
+#sportszone_dashboard_status .sz_status_list li.countdown {
 	width: 100%;
 	border-bottom: 1px solid #ececec;
 }
 
-#sportspress_dashboard_status .sz_status_list li.events-scheduled {
+#sportszone_dashboard_status .sz_status_list li.events-scheduled {
 	border-right: 1px solid #ececec;
 }
 
-#sportspress_dashboard_status .sz_status_list li a {
+#sportszone_dashboard_status .sz_status_list li a {
 	display: block;
 	color: #aaa;
 	padding: 9px 12px;
@@ -78,8 +78,8 @@
 	font-size: 12px;
 }
 
-#sportspress_dashboard_status .sz_status_list li a:before {
-	font-family: sportspress, dashicons;
+#sportszone_dashboard_status .sz_status_list li a:before {
+	font-family: sportszone, dashicons;
 	speak: none;
 	font-weight: 400;
 	font-variant: normal;
@@ -102,12 +102,12 @@
 	margin-bottom: 12px;
 }
 
-#sportspress_dashboard_status .sz_status_list li.countdown a:before {
+#sportszone_dashboard_status .sz_status_list li.countdown a:before {
 	content: "\f469";
 }
 
-#sportspress_dashboard_status .sz_status_list li.events-scheduled a:before,
-#sportspress_dashboard_status .sz_status_list li.events-published a:before {
+#sportszone_dashboard_status .sz_status_list li.events-scheduled a:before,
+#sportszone_dashboard_status .sz_status_list li.events-published a:before {
 	color: #999;
 	font-size: 2.5em;
 	line-height: 1em;
@@ -115,15 +115,15 @@
 	margin-right: 9px;
 }
 
-#sportspress_dashboard_status .sz_status_list li.events-scheduled a:before {
+#sportszone_dashboard_status .sz_status_list li.events-scheduled a:before {
 	color: #f9af4b;
 }
 
-#sportspress_dashboard_status .sz_status_list li.events-published a:before {
+#sportszone_dashboard_status .sz_status_list li.events-published a:before {
 	color: #00a69c;
 }
 
-#sportspress_dashboard_status .sz_status_list li strong {
+#sportszone_dashboard_status .sz_status_list li strong {
 	font-size: 18px;
 	line-height: 1.2em;
 	font-weight: 400;
@@ -131,8 +131,8 @@
 	color: #21759b;
 }
 
-#sportspress_dashboard_status .sz_status_list li a:hover,
-#sportspress_dashboard_status .sz_status_list li a:hover strong,
-#sportspress_dashboard_status .sz_status_list li a:hover:before {
+#sportszone_dashboard_status .sz_status_list li a:hover,
+#sportszone_dashboard_status .sz_status_list li a:hover strong,
+#sportszone_dashboard_status .sz_status_list li a:hover:before {
 	color: #2ea2cc;
 }

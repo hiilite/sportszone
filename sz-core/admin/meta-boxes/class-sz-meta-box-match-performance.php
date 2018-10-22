@@ -61,7 +61,7 @@ class SZ_Meta_Box_Match_Performance {
 
 		// Get status option
 		$status = ! $is_individual;
-
+		
 		self::tables( $post->ID, $stats, $labels, $columns, $teams, $has_checkboxes, $positions, $status, $formats, $order, $numbers, $is_individual, $timeline, $timed, $stars );
 	}
 
@@ -83,10 +83,9 @@ class SZ_Meta_Box_Match_Performance {
 	/**
 	 * Admin edit tables
 	 */
-	public static function tables( $post_id, $stats = array(), $labels = array(), $columns = array(), $teams = array(), $has_checkboxes = false, $positions = array(), $status = true, $formats = array(), $order = array(), $numbers = true, $is_individual = false, $timeline = array(), $timed = array(), $stars = array() ) {
+	public static function tables( $post_id, $stats = array(), $labels = array(), $columns = array(), $teams = array(), $has_checkboxes = false, $positions = array(), $status = false, $formats = array(), $order = array(), $numbers = true, $is_individual = false, $timeline = array(), $timed = array(), $stars = array() ) {
 		$sections = get_option( 'sportszone_event_performance_sections', -1 );
 		global $pagenow;
-		
 		
 		if ( $pagenow === 'post-new.php' || $is_individual ) {
 			?>
@@ -130,15 +129,17 @@ class SZ_Meta_Box_Match_Performance {
 			<?php
 		} else {
 			$i = 0;
-		
 			foreach ( $teams as $key => $team_id ):
 				if ( -1 == $team_id ) continue;
 				
 				if ( -1 == $sections ) {
 					$group = groups_get_group( array( 'group_id' => $team_id) );
+					
 					// Get results for players in the team
-					$players = sz_array_between( (array)get_post_meta( $post_id, 'sz_player', false ), 0, $key );
+					$team_players = get_post_meta( $post_id, 'sz_player', true );
+					$players = $team_players[$i];
 					$players[] = -1;
+					
 					$data = sz_array_combine( $players, sz_array_value( $stats, $team_id, array() ) );
 
 					// Get team timeline
@@ -147,6 +148,8 @@ class SZ_Meta_Box_Match_Performance {
 					else:
 						$team_timeline = false;
 					endif;
+					
+					
 					?>
 					<div>
 						<p>
@@ -252,7 +255,7 @@ class SZ_Meta_Box_Match_Performance {
 	/**
 	 * Admin edit table
 	 */
-	public static function table( $labels = array(), $columns = array(), $data = array(), $team_id, $has_checkboxes = false, $positions = array(), $status = true, $section = -1, $formats = array(), $order = array(), $numbers = true, $team_timeline = array(), $timed = array(), $stars = array() ) {
+	public static function table( $labels = array(), $columns = array(), $data = array(), $team_id, $has_checkboxes = false, $positions = array(), $status = false, $section = -1, $formats = array(), $order = array(), $numbers = true, $team_timeline = array(), $timed = array(), $stars = array() ) {
 		?>
 		<div class="sz-data-table-container">
 			<table class="widefat sz-data-table sz-performance-table sz-sortable-table">
@@ -260,6 +263,7 @@ class SZ_Meta_Box_Match_Performance {
 				<?php self::footer( $data, $labels, $team_id, $positions, $status, true, $numbers, $section, $formats ); ?>
 				<tbody>
 					<?php
+
 					if ( 1 == $section && is_array( $order ) && sizeof( $order ) ) {
 						$players = array();
 						$player_order = sz_array_value( $order, $team_id, array() );
@@ -332,15 +336,16 @@ class SZ_Meta_Box_Match_Performance {
 							<?php echo $label; ?>
 						<?php endif; ?>
 					</th>
-				<?php $i++; endforeach; ?>
-				<?php if ( apply_filters( 'sportszone_event_performance_show_status', $status, $section ) ) { ?>
+				<?php $i++; endforeach;
+				if ( apply_filters( 'sportszone_event_performance_show_status', $status, $section ) ) { ?>
 					<th>
 						<?php _e( 'Status', 'sportszone' ); ?>
 					</th>
-				<?php } ?>
-				<?php if ( $stars_type ) { ?>
+				<?php }
+				if ( $stars_type ) { ?>
 					<th><i class="dashicons dashicons-star-filled" title="<?php 1 == $stars_type ? _e( 'Player of the Match', 'sportszone' ) : _e( 'Stars', 'sportszone' ); ?>"></i></th>
-				<?php } ?>
+				<?php 
+				} ?>
 			</tr>
 		</thead>
 		<?php
@@ -526,7 +531,7 @@ class SZ_Meta_Box_Match_Performance {
 	 * Status selector
 	 */
 	public static function status_select( $team_id, $player_id, $value = null ) {
-
+		
 		if ( ! $team_id || ! $player_id )
 			return '&mdash;';
 
@@ -563,7 +568,7 @@ class SZ_Meta_Box_Match_Performance {
 		foreach( $data as $id => $performance ):
 			if ( ! $id || $id == $player_id ) continue;
 			$number = get_post_meta( $id, 'sz_number', true );
-			$output .= '<option value="' . $id . '"' . ( $id == $value ? ' selected' : '' ) . '>' . ( $number ? $number . '. ' : '' ) . get_the_title( $id ) . '</option>';
+			$output .= '<option value="' . $id . '"' . ( $id == $value ? ' selected' : '' ) . '>' . ( $number ? $number . '. ' : '' ) . sz_get_player_name_then_number( $id ) . '</option>';
 		endforeach;
 
 		$output .= '</select>';

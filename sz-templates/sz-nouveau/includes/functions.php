@@ -41,6 +41,9 @@ function sz_nouveau_ajax_querystring( $query_string, $object ) {
 		'page'         => 1,
 		'search_terms' => '',
 		'extras'       => '',
+		'loc_country'  => '',
+		'loc_province' => '',
+		'loc_city'	   => 'filterQuery',
 	);
 
 	if ( ! empty( $_POST ) ) {
@@ -112,6 +115,10 @@ function sz_nouveau_ajax_querystring( $query_string, $object ) {
 	$object_search_text = sz_get_search_default_text( $object );
 	if ( ! empty( $post_query['search_terms'] ) && $object_search_text != $post_query['search_terms'] && 'false' != $post_query['search_terms'] && 'undefined' != $post_query['search_terms'] ) {
 		$qs[] = 'search_terms=' . urlencode( $_POST['search_terms'] );
+	}
+	
+	if ( ! empty( $post_query['loc_city'] ) ) {
+		$qs[] = 'loc_city=' . urlencode( $_POST['loc_city'] );
 	}
 
 	// Specific to messages
@@ -698,6 +705,23 @@ function sz_nouveau_get_appearance_settings( $option = '' ) {
 			'events_dir_tabs'         => 0,
 		) );
 	}
+	
+	if ( sz_is_active( 'match' ) ) {
+		$default_args = array_merge( $default_args, array(
+			'match_front_page'        => 1,
+			'match_front_boxes'       => 1,
+			'match_front_description' => 0,
+			'match_nav_display'       => 0,       // O is default (horizontally). 1 is vertically.
+			'match_nav_order'         => array(),
+			'match_nav_tabs'          => 0,
+			'match_subnav_tabs'       => 0,
+			'matches_create_tabs'      => 1,
+			'matches_layout'           => 1,
+			'members_match_layout'    => 1,
+			'matches_dir_layout'       => 0,
+			'matches_dir_tabs'         => 0,
+		) );
+	}
 
 	if ( is_multisite() && sz_is_active( 'blogs' ) ) {
 		$default_args = array_merge( $default_args, array(
@@ -779,10 +803,13 @@ function sz_nouveau_theme_cover_image( $params = array() ) {
 	$avatar_offset = $params['height'] - 5 - round( (int) sz_core_avatar_full_height() / 2 );
 
 	// Header content offset + spacing.
-	$top_offset  = sz_core_avatar_full_height() - 10;
+	$top_offset  = sz_core_avatar_full_height() - 60;
 	$left_offset = sz_core_avatar_full_width() + 20;
 	$cover_image = isset( $params['cover_image'] ) ? 'background-image: url( ' . $params['cover_image'] . ' );' : '';
 	$hide_avatar_style = '';
+	$team_color_one = '2a2843';
+	$team_color_two = '2a2843';
+	$team_color_three = '2a2843';
 
 	// Adjust the cover image header, in case avatars are completely disabled.
 	if ( ! sportszone()->avatar->show_avatars ) {
@@ -836,25 +863,55 @@ function sz_nouveau_theme_cover_image( $params = array() ) {
 
 		#sportszone #item-header-cover-image #item-header-avatar {
 			margin-top: ' . $avatar_offset . 'px;
+			padding: 0 1em;
 			float: left;
 			overflow: visible;
 			width:auto;
+			position: relative;
+			bottom: -30px;
+			z-index: 30;
 		}
 
 		#sportszone div#item-header #item-header-cover-image #item-header-content {
 			clear: both;
 			float: left;
-			margin-left: ' . $left_offset . 'px;
+			padding-left: ' . $left_offset . 'px;
 			margin-top: -' . $top_offset . 'px;
-			width:auto;
+			margin-bottom: 0;
+			margin-left: 0;
+			width:100%;
+			background:#2a2843;
+			position: relative;
+			z-index: 20;
+			display: flex;
+			flex-direction: row;
+			flex-wrap: nowrap;
+		}
+		#sportszone div#item-header #item-header-cover-image #item-header-content .team-color-one {
+			border-radius: 0;
+			width: 50%;
+			background: #' . $team_color_one . ';
+		}
+		#sportszone div#item-header #item-header-cover-image #item-header-content .team-color-two {
+			border-radius: 0;
+			width: 30%;
+			background: #' . $team_color_two . ';
+		}
+		#sportszone div#item-header #item-header-cover-image #item-header-content .team-color-three {
+			border-radius: 0;
+			width: 20%;
+			background: #' . $team_color_three . ';
 		}
 
 		body.single-item.groups #sportszone div#item-header #item-header-cover-image #item-header-content,
 		body.single-item.groups #sportszone div#item-header #item-header-cover-image #item-actions {
-			margin-top: ' . $params['height'] . 'px;
+			margin-top: 0;
 			margin-left: 0;
 			clear: none;
-			max-width: 50%;
+			max-width: 100%;
+		}
+		body.single-item.groups #sportszone div#item-header #item-header-cover-image #item-header-content {
+			margin-top:-90px;
 		}
 
 		body.single-item.groups #sportszone div#item-header #item-header-cover-image #item-actions {
@@ -869,8 +926,14 @@ function sz_nouveau_theme_cover_image( $params = array() ) {
 			color: #FFF;
 			text-rendering: optimizelegibility;
 			text-shadow: 0px 0px 3px rgba( 0, 0, 0, 0.8 );
-			margin: 0 0 .6em;
-			font-size:200%;
+			text-transform:uppercase;
+			margin: 0.2em 0 0.2em .6em;
+			font-size:1.5rem;
+			display:inline-block;
+		}
+		
+		#sportszone .groups-header div#item-header-cover-image h2 {
+			line-height:2.2rem	
 		}
 
 		#sportszone #item-header-cover-image #item-header-avatar img.avatar {

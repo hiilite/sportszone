@@ -4,7 +4,7 @@
 	$('.pw_select').each(function () {
 		$(this).select2({
 			allowClear: true,
-			tags: true
+			//tags: true
 		});
 	});
 

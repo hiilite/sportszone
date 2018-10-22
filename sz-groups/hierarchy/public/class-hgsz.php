@@ -271,11 +271,11 @@ class HGSZ_Public {
 		 * @param string $value Label to use.
 		 */
 		$label = apply_filters( 'hgsz_directory_enable_tree_view_label', $label );
-		?>
+		/*?>
 		<li class="hgsz-enable-tree-view-container no-ajax" id="hgsz-enable-tree-view-container" style="float:left;">
 			<input id="hgsz-enable-tree-view" name="hgsz-enable-tree-view" type="checkbox" <?php checked( $checked ); ?> class="no-ajax" /> <label for="hgsz-enable-tree-view" class="no-ajax"><?php echo $label; ?></label>
 		</li>
-		<?php
+		<?php*/
 	}
 
 	/**
@@ -307,11 +307,14 @@ class HGSZ_Public {
 		$use_tree = hgsz_get_directory_as_tree_setting();
 
 		// If the tree view is allowed, has the user set a preference?
+		
 		if ( $use_tree && isset( $_COOKIE['sz-groups-use-tree-view'] ) ) {
 			$use_tree = (bool) $_COOKIE['sz-groups-use-tree-view'];
 		}
+		
 
 		$force_parent_id = false;
+		if(!isset($_POST['scope'])){
 		if ( $use_tree ) {
 			// Check that the incoming args are basically defaults.
 			if (
@@ -322,6 +325,7 @@ class HGSZ_Public {
 				) {
 				$force_parent_id = true;
 			}
+		}
 		}
 
 		/**

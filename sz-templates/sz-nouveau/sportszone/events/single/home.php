@@ -21,15 +21,8 @@ if ( sz_has_events() ) :
  
 		<div class="sz-wrap">
 			<?php 
-				/*$event_id = sz_get_event_id();
 				
-				$event_type = (array) sz_events_get_event_type( $event_id, false );
-				var_dump($event_type);
-				var_dump( sz_events_get_event_type( sz_get_event_id(), true ) );
-				var_dump( sz_get_current_event_directory_type() );*/
-				 ?>
-
-				<?php sz_get_template_part( 'events/single/parts/item-nav' ); ?>
+				sz_get_template_part( 'events/single/parts/item-nav' ); ?>
 
 			<div id="item-body" class="item-body event-single-home">
 

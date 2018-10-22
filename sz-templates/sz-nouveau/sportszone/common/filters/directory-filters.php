@@ -6,7 +6,6 @@
  * @version 3.0.0
  */
 ?>
-
 <div id="dir-filters" class="component-filters clearfix">
 	<div id="<?php sz_nouveau_filter_container_id(); ?>" class="last filter">
 		<label class="sz-screen-reader-text" for="<?php sz_nouveau_filter_id(); ?>">

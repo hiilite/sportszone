@@ -707,7 +707,7 @@ function sz_nouveau_groups_manage_members_buttons( $args = array() ) {
 				'component'         => 'groups',
 				'must_be_logged_in' => true,
 				'parent_element'    => $parent_element,
-				'link_text'         => esc_html__( 'Accept', 'sportszone' ),
+				'link_text'         => '<i class="fa fa-check"></i>',
 				'button_element'    => $button_element,
 				'parent_attr'       => array(
 					'id'    => '',
@@ -734,7 +734,7 @@ function sz_nouveau_groups_manage_members_buttons( $args = array() ) {
 				'component'         => 'groups',
 				'must_be_logged_in' => true,
 				'parent_element'    => $parent_element,
-				'link_text'         => __( 'Reject', 'sportszone' ),
+				'link_text'         => '<i class="fa fa-times"></i>',
 				'parent_attr'       => array(
 					'id'    => '',
 					'class' => $parent_class . ' ' . 'reject',

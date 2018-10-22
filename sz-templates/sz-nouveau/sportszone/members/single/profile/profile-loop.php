@@ -8,7 +8,6 @@
 
 ?>
 
-<h2 class="screen-heading view-profile-screen"><?php esc_html_e( 'View Profile', 'sportszone' ); ?></h2>
 
 <?php sz_nouveau_xprofile_hook( 'before', 'loop_content' ); 
 	
@@ -53,37 +52,79 @@ if ( sz_has_profile() ) :
 			sz_nouveau_xprofile_hook( 'before', 'field_content' ); ?>
 
 			<div id="<?php echo $tab_id; ?>" class="sz-widget tab-pane fade <?php echo ($tab_index == 0)?'show active ':''; ?>" role="tabpanel" aria-labelledby="<?php echo $tab_id; ?>">
-
-				<h3 class="screen-heading profile-group-title">
-					<?php sz_the_profile_group_name(); ?>
-					
-				</h3>
-
-				<table class="profile-fields sz-tables-user">
-
-					<?php
-					while ( sz_profile_fields() ) :
-						sz_the_profile_field();
-					?>
-
-						<?php if ( sz_field_has_data() ) : ?>
-
-							<tr<?php sz_field_css_class(); ?>>
-
-								<td class="label"><?php sz_the_profile_field_name(); ?></td>
-
-								<td class="data"><?php sz_the_profile_field_value(); ?></td>
-
-							</tr>
-
-						<?php endif; ?>
-
-						<?php sz_nouveau_xprofile_hook( '', 'field_item' ); ?>
-
-					<?php endwhile; ?>
-
-				</table>
+				<div class="sz-info-box">
+					<h3 class="screen-heading profile-group-title">
+						<?php sz_the_profile_group_name(); ?>
+					</h3>
+	
+					<table class="profile-fields sz-tables-user">
+	
+						<?php
+						while ( sz_profile_fields() ) :
+							sz_the_profile_field();
+						?>
+	
+							<?php if ( sz_field_has_data() ) : ?>
+	
+								<tr<?php sz_field_css_class(); ?>>
+	
+									<td class="label"><?php sz_the_profile_field_name(); ?></td>
+	
+									<td class="data"><?php sz_the_profile_field_value(); ?></td>
+	
+								</tr>
+	
+							<?php endif; ?>
+	
+							<?php sz_nouveau_xprofile_hook( '', 'field_item' ); ?>
+	
+						<?php endwhile; ?>
+	
+					</table>
+					<div class="input-group mb-3">
+						<input type="url" value="<?php echo get_bloginfo('url').$_SERVER['REQUEST_URI']."#".$tab_id; ?>" id="<?php echo $tab_id."-link-input"; ?>" class="form-control">
+						<div class="input-group-append">
+							<button class="btn" onclick="copyLink('<?php echo $tab_id."-link-input"; ?>')">Copy Link</button>
+						</div>
+					</div>
+				</div>
 				
+				<div class="profile-fields sz-player-statistics">
+					<?php
+					$player_id = sz_displayed_user_id();
+					$player = new SZ_Player( $player_id );
+					
+					// Get performance labels
+					$args = array(
+						'post_type' => array( 'sz_performance' ),
+						'numberposts' => 20,
+						'posts_per_page' => 20,
+						'orderby' => 'menu_order',
+						'order' => 'DESC',
+						'meta_query' => array(
+			        		'relation' => 'OR',
+							array(
+								'key' => 'sz_format',
+								'value' => 'number',
+								'compare' => 'NOT EXISTS',
+							),
+							array(
+								'key' => 'sz_format',
+								'value' => array( 'equation', 'text' ),
+								'compare' => 'NOT IN',
+							),
+						),
+					);
+			
+					$posts = get_posts( $args );
+					sz_get_template( 'player-statistics-league.php', array(
+						'data' => $player->data( 0, false, -1 ),
+						'caption' => __( 'Career Total', 'sportspress' ),
+						'hide_teams' => true,
+					) );
+					?>
+				</div>
+
 				<?php 
 				/*
 				 * Display all groups user is a member of by type
@@ -122,103 +163,137 @@ if ( sz_has_profile() ) :
 				
 				if(count($teams) > 0): 
 				?>
-				<h2>Teams</h2>
-				<div class="card-deck">
-					<?php 
-					foreach($teams as $group_id){
-						$group = groups_get_group( array('group_id' => $group_id) );
-						$avatar = sz_core_fetch_avatar(array( 'item_id' => $group_id, 'object'=>'group', 'class'=>'card-img-top'));
-						$cover_image = sz_core_fetch_cover_image(array( 'item_id' => $group_id, 'object'=>'group', 'class'=>'card-img-top'));
-						echo "<div class='card'>
-							<div class='card-body'>$avatar
-								<h5 class='card-title'>".sz_get_group_name($group)."</h5>
-							</div>
-						</div>";		
-					}
-					?>
-				</div>
+					<h3><?php echo __('Teams','sportszone'); ?></h3>
+					<div class="card-deck">
+						<?php 
+						$g = 1;
+						foreach($teams as $group_id){
+							$group = groups_get_group( array('group_id' => $group_id) );
+							$avatar = sz_core_fetch_avatar(array( 'item_id' => $group_id, 'object'=>'group', 'class'=>'card-img-top'));
+							$group_url = sz_get_group_permalink($group);
+
+							echo "<div class='card'>
+								<div class='card-body'><a href='$group_url'>$avatar</a></div>
+							</div>";	
+							$g++;	
+							if($g > 6)
+						    {
+						         break; 
+						    }
+						}
+	
+						$username = sz_core_get_username(sz_displayed_user_id());
+						echo '<div class="view-more"><a href="/members/'.$username.'/groups/" class="vert-btn">View More</a></div>';
+						?>
+					</div>
+
 				<?php 
 				endif;
 				if(count($clubs) > 0): ?>
-					<h2>Clubs</h2>
+					<h3><?php echo __('Clubs','sportszone'); ?></h3>
 					<div class="card-deck">
 						<?php 
+						$g = 1;
 						foreach($clubs as $group_id){
 							$group = groups_get_group( array('group_id' => $group_id) );
 							$avatar = sz_core_fetch_avatar(array( 'item_id' => $group_id, 'object'=>'group', 'class'=>'card-img-top'));
-							$cover_image = sz_core_fetch_cover_image(array( 'item_id' => $group_id, 'object'=>'group', 'class'=>'card-img-top'));
+							$group_url = sz_get_group_permalink($group);
+
 							echo "<div class='card'>
-								<div class='card-body'>$cover_image
-									<h5 class='card-title'>".sz_get_group_name($group)."</h5>
-								</div>
-							</div>";		
+								<div class='card-body'><a href='$group_url'>$avatar</a></div>
+							</div>";	
+							$g++;	
+							if($g > 6)
+						    {
+						         break; 
+						    }	
 						}
+						
+						$username = sz_core_get_username(sz_displayed_user_id());
+						echo '<div class="view-more"><a href="/members/'.$username.'/groups/" class="vert-btn">View More</a></div>';
 						?>
 					</div>
 				<?php 
 				endif;
 				if(count($unions) > 0): ?>
-					<h2>Unions</h2>
+					<h3><?php echo __('Unions','sportszone'); ?></h3>
 					<div class="card-deck">
 						<?php 
+						$g = 1;
 						foreach($unions as $group_id){
 							$group = groups_get_group( array('group_id' => $group_id) );
 							$avatar = sz_core_fetch_avatar(array( 'item_id' => $group_id, 'object'=>'group', 'class'=>'card-img-top'));
-							$cover_image = sz_core_fetch_cover_image(array( 'item_id' => $group_id, 'object'=>'group', 'class'=>'card-img-top'));
+							$group_url = sz_get_group_permalink($group);
+
 							echo "<div class='card'>
-								<div class='card-body'>$cover_image
-									<h5 class='card-title'>".sz_get_group_name($group)."</h5>
-								</div>
-							</div>";		
+								<div class='card-body'><a href='$group_url'>$avatar</a></div>
+							</div>";
+							$g++;	
+							if($g > 6)
+						    {
+						         break; 
+						    }		
 						}
+						
+						$username = sz_core_get_username(sz_displayed_user_id());
+						echo '<div class="view-more"><a href="/members/'.$username.'/groups/" class="vert-btn">View More</a></div>';
 						?>
 					</div>
 				<?php 
 				endif;
 				if(count($organizatons) > 0): ?>
-					<h2>Organizations</h2>
+					<h3><?php echo __('Organizations','sportszone'); ?></h3>
 					<div class="card-deck">
 						<?php 
+						$g = 1;
 						foreach($organizatons as $group_id){
 							$group = groups_get_group( array('group_id' => $group_id) );
 							$avatar = sz_core_fetch_avatar(array( 'item_id' => $group_id, 'object'=>'group', 'class'=>'card-img-top'));
-							$cover_image = sz_core_fetch_cover_image(array( 'item_id' => $group_id, 'object'=>'group', 'class'=>'card-img-top'));
+							$group_url = sz_get_group_permalink($group);
+
 							echo "<div class='card'>
-								<div class='card-body'>$cover_image
-									<h5 class='card-title'>".sz_get_group_name($group)."</h5>
-								</div>
-							</div>";		
+								<div class='card-body'><a href='$group_url'>$avatar</a></div>
+							</div>";
+							$g++;	
+							if($g > 6)
+						    {
+						         break; 
+						    }			
 						}
+						
+						$username = sz_core_get_username(sz_displayed_user_id());
+						echo '<div class="view-more"><a href="/members/'.$username.'/groups/" class="vert-btn">View More</a></div>';
 						?>
 					</div>
 				<?php 
 				endif;
 				if(count($societies) > 0): ?>
-					<h2>Societies</h2>
+					<h3><?php echo __('Societies','sportszone'); ?></h3>
 					<div class="card-deck">
 						<?php 
+						$g = 1;
 						foreach($societies as $group_id){
 							$group = groups_get_group( array('group_id' => $group_id) );
 							$avatar = sz_core_fetch_avatar(array( 'item_id' => $group_id, 'object'=>'group', 'class'=>'card-img-top'));
-							$cover_image = sz_core_fetch_cover_image(array( 'item_id' => $group_id, 'object'=>'group', 'class'=>'card-img-top'));
+							$group_url = sz_get_group_permalink($group);
+
 							echo "<div class='card'>
-								<div class='card-body'>$cover_image
-									<h5 class='card-title'>".sz_get_group_name($group)."</h5>
-								</div>
-							</div>";		
+								<div class='card-body'><a href='$group_url'>$avatar</a></div>
+							</div>";
+							$g++;	
+							if($g > 6)
+						    {
+						         break; 
+						    }		
 						}
+						
+						$username = sz_core_get_username(sz_displayed_user_id());
+						echo '<div class="view-more"><a href="/members/'.$username.'/groups/" class="vert-btn">View More</a></div>';
 						?>
 					</div>
 				<?php 
 				endif;	
 				?>
-				<div class="input-group mb-3">
-					<input type="url" value="<?php echo get_bloginfo('url').$_SERVER['REQUEST_URI']."#".$tab_id; ?>" id="<?php echo $tab_id."-link-input"; ?>" class="form-control">
-					<div class="input-group-append">
-						<button class="btn" onclick="copyLink('<?php echo $tab_id."-link-input"; ?>')">Copy Link</button>
-					</div>
-				</div>
-				
 			</div>
 
 			<?php sz_nouveau_xprofile_hook( 'after', 'field_content' );

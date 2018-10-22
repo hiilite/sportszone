@@ -11,11 +11,15 @@
 </script>
 
 <script type="text/html" id="tmpl-activity-post-form-avatar">
-	<# if ( data.display_avatar ) { #>
+	<div id="post-avatar-ribbon"></div>
+	<a href="{{data.user_domain}}">
+		<?php sz_displayed_user_avatar( 'type=full' ); ?>
+	</a>
+	<!--# if ( data.display_avatar ) { #>
 		<a href="{{data.user_domain}}">
 			<img src="{{data.avatar_url}}" class="avatar user-{{data.user_id}}-avatar avatar-{{data.avatar_width}} photo" width="{{data.avatar_width}}" height="{{data.avatar_width}}" alt="{{data.avatar_alt}}" />
 		</a>
-	<# } #>
+	<# } #-->
 </script>
 
 <script type="text/html" id="tmpl-activity-post-form-options">

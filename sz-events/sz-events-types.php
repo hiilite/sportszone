@@ -192,7 +192,8 @@ class SZ_Add_Event_Types {
 
 		$this->loader->add_action( 'sz_ajax_querystring', $plugin_public, 'szet_alter_sz_ajax_querystring', 100, 2 );
 
-		$this->loader->add_action( 'sz_events_directory_event_types', $plugin_public, 'bb_display_directory_tabs' );
+		$this->loader->add_action( 'sz_events_directory_event_types', $plugin_public, 'sz_display_directory_select' );
+		//$this->loader->add_action( 'sz_events_directory_event_types', $plugin_public, 'bb_display_directory_tabs' );
 		$this->loader->add_filter( 'sz_before_has_events_parse_args', $plugin_public, 'bb_set_has_events_type_arg', 10, 2 );
 		$this->loader->add_action( 'sz_directory_events_item', $plugin_public, 'bb_event_directory_show_event_type' );
 	}

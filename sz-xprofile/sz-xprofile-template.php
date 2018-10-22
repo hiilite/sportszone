@@ -1047,7 +1047,12 @@ function sz_get_profile_group_tabs() {
 		// Setup the selected class.
 		$selected = '';
 		if ( $group_name === $groups[ $i ]->name ) {
-			$selected = ' class="current"';
+			$selected = ' class="current nav-item"';
+			$link_class = ' class="active nav-link"';
+		}
+		else {
+			$selected = ' class="nav-item"';
+			$link_class = ' class="nav-link"';
 		}
 
 		// Skip if group has no fields.
@@ -1060,10 +1065,11 @@ function sz_get_profile_group_tabs() {
 
 		// Add tab to end of tabs array.
 		$tabs[] = sprintf(
-			'<li %1$s><a href="%2$s">%3$s</a></li>',
+			'<li %1$s><a href="%2$s" %4$s>%3$s</a></li>',
 			$selected,
 			esc_url( $link ),
-			esc_html( apply_filters( 'sz_get_the_profile_group_name', $groups[ $i ]->name ) )
+			esc_html( apply_filters( 'sz_get_the_profile_group_name', $groups[ $i ]->name ) ),
+			$link_class
 		);
 	}
 

@@ -1,7 +1,7 @@
 <?php 
 	
 function get_user_teams($value = false, $array = false){
-
+	
 	$teams_args = array(
 		'user_id'		=> get_current_user_id( ),
 		'group_type'	=> 'team'
@@ -31,7 +31,59 @@ function get_user_teams($value = false, $array = false){
 	return $teams;
 }
 
+function get_user_clubs($value = false, $array = false){
+	
+	$clubs_args = array(
+		'user_id'		=> get_current_user_id( ),
+		'group_type'	=> 'club'
+	);
+	
+	if($array):
+		if(sz_has_groups($clubs_args)):
+			$clubs = '<option value="0" disabled selected>Select Club</option>';
+			while(sz_groups()): sz_the_group();
+				$group_id = sz_get_group_id();
+				$clubs .= '<option value="'.sz_get_group_id().'" '.selected( $value, $group_id, false ) .'>'.sz_get_group_name().'</option>';
+			endwhile;
+			if(!is_numeric($value)){
+				$clubs .= '<option value="'.$value.'" '.selected( $value, $value, false ) .'>'.$value.'</option>';
+			}
+		endif;
+	else:
+		if(sz_has_groups($clubs_args)):
+			$clubs = array();
+			while(sz_groups()): sz_the_group();
+				$group_id = sz_get_group_id();
+				$clubs[$group_id] = sz_get_group_name();
+			endwhile;
+		endif;
+	endif;
+	
+	return $clubs;
+}
+
+function cmb2_render_callback_for_select_club( $field, $value, $object_id, $object_type, $field_type ) {
+	pw_select_2_setup_admin_scripts();
+	$event_id = sz_get_event_id();
+	$value = wp_parse_args( $value, array(
+		'club' => '',
+	) );
+	
+	$options = get_user_clubs($value['club'], true);
+	$option_cat = $field_type->concat_items();
+	echo $field_type->select( array(
+			'class'            => 'pw_select2 pw_select',
+			'name' 		=> $field_type->_name('[club]'),
+			'id' 		=> $field_type->_id('_club'),	
+			'options'	=>  $options,
+			'data-placeholder' => $field->args( 'attributes', 'placeholder' ) ? $field->args( 'attributes', 'placeholder' ) : $field->args( 'description' ),
+	) );
+
+}
+add_action( 'cmb2_render_select_club', 'cmb2_render_callback_for_select_club', 10, 5 );
+
 function cmb2_render_callback_for_select_team( $field, $value, $object_id, $object_type, $field_type ) {
+	pw_select_2_setup_admin_scripts();
 	$event_id = sz_get_event_id();
 	$value = wp_parse_args( $value, array(
 		'team' => '',
@@ -61,12 +113,17 @@ add_action( 'cmb2_render_select_team', 'cmb2_render_callback_for_select_team', 1
  * @return array|null $value    See {@see sz_groups_set_group_type()}.
  */
 function cmb2_render_callback_for_select_country( $field, $value, $object_id, $object_type, $field_type ) {
+	if(isset($value['country'])){
+		$default_value = $value['country'];
+	} else {
+		$default_value = '';
+	}
 	echo $field_type->select( array(
 			'class'            => 'crs-country',
 			'name' 		=> $field_type->_name('[country]'),
 			'id' 		=> $field_type->_id('_country'),	
 			'data-placeholder' => $field->args( 'attributes', 'placeholder' ) ? $field->args( 'attributes', 'placeholder' ) : $field->args( 'description' ),
-			'data-default-value'	=> $value['country'],
+			'data-default-value'	=> $default_value,
 			'data-region-id'	=>	$field->args( 'attributes', 'region_id' ),
 	) );
 
@@ -141,4 +198,14 @@ function cmb2_sanitize_multi_colorpicker_callback( $override_value, $value ) {
 	return $value;
 }
 add_filter( 'cmb2_sanitize_multi_colorpicker', 'cmb2_sanitize_multi_colorpicker_callback', 10, 2 );
+
+
+ function pw_select_2_setup_admin_scripts() {
+	$asset_path = apply_filters( 'pw_cmb2_field_select2_asset_path', plugins_url( '', __FILE__  ) );
+
+	wp_register_script( 'pw-select2', $asset_path . '/js/select2.min.js', array( 'jquery-ui-sortable' ), '4.0.3' );
+	wp_enqueue_script( 'pw-select2-init', $asset_path . '/js/script.js', array( 'cmb2-scripts', 'pw-select2' ), '1' );
+	wp_register_style( 'pw-select2', $asset_path . '/css/select2.min.css', array(), '4.0.3' );
+	wp_enqueue_style( 'pw-select2-tweaks', $asset_path . '/css/style.css', array( 'pw-select2' ), '1');
+}
 

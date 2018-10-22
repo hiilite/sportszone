@@ -202,7 +202,6 @@ function sz_nouveau_template_message() {
 		if ( ! empty( $sz_nouveau->user_feedback['message'] ) ) {
 			$user_feedback = $sz_nouveau->user_feedback['message'];
 
-			// @TODO: why is this treated differently?
 			foreach ( array( 'wp_kses_data', 'wp_unslash', 'wptexturize', 'convert_smilies', 'convert_chars' ) as $filter ) {
 				$user_feedback = call_user_func( $filter, $user_feedback );
 			}
@@ -481,7 +480,7 @@ function sz_nouveau_pagination( $position ) {
 
 	<div class="<?php echo esc_attr( 'sz-pagination ' . sanitize_html_class( $position ) ); ?>" data-sz-pagination="<?php echo esc_attr( $page_arg ); ?>">
 
-		<?php if ( $pag_count ) : ?>
+		<?php /*if ( $pag_count ) : ?>
 			<div class="<?php echo esc_attr( 'pag-count ' . sanitize_html_class( $position ) ); ?>">
 
 				<p class="pag-data">
@@ -489,7 +488,7 @@ function sz_nouveau_pagination( $position ) {
 				</p>
 
 			</div>
-		<?php endif; ?>
+		<?php endif;*/ ?>
 
 		<?php if ( $pag_links ) : ?>
 			<div class="<?php echo esc_attr( 'sz-pagination-links ' . sanitize_html_class( $position ) ); ?>">
@@ -566,6 +565,7 @@ function sz_nouveau_loop_classes() {
 			'members' => true,
 			'groups'  => true,
 			'events'  => true,
+			//'matches'  => true,
 			'blogs'   => true,
 
 			/*
@@ -726,8 +726,15 @@ function sz_nouveau_avatar_args() {
  * @return bool True if the Nav contains items. False otherwise.
  */
 function sz_nouveau_has_nav( $args = array() ) {
+	global $post;
+	if(get_post_type( $post ) == 'sz_match'){
+		$match_event = get_post_meta( get_the_id(  ), 'sz_event', true );
+	} else {
+		$match_event = false;
+	}
+	
 	$sz_nouveau = sz_nouveau();
-
+	
 	$n = wp_parse_args( $args, array(
 		'type'                    => 'primary',
 		'object'                  => '',
@@ -773,6 +780,33 @@ function sz_nouveau_has_nav( $args = array() ) {
 		$sz_nouveau->displayed_nav = 'events';
 		$parent_slug               = sz_get_current_event_slug();
 		$event_nav                 = sportszone()->events->nav;
+		
+		if ( 'event_manage' === $sz_nouveau->object_nav && sz_is_event_admin_page() ) {
+			$parent_slug .= '_manage';
+
+		/**
+		 * If it's not the Admin tabs, reorder the Group's nav according to the
+		 * customizer setting.
+		 */
+		} else {
+			sz_nouveau_set_nav_item_order( $event_nav, sz_nouveau_get_appearance_settings( 'event_nav_order' ), $parent_slug );
+		}
+
+		$nav = $event_nav->get_secondary(
+			array(
+				'parent_slug'     => $parent_slug,
+				'user_has_access' => (bool) $n['user_has_access'],
+			)
+		);
+
+	// Build the nav for the displayed user
+	} elseif ( $match_event ) {
+		$event =  events_get_event( array( 'event_id' => $match_event) );
+		$sz_nouveau->displayed_nav = 'events';
+		$parent_slug               = $event->slug;
+		$event_nav                 = new SZ_Core_Nav($match_event);
+		
+
 
 		if ( 'event_manage' === $sz_nouveau->object_nav && sz_is_event_admin_page() ) {
 			$parent_slug .= '_manage';
@@ -1496,6 +1530,9 @@ function sz_nouveau_container_classes() {
 		} elseif ( sz_is_event() ) {
 			$customizer_option = 'event_nav_display';
 
+		} elseif ( sz_is_match() ) {
+			$customizer_option = 'match_nav_display';
+
 		} elseif ( sz_is_directory() ) {
 			switch ( $component ) {
 				case 'activity':
@@ -1555,7 +1592,7 @@ function sz_nouveau_container_classes() {
 		if ( $customizer_option ) {
 			$layout_prefs  = sz_nouveau_get_temporary_setting( $customizer_option, sz_nouveau_get_appearance_settings( $customizer_option ) );
 
-			if ( $layout_prefs && (int) $layout_prefs === 1 && ( sz_is_user() || sz_is_group() || sz_is_event() ) ) {
+			if ( $layout_prefs && (int) $layout_prefs === 1 && ( sz_is_user() || sz_is_group() || sz_is_event() || sz_is_match() ) ) {
 				$classes[] = 'sz-single-vert-nav';
 				$classes[] = 'sz-vertical-navs';
 			}
@@ -1603,16 +1640,24 @@ function sz_nouveau_single_item_nav_classes() {
 	 * @return string CSS classes
 	 */
 	function sz_nouveau_get_single_item_nav_classes() {
+		global $post;
 		$classes    = array( 'main-navs', 'no-ajax', 'sz-navs', 'single-screen-navs' );
 		$component  = sz_current_component();
 		$sz_nouveau = sz_nouveau();
+		$is_match = false;
+		
+		if(get_post_type( $post ) == 'sz_match' && $component == false){
+			//var_dump($current_component);
+			$component = 'events';
+			$is_match = true;
+		}
 
 		// @todo wasn't able to get $customizer_option to pass a string to get_settings
 		// this is a temp workaround but differs from earlier dir approach- bad!
 		if ( sz_is_group() ) {
 			$nav_tabs = (int) sz_nouveau_get_temporary_setting( 'group_nav_tabs', sz_nouveau_get_appearance_settings( 'group_nav_tabs' ) );
 
-		} elseif ( sz_is_event() ) {
+		} elseif ( sz_is_event() || $is_match ) {
 			$nav_tabs = (int) sz_nouveau_get_temporary_setting( 'event_nav_tabs', sz_nouveau_get_appearance_settings( 'event_nav_tabs' ) );
 
 		} elseif ( sz_is_user() ) {
@@ -1629,7 +1674,7 @@ function sz_nouveau_single_item_nav_classes() {
 			$classes[] = 'user-nav-tabs';
 			$classes[] = 'tabbed-links';
 		}
-
+		
 		if ( sz_is_user() ) {
 			$component = 'members';
 			$menu_type = 'users-nav';
@@ -1637,6 +1682,9 @@ function sz_nouveau_single_item_nav_classes() {
 		} elseif (sz_is_event()) {
 			$menu_type = 'events-nav';
 			$customizer_option = 'event_nav_display';
+		} elseif (sz_is_match()) {
+			$menu_type = 'matches-nav';
+			$customizer_option = 'match_nav_display';
 		} else {
 			$menu_type = 'groups-nav';
 			$customizer_option = 'group_nav_display';
@@ -2005,8 +2053,8 @@ function sz_nouveau_search_default_text( $text = '', $is_attr = true ) {
  *
  * @since 3.0.0
  */
-function sz_nouveau_search_form() {
-	sz_get_template_part( 'common/search/search-form' );
+function sz_nouveau_search_form($component = 'common') {
+	sz_get_template_part( $component.'/search/search-form' );
 
 	$objects = sz_nouveau_get_search_objects();
 	if ( empty( $objects['primary'] ) || empty( $objects['secondary'] ) ) {

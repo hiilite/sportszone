@@ -201,9 +201,10 @@ function copyLink(link){
 			if ( undefined !== SZ_Nouveau.customizer_settings ) {
 				postData.customized = SZ_Nouveau.customizer_settings;
 			}
-
+			console.log(SZ_Nouveau.ajaxurl, postData);
+			
 			this.ajax_request = $.post( SZ_Nouveau.ajaxurl, postData, 'json' );
-
+			
 			return this.ajax_request;
 		},
 
@@ -249,6 +250,9 @@ function copyLink(link){
 				filter       : null,
 				target       : '#sportszone [data-sz-list]',
 				search_terms : '',
+				/*loc_country  : '',
+				loc_province : '',
+				loc_city 	 : '',*/
 				page         : 1,
 				extras       : null,
 				caller       : null,
@@ -302,7 +306,7 @@ function copyLink(link){
 			postdata = $.extend( {
 				action: data.object + '_filter'
 			}, data );
-
+			console.log(postdata, data.object);
 			return this.ajax( postdata, data.object ).done( function( response ) {
 				if ( false === response.success ) {
 					return;
@@ -347,7 +351,7 @@ function copyLink(link){
 		 */
 		initObjects: function() {
 			var self = this, objectData = {}, queryData = {}, scope = 'all', search_terms = '', extras = null, filter = null;
-
+			var loc_country = '', loc_province = '', loc_city = '';
 			$.each( this.objects, function( o, object ) {
 				objectData = self.getStorage( 'sz-' + object );
 
@@ -384,19 +388,41 @@ function copyLink(link){
 					} else if ( undefined !== self.querystring.s ) {
 						search_terms = self.querystring.s;
 					}
+					
+					/*
+					if ( undefined !== self.querystring[ 'dir_' + object + '_loc_province'] ) {
+						loc_province = self.querystring[ 'dir_' + object + '_loc_province'];
+					} else if ( undefined !== self.querystring.s ) {
+						loc_province = self.querystring.s;
+					}
 
 					if ( search_terms ) {
 						$( '#sportszone [data-sz-search="' + object + '"] input[type=search]' ).val( search_terms );
 					}
+
+					// TODO: Change to handle dropdown options
+					if ( loc_country) {
+						$( '#sportszone [data-sz-search="' + object + '"] input#dir-events-loc_country' ).val( loc_country );
+					}
+					if ( loc_province ) {
+						$( '#sportszone [data-sz-search="' + object + '"] input#dir-events-loc_province' ).val( loc_province );
+					}
+					if ( loc_city ) {
+						$( '#sportszone [data-sz-search="' + object + '"] input#dir-events-loc_city' ).val( loc_city );
+					}*/
 				}
 
+				
 				if ( $( '#sportszone [data-sz-list="' + object + '"]' ).length ) {
 					queryData =  {
 						object       : object,
 						scope        : scope,
 						filter       : filter,
 						search_terms : search_terms,
-						extras       : extras
+						extras       : extras,
+						/*loc_country  : loc_country,
+						loc_province : loc_province,
+						loc_city 	 : loc_city,*/
 					};
 
 					// Populate the object list
@@ -435,6 +461,7 @@ function copyLink(link){
 		/**
 		 * [addListeners description]
 		 */
+		 // TODO: Add search by region
 		addListeners: function() {
 			// Disabled inputs
 			$( '[data-sz-disable-input]' ).on( 'change', this.toggleDisabledInput );
@@ -461,6 +488,15 @@ function copyLink(link){
 
 			// Pagination
 			$( '#sportszone [data-sz-list]' ).on( 'click', '[data-sz-pagination] a', this, this.paginateAction );
+			
+			// Custom Radio Buttons
+			$( document ).ready( this.customRadio );
+			
+			// Custom Check Boxes
+			$( document ).ready( this.customCheck );
+			
+			// Custom Select Boxes
+			$( document ).ready( this.customSelect );
 		},
 
 		/** Event Callbacks ***********************************************************/
@@ -550,6 +586,9 @@ function copyLink(link){
 				scope        : scope,
 				filter       : filter,
 				search_terms : search_terms,
+				/*loc_country  : '',
+				loc_province : '',
+				loc_city 	 : '',*/
 				page         : 1
 			} );
 		},
@@ -562,7 +601,7 @@ function copyLink(link){
 		filterQuery: function( event ) {
 			var self = event.data, object = $( event.target ).data( 'sz-filter' ),
 				scope = 'all', filter = $( event.target ).val(),
-				search_terms = '', template = null;
+				search_terms = '', loc_country = '', loc_province = '', loc_city = '', template = null;
 
 			if ( ! object ) {
 				return event;
@@ -575,7 +614,17 @@ function copyLink(link){
 			if ( $( '#sportszone [data-sz-search="' + object + '"] input[type=search]' ).length ) {
 				search_terms = $( '#sportszone [data-sz-search="' + object + '"] input[type=search]' ).val();
 			}
-
+			/*
+			if ( $( '#sportszone [data-sz-search="' + object + '"] input[name=dir_events_loc_country]' ).length ) {
+				loc_country = $( '#sportszone [data-sz-search="' + object + '"] input[name=dir_events_loc_country]' ).val();
+			}
+			if ( $( '#sportszone [data-sz-search="' + object + '"] input[name=dir_events_loc_province]' ).length ) {
+				loc_province = $( '#sportszone [data-sz-search="' + object + '"] input[name=dir_events_loc_province]' ).val();
+			}
+			if ( $( '#sportszone [data-sz-search="' + object + '"] input[name=dir_events_loc_city]' ).length ) {
+				loc_city = $( '#sportszone [data-sz-search="' + object + '"] input[name=dir_events_loc_city]' ).val();
+			}
+*/
 			if ( 'friends' === object ) {
 				object = 'members';
 			}
@@ -585,6 +634,9 @@ function copyLink(link){
 				scope        : scope,
 				filter       : filter,
 				search_terms : search_terms,
+				loc_country  : loc_country,
+				loc_province : loc_province,
+				loc_city 	 : loc_city,
 				page         : 1,
 				template     : template
 			} );
@@ -596,7 +648,7 @@ function copyLink(link){
 		 * @return {[type]}       [description]
 		 */
 		searchQuery: function( event ) {
-			var self = event.data, object, scope = 'all', filter = null, template = null, search_terms = '';
+			var self = event.data, object, scope = 'all', filter = null, template = null, search_terms = '', loc_country = '', loc_province = '', loc_city = '';
 
 			if ( $( event.delegateTarget ).hasClass( 'no-ajax' ) || undefined === $( event.delegateTarget ).data( 'sz-search' ) ) {
 				return event;
@@ -608,6 +660,9 @@ function copyLink(link){
 			object       = $( event.delegateTarget ).data( 'sz-search' );
 			filter       = $( '#sportszone' ).find( '[data-sz-filter="' + object + '"]' ).first().val();
 			search_terms = $( event.delegateTarget ).find( 'input[type=search]' ).first().val();
+			loc_country  = $( event.delegateTarget ).find( 'input[name=dir_events_loc_country]' ).first().val();
+			loc_province = $( event.delegateTarget ).find( 'input[name=dir_events_loc_province]' ).first().val();
+			loc_city 	 = $( event.delegateTarget ).find( 'input[name=dir_events_loc_city]' ).first().val();
 
 			if ( $( self.objectNavParent + ' [data-sz-object]' ).length ) {
 				scope = $( self.objectNavParent + ' [data-sz-object="' + object + '"].selected' ).data( 'sz-scope' );
@@ -618,6 +673,9 @@ function copyLink(link){
 				scope        : scope,
 				filter       : filter,
 				search_terms : search_terms,
+				loc_country  : loc_country,
+				loc_province : loc_province,
+				loc_city 	 : loc_city,
 				page         : 1,
 				template     : template
 			} );
@@ -827,12 +885,33 @@ function copyLink(link){
 				scope        : scope,
 				filter       : filter,
 				search_terms : search_terms,
+				/*loc_country  : '',
+				loc_province : '',
+				loc_city 	 : '',*/
 				extras       : extras,
 				page         : self.getLinkParams( navLink.prop( 'href' ), pagArg ) || 1
 			};
 
 			// Request the page
 			self.objectRequest( queryData );
+		},
+		
+		// Custom Radio Buttons
+		customRadio: function() {
+			$('input[type=radio]').wrap('<span class="radio-container"></span>');
+			$('input[type=radio]').after('<span class="custom-radio"></span>');
+		},
+		
+		// Custom Check Boxes
+		customCheck: function() {
+			$('input[type=checkbox]').wrap('<span class="check-container"></span>');
+			$('input[type=checkbox]').after('<span class="custom-check"></span>');
+		},
+		
+		// Custom Select Boxes
+		customSelect: function() {
+			$('select').wrap('<span class="select-container"></span>');
+			$('#settings-form .select-container').append('<span class="select-arrow"></span>');
 		}
 	};
 

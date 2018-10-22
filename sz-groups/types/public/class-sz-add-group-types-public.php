@@ -209,14 +209,56 @@ class SZ_Add_Group_Types_Public {
 		if ( ! empty( $display_group_types ) && is_array( $display_group_types ) ) {
 			foreach ( $group_types as $key => $group_type ) :
 				if ( in_array( $key, $display_group_types, true ) ) {
+
 					?>
 			<li id="groups-<?php echo esc_attr( $group_type->name ); ?>" class="szgt-type-tab">
-				<a href="<?php sz_groups_directory_permalink(); ?>"><?php printf( '%s <span>%d</span>', esc_attr( $group_type->labels['name'] ), esc_attr( $this->bb_count_group_types( $group_type->name ) ) ); ?></a>
+				<a href="<?php echo sz_get_groups_directory_permalink() . 'type/' . $group_type->directory_slug; ?>"><?php printf( '%s <span>%d</span>', esc_attr( $group_type->labels['name'] ), esc_attr( $this->bb_count_group_types( $group_type->name ) ) ); ?></a>
 			</li>
 				<?php
 				}
 			endforeach;
 		}
+	}
+	
+	/**
+	 * Add event type tabs.
+	 */
+	public function sz_display_directory_select() {
+		$display_group_types = get_site_option( 'szgt_type_display_settings' );
+		$group_types         = sz_groups_get_group_types( array(), 'objects' );
+		
+		$page = explode("/",$_SERVER['REQUEST_URI']);
+		
+		if($page[2] == 'type') {
+			$type = $page[3];
+		}
+		else {
+			$type = 'all';
+		}
+		
+		?>
+		<!--form id="events-types-filter" method="post" action=""-->
+			<div class="select-wrap">
+				<select id="groups-types-select" name="type">
+					<option value="<?php echo _('all'); ?>" <?php echo ($type == 'all' ? 'selected' : ''); ?>><?php echo _('All Groups'); ?></option>
+		<?php
+		if ( ! empty( $display_group_types ) && is_array( $display_group_types ) ) {
+			foreach ( $group_types as $key => $group_type ) :
+				if ( in_array( $key, $display_group_types, true ) ) {
+					?>
+			<option value="<?php echo esc_attr( $group_type->name ); ?>" <?php echo ($type == esc_attr( $group_type->name ) ? 'selected' : ''); ?>>
+				<?php printf( '%s', esc_attr( $group_type->labels['name'] ) ); ?>
+			</option>
+				<?php
+				}
+			endforeach;
+		}
+		?>
+		</select>
+		<span class="select-arrow" aria-hidden="true"></span>
+		</div>
+		<!--/form-->
+		<?php
 	}
 
 	/**

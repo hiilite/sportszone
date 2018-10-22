@@ -101,7 +101,7 @@ class SZ_Core extends SZ_Component {
 		 *
 		 * @param array $value Array of included and optional components.
 		 */
-		$sz->optional_components = apply_filters( 'sz_optional_components', array( 'activity', 'blogs', 'friends', 'groups', 'events', 'messages', 'notifications', 'settings', 'xprofile' ) );
+		$sz->optional_components = apply_filters( 'sz_optional_components', array( 'activity', 'blogs', 'friends', 'groups', 'events', 'matches', 'messages', 'notifications', 'settings', 'xprofile' ) );
 
 		/**
 		 * Filters the required components.
@@ -156,14 +156,14 @@ class SZ_Core extends SZ_Component {
 			/** This filter is documented in sz-core/admin/sz-core-admin-components.php */
 			$sz->active_components = apply_filters( 'sz_active_components', $sz->active_components );
 		}
-
+		
 		// Loop through optional components.
 		foreach( $sz->optional_components as $component ) {
 			if ( sz_is_active( $component ) && file_exists( $sz->plugin_dir . '/sz-' . $component . '/sz-' . $component . '-loader.php' ) ) {
 				include( $sz->plugin_dir . '/sz-' . $component . '/sz-' . $component . '-loader.php' );
 			}
 		}
-
+		
 		// Loop through required components.
 		foreach( $sz->required_components as $component ) {
 			if ( file_exists( $sz->plugin_dir . '/sz-' . $component . '/sz-' . $component . '-loader.php' ) ) {
@@ -361,15 +361,15 @@ class SZ_Core extends SZ_Component {
 			apply_filters( 'sportszone_register_post_type_result',
 				array(
 					'labels' => array(
-						'name' 					=> __( 'Match Results', 'sportspress' ),
-						'singular_name' 		=> __( 'Result', 'sportspress' ),
-						'add_new_item' 			=> __( 'Add New Result', 'sportspress' ),
-						'edit_item' 			=> __( 'Edit Result', 'sportspress' ),
-						'new_item' 				=> __( 'New', 'sportspress' ),
-						'view_item' 			=> __( 'View', 'sportspress' ),
-						'search_items' 			=> __( 'Search', 'sportspress' ),
-						'not_found' 			=> __( 'No results found.', 'sportspress' ),
-						'not_found_in_trash' 	=> __( 'No results found.', 'sportspress' ),
+						'name' 					=> __( 'Match Results', 'sportszone' ),
+						'singular_name' 		=> __( 'Result', 'sportszone' ),
+						'add_new_item' 			=> __( 'Add New Result', 'sportszone' ),
+						'edit_item' 			=> __( 'Edit Result', 'sportszone' ),
+						'new_item' 				=> __( 'New', 'sportszone' ),
+						'view_item' 			=> __( 'View', 'sportszone' ),
+						'search_items' 			=> __( 'Search', 'sportszone' ),
+						'not_found' 			=> __( 'No results found.', 'sportszone' ),
+						'not_found_in_trash' 	=> __( 'No results found.', 'sportszone' ),
 					),
 					'public' 				=> false,
 					'show_ui' 				=> true,
@@ -392,15 +392,15 @@ class SZ_Core extends SZ_Component {
 			apply_filters( 'sportszone_register_post_type_outcome',
 				array(
 					'labels' => array(
-						'name' 					=> __( 'Match Outcomes', 'sportspress' ),
-						'singular_name' 		=> __( 'Outcome', 'sportspress' ),
-						'add_new_item' 			=> __( 'Add New Outcome', 'sportspress' ),
-						'edit_item' 			=> __( 'Edit Outcome', 'sportspress' ),
-						'new_item' 				=> __( 'New', 'sportspress' ),
-						'view_item' 			=> __( 'View', 'sportspress' ),
-						'search_items' 			=> __( 'Search', 'sportspress' ),
-						'not_found' 			=> __( 'No results found.', 'sportspress' ),
-						'not_found_in_trash' 	=> __( 'No results found.', 'sportspress' ),
+						'name' 					=> __( 'Match Outcomes', 'sportszone' ),
+						'singular_name' 		=> __( 'Outcome', 'sportszone' ),
+						'add_new_item' 			=> __( 'Add New Outcome', 'sportszone' ),
+						'edit_item' 			=> __( 'Edit Outcome', 'sportszone' ),
+						'new_item' 				=> __( 'New', 'sportszone' ),
+						'view_item' 			=> __( 'View', 'sportszone' ),
+						'search_items' 			=> __( 'Search', 'sportszone' ),
+						'not_found' 			=> __( 'No results found.', 'sportszone' ),
+						'not_found_in_trash' 	=> __( 'No results found.', 'sportszone' ),
 					),
 					'public' 				=> false,
 					'show_ui' 				=> true,
@@ -423,15 +423,15 @@ class SZ_Core extends SZ_Component {
 			apply_filters( 'sportszone_register_post_type_column',
 				array(
 					'labels' => array(
-						'name' 					=> __( 'Table Columns', 'sportspress' ),
-						'singular_name' 		=> __( 'Column', 'sportspress' ),
-						'add_new_item' 			=> __( 'Add New Column', 'sportspress' ),
-						'edit_item' 			=> __( 'Edit Column', 'sportspress' ),
-						'new_item' 				=> __( 'New', 'sportspress' ),
-						'view_item' 			=> __( 'View', 'sportspress' ),
-						'search_items' 			=> __( 'Search', 'sportspress' ),
-						'not_found' 			=> __( 'No results found.', 'sportspress' ),
-						'not_found_in_trash' 	=> __( 'No results found.', 'sportspress' ),
+						'name' 					=> __( 'Table Columns', 'sportszone' ),
+						'singular_name' 		=> __( 'Column', 'sportszone' ),
+						'add_new_item' 			=> __( 'Add New Column', 'sportszone' ),
+						'edit_item' 			=> __( 'Edit Column', 'sportszone' ),
+						'new_item' 				=> __( 'New', 'sportszone' ),
+						'view_item' 			=> __( 'View', 'sportszone' ),
+						'search_items' 			=> __( 'Search', 'sportszone' ),
+						'not_found' 			=> __( 'No results found.', 'sportszone' ),
+						'not_found_in_trash' 	=> __( 'No results found.', 'sportszone' ),
 					),
 					'public' 				=> false,
 					'show_ui' 				=> true,
@@ -453,15 +453,15 @@ class SZ_Core extends SZ_Component {
 			apply_filters( 'sportszone_register_post_type_metric',
 				array(
 					'labels' => array(
-						'name' 					=> __( 'Player Metrics', 'sportspress' ),
-						'singular_name' 		=> __( 'Metric', 'sportspress' ),
-						'add_new_item' 			=> __( 'Add New Metric', 'sportspress' ),
-						'edit_item' 			=> __( 'Edit Metric', 'sportspress' ),
-						'new_item' 				=> __( 'New', 'sportspress' ),
-						'view_item' 			=> __( 'View', 'sportspress' ),
-						'search_items' 			=> __( 'Search', 'sportspress' ),
-						'not_found' 			=> __( 'No results found.', 'sportspress' ),
-						'not_found_in_trash' 	=> __( 'No results found.', 'sportspress' ),
+						'name' 					=> __( 'Player Metrics', 'sportszone' ),
+						'singular_name' 		=> __( 'Metric', 'sportszone' ),
+						'add_new_item' 			=> __( 'Add New Metric', 'sportszone' ),
+						'edit_item' 			=> __( 'Edit Metric', 'sportszone' ),
+						'new_item' 				=> __( 'New', 'sportszone' ),
+						'view_item' 			=> __( 'View', 'sportszone' ),
+						'search_items' 			=> __( 'Search', 'sportszone' ),
+						'not_found' 			=> __( 'No results found.', 'sportszone' ),
+						'not_found_in_trash' 	=> __( 'No results found.', 'sportszone' ),
 					),
 					'public' 				=> false,
 					'show_ui' 				=> true,
@@ -483,20 +483,20 @@ class SZ_Core extends SZ_Component {
 			apply_filters( 'sportszone_register_post_type_performance',
 				array(
 					'labels' => array(
-						'name' 					=> __( 'Player Performance', 'sportspress' ),
-						'menu_name' 			=> __( 'Performance', 'sportspress' ),
-						'singular_name' 		=> __( 'Player Performance', 'sportspress' ),
-						'add_new_item' 			=> __( 'Add New Performance', 'sportspress' ),
-						'edit_item' 			=> __( 'Edit Performance', 'sportspress' ),
-						'new_item' 				=> __( 'New', 'sportspress' ),
-						'view_item' 			=> __( 'View', 'sportspress' ),
-						'search_items' 			=> __( 'Search', 'sportspress' ),
-						'not_found' 			=> __( 'No results found.', 'sportspress' ),
-						'not_found_in_trash' 	=> __( 'No results found.', 'sportspress' ),
-						'featured_image'		=> __( 'Icon', 'sportspress' ),
- 						'set_featured_image' 	=> __( 'Select Icon', 'sportspress' ),
- 						'remove_featured_image' => __( 'Remove icon', 'sportspress' ),
- 						'use_featured_image' 	=> __( 'Add icon', 'sportspress' ),
+						'name' 					=> __( 'Player Performance', 'sportszone' ),
+						'menu_name' 			=> __( 'Performance', 'sportszone' ),
+						'singular_name' 		=> __( 'Player Performance', 'sportszone' ),
+						'add_new_item' 			=> __( 'Add New Performance', 'sportszone' ),
+						'edit_item' 			=> __( 'Edit Performance', 'sportszone' ),
+						'new_item' 				=> __( 'New', 'sportszone' ),
+						'view_item' 			=> __( 'View', 'sportszone' ),
+						'search_items' 			=> __( 'Search', 'sportszone' ),
+						'not_found' 			=> __( 'No results found.', 'sportszone' ),
+						'not_found_in_trash' 	=> __( 'No results found.', 'sportszone' ),
+						'featured_image'		=> __( 'Icon', 'sportszone' ),
+ 						'set_featured_image' 	=> __( 'Select Icon', 'sportszone' ),
+ 						'remove_featured_image' => __( 'Remove icon', 'sportszone' ),
+ 						'use_featured_image' 	=> __( 'Add icon', 'sportszone' ),
 					),
 					'public' 				=> false,
 					'show_ui' 				=> true,
@@ -518,16 +518,16 @@ class SZ_Core extends SZ_Component {
 			apply_filters( 'sportszone_register_post_type_statistic',
 				array(
 					'labels' => array(
-						'name' 					=> __( 'Player Statistics', 'sportspress' ),
-						'menu_name' 			=> __( 'Statistics', 'sportspress' ),
-						'singular_name' 		=> __( 'Statistic', 'sportspress' ),
-						'add_new_item' 			=> __( 'Add New Statistic', 'sportspress' ),
-						'edit_item' 			=> __( 'Edit Statistic', 'sportspress' ),
-						'new_item' 				=> __( 'New', 'sportspress' ),
-						'view_item' 			=> __( 'View', 'sportspress' ),
-						'search_items' 			=> __( 'Search', 'sportspress' ),
-						'not_found' 			=> __( 'No results found.', 'sportspress' ),
-						'not_found_in_trash' 	=> __( 'No results found.', 'sportspress' ),
+						'name' 					=> __( 'Player Statistics', 'sportszone' ),
+						'menu_name' 			=> __( 'Statistics', 'sportszone' ),
+						'singular_name' 		=> __( 'Statistic', 'sportszone' ),
+						'add_new_item' 			=> __( 'Add New Statistic', 'sportszone' ),
+						'edit_item' 			=> __( 'Edit Statistic', 'sportszone' ),
+						'new_item' 				=> __( 'New', 'sportszone' ),
+						'view_item' 			=> __( 'View', 'sportszone' ),
+						'search_items' 			=> __( 'Search', 'sportszone' ),
+						'not_found' 			=> __( 'No results found.', 'sportszone' ),
+						'not_found_in_trash' 	=> __( 'No results found.', 'sportszone' ),
 					),
 					'public' 				=> false,
 					'show_ui' 				=> true,
@@ -538,24 +538,24 @@ class SZ_Core extends SZ_Component {
 					'hierarchical' 			=> false,
 					'supports' 				=> array( 'title', 'page-attributes', 'excerpt' ),
 					'has_archive' 			=> false,
-					'show_in_nav_menus' 	=> false,
+					'show_in_nav_menus' 	=> true,
 					'can_export' 			=> false,
-					'show_in_menu' 			=> false,
+					'show_in_menu' 			=> true,
 				)
 			)
 		);
 		
 		$args = array(
 			'labels' => array(
-				'name' 					=> __( 'Matches', 'sportspress' ),
-				'singular_name' 		=> __( 'Match', 'sportspress' ),
-				'add_new_item' 			=> __( 'Add New Match', 'sportspress' ),
-				'edit_item' 			=> __( 'Edit Match', 'sportspress' ),
-				'new_item' 				=> __( 'New', 'sportspress' ),
-				'view_item' 			=> __( 'View Match', 'sportspress' ),
-				'search_items' 			=> __( 'Search', 'sportspress' ),
-				'not_found' 			=> __( 'No results found.', 'sportspress' ),
-				'not_found_in_trash' 	=> __( 'No results found.', 'sportspress' ),
+				'name' 					=> __( 'Matches', 'sportszone' ),
+				'singular_name' 		=> __( 'Match', 'sportszone' ),
+				'add_new_item' 			=> __( 'Add New Match', 'sportszone' ),
+				'edit_item' 			=> __( 'Edit Match', 'sportszone' ),
+				'new_item' 				=> __( 'New', 'sportszone' ),
+				'view_item' 			=> __( 'View Match', 'sportszone' ),
+				'search_items' 			=> __( 'Search', 'sportszone' ),
+				'not_found' 			=> __( 'No results found.', 'sportszone' ),
+				'not_found_in_trash' 	=> __( 'No results found.', 'sportszone' ),
 			),
 			'public' 				=> true,
 			'show_ui' 				=> true,
@@ -564,7 +564,7 @@ class SZ_Core extends SZ_Component {
 			'publicly_queryable' 	=> true,
 			'exclude_from_search' 	=> false,
 			'hierarchical' 			=> false,
-			'rewrite' 				=> array( 'slug' => get_option( 'sportspress_event_slug', 'event' ) ),
+			'rewrite' 				=> array( 'slug' => get_option( 'sportszone_match_slug', 'matches' ) ),
 			'supports' 				=> array( 'title', 'editor', 'author', 'thumbnail', 'excerpt' ),
 			'has_archive' 			=> false,
 			'show_in_nav_menus' 	=> true,

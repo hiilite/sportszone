@@ -292,7 +292,8 @@ function sz_nouveau_members_loop_buttons( $args = array() ) {
 						'component'         => 'friends',
 						'must_be_logged_in' => true,
 						'parent_element'    => $parent_element,
-						'link_text'         => _x( 'Accept', 'button', 'sportszone' ),
+						/*'link_text'         => _x( 'Accept', 'button', 'sportszone' ),*/
+						'link_text'         => '<i class="fa fa-check"></i>',
 						'parent_attr'       => array(
 							'id'    => '',
 							'class' => $parent_class ,
@@ -308,7 +309,8 @@ function sz_nouveau_members_loop_buttons( $args = array() ) {
 						'component'         => 'friends',
 						'must_be_logged_in' => true,
 						'parent_element'    => $parent_element,
-						'link_text'         => _x( 'Reject', 'button', 'sportszone' ),
+						/*'link_text'         => _x( 'Reject', 'button', 'sportszone' ),*/
+						'link_text'         => '<i class="fa fa-times"></i>',
 						'parent_attr'       => array(
 							'id'    => '',
 							'class' => $parent_class,

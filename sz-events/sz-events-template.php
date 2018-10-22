@@ -335,6 +335,7 @@ function sz_event_type_list( $event_id = 0, $r = array() ) {
  * @return bool True if there are events to display that match the params
  */
 function sz_has_events( $args = '' ) {
+	// TODO: Add ability to do meta query when called through ajax
 	global $events_template;
 
 	/*
@@ -343,6 +344,9 @@ function sz_has_events( $args = '' ) {
 	$slug         = false;
 	$type         = '';
 	$search_terms = false;
+	$loc_country  = false;
+	$loc_province = false;
+	$loc_city 	  = false;
 
 	// When looking your own events, check for two action variables.
 	if ( sz_is_current_action( 'my-events' ) ) {
@@ -381,7 +385,11 @@ function sz_has_events( $args = '' ) {
 	} elseif ( !empty( $_REQUEST['s'] ) ) {
 		$search_terms = $_REQUEST['s'];
 	}
-
+	
+	
+	
+	
+	
 	// Parse defaults and requested arguments.
 	$r = sz_parse_args( $args, array(
 		'type'               => $type,
@@ -405,7 +413,33 @@ function sz_has_events( $args = '' ) {
 		'update_meta_cache'  => true,
 		'update_admin_cache' => sz_is_events_directory() || sz_is_user_events(),
 	), 'has_events' );
-
+	
+	if ( isset($_REQUEST['loc_country']) && !empty( $_REQUEST['loc_country'] ) ) {
+		$loc_country = $_REQUEST['loc_country'];
+		
+		$r['meta_query'][] = array(
+			'key'     => 'sz_event_country',
+			'value'   => $loc_country,
+			'compare' => 'LIKE',
+		);
+	}
+	if ( isset($_REQUEST['loc_province']) &&  !empty( $_REQUEST['loc_province'] ) ) {
+		$loc_province = $_REQUEST['loc_province'];
+		$r['meta_query'][] = array(
+			'key'     => 'sz_event_province',
+			'value'   => $loc_province,
+			'compare' => 'LIKE',
+		);
+	}
+	if ( isset($_REQUEST['loc_city']) &&  !empty( $_REQUEST['loc_city'] ) ) {
+		$loc_city = $_REQUEST['loc_city'];
+		$r['meta_query'][] = array(
+			'key'     => 'sz_event_city',
+			'value'   => $loc_city,
+			'compare' => 'LIKE',
+		);
+	}
+	
 	// Setup the Events template global.
 	$events_template = new SZ_Events_Template( array(
 		'type'               => $r['type'],
@@ -3517,9 +3551,10 @@ function sz_event_create_button() {
 		}
 
 		if ( ! sz_user_can_create_events() ) {
+			// TODO: Return message for why user cannot create an event
 			return false;
 		}
-
+		
 		$button_args = array(
 			'id'         => 'create_event',
 			'component'  => 'events',
@@ -4543,7 +4578,23 @@ function sz_user_can_create_events() {
 	if ( $restricted ) {
 		$can_create = false;
 	}
-
+	$user_id = get_current_user_id();
+	$is_admin_of = SZ_Groups_Member::get_is_admin_of( $user_id ); // Get list of all groups user is a admin of
+			
+	// if user is admin of any groups
+	if(is_array($is_admin_of)){
+		$accepted_types = array('team', 'club', 'union');
+		$can_create = false;
+		
+		// Loop through each group and check its type
+		foreach($is_admin_of['groups'] as $group){
+			$type = sz_groups_get_group_type($group->id);
+			if(in_array($type, $accepted_types) ) {
+				$can_create = true;
+			}
+		}
+		
+	}
 	/**
 	 * Filters if the current logged in user can create events.
 	 *

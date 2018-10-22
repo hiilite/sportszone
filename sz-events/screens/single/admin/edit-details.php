@@ -76,7 +76,22 @@ function events_screen_event_admin_edit_details() {
 			 
 			$event_id = sz_get_current_event_id();
 			if ( isset( $_POST['event-club'] ) ) {
-				events_update_eventmeta( $event_id, 'event_club', sanitize_text_field($_POST['event-club']) );
+				events_update_eventmeta( $event_id, 'event-club', $_POST['event-club'] );
+			}
+			if ( isset( $_POST['event-main-team'] ) ) {
+				events_update_eventmeta( $event_id, 'event-main-team', $_POST['event-main-team'] );
+			}
+			if ( isset( $_POST['sz_event_country'] ) ) {
+				events_update_eventmeta( $event_id, 'sz_event_country', $_POST['sz_event_country'] );
+			}
+			if ( isset( $_POST['sz_event_province'] ) ) {
+				events_update_eventmeta( $event_id, 'sz_event_province', $_POST['sz_event_province'] );
+			}
+			if ( isset( $_POST['sz_event_city'] ) ) {
+				events_update_eventmeta( $event_id, 'sz_event_city', $_POST['sz_event_city'] );
+			}
+			if ( isset( $_POST['sz_rules_regulations'] ) ) {
+				events_update_eventmeta( $event_id, 'sz_rules_regulations', $_POST['sz_rules_regulations'] );
 			}
 			
 			/**

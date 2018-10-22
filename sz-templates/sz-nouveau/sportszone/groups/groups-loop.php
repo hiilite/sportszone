@@ -6,15 +6,16 @@
  * @version 3.1.0
  */
 
-sz_nouveau_before_loop(); ?>
+sz_nouveau_before_loop(); 
+echo '<!--sz-templates/sz-nouveau/sportszone/groups/groups-loop-->';
 
-<?php if ( sz_get_current_group_directory_type() ) : ?>
+if ( sz_get_current_group_directory_type() ) : ?>
 	<p class="current-group-type"><?php sz_current_group_directory_type_message(); ?></p>
 <?php endif; ?>
 
 <?php if ( sz_has_groups( sz_ajax_querystring( 'groups' ) ) ) : ?>
 
-	<?php sz_nouveau_pagination( 'top' ); ?>
+	<?php //sz_nouveau_pagination( 'top' ); ?>
 
 	<ul id="groups-list" class="<?php sz_nouveau_loop_classes(); ?>">
 
@@ -33,35 +34,70 @@ sz_nouveau_before_loop(); ?>
 				<?php endif; ?>
 
 				<div class="item">
-
+					
+					<?php
+					
+					?>
+					
 					<div class="item-block">
 
-						<h2 class="list-title groups-title"><?php sz_group_link(); ?></h2>
-
-						<?php if ( sz_nouveau_group_has_meta() ) : ?>
-
-							<p class="item-meta group-details"><?php sz_nouveau_group_meta(); ?></p>
-
-						<?php endif; ?>
-
-						<p class="last-activity item-meta">
-							<?php
-							printf(
-								/* translators: %s = last activity timestamp (e.g. "active 1 hour ago") */
-								__( 'active %s', 'sportszone' ),
-								sz_get_group_last_active()
-							);
-							?>
+						<h4 class="list-title groups-title"><?php sz_group_link(); ?></h4>
+						
+						<p class="item-meta group-details">
+							<?php	
+							$country = groups_get_groupmeta( sz_get_group_id(), 'sz_group_country');
+							$province = groups_get_groupmeta( sz_get_group_id(), 'sz_group_province');
+							if(isset($country['country'])) {
+								echo $country['country'];
+							}
+							if(isset($province['province'])) {
+								echo ', '.$province['province'];
+							}
+							?>	
 						</p>
 
 					</div>
+					
+					
+					
+					
+					<?php 
+					$group_members = SZ_Groups_Member::get_all_for_group(sz_get_group_id());
+	
+					if(!empty($group_members['members'])) :
+					?>
+					<div class="sz_user_friends">
+						<?php 
+						if(count($group_members['members']) > 3) {
+							$g_members = array_rand($group_members['members'], 3);
+						}
+						else {
+							$g_members = $group_members['members'];
+						}
 
-					<div class="group-desc"><p><?php sz_nouveau_group_description_excerpt(); ?></p></div>
+						foreach($g_members as $key => $val) {
+							echo '<a href="'.sz_core_get_user_domain($group_members['members'][$key]->user_id).'" class="mini-avatar">'.sz_core_fetch_avatar ( array( "item_id" => $group_members['members'][$key]->user_id, "type" => "full" ) ).'</a>';
+						}
+						?>
+						<a href="<?php echo sz_group_permalink(); ?>members/" class="mini-ellipsis">...</a>
+					</div>
+					<?php endif; ?>
+					
+					
+					<?php 
+					if(sz_groups_get_group_type(sz_get_group_id(),true) != '') {
+					?>
+						<div class="group-type-name">
+							<?php echo sz_groups_get_group_type(sz_get_group_id(),true); ?>
+						</div>
+					<?php
+					}
+					?>
 
+				</div>
+				<div>
 					<?php sz_nouveau_groups_loop_item(); ?>
-
 					<?php sz_nouveau_groups_loop_buttons(); ?>
-
 				</div>
 
 

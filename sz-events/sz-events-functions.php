@@ -253,7 +253,6 @@ function events_edit_base_event_details( $args = array() ) {
 
 		$args = sz_core_parse_args_array( $old_args_keys, func_get_args() );
 	}
-
 	$r = sz_parse_args( $args, array(
 		'event_id'       => sz_get_current_event_id(),
 		'name'           => null,
@@ -2212,6 +2211,7 @@ function events_get_eventmeta( $event_id, $meta_key = '', $single = true ) {
  *                          returns the integer ID of the new metadata row.
  */
 function events_update_eventmeta( $event_id, $meta_key, $meta_value, $prev_value = '' ) {
+	
 	add_filter( 'query', 'sz_filter_metaid_column_name' );
 	$retval = update_metadata( 'event', $event_id, $meta_key, $meta_value, $prev_value );
 	remove_filter( 'query', 'sz_filter_metaid_column_name' );
@@ -2234,6 +2234,7 @@ function events_update_eventmeta( $event_id, $meta_key, $meta_value, $prev_value
  * @return int|bool The meta ID on successful update, false on failure.
  */
 function events_add_eventmeta( $event_id, $meta_key, $meta_value, $unique = false ) {
+	
 	add_filter( 'query', 'sz_filter_metaid_column_name' );
 	$retval = add_metadata( 'event', $event_id, $meta_key, $meta_value, $unique );
 	remove_filter( 'query', 'sz_filter_metaid_column_name' );
@@ -2500,6 +2501,7 @@ function sz_events_get_event_type_object( $event_type ) {
  * @return false|array $retval See sz_set_object_terms().
  */
 function sz_events_set_event_type( $event_id, $event_type, $append = false ) {
+	
 	// Pass an empty event type to remove event's type.
 	if ( ! empty( $event_type ) && is_string( $event_type ) && ! sz_events_get_event_type_object( $event_type ) ) {
 		return false;
@@ -2633,6 +2635,7 @@ function sz_events_remove_event_type( $event_id, $event_type ) {
  * @return bool   Whether the event has the give event type.
  */
 function sz_events_has_event_type( $event_id, $event_type ) {
+	print_r($event_type);
 	if ( empty( $event_type ) || ! sz_events_get_event_type_object( $event_type ) ) {
 		return false;
 	}
@@ -2712,8 +2715,70 @@ add_action( 'events_delete_event', 'sz_remove_event_type_on_event_delete' );
  *
  */
  
+add_action( 'cmb2_init', 'cmb2_events_details_metaboxes' );
+
+/**
+ * Define the metabox and field configurations.
+ */
+function cmb2_events_details_metaboxes() {
+	global $sz;
+	
+	// Start with an underscore to hide fields from custom fields list
+	$prefix = 'sz_';
+	/**
+	 * Initiate the metabox
+	 */
+	$cmb = new_cmb2_box( array(
+		'id'            => 'event_details_metabox',
+		'title'         => __( 'Event Detials Metabox', 'cmb2' ),
+		'object_types'  => array( 'event', ), // Post type
+		'context'       => 'normal',
+		'priority'      => 'high',
+		'show_names'    => true, 
+	) );
+	
+	$cmb->add_field( array(
+		'id'          => 'event-club',
+		'type'        => 'select_club',
+		'name'		  => __('Associated Club', 'cmb2' ),
+	) );
+	
+	
+	$cmb->add_field( array(
+		'id'          => 'event-main-team',
+		'type'        => 'select_team',
+		'name'		  => __('Main Team', 'cmb2' ),
+	) );
+
+	
+	$cmb->add_field( array(
+		'id'          => 'sz_event_country',
+		'type'        => 'select_country',
+		'name'		  => __('Country', 'cmb2' ),
+		'attributes'  => array(
+			'region_id' => 'sz_event_province',
+		),
+	) );
+	$cmb->add_field( array(
+		'id'          => 'sz_event_province',
+		'type'        => 'select_province',
+		'name'		  => __('Province', 'cmb2' ),
+	) );
+	$cmb->add_field( array(
+		'id'          => 'sz_event_city',
+		'type'        => 'text',
+		'name'		  => __('City', 'cmb2' ),
+	) );
+	
+	$cmb->add_field( array(
+		'id'          => 'sz_rules_regulations',
+		'type'        => 'textarea',
+		'name'		  => __('Rules &amp; Regulations', 'cmb2' ),
+	) );
+}
+
  
-add_action( 'sz_init', 'sz_additional_fields_select_teams_event_extension' );
+//add_action( 'sz_init', 'sz_additional_fields_select_teams_event_extension' );
 add_action( 'sz_init', 'sz_additional_fields_add_matches_event_extension' );
 
 /**
@@ -2723,6 +2788,7 @@ add_action( 'sz_init', 'sz_additional_fields_add_matches_event_extension' );
  *
  * @return bool   Whether the event has the give event type.
  */
+ /*
 function sz_additional_fields_select_teams_event_extension() {
 	if ( class_exists( 'SZ_Event_Extension' ) ) :
 
@@ -2730,9 +2796,9 @@ function sz_additional_fields_select_teams_event_extension() {
 
 		function __construct() {
 			$args = array(
-				'slug' => 'add-teams',
+				'slug' => 'teams',
 				'name' => 'Teams',
-				'nav_item_position'	=> 2,
+				'nav_item_position'	=> 1,
 				'screens'	=> array(
 					'create'	=> array(
 						'position'	=> 1
@@ -2741,7 +2807,7 @@ function sz_additional_fields_select_teams_event_extension() {
 			);
 			parent::init( $args );
 		}
-
+		
 		function display($event_id = NULL) {
 			$event_id = sz_get_event_id();
 			$event_club 		= events_get_eventmeta( $event_id, 'event_club' );
@@ -2781,7 +2847,7 @@ function sz_additional_fields_select_teams_event_extension() {
 			if( sz_events_has_event_type( $event_id, 'tour' ) ):
 				/*
 				 *	Main Team
-				 */
+				 *
 				 // TODO: Only show main team if Tour type is selected
 				 // TODO: Show teams that are associated with a club the user is a member of.
 				$event_main_team 		= events_get_eventmeta( $event_id, 'event_main_team' );
@@ -2810,7 +2876,7 @@ function sz_additional_fields_select_teams_event_extension() {
 			<?php 
 			/*
 			 *	Teams Loop
-			 */
+			 *
 			 // TODO: Only show main team if Tour type is selected
 			 // TODO: Show teams that are associated with a club the user is a member of.
 			if ( sz_has_groups( array( 'group_type'	=> 'team') ) ) : ?>
@@ -2887,7 +2953,7 @@ function sz_additional_fields_select_teams_event_extension() {
 	
 	endif; // if ( class_exists( 'SZ_Additional_Fields_Select_Teams_Event_Extension' ) )
 }
-
+*/
 
 /**
  * Add the additional fields for the Matches tab when creating Events
@@ -2905,7 +2971,7 @@ function sz_additional_fields_add_matches_event_extension() {
 
 		function __construct() {
 			$args = array(
-				'slug' => 'add-matches',
+				'slug' => 'matches',
 				'name' => 'Matches',
 				'nav_item_position'	=> 2,
 				'screens'	=> array(
@@ -2918,14 +2984,203 @@ function sz_additional_fields_add_matches_event_extension() {
 		}
 
 		function display($event_id = NULL) {
+			// TODO: Move to a debug function
+			echo '<!-- SZ-EVENTS-FUNCTIONS > SZ_Additional_Fields_Add_Matches_Event_Extension > display -->';
+			$event_link = '';
 			$event_id = sz_get_event_id();
 			$event_matches 		= events_get_eventmeta( $event_id, 'sz_matches_group' );
 			
 			// TODO: Change to display club name
+			// TODO: Add get request check to show single match.
+			$matches_args = array(
+				'post_type'	=> 'sz_match',
+				'posts_per_page'	=> -1,
+				'meta_query'	=> array(
+					array(
+						'key'	=> 'sz_event',
+						'value'	=> $event_id
+					)
+				)
+			);
+			$matches = new WP_Query($matches_args);
 			
-			echo '<pre>';
-			if($event_matches) print_r($event_matches);
-			echo 'Add Matches Here';
+			/*
+		 	 * Get list of nav items and pull just the matches link to be used as new link for matchs
+			 * REF: https://hotexamples.com/examples/-/-/bp_get_nav_menu_items/php-bp_get_nav_menu_items-function-examples.html			
+			 */
+			$event_nav = sz_get_nav_menu_items('events');
+			foreach($event_nav as $item){
+				if('nav-matches' === $item->css_id) {
+					$event_link = $item->link;
+					break;
+				}
+			}
+			
+			if(isset($_GET['match'])):
+				// TODO: Secure to check if match is part of event line-up
+				/*
+				 * Output Single Match
+				 */
+				$match_id = $_GET['match'];
+				$match_query = new WP_Query(array(
+					'page_id' => $match_id,
+					'post_type' => 'sz_match'
+				));
+				
+				if($match_query->have_posts()):
+					while($match_query->have_posts()):
+						$match_query->the_post(  );
+						
+						$status = sz_get_status( get_the_ID() );
+						if ( 'results' == $status ) {
+							$caption = __( 'Recap', 'sportszone' );
+						} else {
+							$caption = __( 'Preview', 'sportszone' );
+						}
+						$content = get_the_content(  );
+						
+						$content = sz_nouveau()->add_content( $content, 'match', apply_filters( 'sportszone_match_content_priority', 10 ), $caption );
+						
+						echo $content;
+						
+						$user_id = get_current_user_id( );
+						
+						// TODO: Also check if the user is a Mod
+						//$is_mod = SZ_Events_Member::get_is_mod_of( $user_id );
+						$is_admin_of = SZ_Events_Member::get_is_admin_of( $user_id ); // Get list of all groups user is a admin of
+						
+						// if user is admin of any groups
+
+						if(is_array($is_admin_of)){
+							$accepted_types = array('event');
+							$can_create = false;
+							
+							// Loop through each group and check its type
+							foreach($is_admin_of['events'] as $event){
+								$event_id_to_check = $event->id;
+								if( $event_id == $event_id_to_check ) {
+									$can_create = true;
+								}
+							}
+							if($can_create) {
+								
+								echo do_shortcode( "[sz-match-results-form match_id='{$match_id}']"  );
+								
+							}
+						}
+					endwhile;
+				endif;
+				
+				
+			else:
+				/*
+				 * Output Matches
+				 */
+				echo '<h2 class="sz-screen-title">Matches</h2>';
+				if($matches->have_posts()):
+					echo '<ul class="item-list matches-list sz-list" id="matches-list">';
+					$i = 0;
+					while($matches->have_posts(  )):
+						$matches->the_post(  );
+						$match_id = get_the_id(  );
+						$slug = get_post_field( 'post_name', get_post() );
+						
+						$match_link = rtrim($event_link, '/') . '?match=' . get_the_id();
+						
+						$matche_info = events_get_eventmeta($event_id, 'sz_matches_group');
+					
+						$team_one = $matche_info[$i]['match_team1']['team'];
+						$team_two = $matche_info[$i]['match_team2']['team'];
+
+						//echo '<pre>'.print_r($matche_info,true).'</pre>';
+						
+						// TODO: Style to match matches design
+						// TODO: Fix order of link for matches
+						
+						//echo '<li class="item-entry" data-sz-item-id="'.get_the_id(  ).'"><a href="'.$match_link.'">';
+						//the_title(  );
+						//echo '</a></li>';
+						?>
+						<li class="item-entry" data-sz-item-id="<?php get_the_id(); ?>">
+							<div class="sz-info-box">
+								
+								<div class="matches-teams">
+									<?php
+									$group_one = groups_get_group( array( 'group_id' => $team_one ) );
+									$slug_one = $group_one->slug;	
+									?>
+									<div class="match-team-avatar">
+										<a href="<?php echo site_url(); ?>'/groups/<?php echo $slug_one; ?>/" class="lrg-avatar">
+											<?php echo sz_core_fetch_avatar ( array( "item_id" => $team_one, "object" => "group", "type" => "full" ) ); ?>
+											<h4><?php echo sz_get_team_name( $team_one, true ); ?></h4>
+										</a>
+									</div>
+									
+									<div class="match-team-vs">
+										vs
+									</div>
+									
+									<?php
+									$group_two = groups_get_group( array( 'group_id' => $team_two ) );
+									$slug_two = $group_two->slug;	
+									?>
+									<div class="match-team-avatar">
+										<a href="<?php echo site_url(); ?>'/groups/<?php echo $slug_two; ?>/" class="lrg-avatar">
+											<?php echo sz_core_fetch_avatar ( array( "item_id" => $team_two, "object" => "group", "type" => "full" ) ); ?>
+											<h4><?php echo sz_get_team_name( $team_two, true ); ?></h4>
+										</a>
+									</div>
+								</div>
+	
+	
+								<div class="match-info">
+									<div class="match-details">
+										<h6><?php echo __( 'Details', 'sportszone' ); ?></h6>
+										<p>
+											<strong><?php echo __( 'Type: ', 'sportszone' ); ?></strong>
+											<?php 
+												echo $matche_info[$i]['match_type'];
+											?>
+										</p>
+										<p>
+											<strong><?php echo __( 'Date: ', 'sportszone' ); ?></strong>
+											<?php
+												echo date("F jS, Y", strtotime($matche_info[$i]['match_date']['date']));
+											?>
+										</p>
+										<p>
+											<strong><?php echo __( 'Time: ', 'sportszone' ); ?></strong>
+											<?php 
+												echo date("g:ia", strtotime($matche_info[$i]['match_date']['time']));
+											?>
+										</p>
+										<p>
+											<strong><?php echo __( 'Venue: ', 'sportszone' ); ?></strong>
+											<?php 
+												echo $matche_info[$i]['match_venue'];
+											?>
+										</p>
+									</div>
+									
+									<div class="match-view">
+										<a href="<?php echo $match_link; ?>" class="button"><?php echo __( 'View Match', 'sportszone' ); ?></a>
+									</div>
+								</div>
+								
+							</div>
+						</li>
+						<?php
+							
+						$i++;
+						
+						if($i > count($matche_info)) {
+							break;	
+						}
+
+					endwhile;
+					echo '</ul>';
+				endif;
+			endif;
 			
 		}
 
@@ -2968,12 +3223,32 @@ function sz_additional_fields_add_matches_event_extension() {
 		function settings_screen_save( $event_id = NULL ) {
 			if ( isset( $_POST['sz_matches_group'] ) ) {
 				$matches = $_POST['sz_matches_group'];
-				events_update_eventmeta( $event_id, 'sz_matches_group', $matches);
-				
-				foreach($matches as $match) :
+
+				// Loop through each Match in returned CMB2 Array
+				foreach($matches as $key => $match) :
+					$match = array_merge(
+						array(
+							'match_date'	=> array('date' => '', 'time' => ''),
+							'match_venue'	=> '',
+							'match_team1'	=> array('team'	=> 0),
+							'match_team2'	=> array('team'	=> 0),
+							'sz_players1'	=> array(),
+							'sz_players2'	=> array()
+						),
+						$match
+					);
+					
+					$group_1 = groups_get_group( array( 'group_id' => $match['match_team1']['team']) );
+					$group_2 = groups_get_group( array( 'group_id' => $match['match_team2']['team']) );
+					
+					$match_title = $group_1->name . ' vs. ' . $group_2->name;
+					$sz_players = array([],[]);
+					if(isset($match['sz_players1'])) $sz_players[0] = $match['sz_players1'];
+					if(isset($match['sz_players2'])) $sz_players[1] = $match['sz_players2'];
+					//print_r($sz_players);
 					$match_data = array(
 						'post_type'		=> 'sz_match',
-						'post_title'	=> 'Test Title',
+						'post_title'	=> $match_title,
 						'post_status'	=> 'publish',
 						'post_author'	=> get_current_user_id(),
 						'meta_input'	=> array(
@@ -2981,13 +3256,28 @@ function sz_additional_fields_add_matches_event_extension() {
 								(int) $match['match_team1']['team'],
 								(int) $match['match_team2']['team']
 							),
-							'sz_day'		=>  $match['match_date']['date']
+							'sz_day'		=>  $match['match_date']['date'],
+							'sz_event'		=>  $event_id,
+							'sz_venue'		=>	$match['match_venue'],
+							'sz_time'		=>	$match['match_date']['time'],
+							'sz_player'		=> 	$sz_players
 						)
 					);
+					if(!isset($match['match_id']) || empty($match['match_id']) || $match['match_id'] == ''):
+						$new_match_id = wp_insert_post( $match_data, true );
+						$matches[$key]['match_id'] = $new_match_id;
+					else:
+						$match_data['ID'] = $match['match_id'];
+						wp_update_post( $match_data, true );
+					endif;
 					
 					
-					$new_match_id = wp_insert_post( $match_data, true );
 				endforeach;
+				
+				events_update_eventmeta( $event_id, 'sz_matches_group', $matches);
+				
+				// TODO: Loop through all the events current matches and delete matches no longer in the event
+				// Use the wordpress query for post__not_in
 			}
 		}
 	}
@@ -3001,8 +3291,15 @@ function sz_additional_fields_add_matches_event_extension() {
 
 
 add_action( 'cmb2_init', 'cmb2_events_matches_metaboxes' );
+add_action( 'cmb2_init', 'cmb2_matches_match_metaboxes' );
+add_action( 'cmb2_init', 'cmb2_match_results_metaboxes' );
+
 /**
+ * cmb2_events_matches_metaboxes function.
  * Define the metabox and field configurations.
+ * 
+ * @access public
+ * @return void
  */
 function cmb2_events_matches_metaboxes() {
 	global $sz;
@@ -3059,45 +3356,90 @@ function cmb2_events_matches_metaboxes() {
 		'type' => 'text_datetime_timestamp',
 	) );
 	
+	// TODO: Get all groups with type of union or club
 	$cmb->add_group_field( $group_field_id, array(
 		'name' => 'Host',
 		'id'   => 'match_host',
 		'type' => 'text',
-	) );
-	
+	) ); 
+	 
+	// Get all groups of type sponser
+	$sponsor_args = array(
+	    'group_type' => array( 'sponsor' ),
+	);
+	$sponsors = array();
+	if ( sz_has_groups( $sponsor_args ) ) {
+		while ( sz_groups() ) {
+			sz_the_group();
+			$sponsors[sz_get_group_id()] = sz_get_group_name();
+		}
+	}
+
 	$cmb->add_group_field( $group_field_id, array(
 		'name' => 'Sponsor',
 		'id'   => 'match_sponsor',
-		'type' => 'text',
+		'type' => 'pw_select', 
+		'options'	=> $sponsors,
+		'attributes'	=> array(
+			'tags'	=> true,
+		)
 	) );
 	
+	
+	/**
+	 * Referee List
+	 * Get list of all users with the Level field filled out in their Referee profiles
+	 */
+	$ref_ids = sz_get_users_by_xprofile(48);
+	$ref_list = array();
+	foreach($ref_ids as $id){
+		$ref_list[$id] = sz_core_get_user_displayname($id);
+	}
 	$cmb->add_group_field( $group_field_id, array(
 		'name' => 'Referee',
 		'id'   => 'match_referee',
 		'type' => 'pw_select',
-		'options' => array(
-			'flour'  => 'Flour',
-			'salt'   => 'Salt',
-			'eggs'   => 'Eggs',
-			'milk'   => 'Milk',
-			'butter' => 'Butter',
-		),
+		'options' => $ref_list,
 		'attributes' => array(
 			'tags' => true,
-		),
+		), 
 	) );
-	
-	// If tour type, set the default of the first team to the main team
 	$event_id = 0;
 	if(isset($sz->events->current_event->id)) {
 		$event_id = $sz->events->current_event->id;
 	}
+	$event = events_get_event( array( 'event_id' => $event_id) );
+	$matches = events_get_eventmeta($event_id, 'sz_matches_group');
+	
+	$cmb->add_group_field( $group_field_id,  array(
+		'id'   => 'match_id',
+		'type' => 'hidden',
+	) );
+	
+	// If tour type, set the default of the first team to the main team
 	$default_team = ( sz_events_get_event_type($event_id) == 'tour' ) ? (string) events_get_eventmeta( $event_id, 'event_main_team' ) : 0;
+	
 	$cmb->add_group_field( $group_field_id, array(
 		'name' => 'Team 1',
 		'id'   => 'match_team1',
 		'type' => 'select_team',
-		'default'	=> $default_team
+		'default'	=> $default_team,
+		'attributes' => array(
+			'team_index'  	=> '1',
+		),
+	) );
+	
+	// TODO: Load the list of players for the selected team via ajax
+	$cmb->add_group_field( $group_field_id, array(
+		'name'    => 'Team 1 Players',
+		'desc'    => 'Select the players from the select team that will be participating the the match',
+		'id'      => 'sz_players1',
+		'type'    => 'multicheck',
+		'options' => array('' => ''),
+		'attributes' => array(
+			'team_index'  	=> '1',
+			'style'	=> 'display:none;'
+		),
 	) );
 
 		
@@ -3106,6 +3448,187 @@ function cmb2_events_matches_metaboxes() {
 		'name' => 'Team 2',
 		'id'   => 'match_team2',
 		'type' => 'select_team',
-		
+		'attributes' => array(
+			'team_index'  	=> '2',
+		),
+	) );
+	
+	$cmb->add_group_field( $group_field_id, array(
+		'name'    => 'Team 2 Players',
+		'desc'    => 'Select the players from the select team that will be participating the the match',
+		'id'      => 'sz_players2',
+		'type'    => 'multicheck',
+		'options' => array('' => ''),
+		'attributes' => array(
+			'team_index'  	=> '2',
+			'style'	=> 'display:none;'
+		),
+	) );
+	
+	
+	
+}
+
+
+/**
+ * cmb2_matches_match_metaboxes function.
+ * 
+ * @access public
+ * @return void
+ */
+function cmb2_matches_match_metaboxes() {
+	global $sz;
+	
+	// Start with an underscore to hide fields from custom fields list
+	$prefix = 'sz_';
+	/**
+	 * Initiate the metabox
+	 */
+	$cmb = new_cmb2_box( array(
+		'id'            => 'event_metabox',
+		'title'         => __( 'Event Metabox', 'cmb2' ),
+		'object_types'  => array( 'sz_match', ), // Post type
+		'context'       => 'normal',
+		'priority'      => 'high',
+		'show_names'    => true, 
+	) );
+	
+	$events_args = array(
+	    'group_type' => array( 'event' ),
+	);
+	$events = array();
+	if ( sz_has_events( ) ) {
+		while ( sz_events() ) {
+			sz_the_event();
+			$events[sz_get_event_id()] = sz_get_event_name();
+		}
+	}
+
+	$cmb->add_field( array(
+		'name' => 'Event',
+		'id'   => 'sz_event',
+		'type' => 'pw_select', 
+		'options'	=> $events,
+	) );
+	
+	
+}
+
+
+/**
+ * cmb2_matches_match_metaboxes function.
+ * 
+ * @access public
+ * @return void
+ */
+add_shortcode( 'sz-match-results-form', 'sz_do_frontend_match_results_form_submission_shortcode' );
+
+
+/**
+ * sz_do_frontend_match_results_form_submission_shortcode function.
+ * 
+ * @access public
+ * @param array $atts (default: array())
+ * @return void
+ */
+function sz_do_frontend_match_results_form_submission_shortcode( $atts = array() ) {
+	$match_id = $atts['match_id'];
+	
+	$cmb = cmb2_get_metabox( 'sz_results', $match_id );
+	$output = '';
+
+	sz_handle_frontend_match_results_form_submission($cmb, $atts);
+    // Get our form
+    $output .= cmb2_get_metabox_form( $cmb, $match_id, array( 
+    		'save_button' 	=> __( 'Submit Results', 'sportszone' ),
+			'form_format' => '<form class="cmb-form" method="post" id="%1$s" enctype="multipart/form-data" encoding="multipart/form-data"><input type="hidden" name="object_id" value="%2$s">%3$s<input type="submit" name="submit-results" id="submit-results" class="button-primary" value="%4$s" /></form>',
+
+    	) );
+	
+    return $output;
+}
+
+
+/**
+ * cmb2_match_results_metaboxes function.
+ * 
+ * @access public
+ * @return void
+ */
+function cmb2_match_results_metaboxes() {
+	global $sz;
+	
+	// TODO: Show metaboxes for editing resutls
+	// Start with an underscore to hide fields from custom fields list
+	$prefix = 'sz_';
+	/**
+	 * Initiate the metabox
+	 */
+	$cmb = new_cmb2_box( array(
+		'id'            => 'sz_results',
+		'title'         => __( 'Results', 'cmb2' ),
+		'object_types'  => array( 'sz_match', ), // Post type
+		'context'       => 'normal',
+		'priority'      => 'high',
+		'show_names'    => true, 
+		'save_fields'	=> false,
+		'hookup'		=> false,
+	) );
+	
+	$cmb->add_field( array(
+		'name' => 'Result',
+		'id'   => 'sz-results',
+		'type' => 'match_performance_results', 
+
 	) );
 }
+add_action( 'cmb2_render_match_performance_results', 'cmb2_render_callback_for_match_performance_results', 10, 5 );
+
+
+/**
+ * sz_handle_frontend_match_results_form_submission function.
+ * 
+ * @access public
+ * @param mixed $cmb
+ * @param array $post_data (default: array())
+ * @return void
+ */
+function sz_handle_frontend_match_results_form_submission( $cmb, $post_data = array() ) {
+
+    // If no form submission, bail
+    if ( empty( $_POST ) ) {
+        return false;
+    }
+
+    // check required $_POST variables and security nonce
+    if (
+        ! isset( $_POST['submit-results'], $_POST['object_id'], $_POST[ $cmb->nonce() ] )
+        || ! wp_verify_nonce( $_POST[ $cmb->nonce() ], $cmb->nonce() )
+    ) {
+        return new WP_Error( 'security_fail', __( 'Security check failed.' ) );
+    }
+
+	update_post_meta( $_POST['object_id'], 'sz_players', sz_array_value( $_POST, 'sz_players', array() ) );
+	update_post_meta( $_POST['object_id'], 'sz_results', sz_array_value( $_POST, 'sz_results', array() ) );
+
+}
+
+
+/**
+ * cmb2_render_callback_for_match_performance_results function.
+ * 
+ * @access public
+ * @return void
+ */
+function cmb2_render_callback_for_match_performance_results () {
+	global $post;
+	
+	$sz_match_results = new SZ_Meta_Box_Match_Results();
+	$sz_match_performance = new SZ_Meta_Box_Match_Performance();
+	
+	$output = $sz_match_results->output($post);
+	$output .= $sz_match_performance->output($post);
+	
+	return $output;
+}
+

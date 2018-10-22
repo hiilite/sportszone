@@ -9,6 +9,21 @@
 
 <nav class="<?php sz_nouveau_directory_type_navs_class(); ?>" role="navigation" aria-label="<?php esc_attr_e( 'Directory menu', 'sportszone' ); ?>">
 	<?php if ( sz_nouveau_has_nav( array( 'object' => 'directory' ) ) ) : ?>
+		
+		<?php $current_user = wp_get_current_user(); ?>
+		<div id="item-nav-avatar">
+			<div>
+				<a href="/members/<?php echo $current_user->user_nicename; ?>/profile/">
+        			<img src="<?php echo esc_url( get_avatar_url( $current_user->ID, array('50') ) ); ?>" />
+        		</a>
+			</div>
+			<div>
+        		<a href="/members/<?php echo $current_user->user_nicename; ?>/profile/">
+        			<?php echo xprofile_get_field_data(1,sz_loggedin_user_id(),'string'); ?>
+        		</a>
+			</div>
+		</div>
+
 		<ul class="component-navigation <?php sz_nouveau_directory_list_class(); ?>">
 
 			<?php

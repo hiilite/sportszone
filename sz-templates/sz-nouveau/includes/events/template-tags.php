@@ -658,7 +658,7 @@ function sz_nouveau_events_manage_members_buttons( $args = array() ) {
 		if ( empty( $event->id ) ) {
 			return $buttons;
 		}
-
+		
 		/*
 		 * If the 'container' is set to 'ul' set $parent_element to li,
 		 * otherwise simply pass any value found in $args or set var false.
@@ -692,7 +692,7 @@ function sz_nouveau_events_manage_members_buttons( $args = array() ) {
 		if ( ! empty( $args['parent_attr']['class'] ) ) {
 			$parent_class = $args['parent_attr']['class'];
 		}
-
+		
 		// Invite buttons on member's invites screen
 		if ( 'invite' === $type ) {
 			// Don't show button if not logged in or previously banned
@@ -753,7 +753,6 @@ function sz_nouveau_events_manage_members_buttons( $args = array() ) {
 			} else {
 				$buttons['reject_invite']['button_attr']['href'] = esc_url( sz_get_event_reject_invite_link() );
 			}
-
 		// Request button for the event's manage screen
 		} elseif ( 'request' === $type ) {
 			// Setup Accept button attributes
@@ -929,7 +928,6 @@ function sz_nouveau_events_manage_members_buttons( $args = array() ) {
 				$buttons['promote_admin']['button_attr']['href'] = sz_get_event_member_promote_admin_link();
 				$buttons['remove_member']['button_attr']['href'] = sz_get_event_member_remove_link( $user_id );
 			}
-
 		// Membership button on events loop or single event's header
 		} else {
 			/*
@@ -990,6 +988,7 @@ function sz_nouveau_events_manage_members_buttons( $args = array() ) {
 
 				unset( sz_nouveau()->events->button_args );
 			}
+			
 		}
 
 		/**
@@ -1008,18 +1007,20 @@ function sz_nouveau_events_manage_members_buttons( $args = array() ) {
 		}
 
 		// It's the first entry of the loop, so build the Event and sort it
-		if ( ! isset( sz_nouveau()->events->event_buttons ) || ! is_a( sz_nouveau()->events->event_buttons, 'SZ_Buttons_Event' ) ) {
+		if ( ! isset( sz_nouveau()->events->event_buttons ) || ! is_a( sz_nouveau()->events->event_buttons, 'SZ_Buttons_Group' ) ) {
 			$sort = true;
-			sz_nouveau()->events->event_buttons = new SZ_Buttons_Event( $buttons_event );
-
+			
+			sz_nouveau()->events->event_buttons = new SZ_Buttons_Group( $buttons_event );
+			
 		// It's not the first entry, the order is set, we simply need to update the Buttons Event
 		} else {
 			$sort = false;
 			sz_nouveau()->events->event_buttons->update( $buttons_event );
+			
 		}
 
 		$return = sz_nouveau()->events->event_buttons->get( $sort );
-
+			
 		if ( ! $return ) {
 			return array();
 		}

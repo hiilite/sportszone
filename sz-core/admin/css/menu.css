@@ -1,18 +1,18 @@
 /* SportsPress menu styles */
 @font-face {
-	font-family: 'sportspress';
-	src:url('../fonts/sportspress.eot?ddphik');
-	src:url('../fonts/sportspress.eot?#iefixddphik') format('embedded-opentype'),
-		url('../fonts/sportspress.woff2?ddphik') format('woff2'),
-		url('../fonts/sportspress.ttf?ddphik') format('truetype'),
-		url('../fonts/sportspress.woff?ddphik') format('woff'),
-		url('../fonts/sportspress.svg?ddphik#sportspress') format('svg');
+	font-family: 'sportszone';
+	src:url('../fonts/sportszone.eot?ddphik');
+	src:url('../fonts/sportszone.eot?#iefixddphik') format('embedded-opentype'),
+		url('../fonts/sportszone.woff2?ddphik') format('woff2'),
+		url('../fonts/sportszone.ttf?ddphik') format('truetype'),
+		url('../fonts/sportszone.woff?ddphik') format('woff'),
+		url('../fonts/sportszone.svg?ddphik#sportszone') format('svg');
 	font-weight: normal;
 	font-style: normal;
 }
 
 [class^="sp-icon-"], [class*=" sp-icon-"] {
-	font-family: sportspress, dashicons;
+	font-family: sportszone, dashicons;
 	speak: none;
 	font-style: normal;
 	font-weight: normal;
@@ -55,7 +55,7 @@
 	content: "\f108";
 }
 .sp-icon-calendar:before,
-.sp-icon-sp_event:before {
+.sp-icon-sz_event:before {
 	content: "\f145";
 }
 .sp-icon-cake:before {
@@ -118,7 +118,7 @@
 .sp-icon-sponsor:before {
 	content: "\f488";
 }
-.sp-icon-sportspress:before {
+.sp-icon-sportszone:before {
 	content: "\f111";
 }
 .sp-icon-staff:before {
@@ -143,7 +143,7 @@
 	content: "\f509";
 }
 .sp-icon-tshirt:before,
-.sp-icon-sp_player:before {
+.sp-icon-sz_player:before {
 	content: "\f307";
 }
 .sp-icon-trash:before {
@@ -249,24 +249,24 @@
 	content: "\e801";
 }
 
-#adminmenu #toplevel_page_sportspress .toplevel_page_sportspress div.wp-menu-image:before,
+#adminmenu #toplevel_page_sportszone .toplevel_page_sportszone div.wp-menu-image:before,
 #adminmenu #toplevel_page_themeboy .toplevel_page_themeboy div.wp-menu-image:before,
-#adminmenu #menu-posts-sp_event .menu-icon-sp_event div.wp-menu-image:before,
-#adminmenu #menu-posts-sp_team .menu-icon-sp_team div.wp-menu-image:before,
-#adminmenu #menu-posts-sp_player .menu-icon-sp_player div.wp-menu-image:before,
-#adminmenu #menu-posts-sp_staff .menu-icon-sp_staff div.wp-menu-image:before,
-#adminmenu #menu-posts-sp_official .menu-icon-sp_official div.wp-menu-image:before,
-#sp_formatdiv #post-formats-select .post-format-icon:before,
-#sp_modediv #post-formats-select .post-format-icon:before {
-	font-family: sportspress, dashicons;
+#adminmenu #menu-posts-sz_event .menu-icon-sz_event div.wp-menu-image:before,
+#adminmenu #menu-posts-sz_team .menu-icon-sz_team div.wp-menu-image:before,
+#adminmenu #menu-posts-sz_player .menu-icon-sz_player div.wp-menu-image:before,
+#adminmenu #menu-posts-sz_staff .menu-icon-sz_staff div.wp-menu-image:before,
+#adminmenu #menu-posts-sz_official .menu-icon-sz_official div.wp-menu-image:before,
+#sz_formatdiv #post-formats-select .post-format-icon:before,
+#sz_modediv #post-formats-select .post-format-icon:before {
+	font-family: sportszone, dashicons;
 	width: 20px;
 	text-align: center;
 }
 
 /* Widgets */
-[id*="sportspress-"] .widget-title h3:before,
-[id*="sportspress-"] .widget-title h4:before {
-	font-family: sportspress, dashicons;
+[id*="sportszone-"] .widget-title h3:before,
+[id*="sportszone-"] .widget-title h4:before {
+	font-family: sportszone, dashicons;
 	color: #aaa;
 	font-size: 20px;
 	content: '\f111';
@@ -299,7 +299,7 @@
 }
 
 .sp-prefs .button input[type=checkbox]:before {
-	font: 400 14px/22px sportspress, dashicons;
+	font: 400 14px/22px sportszone, dashicons;
 	width: 22px;
 }
 
@@ -340,11 +340,11 @@
 }
 
 /* TinyMCE */
-.mce-toolbar i.mce-i-sp_shortcodes_button, .mce-toolbar span.mce_sp_shortcodes_button {
+.mce-toolbar i.mce-i-sz_shortcodes_button, .mce-toolbar span.mce_sz_shortcodes_button {
 	margin-right: -5px;
 }
-i.mce-i-sp_shortcodes_button:before, span.mce_sp_shortcodes_button:before {
-	font-family: 'sportspress';
+i.mce-i-sz_shortcodes_button:before, span.mce_sz_shortcodes_button:before {
+	font-family: 'sportszone';
 	speak: none;
 	font-style: normal;
 	font-weight: normal;

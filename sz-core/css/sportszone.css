@@ -548,11 +548,11 @@
 }
 
 /* Admin Bar */
-#wpadminbar #wp-admin-bar-sportspress>.ab-item:before {
-	font-family: sportspress, dashicons;
+#wpadminbar #wp-admin-bar-sportszone>.ab-item:before {
+	font-family: sportszone, dashicons;
 }
 
-#wpadminbar #wp-admin-bar-sportspress>.ab-item:before {
+#wpadminbar #wp-admin-bar-sportszone>.ab-item:before {
 	content: "\f111";
 	top: 2px;
 }

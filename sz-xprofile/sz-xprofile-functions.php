@@ -638,7 +638,7 @@ function xprofile_get_random_profile_data( $user_id, $exclude_fullname = true ) 
 }
 
 /**
- * Formats a profile field according to its type. [ TODO: Should really be moved to filters ]
+ * Formats a profile field according to its type.
  *
  * @since 1.0.0
  *

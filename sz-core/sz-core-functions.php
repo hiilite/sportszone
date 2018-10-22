@@ -487,6 +487,7 @@ function sz_core_get_packaged_component_ids() {
 		'messages',
 		'settings',
 		'notifications',
+		'matches',
 	);
 
 	return $components;
@@ -754,6 +755,7 @@ function sz_core_get_directory_page_default_titles() {
 		'activity' => _x( 'Activity', 'Page title for the Activity directory.',       'sportszone' ),
 		'groups'   => _x( 'Groups',   'Page title for the Groups directory.',         'sportszone' ),
 		'events'   => _x( 'Events',   'Page title for the Events directory.',         'sportszone' ),
+		'matches'  => _x( 'Matches',   'Page title for the Events directory.',         'sportszone' ),
 		'blogs'    => _x( 'Sites',    'Page title for the Sites directory.',          'sportszone' ),
 		'members'  => _x( 'Members',  'Page title for the Members directory.',        'sportszone' ),
 		'activate' => _x( 'Activate', 'Page title for the user activation screen.',   'sportszone' ),
@@ -2363,7 +2365,9 @@ function sz_core_action_search_site( $slug = '' ) {
 			case 'events':
 				$slug = sz_is_active( 'events' ) ? sz_get_events_root_slug() : '';
 				break;
-
+			case 'matches':
+				$slug = sz_is_active( 'matches' ) ? sz_get_matches_root_slug() : '';
+				break;
 			case 'members':
 			default:
 				$slug = sz_get_members_root_slug();
@@ -2497,6 +2501,10 @@ function sz_core_get_components( $type = 'all' ) {
 		'events'   => array(
 			'title'       => __( 'Events', 'sportszone' ),
 			'description' => __( 'Events allow your users to organize themselves into specific public, private or hidden sections with separate activity streams and member listings.', 'sportszone' )
+		),
+		'matches'   => array(
+			'title'       => __( 'Matches', 'sportszone' ),
+			'description' => __( 'Matches allow your users to organize themselves into specific public, private or hidden sections with separate activity streams and member listings.', 'sportszone' )
 		),
 		'blogs'    => array(
 			'title'       => __( 'Site Tracking', 'sportszone' ),
@@ -5086,9 +5094,9 @@ if ( !function_exists( 'sz_solve' ) ) {
 
 		// Equation Operating System
         if ( ! class_exists( 'phpStack' ) )
-            include_once( SP()->plugin_path() . '/includes/libraries/class-phpstack.php' );
+            include_once( SportsZone()->plugin_path() . '/includes/libraries/class-phpstack.php' );
         if ( ! class_exists( 'eqEOS' ) )
-            include_once( SP()->plugin_path() . '/includes/libraries/class-eqeos.php' );
+            include_once( SportsZone()->plugin_path() . '/includes/libraries/class-eqeos.php' );
 		$eos = new eqEOS();
 
 		// Remove spaces from equation

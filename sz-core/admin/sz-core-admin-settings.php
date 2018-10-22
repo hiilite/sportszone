@@ -343,6 +343,7 @@ function sz_core_admin_settings_save() {
 			'sz_disable_blogforum_comments',
 			'sz-disable-profile-sync',
 			'sz_restrict_group_creation',
+			'sz_restrict_event_creation',
 			'hide-loggedout-adminbar',
 		);
 

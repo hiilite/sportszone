@@ -95,7 +95,7 @@ function events_action_create_event() {
 			}
 			
 			if ( isset( $_POST['event-club'] ) ) {
-				events_update_eventmeta( $new_event_id, 'event_club', sanitize_text_field($_POST['event-club']) );
+				events_update_eventmeta( $new_event_id, 'event_club', $_POST['event-club'] );
 			}
 			/*
 			 * Save event types.

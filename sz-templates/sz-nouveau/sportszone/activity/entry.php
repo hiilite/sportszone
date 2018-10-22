@@ -20,15 +20,21 @@ sz_nouveau_activity_hook( 'before', 'entry' ); ?>
 			<?php sz_activity_avatar( array( 'type' => 'full' ) ); ?>
 
 		</a>
+		<div class="act-meta">
+		<?php
+			echo '<span class="act-user">';
+			sz_activity_member_display_name();
+			echo '</span>';
+			echo '<span class="time-since">'.sz_core_time_since( sz_nouveau_get_activity_timestamp() ).'</span>'
+		?>
+		</div>
 
 	</div>
 
 	<div class="activity-content">
 
 		<div class="activity-header">
-
 			<?php sz_activity_action(); ?> 
-
 		</div>
 
 		<?php if ( sz_nouveau_activity_has_content() ) : ?>

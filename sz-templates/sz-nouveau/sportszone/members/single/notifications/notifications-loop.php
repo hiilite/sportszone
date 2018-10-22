@@ -8,11 +8,17 @@
 
 if ( sz_has_notifications( sz_ajax_querystring( 'notifications' ) ) ) :
 
-	sz_nouveau_pagination( 'top' ); ?>
+	//sz_nouveau_pagination( 'top' ); ?>
 
 	<form action="" method="post" id="notifications-bulk-management" class="standard-form">
+		<div class="notifications-options-nav">
+			<?php sz_nouveau_notifications_bulk_management_dropdown(); ?>
+		</div><!-- .notifications-options-nav -->
+
+		<?php wp_nonce_field( 'notifications_bulk_nonce', 'notifications_bulk_nonce' ); ?>
+		
 		<table class="notifications sz-tables-user">
-			<thead>
+			<!--thead>
 				<tr>
 					<th class="icon"></th>
 					<th class="bulk-select-all"><input id="select-all-notifications" type="checkbox"><label class="sz-screen-reader-text" for="select-all-notifications"><?php esc_html_e( 'Select all', 'sportszone' ); ?></label></th>
@@ -23,7 +29,7 @@ if ( sz_has_notifications( sz_ajax_querystring( 'notifications' ) ) ) :
 					</th>
 					<th class="actions"><?php esc_html_e( 'Actions', 'sportszone' ); ?></th>
 				</tr>
-			</thead>
+			</thead-->
 
 			<tbody>
 
@@ -34,22 +40,33 @@ if ( sz_has_notifications( sz_ajax_querystring( 'notifications' ) ) ) :
 
 					<tr>
 						<td></td>
-						<td class="bulk-select-check"><label for="<?php sz_the_notification_id(); ?>"><input id="<?php sz_the_notification_id(); ?>" type="checkbox" name="notifications[]" value="<?php sz_the_notification_id(); ?>" class="notification-check"><span class="sz-screen-reader-text"><?php esc_html_e( 'Select this notification', 'sportszone' ); ?></span></label></td>
+						<td class="notification-container">
+							<div class="bulk-select-check">
+								<label for="<?php sz_the_notification_id(); ?>"><input id="<?php sz_the_notification_id(); ?>" type="checkbox" name="notifications[]" value="<?php sz_the_notification_id(); ?>" class="notification-check"><span class="sz-screen-reader-text"><?php esc_html_e( 'Select this notification', 'sportszone' ); ?></span></label>
+							</div>
+							
+							<div class="notification-description">
+								<?php sz_the_notification_description(); ?>
+							</div>
+							
+							<div class="notification-since">
+								<?php sz_the_notification_time_since(); ?>
+							</div>
+							
+							<div class="notification-actions">
+								<div><?php sz_the_notification_action_links(); ?></div>
+							</div>
+						</td>
+						<!--td class="bulk-select-check"><label for="<?php sz_the_notification_id(); ?>"><input id="<?php sz_the_notification_id(); ?>" type="checkbox" name="notifications[]" value="<?php sz_the_notification_id(); ?>" class="notification-check"><span class="sz-screen-reader-text"><?php esc_html_e( 'Select this notification', 'sportszone' ); ?></span></label></td>
 						<td class="notification-description"><?php sz_the_notification_description(); ?></td>
 						<td class="notification-since"><?php sz_the_notification_time_since(); ?></td>
-						<td class="notification-actions"><?php sz_the_notification_action_links(); ?></td>
+						<td class="notification-actions"><?php sz_the_notification_action_links(); ?></td-->
 					</tr>
 
 				<?php endwhile; ?>
 
 			</tbody>
 		</table>
-
-		<div class="notifications-options-nav">
-			<?php sz_nouveau_notifications_bulk_management_dropdown(); ?>
-		</div><!-- .notifications-options-nav -->
-
-		<?php wp_nonce_field( 'notifications_bulk_nonce', 'notifications_bulk_nonce' ); ?>
 	</form>
 
 	<?php sz_nouveau_pagination( 'bottom' ); ?>

@@ -20,13 +20,13 @@ class SZ_Meta_Box_Player_Details {
 	 */
 	public static function output( $post ) {
 		wp_nonce_field( 'sportszone_save_data', 'sportszone_meta_nonce' );
-		$continents = SP()->countries->continents;
+		$continents = SportsZone()->countries->continents;
 
 		$number = get_post_meta( $post->ID, 'sz_number', true );
 		$nationalities = get_post_meta( $post->ID, 'sz_nationality', false );
 		foreach ( $nationalities as $index => $nationality ):
 			if ( 2 == strlen( $nationality ) ):
-				$legacy = SP()->countries->legacy;
+				$legacy = SportsZone()->countries->legacy;
 				$nationality = strtolower( $nationality );
 				$nationality = sz_array_value( $legacy, $nationality, null );
 				$nationalities[ $index ] = $nationality;

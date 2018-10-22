@@ -13,7 +13,7 @@
 		<?php esc_html_e( 'Manage Membership Requests', 'sportszone' ); ?>
 	</h2>
 
-	<?php sz_nouveau_pagination( 'top' ); ?>
+	<?php //sz_nouveau_pagination( 'top' ); ?>
 
 	<ul id="request-list" class="item-list sz-list membership-requests-list">
 		<?php

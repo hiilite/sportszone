@@ -7,7 +7,7 @@
  */
 ?>
 
-<h2 class="screen-heading group-invites-screen"><?php esc_html_e( 'Group Invites', 'sportszone' ); ?></h2>
+<!--h2 class="screen-heading group-invites-screen"><?php esc_html_e( 'Group Invites', 'sportszone' ); ?></h2-->
 
 <?php sz_nouveau_group_hook( 'before', 'invites_content' ); ?>
 
@@ -31,39 +31,84 @@
 				<?php endif; ?>
 
 					<div class="item">
-						<h2 class="list-title groups-title"><?php sz_group_link(); ?></h2>
-						<p class="meta group-details">
-							<span class="small">
+						<div class="group-invite-info">
+							<h4 class="list-title groups-title"><?php sz_group_link(); ?></h4>
+	
+	
+							<p class="item-meta group-details">
+								<?php	
+								$country = groups_get_groupmeta( sz_get_group_id(), 'sz_group_country');
+								$province = groups_get_groupmeta( sz_get_group_id(), 'sz_group_province');
+								if(isset($country['country'])) {
+									echo $country['country'];
+								}
+								if(isset($province['province'])) {
+									echo ', '.$province['province'];
+								}
+								?>	
+							</p>
+	
+	
+							
+							
+							
 							<?php
-							printf(
-								/* translators: %s = number of members */
-								_n(
-									'%s member',
-									'%s members',
-									sz_get_group_total_members( false ),
-									'sportszone'
-								),
-								number_format_i18n( sz_get_group_total_members( false ) )
+							$args = array( 
+							    'group_id' => sz_get_group_id(),
+							    'exclude_admins_mods' => false
+							);
+							$group_members_result = groups_get_group_members( $args );
+							$group_members = array();
+							
+							foreach(  $group_members_result['members'] as $member ) {
+								$group_members[] = $member->ID;
+							}	
+							
+			
+							if(!empty($group_members)) :
+							?>
+							<div class="sz_user_friends">
+								<?php 
+								if(count($group_members) > 3) {
+									$g_members = array_rand($group_members, 3);
+								}
+		
+								foreach($g_members as $g) {
+									echo '<a href="'.sz_core_get_user_domain($group_members[$g]).'" class="mini-avatar">'.sz_core_fetch_avatar ( array( "item_id" => $group_members[$g], "type" => "full" ) ).'</a>';
+								}
+								?>
+								<a href="<?php echo sz_group_permalink(); ?>members/" class="mini-ellipsis">...</a>
+							</div>
+							<?php endif; ?>
+						</div>
+						
+						
+						
+						
+						<div class="group-invite-btns">
+							<?php sz_nouveau_group_hook( '', 'invites_item' ); ?>
+	
+							<?php
+							sz_nouveau_groups_invite_buttons(
+								array(
+									'container'      => 'ul',
+									'button_element' => 'button',
+								)
 							);
 							?>
-							</span>
-						</p>
-
-						<p class="desc">
-							<?php sz_group_description_excerpt(); ?>
-						</p>
-
-						<?php sz_nouveau_group_hook( '', 'invites_item' ); ?>
-
-						<?php
-						sz_nouveau_groups_invite_buttons(
-							array(
-								'container'      => 'ul',
-								'button_element' => 'button',
-							)
-						);
-						?>
+							
+							<?php 
+							if(sz_groups_get_group_type(sz_get_group_id(),true) != '') {
+							?>
+								<div class="group-type-name">
+									<?php echo sz_groups_get_group_type(sz_get_group_id(),true); ?>
+								</div>
+							<?php
+							}
+							?>
 					</div>
+					</div>
+					
 
 				</div>
 			</li>

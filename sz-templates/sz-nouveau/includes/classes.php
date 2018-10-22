@@ -265,6 +265,8 @@ class SZ_Nouveau_Object_Nav_Widget extends WP_Widget {
 			sz_get_template_part( 'members/single/parts/item-nav' );
 		} elseif ( sz_is_group() ) {
 			sz_get_template_part( 'groups/single/parts/item-nav' );
+		} elseif ( sz_is_event() ) {
+			sz_get_template_part( 'events/single/parts/item-nav' );
 		} elseif ( sz_is_directory() ) {
 			sz_get_template_part( 'common/nav/directory-nav' );
 		}
