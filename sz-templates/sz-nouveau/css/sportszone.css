@@ -11,6 +11,9 @@ Hello, this is the SportsZone Nouveau stylesheet.
 2.0 - Navigation - General
 	2.1 - Navs - Object Nav / Sub Nav (item-list-tabs)
 	2.2 - Pagination
+	2.3 - Header Navigation
+		2.3.0 - Top Menu
+		2.3.1 - Main Menu
 
 3.0 - BP Lists / Loops Generic & filters
 	3.1 - Activity Loop
@@ -62,6 +65,16 @@ body #sportszone * a {
 	box-shadow: none;
 	text-decoration: none;
 	color:#2a2843;
+}
+
+a:not(.button):hover, a:not(.button):active, h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover {
+    color: #303030;
+    outline: 0;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+a:hover {
+		text-decoration:none !important;
 }
 
 body #sportszone #item-body blockquote,
@@ -283,6 +296,15 @@ body.sportszone article.page > .entry-header .entry-title {
 @media screen and (min-width: 46.8em) {
 	.sportszone-wrap #notification-select {
 		font-size: 14px;
+	}
+}
+
+@media (max-width: 550px) {
+	.in_grid > .content-box {
+		padding-top:0;
+	}	
+	footer {
+		padding-bottom:60px;	
 	}
 }
 
@@ -957,6 +979,312 @@ body.sportszone article.page > .entry-header .entry-title {
 	margin: 0;
 }
 
+/**
+*-------------------------------------------------------------------------------
+* @section 2.3 - Header Navigation
+*-------------------------------------------------------------------------------
+*/
+
+#main_search  {
+	max-wdth:100vw;
+}
+#main_search form {
+    position: relative;
+    margin: 0;
+}
+#main_search form input {
+	margin: 0;
+    width: calc(100vw - 62px);
+    font-size:1.5rem;
+}
+#main_search form button {
+	position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    width: 50px;
+    padding: 0;
+    background: #20c1a1;	
+}
+#main_search form button .fa {
+	color:#fff;	
+}
+
+#header_top .in_grid {
+		align-items: center;
+		padding-top:0;
+		padding-bottom:0;
+}
+#header_top #logo_container {
+		min-width:100px;
+		flex:1 1 5%;
+		margin-top:-50px;		
+		z-index: 999;
+}
+#header_top #logo_container a {
+		position:absolute;
+}
+#header_top .searchform {
+		display: flex;
+    flex-direction: row;
+		margin-bottom:0;
+		max-height:30px;
+		flex: 1 1 25%;
+		padding-left:1rem;
+		padding-right:1rem;
+}
+#header_top .searchform input.search-field {
+		flex: 1 1 100px;
+    margin: 0;
+		padding:0.3rem;
+		border:none;
+		border-top-left-radius:7px;
+		border-bottom-left-radius:7px;
+}
+#header_top .searchform button {
+		flex: 1 1 35px;
+    max-width: 35px;
+    box-sizing: border-box;
+    padding: 0;
+		background:#9893e0;
+		color:#000;
+		border:none;
+		border-top-right-radius:7px;
+}
+#header_top .searchform button:hover {
+		background:#20c1a1;
+}
+
+@media(max-width:550px) {
+	#header_top #logo_container {
+		margin-top:-0;
+	}
+	#header_top #logo_container img {
+		height:55px;
+		width:auto;	
+	}
+	#header_top .searchform	{
+		display: none;	
+	}
+	body #header_top .menu-top-menu-container {
+		margin-top:0;
+	}
+	body #header_top #profile {
+    	padding-top: 13px;
+	}
+	body #header_top #profile img {
+		height:35px;	
+	}
+	body #header_top ul.sub-menu {
+		bottom:-70px;
+		right:0px;
+		left:auto;
+	}
+}
+
+/**
+*-------------------------------------------------------------------------------
+* @section 2.3.0 - Top Menu
+*-------------------------------------------------------------------------------
+*/
+
+#header_top .menu-top-menu-container {
+		flex: 1 1 65%;
+}
+#header_top .menu-top-menu-container .menu-item {
+		display:flex;
+		flex-direction:column;
+}
+#header_top .menu-top-menu-container a .fa {
+		width:initial;
+}
+#header_top .menu-top-menu-container a:hover .fa {
+		color:#20c1a1;
+}
+#header_top #profile,
+#header_top #more {
+		padding-top:5px;
+}
+#header_top #menu-top-menu li#profile a {
+		padding:0
+}
+#header_top #profile img {
+		height:45px;
+		border-radius:50%;
+		border:2px solid #fff;
+}
+
+#header_top #menu-top-menu .search_button {
+	display: none;	
+}
+#header_top .menu-item-has-children {
+		position:relative;
+}
+#header_top ul.sub-menu {
+    position: absolute;
+    margin-left: 0;
+    list-style: none;
+    bottom: -95px;
+    padding: 0;
+    width: 110px;
+    display: block !important;
+    transition: all 250ms;
+    background-color: #ffffff;
+    transform: scaleY(0) rotateY(90deg);
+    transform-origin: top left;
+    opacity: 0;
+    z-index: 999;
+    background-color: #fff;
+}
+#header_top .menu-item-has-children:hover > ul.sub-menu {
+		box-shadow: 0 0 1px rgba(0,0,0,0.4);
+    transform: scaleY(1) rotateY(0deg);
+    opacity: 1;
+}
+#header_top .menu-item-has-children:hover > ul.sub-menu a,
+#header_top .menu-item-has-children:hover > ul.sub-menu a .fa{
+		color:#b7b7b7;
+}
+#header_top .menu-item-has-children:hover > ul.sub-menu a:hover,
+#header_top .menu-item-has-children:hover > ul.sub-menu a:hover .fa{
+		color:#20c1a1;
+}
+#header_top .menu-item-has-children:hover > ul.sub-menu li {
+		border-bottom:1px solid #fff;
+		padding:5px;
+}
+#header_top .menu-item-has-children:hover > ul.sub-menu li:hover {
+		border-bottom:1px solid #20c1a1;
+}
+#header-notifications {
+		position: relative;
+}
+#header-notifications a {
+		margin-right: 10px;
+}
+#header-notifications span.count {
+		position: absolute;
+    right: 9px;
+    top: 12px;
+    background: #20c1a1;
+    color: #fff;
+    border-radius: 0;
+    border: none;
+		padding:3px;
+}
+
+@media(max-width:1100px) {
+		#header_top ul.sub-menu {
+				left:-45px;
+		}
+}
+@media(max-width:1042px) {
+		#header_top .menu-top-menu-container {
+				flex:1 1 100%;
+				margin-top:1rem;
+		}
+		#header_top .menu-top-menu-container .menu-item-has-children:after {
+				content:"";
+		}
+}
+@media(max-width:550px) {
+		#header_top #menu-top-menu .search_button {
+			display: initial;	
+			margin: 0;
+			width: 50px;
+			text-align: left;
+		}
+		#header_top #menu-top-menu .search_button .fa {
+			color:#9893e0;
+			cursor: pointer;
+			padding: 0;	
+		}
+		#header_top #menu-top-menu .search_button .fa:hover {
+			color: #20c1a1;
+		}
+		#header_top .menu-top-menu-container .menu-item a {
+				visibility:hidden;
+				width:50px;
+				padding:0;
+				padding-top:0;
+		}
+		#header_top .menu-top-menu-container .menu-item a .fa,
+		#header_top #menu-top-menu .search_button .fa {
+				visibility:visible;
+				font-size:1.5rem;
+				margin-top:1rem;
+		}
+		#header_top .menu-top-menu-container .menu-item#profile {
+				padding-top:0;
+		}
+		#header_top .menu-top-menu-container .menu-item#profile a {
+				visibility:visible;
+				width:initial;
+				padding-top:0;
+		}
+}
+
+/**
+*-------------------------------------------------------------------------------
+* @section 2.3.1 - Main Menu
+*-------------------------------------------------------------------------------
+*/
+
+header#main_header {
+		padding-top:0 !important;
+		padding-bottom:0 !important;
+}
+
+#main_header .menu .menu-item a {
+		display:inline-block;
+		padding-bottom:0;
+}
+#main_header .menu .menu-item:nth-last-child(1):after,
+#main_header .sub-menu .menu-item:after {
+		content:'';
+		display:none;
+}
+
+@media(max-width:768px) {	
+	.mobile_menu_button {
+		display:none;	
+	}
+	#main_header #main-nav {
+		display:block;	
+		padding-bottom:1rem;
+	}
+	#main_header .main-menu li {
+		width: initial;	
+	}
+}
+@media(max-width:766px) {	
+	#main_header #main-nav {
+		display:block !important;	
+	}
+}
+@media(max-width:550px) {	
+	#main_header {
+		position: fixed !important;
+		bottom: 50px;	
+	}
+	#main_header nav#main-nav .main-menu {
+		background: #20c1a1;
+	}
+	#main_header #main-nav .menu-item {
+		width:20%;
+		text-align: center;	
+	}
+	#main_header #main-nav .menu-item a {
+			visibility:hidden;
+			width:50px;
+			padding-top:1rem;
+	}
+	#main_header #main-nav .menu-item a .fa {
+			visibility:visible;
+			font-size:1.5rem;
+			color:#fff;
+	}
+}
 /**
 *-------------------------------------------------------------------------------
 * @section 3.0 - BP Lists / Loops Generic
@@ -1957,6 +2285,7 @@ body.activity-permalink .activity-list .activity-comments {
 .sportszone-wrap .activity-comments .acomment-meta,
 .sportszone-wrap .activity-comments .acomment-content p {
 	font-size: 14px;
+	color:#767676;
 }
 
 .sportszone-wrap .activity-comments .acomment-meta {
