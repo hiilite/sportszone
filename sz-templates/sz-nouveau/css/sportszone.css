@@ -103,6 +103,16 @@ body #sportszone .sz-list .action {
 	border-radius: 5px 5px 0 0;
 }
 
+@media screen and (max-width: 585px) {
+	#sportszone .nav-pills .nav-item {
+			width:100%;
+	}
+	
+	#sportszone .nav-pills .nav-item .nav-link {
+		border-radius: 5px;	
+	}
+}
+
 @media screen and (min-width: 46.8em) {
 	body.sportszone .entry-header,
 	body.sportszone .site-content .entry-header,
@@ -489,8 +499,8 @@ body.sportszone article.page > .entry-header .entry-title {
 	.sportszone-wrap .sz-subnavs li.selected a:hover, .sportszone-wrap .sz-subnavs li.current a,
 	.sportszone-wrap .sz-subnavs li.current a:focus,
 	.sportszone-wrap .sz-subnavs li.current a:hover {
-		background: #555;
-		color: #fff;
+		background: #2a2843;
+		color: #fff !important;
 	}
 }
 
@@ -575,9 +585,25 @@ body.sportszone article.page > .entry-header .entry-title {
 	float: right;
 }
 
+.sz-dir-vert-nav .sz-navs.dir-navs {
+	min-width:200px;	
+}
+
 @media screen and (min-width: 46.8em) {
 	.sz-dir-vert-nav .sz-navs.dir-navs {
 		background: none;
+	}
+}
+
+@media(max-width:768px) {
+	.sz-dir-vert-nav .sz-navs.dir-navs {
+		margin-top:4rem;	
+	}
+}
+
+@media(max-width:600px) {
+	.sz-dir-vert-nav .sz-navs.dir-navs {
+		min-width:100%;	
 	}
 }
 
@@ -845,13 +871,16 @@ body.sportszone article.page > .entry-header .entry-title {
 	.sportszone-wrap .subnav-filters .subnav-search,
 	.sportszone-wrap .subnav-filters .subnav-search form,
 	.sportszone-wrap .subnav-filters .feed,
-	.sportszone-wrap .subnav-filters .sz-search,
 	.sportszone-wrap .subnav-filters .dir-search,
 	.sportszone-wrap .subnav-filters .user-messages-bulk-actions,
 	.sportszone-wrap .subnav-filters .user-messages-search,
 	.sportszone-wrap .subnav-filters .group-invites-search,
 	.sportszone-wrap .subnav-filters .group-act-search {
 		float: left;
+	}
+	.sportszone-wrap .subnav-filters .sz-search {
+		float: right;
+		margin-right:4px;	
 	}
 	.sportszone-wrap .subnav-filters .subnav-search {
 		width:100%;	
@@ -898,6 +927,27 @@ body.sportszone article.page > .entry-header .entry-title {
 	.sportszone-wrap .subnav-filters .component-filters #events-order-select {
 		margin-top:10px;	
 	} 
+}
+
+@media(max-width:511px) {
+	.sportszone-wrap .subnav-filters .feed {
+		float:left;
+	}
+	.sportszone-wrap .subnav-filters .sz-search {
+		float:right;
+		margin-right:4px;
+	}
+	.sportszone-wrap .subnav-filters .component-filters {
+		margin-top:0;
+		float:none;	
+	}
+	.sportszone-wrap .subnav-filters .component-filters #events-order-select  {
+		margin-top:1rem;
+		margin-right:1.3rem;	
+	}
+	body.events .subnav-search .select-wrap {
+		margin-right:1.3rem;	
+	}
 }
 
 .sportszone-wrap .notifications-options-nav .select-wrap {
@@ -1076,7 +1126,6 @@ body.sportszone article.page > .entry-header .entry-title {
 		height:35px;	
 	}
 	body #header_top ul.sub-menu {
-		bottom:-70px;
 		right:0px;
 		left:auto;
 	}
@@ -1095,18 +1144,24 @@ body.sportszone article.page > .entry-header .entry-title {
 		display:flex;
 		flex-direction:column;
 }
-#header_top .menu-top-menu-container a .fa {
+#header_top .menu-top-menu-container a .fa,
+#header_top .menu-top-menu-container span .fa {
 		width:initial;
 }
-#header_top .menu-top-menu-container a:hover .fa {
+#header_top .menu-top-menu-container a:hover .fa,
+#header_top .menu-top-menu-container span:hover .fa  {
 		color:#20c1a1;
 }
-#header_top #profile,
-#header_top #more {
+#header_top #profile {
 		padding-top:5px;
+		display: block;
 }
-#header_top #menu-top-menu li#profile a {
+#header_top #menu-top-menu li#profile a,
+#header_top #menu-top-menu li#profile > span {
 		padding:0
+}
+#header_top #menu-top-menu li#profile > span .fa::before {
+	color:#9893e0;	
 }
 #header_top #profile img {
 		height:45px;
@@ -1124,7 +1179,7 @@ body.sportszone article.page > .entry-header .entry-title {
     position: absolute;
     margin-left: 0;
     list-style: none;
-    bottom: -95px;
+    bottom: auto;
     padding: 0;
     width: 110px;
     display: block !important;
@@ -1133,7 +1188,7 @@ body.sportszone article.page > .entry-header .entry-title {
     transform: scaleY(0) rotateY(90deg);
     transform-origin: top left;
     opacity: 0;
-    z-index: 999;
+    z-index: 999999999;
     background-color: #fff;
 }
 #header_top .menu-item-has-children:hover > ul.sub-menu {
@@ -1141,12 +1196,15 @@ body.sportszone article.page > .entry-header .entry-title {
     transform: scaleY(1) rotateY(0deg);
     opacity: 1;
 }
+#header_top .menu-item-has-children:hover > ul.sub-menu a .fa {
+	margin-top:0;
+}
 #header_top .menu-item-has-children:hover > ul.sub-menu a,
-#header_top .menu-item-has-children:hover > ul.sub-menu a .fa{
+#header_top .menu-item-has-children:hover > ul.sub-menu a .fa {
 		color:#b7b7b7;
 }
 #header_top .menu-item-has-children:hover > ul.sub-menu a:hover,
-#header_top .menu-item-has-children:hover > ul.sub-menu a:hover .fa{
+#header_top .menu-item-has-children:hover > ul.sub-menu a:hover .fa {
 		color:#20c1a1;
 }
 #header_top .menu-item-has-children:hover > ul.sub-menu li {
@@ -1214,10 +1272,14 @@ body.sportszone article.page > .entry-header .entry-title {
 				font-size:1.5rem;
 				margin-top:1rem;
 		}
-		#header_top .menu-top-menu-container .menu-item#profile {
-				padding-top:0;
+		#header-notifications span.count {
+			right:23px;	
 		}
-		#header_top .menu-top-menu-container .menu-item#profile a {
+		#header_top .menu-top-menu-container .menu-item#profile {
+				padding-top:0.5rem;
+		}
+		#header_top .menu-top-menu-container .menu-item#profile a,
+		#header_top .menu-top-menu-container .menu-item#profile > span {
 				visibility:visible;
 				width:initial;
 				padding-top:0;
@@ -1239,10 +1301,11 @@ header#main_header {
 		display:inline-block;
 		padding-bottom:0;
 }
-#main_header .menu .menu-item:nth-last-child(1):after,
-#main_header .sub-menu .menu-item:after {
-		content:'';
-		display:none;
+
+#main_header #main-nav .sz-logged-out-home,
+#main_header #main-nav .sz-register-nav,
+#main_header #main-nav .sz-login-nav {
+	display: none;	
 }
 
 @media(max-width:768px) {	
@@ -1284,12 +1347,34 @@ header#main_header {
 			font-size:1.5rem;
 			color:#fff;
 	}
+	#main_header #main-nav .sz-logged-out-home,
+	#main_header #main-nav .sz-register-nav,
+	#main_header #main-nav .sz-login-nav {
+		display: initial;	
+	}
+	
 }
 /**
 *-------------------------------------------------------------------------------
 * @section 3.0 - BP Lists / Loops Generic
 *-------------------------------------------------------------------------------
 */
+
+body.directory .screen-content {
+	margin:0;
+}
+
+@media(max-width:768px) {
+	body.directory .screen-content {
+		padding-top:4rem;	
+	}
+}
+@media(max-width:550px) {
+	body.directory .screen-content {
+		padding-top:2rem;
+		padding-right:1rem;	
+	}
+}
 .sz-list:before,
 .sz-list:after {
 	content: " ";
@@ -1650,6 +1735,16 @@ body #sportszone .sz-list .action li.friendship-button button.friendship-button:
 	border: 0;
 }
 
+@media(max-width:748px) {
+	.sz_user_profiles,
+	.sz_user_friends {
+		text-align: center;
+	}
+	.friends-request-list li.item-entry .friends-meta .generic-button {
+		display: inline-block;	
+	}
+}
+
 /**
 *----------------------------------------------------------
 * @section 3.1 - Activity Loop
@@ -1660,6 +1755,23 @@ body #sportszone .sz-list .action li.friendship-button button.friendship-button:
 * @section 3.1.1 - Activity Whats New
 *-----------------------------------------------------
 */
+
+
+body.activity #whats-new-form {
+	padding-top:1rem;
+}
+body.activity #whats-new-avatar {
+	display:none;	
+}
+body.activity .activity-update-form #whats-new-submit input {
+	margin:0;	
+}
+
+body.activity #whats-new-content,
+body.activity #whats-new-post-in-box,
+body.activity #whats-new-submit {
+	margin-left:0;	
+}
 
 .item-body .activity-update-form .activity-form {
 	margin: 0;
@@ -1807,6 +1919,13 @@ body #sportszone .sz-list .action li.friendship-button button.friendship-button:
 	}
 }
 
+@media(max-width:748px) {
+	.activity-update-form {
+		padding: 0 10px 0;
+
+	}	
+}
+
 /**
 *-----------------------------------------------------
 * @section 3.1.2 - Activity Entries
@@ -1843,6 +1962,10 @@ body #sportszone .sz-list .action li.friendship-button button.friendship-button:
 .activity-list .activity-item div.item-avatar img {
 	height: auto;
 	max-width: 40%;
+}
+
+.activity-list .activity-item iframe {
+	height:auto;	
 }
 
 @media screen and (min-width: 46.8em) {
@@ -2601,6 +2724,21 @@ form.ac-form .ac-reply-content input {
 	}
 }
 
+@media (max-width:748px) {
+	.sportszone-wrap .groups-list li .item-avatar, 
+	.sportszone-wrap li.invites-list .item-avatar {
+		width:100%;	
+	}
+	.sportszone-wrap .groups-list li .item-avatar img, 
+	.sportszone-wrap li.invites-list .item-avatar img {
+		max-width:100px;	
+	}
+	.sportszone-wrap .groups-list li .list-title, 
+	.sportszone-wrap li.invites-list .list-title {
+		text-align:center;
+	}
+}
+
 /*@media screen and (min-width: 46.8em) {
 	.sportszone .sz-vertical-navs .groups-list .item-avatar {
 		margin-right: 3%;
@@ -2757,6 +2895,27 @@ form.ac-form .ac-reply-content input {
 	}
 }
 
+@media(max-width:748px) {
+	.sportszone-wrap .events-list li .item-block {
+		flex-wrap: wrap;
+		width: 100%;
+	}	
+	.sportszone-wrap .events-list li .event-breif-featured-img {
+		width: 100%;
+		flex: 1 1 100%;
+		min-height: 100px;
+		border-radius: 10px 10px 0 0;
+	}
+	.sportszone-wrap .events-list li .event-brief-info,
+	.sportszone-wrap .events-list li .event-brief-venue,
+	.sportszone-wrap .events-list li .event-brief-teams {
+		width: 100%;
+		flex: 1 1 100%;
+		text-align: center;	
+		padding:1rem;
+	}
+}
+
 /**
 *----------------------------------------------------------
 * @section 3.4.1 - Matches Loop
@@ -2826,6 +2985,11 @@ ul.matches-list li.item-entry {
 * @section 3.5 - Members Loop
 *----------------------------------------------------------
 */
+
+body.members .screen-content {
+	margin:0;
+}
+
 .sportszone-wrap .members-list li .member-name {
 	margin-bottom: 10px;
 }
@@ -2901,8 +3065,10 @@ ul.matches-list li.item-entry {
 }
 #sportszone .card-deck .view-more {
 	flex: 1 1 10%;
+	min-width:98px;
     text-align: right;
     margin:auto;
+    margin-left: inherit;
 }
 #sportszone .card-deck .vert-btn {
 	display: inline-block;
@@ -2916,6 +3082,37 @@ ul.matches-list li.item-entry {
 	border-color: #20c1a1;
 	background-color: #20c1a1;
 	color: #fff;
+}
+
+@media (max-width:866px) {
+	#sportszone .card-deck .card {
+	    border: none;
+	    width: 13.666%;
+	    max-width: 13.666%;
+	    flex: 1 1 13.666%;
+	    margin: 0.5rem;
+	}	
+	#sportszone .card-deck .view-more {
+	    flex: 1 1 100%;
+	    text-align: center;
+	    margin-top: 1rem;
+	}
+	#sportszone .card-deck .vert-btn {
+		transform: rotate(0deg); 
+	}
+}
+@media (max-width:575px) {
+	.card-deck {
+		flex-direction: row;
+		flex-wrap: wrap;	
+	}
+}
+@media (max-width:507px) {
+	#sportszone .card-deck .card {
+	    width: 29%;
+	    max-width: 29%;
+	    flex: 29%;
+	}	
 }
 
 /**
@@ -3263,7 +3460,7 @@ body.no-js .single-item-header .js-self-profile-button {
 .groups-header #item-header-type {
 	    position: absolute;
     right: 0;
-    top: -29px;
+    top: -25px;
     background: #ebebeb;
     padding: 0.25rem 0.7rem;
     border-top-left-radius: 5px;
@@ -3494,6 +3691,12 @@ body.no-js .single-item-header .js-self-profile-button {
 
 .sportszone-wrap.sz-single-vert-nav .sz-list:not(.grid) .item-entry {
 	padding-left: 0.5em;
+}
+
+@media(max-width:748px) {
+	.sportszone-wrap.sz-single-vert-nav .sz-list:not(.grid) .item-entry {
+		padding:0;	
+	}	
 }
 
 /**
@@ -4724,6 +4927,12 @@ div.sz-navs#subsubnav.sz-messages-filters .user-messages-bulk-actions {
 	display: inline-block;
 	padding-left:20px;	
 }
+
+@media(max-width:748px) {
+	.notification-settings .radio-container {
+		margin-left: -25px;
+	}
+}
 	
 .sportszone-wrap .standard-form .radio-container input[type="radio"],
 .sportszone-wrap .standard-form .radio-container input[type="checkbox"] {
@@ -4810,6 +5019,7 @@ form .select-wrap {
   	position: relative;
   	display: inline-block;
   	vertical-align: middle;
+  	min-width:120px;
 }
 .sportszone-wrap select {
 	padding: 3px;
@@ -4983,8 +5193,9 @@ form .select-wrap .select-arrow::after {
 }
 
 .sportszone #notifications-bulk-management .notifications-options-nav {
-	margin-bottom:1rem;	
+	margin: 0 4px 1rem;	
 }
+
 body.no-js .sportszone #notifications-bulk-management #select-all-notifications,
 body.no-js .sportszone label[for="message-type-select"],
 body.no-js .sportszone #message-type-select,
@@ -5002,8 +5213,6 @@ body.no-js .sportszone #messages-bulk-management #select-all-messages {
 .sportszone-wrap .wp-editor-wrap input[type="reset"] {
 	padding: 0 8px 1px;
 }
-
-
 
 /**
 *----------------------------------------------------------
@@ -5236,6 +5445,17 @@ body.no-js .sportszone #messages-bulk-management #select-all-messages {
 	line-height: 0;	
 }
 
+@media(max-width:405px) {
+	.sportszone-wrap .sz-tables-user tbody tr .notification-container > div.notification-actions {
+		text-align: center;
+	}
+	.sportszone-wrap .sz-tables-user tbody tr .notification-container > div.notification-actions > div a:nth-child(1) {
+		margin-bottom:20px;
+	}
+	.sportszone-wrap .sz-tables-user tbody tr .notification-container > div.notification-actions a {
+		display:block;
+	}
+}
 
 .sportszone-wrap .sz-tables-user tr th,
 .sportszone-wrap .sz-tables-user tr td,
@@ -6626,284 +6846,311 @@ body.no-js .sportszone #messages-bulk-management #select-all-messages {
 	min-height: 320px;
 }
 
-@media screen and (min-width: 46.8em) {
-	.sz-single-vert-nav .sz-navs.vertical {
-		overflow: visible;
+.internal-nav-mobile {
+	display: none;	
+}
+
+.sz-single-vert-nav .sz-navs.vertical {
+	overflow: visible;
+}
+.sz-single-vert-nav .sz-navs.vertical ul,
+.events-type-navs ul.events-nav,
+.groups-type-navs ul.groups-nav,
+.event-nav-tabs > ul {
+	border-radius:10px;
+	border-bottom: 0;
+	float: left;
+	margin-right: -1px;
+	margin-top: 0;
+	padding-bottom:1rem;
+	padding-top: 70px;
+	width: 25%;
+	background: #ebebeb;
+}
+.events-type-navs ul.events-nav,
+.groups-type-navs ul.groups-nav {
+	width: 100%;
+	padding-top:1rem;
+}
+.sz-single-vert-nav .sz-navs.vertical li,
+.events-type-navs ul.events-nav li,
+.groups-type-navs ul.groups-nav li,
+.event-nav-tabs > ul li {
+	float: none;
+	margin-right: 0;
+	padding-left:1rem;
+	padding-right:1rem;
+}
+.sz-single-vert-nav .sz-navs.vertical li.selected,
+.events-type-navs ul.events-nav li.selected,
+.groups-type-navs ul.groups-nav li.selected,
+.event-nav-tabs > ul li.selected {
+	border:none !important;
+	background:#f1f1f1 !important;
+}
+.sz-single-vert-nav .sz-navs.vertical li.selected a,
+.events-type-navs ul.events-nav li.selected a,
+.groups-type-navs ul.groups-nav li.selected a,
+.event-nav-tabs > ul li.selected a {
+	background: none !important;
+	color: #848484 !important;
+}
+.sz-single-vert-nav .sz-navs.vertical li:focus, 
+.sz-single-vert-nav .sz-navs.vertical li:hover,
+.events-type-navs ul.events-nav li:focus,
+.events-type-navs ul.events-nav li:hover,
+.groups-type-navs ul.groups-nav li:focus,
+.groups-type-navs ul.groups-nav li:hover,
+.event-nav-tabs > ul li:focus,
+.event-nav-tabs > ul li:hover {
+	background: #ccc;
+}
+.sz-single-vert-nav .sz-navs.vertical li span,
+.events-type-navs ul.events-nav li span,
+.events-type-navs ul.events-nav li.selected span,
+.groups-type-navs ul.groups-nav li span,
+.groups-type-navs ul.groups-nav li.selected span,
+.event-nav-tabs > ul li span,
+.event-nav-tabs > ul li.selected span {
+	margin-right: 2px;
+	background: #20c1a1;
+	color:#fff;
+	border-radius:0;
+	border:none;
+}
+.sz-single-vert-nav .sz-navs.vertical li:hover span,
+.events-type-navs ul.events-nav li:hover span,
+.groups-type-navs ul.groups-nav li:hover span,
+.event-nav-tabs > ul li:hover span {
+	border-color: none;
+}
+.sz-single-vert-nav .sz-navs.vertical li a::before,
+.events-type-navs ul.events-nav li a::before,
+.groups-type-navs ul.groups-nav li a::before,
+.event-nav-tabs > ul li a::before {
+	font: normal normal normal 14px/1 FontAwesome;	
+	display: inline-block;
+	width: 20px;
+	text-align: center;
+}
+.sz-single-vert-nav .sz-navs.vertical #activity-personal-li a:before {
+	content: '\f02e';	
+}
+.sz-single-vert-nav .sz-navs.vertical #xprofile-personal-li a:before {
+	content: '\f007';	
+}
+.sz-single-vert-nav .sz-navs.vertical #notifications-personal-li a:before {
+	content: '\f024';	
+}
+.sz-single-vert-nav .sz-navs.vertical #messages-personal-li a:before {
+	content: '\f086';	
+}
+.sz-single-vert-nav .sz-navs.vertical #friends-personal-li a:before {
+	content: '\f1ae';	
+}
+.sz-single-vert-nav .sz-navs.vertical #groups-personal-li a:before {
+	content: '\f0c0';	
+}
+.sz-single-vert-nav .sz-navs.vertical #events-personal-li a:before {
+	content: '\f073';	
+}
+.sz-single-vert-nav .sz-navs.vertical #settings-personal-li a:before {
+	content: '\f11c';	
+}
+.events-type-navs ul.events-nav #events-all a:before {
+	content: '\f091';	
+}
+.events-type-navs ul.events-nav #events-personal a:before {
+	content: '\f27e';	
+}
+.events-type-navs ul.events-nav #events-create a:before {
+	content: '\f0fe';	
+}
+.groups-type-navs ul.groups-nav #groups-all a:before {
+	content: '\f0c0';	
+}
+.groups-type-navs ul.groups-nav #groups-personal a:before {
+	content: '\f183';	
+}
+.groups-type-navs ul.groups-nav #groups-create a:before {
+	content: '\f234';	
+}
+.event-nav-tabs > ul #nav-matches-events-li a:before {
+	content: '\f074';
+}
+.event-nav-tabs > ul #home-events-li a:before {
+	content: '\f073';
+}
+.event-nav-tabs > ul #activity-events-li a:before {
+	content: '\f02e';
+}
+.event-nav-tabs > ul #members-events-li a:before {
+	content: '\f0c0';
+}
+.event-nav-tabs > ul #invite-events-li a:before {
+	content: '\f0e0';
+}
+.event-nav-tabs > ul #admin-events-li a:before {
+	content: '\f0b1';
+}
+
+.sz-single-vert-nav .sz-wrap {
+	margin-top: -70px;
+	margin-bottom: 15px;
+	position: relative;
+	z-index: 10;
+}
+.sz-single-vert-nav .sz-wrap .user-nav-tabs.users-nav ul li,
+.sz-single-vert-nav .sz-wrap .group-nav-tabs.groups-nav ul li,
+.sz-single-vert-nav .sz-wrap .group-nav-tabs.events-nav ul li {
+	left: 1px;
+	position: relative;
+}
+.sz-single-vert-nav .item-body:not(#group-create-body),
+.sz-single-vert-nav .item-body:not(#event-create-body) {
+	background: #fff;
+	float: right;
+	margin: 0;
+	min-height: 400px;
+	padding: 0 0 0 1em;
+	width: calc(75% + 1px);
+}
+.sz-single-vert-nav .item-body:not(#group-create-body) #subnav:not(.tabbed-links) {
+	background: #eaeaea;
+	margin: 0 0 0 -5px;
+	width: auto;
+}
+.sz-single-vert-nav .item-body:not(#group-create-body) #subnav:not(.tabbed-links) li {
+	font-size: 16px;
+	margin: 10px 0;
+}
+.sz-single-vert-nav .item-body:not(#group-create-body) #subnav:not(.tabbed-links) li a {
+	border-right: 1px solid #ccc;
+	padding: 0 0.5em;
+}
+.sz-single-vert-nav .item-body:not(#group-create-body) #subnav:not(.tabbed-links) li a:focus,
+.sz-single-vert-nav .item-body:not(#group-create-body) #subnav:not(.tabbed-links) li a:hover {
+	background: none;
+}
+.sz-single-vert-nav .item-body:not(#group-create-body) #subnav:not(.tabbed-links) li.current a {
+	background: none;
+	color: #333;
+	text-decoration: underline;
+}
+.sz-single-vert-nav .item-body:not(#group-create-body) #subnav:not(.tabbed-links) li:last-child a {
+	border: none;
+}
+.sz-dir-vert-nav .dir-navs {
+	float: left;
+	left: 1px;
+	position: relative;
+	width: 20%;
+}
+.sz-dir-vert-nav .dir-navs ul li {
+	float: none;
+	overflow: hidden;
+	width: auto;
+}
+.sz-dir-vert-nav .dir-navs ul li.selected {
+	border: 1px solid #eee;
+}
+.sz-dir-vert-nav .dir-navs ul li.selected a {
+	background: #555;
+	color: #fff;
+}
+.sz-dir-vert-nav .dir-navs ul li.selected a span {
+	background: #eaeaea;
+	border-color: #ccc;
+	color: #5087e5;
+}
+.sz-dir-vert-nav .dir-navs ul li a:hover,
+.sz-dir-vert-nav .dir-navs ul li a:focus {
+	background: #ccc;
+	color: #333;
+}
+.sz-dir-vert-nav .dir-navs ul li a:hover span,
+.sz-dir-vert-nav .dir-navs ul li a:focus span {
+	/*border: 1px solid #555;*/
+}
+.sz-dir-vert-nav .screen-content {
+	margin-left: 20%;
+	overflow: hidden;
+	padding: 0 0 2em 1em;
+}
+.sz-dir-vert-nav .screen-content .subnav-filters {
+	margin-top: 0;
+}
+.sportszone-wrap.sz-vertical-navs .dir-navs.activity-nav-tabs ul li:not(.selected) a:hover,
+.sportszone-wrap.sz-vertical-navs .dir-navs.activity-nav-tabs ul li:not(.selected) a:focus,
+.sportszone-wrap.sz-vertical-navs .dir-navs.sites-nav-tabs ul li:not(.selected) a:hover,
+.sportszone-wrap.sz-vertical-navs .dir-navs.sites-nav-tabs ul li:not(.selected) a:focus,
+.sportszone-wrap.sz-vertical-navs .dir-navs.groups-nav-tabs ul li:not(.selected) a:hover,
+.sportszone-wrap.sz-vertical-navs .dir-navs.groups-nav-tabs ul li:not(.selected) a:focus,
+.sportszone-wrap.sz-vertical-navs .dir-navs.members-nav-tabs ul li:not(.selected) a:hover,
+.sportszone-wrap.sz-vertical-navs .dir-navs.members-nav-tabs ul li:not(.selected) a:focus,
+.sportszone-wrap.sz-vertical-navs .main-navs.user-nav-tabs ul li:not(.selected) a:hover,
+.sportszone-wrap.sz-vertical-navs .main-navs.user-nav-tabs ul li:not(.selected) a:focus,
+.sportszone-wrap.sz-vertical-navs .main-navs.group-nav-tabs ul li:not(.selected) a:hover,
+.sportszone-wrap.sz-vertical-navs .main-navs.group-nav-tabs ul li:not(.selected) a:focus,
+.sportszone-wrap.sz-vertical-navs .events-type-navs ul.events-nav li:not(.selected) a:hover,
+.sportszone-wrap.sz-vertical-navs .events-type-navs ul.events-nav li:not(.selected) a:focus {
+	background: none;
+}
+.sportszone-wrap.sz-vertical-navs .dir-navs.activity-nav-tabs ul li.selected,
+.sportszone-wrap.sz-vertical-navs .dir-navs.sites-nav-tabs ul li.selected,
+.sportszone-wrap.sz-vertical-navs .dir-navs.groups-nav-tabs ul li.selected,
+.sportszone-wrap.sz-vertical-navs .dir-navs.members-nav-tabs ul li.selected,
+.sportszone-wrap.sz-vertical-navs .main-navs.user-nav-tabs ul li.selected,
+.sportszone-wrap.sz-vertical-navs .main-navs.group-nav-tabs ul li.selected,
+.sportszone-wrap.sz-vertical-navs .events-type-navs ul.events-nav li.selected {
+	background: none;
+	border: 1px solid #d6d6d6;
+	border-right-color: #fff;
+}
+.sportszone-wrap.sz-vertical-navs .dir-navs.activity-nav-tabs ul li.selected a,
+.sportszone-wrap.sz-vertical-navs .dir-navs.sites-nav-tabs ul li.selected a,
+.sportszone-wrap.sz-vertical-navs .dir-navs.groups-nav-tabs ul li.selected a,
+.sportszone-wrap.sz-vertical-navs .dir-navs.members-nav-tabs ul li.selected a,
+.sportszone-wrap.sz-vertical-navs .main-navs.user-nav-tabs ul li.selected a,
+.sportszone-wrap.sz-vertical-navs .main-navs.group-nav-tabs ul li.selected a,
+.sportszone-wrap.sz-vertical-navs .events-type-navs ul.events-nav li.selected a {
+	background: none;
+	color: #333;
+	font-weight: 600;
+}
+.sportszone-wrap.sz-vertical-navs .dir-navs.activity-nav-tabs ul li.selected a span,
+.sportszone-wrap.sz-vertical-navs .dir-navs.sites-nav-tabs ul li.selected a span,
+.sportszone-wrap.sz-vertical-navs .dir-navs.groups-nav-tabs ul li.selected a span,
+.sportszone-wrap.sz-vertical-navs .dir-navs.members-nav-tabs ul li.selected a span,
+.sportszone-wrap.sz-vertical-navs .main-navs.user-nav-tabs ul li.selected a span,
+.sportszone-wrap.sz-vertical-navs .main-navs.group-nav-tabs ul li.selected a span,
+.sportszone-wrap.sz-vertical-navs .events-type-navs ul.events-nav li.selected span {
+	background: #555;
+	border: 1px solid #d6d6d6;
+	color: #fff;
+}
+	
+@media(max-width:748px){
+	.sz-single-vert-nav .sz-wrap {
+		margin-top:-15px;	
 	}
-	.sz-single-vert-nav .sz-navs.vertical ul,
-	.events-type-navs ul.events-nav,
-	.groups-type-navs ul.groups-nav,
-	.event-nav-tabs > ul {
-		border-radius:10px;
-		border-bottom: 0;
-		float: left;
-		margin-right: -1px;
-		margin-top: 0;
-		padding-bottom:1rem;
-		padding-top: 70px;
-		width: 25%;
-		background: #ebebeb;
-	}
-	.events-type-navs ul.events-nav,
-	.groups-type-navs ul.groups-nav {
-		width: 100%;
-		padding-top:1rem;
-	}
-	.sz-single-vert-nav .sz-navs.vertical li,
-	.events-type-navs ul.events-nav li,
-	.groups-type-navs ul.groups-nav li,
-	.event-nav-tabs > ul li {
-		float: none;
-		margin-right: 0;
-		padding-left:1rem;
-		padding-right:1rem;
-	}
-	.sz-single-vert-nav .sz-navs.vertical li.selected,
-	.events-type-navs ul.events-nav li.selected,
-	.groups-type-navs ul.groups-nav li.selected,
-	.event-nav-tabs > ul li.selected {
-		border:none !important;
-		background:#f1f1f1 !important;
-	}
-	.sz-single-vert-nav .sz-navs.vertical li.selected a,
-	.events-type-navs ul.events-nav li.selected a,
-	.groups-type-navs ul.groups-nav li.selected a,
-	.event-nav-tabs > ul li.selected a {
-		background: none !important;
-		color: #848484 !important;
-	}
-	.sz-single-vert-nav .sz-navs.vertical li:focus, 
-	.sz-single-vert-nav .sz-navs.vertical li:hover,
-	.events-type-navs ul.events-nav li:focus,
-	.events-type-navs ul.events-nav li:hover,
-	.groups-type-navs ul.groups-nav li:focus,
-	.groups-type-navs ul.groups-nav li:hover,
-	.event-nav-tabs > ul li:focus,
-	.event-nav-tabs > ul li:hover {
-		background: #ccc;
-	}
-	.sz-single-vert-nav .sz-navs.vertical li span,
-	.events-type-navs ul.events-nav li span,
-	.events-type-navs ul.events-nav li.selected span,
-	.groups-type-navs ul.groups-nav li span,
-	.groups-type-navs ul.groups-nav li.selected span,
-	.event-nav-tabs > ul li span,
-	.event-nav-tabs > ul li.selected span {
-		margin-right: 2px;
-		background: #20c1a1;
-		color:#fff;
-		border-radius:0;
+	.sportszone-wrap .single-screen-navs {
 		border:none;
 	}
-	.sz-single-vert-nav .sz-navs.vertical li:hover span,
-	.events-type-navs ul.events-nav li:hover span,
-	.groups-type-navs ul.groups-nav li:hover span,
-	.event-nav-tabs > ul li:hover span {
-		border-color: none;
+	.internal-nav-mobile {
+		display: block;	
+		padding-bottom: 1rem;
+		padding-left: 1rem;
 	}
-	.sz-single-vert-nav .sz-navs.vertical li a::before,
-	.events-type-navs ul.events-nav li a::before,
-	.groups-type-navs ul.groups-nav li a::before,
-	.event-nav-tabs > ul li a::before {
-		font: normal normal normal 14px/1 FontAwesome;	
-		display: inline-block;
-		width: 20px;
-		text-align: center;
-	}
-	.sz-single-vert-nav .sz-navs.vertical #activity-personal-li a:before {
-		content: '\f02e';	
-	}
-	.sz-single-vert-nav .sz-navs.vertical #xprofile-personal-li a:before {
-		content: '\f007';	
-	}
-	.sz-single-vert-nav .sz-navs.vertical #notifications-personal-li a:before {
-		content: '\f024';	
-	}
-	.sz-single-vert-nav .sz-navs.vertical #messages-personal-li a:before {
-		content: '\f086';	
-	}
-	.sz-single-vert-nav .sz-navs.vertical #friends-personal-li a:before {
-		content: '\f1ae';	
-	}
-	.sz-single-vert-nav .sz-navs.vertical #groups-personal-li a:before {
-		content: '\f0c0';	
-	}
-	.sz-single-vert-nav .sz-navs.vertical #events-personal-li a:before {
-		content: '\f073';	
-	}
-	.sz-single-vert-nav .sz-navs.vertical #settings-personal-li a:before {
-		content: '\f11c';	
-	}
-	.events-type-navs ul.events-nav #events-all a:before {
-		content: '\f091';	
-	}
-	.events-type-navs ul.events-nav #events-personal a:before {
-		content: '\f27e';	
-	}
-	.events-type-navs ul.events-nav #events-create a:before {
-		content: '\f0fe';	
-	}
-	.groups-type-navs ul.groups-nav #groups-all a:before {
-		content: '\f0c0';	
-	}
-	.groups-type-navs ul.groups-nav #groups-personal a:before {
-		content: '\f183';	
-	}
-	.groups-type-navs ul.groups-nav #groups-create a:before {
-		content: '\f234';	
-	}
-	.event-nav-tabs > ul #nav-matches-events-li a:before {
-		content: '\f074';
-	}
-	.event-nav-tabs > ul #home-events-li a:before {
-		content: '\f073';
-	}
-	.event-nav-tabs > ul #activity-events-li a:before {
-		content: '\f02e';
-	}
-	.event-nav-tabs > ul #members-events-li a:before {
-		content: '\f0c0';
-	}
-	.event-nav-tabs > ul #invite-events-li a:before {
-		content: '\f0e0';
-	}
-	.event-nav-tabs > ul #admin-events-li a:before {
-		content: '\f0b1';
-	}
-	
-	.sz-single-vert-nav .sz-wrap {
-		margin-top: -70px;
-		margin-bottom: 15px;
-		position: relative;
-		z-index: 10;
-	}
-	.sz-single-vert-nav .sz-wrap .user-nav-tabs.users-nav ul li,
-	.sz-single-vert-nav .sz-wrap .group-nav-tabs.groups-nav ul li,
-	.sz-single-vert-nav .sz-wrap .group-nav-tabs.events-nav ul li {
-		left: 1px;
-		position: relative;
-	}
-	.sz-single-vert-nav .item-body:not(#group-create-body),
-	.sz-single-vert-nav .item-body:not(#event-create-body) {
-		background: #fff;
-		float: right;
-		margin: 0;
-		min-height: 400px;
-		padding: 0 0 0 1em;
-		width: calc(75% + 1px);
-	}
-	.sz-single-vert-nav .item-body:not(#group-create-body) #subnav:not(.tabbed-links) {
-		background: #eaeaea;
-		margin: 0 0 0 -5px;
-		width: auto;
-	}
-	.sz-single-vert-nav .item-body:not(#group-create-body) #subnav:not(.tabbed-links) li {
-		font-size: 16px;
-		margin: 10px 0;
-	}
-	.sz-single-vert-nav .item-body:not(#group-create-body) #subnav:not(.tabbed-links) li a {
-		border-right: 1px solid #ccc;
-		padding: 0 0.5em;
-	}
-	.sz-single-vert-nav .item-body:not(#group-create-body) #subnav:not(.tabbed-links) li a:focus,
-	.sz-single-vert-nav .item-body:not(#group-create-body) #subnav:not(.tabbed-links) li a:hover {
-		background: none;
-	}
-	.sz-single-vert-nav .item-body:not(#group-create-body) #subnav:not(.tabbed-links) li.current a {
-		background: none;
-		color: #333;
-		text-decoration: underline;
-	}
-	.sz-single-vert-nav .item-body:not(#group-create-body) #subnav:not(.tabbed-links) li:last-child a {
-		border: none;
-	}
-	.sz-dir-vert-nav .dir-navs {
-		float: left;
-		left: 1px;
-		position: relative;
-		width: 20%;
-	}
-	.sz-dir-vert-nav .dir-navs ul li {
-		float: none;
-		overflow: hidden;
-		width: auto;
-	}
-	.sz-dir-vert-nav .dir-navs ul li.selected {
-		border: 1px solid #eee;
-	}
-	.sz-dir-vert-nav .dir-navs ul li.selected a {
-		background: #555;
-		color: #fff;
-	}
-	.sz-dir-vert-nav .dir-navs ul li.selected a span {
-		background: #eaeaea;
-		border-color: #ccc;
-		color: #5087e5;
-	}
-	.sz-dir-vert-nav .dir-navs ul li a:hover,
-	.sz-dir-vert-nav .dir-navs ul li a:focus {
-		background: #ccc;
-		color: #333;
-	}
-	.sz-dir-vert-nav .dir-navs ul li a:hover span,
-	.sz-dir-vert-nav .dir-navs ul li a:focus span {
-		/*border: 1px solid #555;*/
-	}
-	.sz-dir-vert-nav .screen-content {
-		margin-left: 20%;
-		overflow: hidden;
-		padding: 0 0 2em 1em;
-	}
-	.sz-dir-vert-nav .screen-content .subnav-filters {
-		margin-top: 0;
-	}
-	.sportszone-wrap.sz-vertical-navs .dir-navs.activity-nav-tabs ul li:not(.selected) a:hover,
-	.sportszone-wrap.sz-vertical-navs .dir-navs.activity-nav-tabs ul li:not(.selected) a:focus,
-	.sportszone-wrap.sz-vertical-navs .dir-navs.sites-nav-tabs ul li:not(.selected) a:hover,
-	.sportszone-wrap.sz-vertical-navs .dir-navs.sites-nav-tabs ul li:not(.selected) a:focus,
-	.sportszone-wrap.sz-vertical-navs .dir-navs.groups-nav-tabs ul li:not(.selected) a:hover,
-	.sportszone-wrap.sz-vertical-navs .dir-navs.groups-nav-tabs ul li:not(.selected) a:focus,
-	.sportszone-wrap.sz-vertical-navs .dir-navs.members-nav-tabs ul li:not(.selected) a:hover,
-	.sportszone-wrap.sz-vertical-navs .dir-navs.members-nav-tabs ul li:not(.selected) a:focus,
-	.sportszone-wrap.sz-vertical-navs .main-navs.user-nav-tabs ul li:not(.selected) a:hover,
-	.sportszone-wrap.sz-vertical-navs .main-navs.user-nav-tabs ul li:not(.selected) a:focus,
-	.sportszone-wrap.sz-vertical-navs .main-navs.group-nav-tabs ul li:not(.selected) a:hover,
-	.sportszone-wrap.sz-vertical-navs .main-navs.group-nav-tabs ul li:not(.selected) a:focus,
-	.sportszone-wrap.sz-vertical-navs .events-type-navs ul.events-nav li:not(.selected) a:hover,
-	.sportszone-wrap.sz-vertical-navs .events-type-navs ul.events-nav li:not(.selected) a:focus {
-		background: none;
-	}
-	.sportszone-wrap.sz-vertical-navs .dir-navs.activity-nav-tabs ul li.selected,
-	.sportszone-wrap.sz-vertical-navs .dir-navs.sites-nav-tabs ul li.selected,
-	.sportszone-wrap.sz-vertical-navs .dir-navs.groups-nav-tabs ul li.selected,
-	.sportszone-wrap.sz-vertical-navs .dir-navs.members-nav-tabs ul li.selected,
-	.sportszone-wrap.sz-vertical-navs .main-navs.user-nav-tabs ul li.selected,
-	.sportszone-wrap.sz-vertical-navs .main-navs.group-nav-tabs ul li.selected,
-	.sportszone-wrap.sz-vertical-navs .events-type-navs ul.events-nav li.selected {
-		background: none;
-		border: 1px solid #d6d6d6;
-		border-right-color: #fff;
-	}
-	.sportszone-wrap.sz-vertical-navs .dir-navs.activity-nav-tabs ul li.selected a,
-	.sportszone-wrap.sz-vertical-navs .dir-navs.sites-nav-tabs ul li.selected a,
-	.sportszone-wrap.sz-vertical-navs .dir-navs.groups-nav-tabs ul li.selected a,
-	.sportszone-wrap.sz-vertical-navs .dir-navs.members-nav-tabs ul li.selected a,
-	.sportszone-wrap.sz-vertical-navs .main-navs.user-nav-tabs ul li.selected a,
-	.sportszone-wrap.sz-vertical-navs .main-navs.group-nav-tabs ul li.selected a,
-	.sportszone-wrap.sz-vertical-navs .events-type-navs ul.events-nav li.selected a {
-		background: none;
-		color: #333;
-		font-weight: 600;
-	}
-	.sportszone-wrap.sz-vertical-navs .dir-navs.activity-nav-tabs ul li.selected a span,
-	.sportszone-wrap.sz-vertical-navs .dir-navs.sites-nav-tabs ul li.selected a span,
-	.sportszone-wrap.sz-vertical-navs .dir-navs.groups-nav-tabs ul li.selected a span,
-	.sportszone-wrap.sz-vertical-navs .dir-navs.members-nav-tabs ul li.selected a span,
-	.sportszone-wrap.sz-vertical-navs .main-navs.user-nav-tabs ul li.selected a span,
-	.sportszone-wrap.sz-vertical-navs .main-navs.group-nav-tabs ul li.selected a span,
-	.sportszone-wrap.sz-vertical-navs .events-type-navs ul.events-nav li.selected span {
-		background: #555;
-		border: 1px solid #d6d6d6;
-		color: #fff;
+	.sz-single-vert-nav .sz-navs.vertical ul,
+	.sz-single-vert-nav .item-body:not(#group-create-body), .sz-single-vert-nav .item-body:not(#event-create-body) {
+		width:100%;	
+		padding-right:1rem;
+	}	
+	.sz-single-vert-nav .sz-navs.vertical ul {
+		display: none;
+		border-radius: 0;
+		margin-top:0;
+		padding-top:1rem;
 	}
 }

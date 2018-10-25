@@ -15,7 +15,7 @@
  * Description: SportsZone adds community features to WordPress. Member Profiles, Activity Streams, Direct Messaging, Notifications, and more!
  * Author:      The SportsZone Community
  * Author URI:  https://sportszone.org/
- * Version:     3.1.0
+ * Version:     3.1.1
  * Text Domain: sportszone
  * Domain Path: /sz-languages/
  * License:     GPLv2 or later (license.txt)

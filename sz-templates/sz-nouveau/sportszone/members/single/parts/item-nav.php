@@ -6,8 +6,11 @@
  * @version 3.1.0
  */
 ?>
-
 <nav class="<?php sz_nouveau_single_item_nav_classes(); ?>" id="object-nav" role="navigation" aria-label="<?php esc_attr_e( 'Member menu', 'sportszone' ); ?>">
+	
+	<div class="internal-nav-mobile">
+		<i class="fa fa-bars"></i>
+	</div>
 
 	<?php if ( sz_nouveau_has_nav( array( 'type' => 'primary' ) ) ) : ?>
 

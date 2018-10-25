@@ -24,12 +24,18 @@
 		<?php endif; ?>
 
 		<div id="item-header-content">
+			<div class="team-color-one">
 
-			<h2 class="highlight"><?php echo esc_attr( sz_get_group_name() ); ?></h2>
-			
-			<div class="item-meta">
-		        <span lass="activity" data-livestamp="<?php sz_core_iso8601_date( sz_get_group_last_active( 0, array( 'relative' => false ) ) ); ?>">
-				<?php printf( __( 'active %s', 'sportszone' ), sz_get_group_last_active() );?></span>		 
+				<h2 class="highlight"><?php echo esc_attr( sz_get_group_name() ); ?></h2>
+				
+				<div class="item-meta">
+			        <span lass="activity" data-livestamp="<?php sz_core_iso8601_date( sz_get_group_last_active( 0, array( 'relative' => false ) ) ); ?>">
+					<?php printf( __( 'active %s', 'sportszone' ), sz_get_group_last_active() );?></span>		 
+				</div>
+			</div>
+			<div class="team-color-two">
+			</div>
+			<div class="team-color-three">
 			</div>
 			
 			<div id="item-header-type"><?php echo sz_groups_get_group_type(sz_get_group_id(),true); ?></div>

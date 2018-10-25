@@ -497,6 +497,12 @@ function copyLink(link){
 			
 			// Custom Select Boxes
 			$( document ).ready( this.customSelect );
+			
+			// Set internal nav menues to display block at correct screen size
+			$(window).resize(this.showNavs);
+			
+			// Toggle internal nav menues
+			$('.internal-nav-mobile' ).on( 'click', '', this, this.toggleNavs );
 		},
 
 		/** Event Callbacks ***********************************************************/
@@ -912,6 +918,20 @@ function copyLink(link){
 		customSelect: function() {
 			$('select').wrap('<span class="select-container"></span>');
 			$('#settings-form .select-container').append('<span class="select-arrow"></span>');
+		},
+		
+		// Toggle internal nav menues
+		showNavs: function() {
+			if($(window).width() > 748) {
+				$('.single-screen-navs ul').css('display', 'block');	
+			} else {
+				$('.single-screen-navs ul').css('display', 'none');
+			}
+		},
+		
+		// Toggle internal nav menues
+		toggleNavs: function() {
+			$('.single-screen-navs ul').slideToggle();
 		}
 	};
 

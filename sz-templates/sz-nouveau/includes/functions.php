@@ -956,13 +956,25 @@ function sz_nouveau_theme_cover_image( $params = array() ) {
 			content: "";
 			display: table;
 		}
-
+		
+		@media screen and (max-width: 806px) {
+			.single-item.groups .sz-single-vert-nav .sz-wrap {
+				margin-top:-10px;	
+			}
+			.single-item.groups .sz-single-vert-nav .sz-navs.vertical ul {
+				padding-top:1rem;	
+			}
+		}
 		@media screen and (max-width: 782px) {
+			#sportszone #item-header-cover-image #item-header-avatar {
+				margin-top:	165px;
+			}
 			#sportszone #item-header-cover-image #item-header-avatar,
 			.sz-user #sportszone #item-header #item-header-cover-image #item-header-avatar,
 			#sportszone div#item-header #item-header-cover-image #item-header-content {
 				width:100%;
 				text-align:center;
+				flex-wrap:wrap;
 			}
 
 			#sportszone #item-header-cover-image #item-header-avatar a {
@@ -977,21 +989,40 @@ function sz_nouveau_theme_cover_image( $params = array() ) {
 			body.single-item.groups #sportszone div#item-header #item-header-cover-image #item-header-content,
 			body.single-item.groups #sportszone div#item-header #item-header-cover-image #item-actions {
 				margin:0;
+				padding:0;
 			}
 
 			body.single-item.groups #sportszone div#item-header #item-header-cover-image #item-header-content,
 			body.single-item.groups #sportszone div#item-header #item-header-cover-image #item-actions {
 				max-width: 100%;
 			}
+			
+			#sportszone div#item-header #item-header-cover-image #item-header-content .team-color-one,
+			#sportszone div#item-header #item-header-cover-image #item-header-content .team-color-two,
+			#sportszone div#item-header #item-header-cover-image #item-header-content .team-color-three {
+				width:100%;	
+				min-height: 15px;
+			} 
 
 			#sportszone div#item-header-cover-image h2 a,
 			#sportszone div#item-header-cover-image h2 {
-				color: inherit;
-				text-shadow: none;
-				margin:25px 0 0;
-				font-size:200%;
+				color: #FFF;
+				text-rendering: optimizelegibility;
+				text-shadow: 0px 0px 3px rgba( 0, 0, 0, 0.8 );
+				text-transform:uppercase;
+				margin: 2em 0 0.2em .6em;
+				font-size:1.5rem;
+				display:inline-block;
+				width:100%;
 			}
-
+			#sportszone div#item-header-cover-image h2.user-nicename {
+				display:block;	
+			}
+			
+			#sportszone div#item-header-cover-image .item-meta {
+				width:100%;
+			}
+				
 			#sportszone #item-header-cover-image #item-buttons div {
 				float:none;
 				display:inline-block;

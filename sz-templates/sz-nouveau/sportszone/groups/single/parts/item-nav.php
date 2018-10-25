@@ -8,6 +8,10 @@
 ?>
 
 <nav class="<?php sz_nouveau_single_item_nav_classes(); ?>" id="object-nav" role="navigation" aria-label="<?php esc_attr_e( 'Group menu', 'sportszone' ); ?>">
+	
+	<div class="internal-nav-mobile">
+		<i class="fa fa-bars"></i>
+	</div>
 
 	<?php if ( sz_nouveau_has_nav( array( 'object' => 'groups' ) ) ) : ?>
 
