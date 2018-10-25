@@ -289,7 +289,7 @@ class SportsZone {
 					$plugins = get_site_option( 'active_sitewide_plugins');
 
 					// basename
-					$basename = basename( constant( 'SZ_PLUGIN_DIR' ) ) . '/sz-loader.php';
+					$basename = basename( constant( 'SZ_PLUGIN_DIR' ) ) . '/sportszone.php';
 
 					// plugin is network-activated; use main site ID instead
 					if ( isset( $plugins[ $basename ] ) ) {
@@ -392,8 +392,8 @@ class SportsZone {
 		/** Paths**************************************************************/
 
 		// SportsZone root directory
-		$this->file           = constant( 'SZ_PLUGIN_DIR' ) . 'sz-loader.php';
-		$this->basename       = basename( constant( 'SZ_PLUGIN_DIR' ) ) . '/sz-loader.php';
+		$this->file           = constant( 'SZ_PLUGIN_DIR' ) . 'sportszone.php';
+		$this->basename       = basename( constant( 'SZ_PLUGIN_DIR' ) ) . '/sportszone.php';
 		$this->plugin_dir     = trailingslashit( constant( 'SZ_PLUGIN_DIR' ) . constant( 'SZ_SOURCE_SUBDIRECTORY' ) );
 		$this->plugin_url     = trailingslashit( constant( 'SZ_PLUGIN_URL' ) . constant( 'SZ_SOURCE_SUBDIRECTORY' ) );
 

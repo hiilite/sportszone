@@ -3355,7 +3355,7 @@ msgid "A SportsZone update is available, but your system is not compatible."
 msgstr ""
 
 #: sz-core/deprecated/2.8.php:144 sz-core/deprecated/2.8.php:198
-#: sz-loader.php:64
+#: sportszone.php:64
 msgid "See <a href=\"%s\">the Codex guide</a> for more information."
 msgstr ""
 
@@ -4659,18 +4659,18 @@ msgstr ""
 msgid "Group invite rejected"
 msgstr ""
 
-#: sz-loader.php:62
+#: sportszone.php:62
 msgid "Your site does not support SportsZone."
 msgstr ""
 
-#: sz-loader.php:64
+#: sportszone.php:64
 #. translators: 1: current PHP version, 2: required PHP version
 msgid ""
 "Your site is currently running PHP version %1$s, while SportsZone requires "
 "version %2$s or greater."
 msgstr ""
 
-#: sz-loader.php:65
+#: sportszone.php:65
 msgid "Please update your server or deactivate SportsZone."
 msgstr ""
 

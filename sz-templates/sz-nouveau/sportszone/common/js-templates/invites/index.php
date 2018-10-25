@@ -130,7 +130,7 @@
 				<input type="search" id="group_invites_search" placeholder="<?php echo esc_attr_x( 'Search', 'search placeholder text', 'sportszone' ); ?>"/>
 
 				<button type="submit" id="group_invites_search_submit" class="nouveau-search-submit">
-					<span class="dashicons dashicons-search" aria-hidden="true"></span>
+					<i class="fa fa-search"></i>
 					<span id="button-text" class="sz-screen-reader-text"><?php echo esc_html_x( 'Search', 'button', 'sportszone' ); ?></span>
 				</button>
 			</form>

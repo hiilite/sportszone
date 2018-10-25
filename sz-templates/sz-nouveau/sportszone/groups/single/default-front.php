@@ -8,7 +8,6 @@
 ?>
 
 <div class="group-front-page">
-
 	<?php if ( ! is_active_sidebar( 'sidebar-sportszone-groups' ) || ! sz_nouveau_groups_do_group_boxes() ) : ?>
 		<?php if ( ! is_customize_preview() && sz_current_user_can( 'sz_moderate' ) ) : ?>
 

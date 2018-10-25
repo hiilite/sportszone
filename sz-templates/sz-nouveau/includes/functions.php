@@ -118,7 +118,8 @@ function sz_nouveau_ajax_querystring( $query_string, $object ) {
 	}
 	
 	if ( ! empty( $post_query['loc_city'] ) ) {
-		$qs[] = 'loc_city=' . urlencode( $_POST['loc_city'] );
+		//$qs[] = 'loc_city=' . urlencode( $_POST['loc_city'] );
+		$qs[] = 'loc_city=' . urlencode( $post_query['loc_city'] );
 	}
 
 	// Specific to messages
@@ -1001,7 +1002,7 @@ function sz_nouveau_theme_cover_image( $params = array() ) {
 			#sportszone div#item-header #item-header-cover-image #item-header-content .team-color-two,
 			#sportszone div#item-header #item-header-cover-image #item-header-content .team-color-three {
 				width:100%;	
-				min-height: 15px;
+				min-height: 20px;
 			} 
 
 			#sportszone div#item-header-cover-image h2 a,

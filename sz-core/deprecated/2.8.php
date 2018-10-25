@@ -36,7 +36,7 @@ function sz_core_admin_maybe_disable_update_row_for_php53_requirement() {
 		return;
 	}
 
-	$loader = basename( constant( 'SZ_PLUGIN_DIR' ) ) . '/sz-loader.php';
+	$loader = basename( constant( 'SZ_PLUGIN_DIR' ) ) . '/sportszone.php';
 
 	remove_action( "after_plugin_row_{$loader}", 'wp_plugin_update_row', 10 );
 	add_action( "after_plugin_row_{$loader}", 'sz_core_admin_php52_plugin_row', 10, 2 );
@@ -73,7 +73,7 @@ function sz_core_admin_maybe_remove_from_update_core() {
 function sz_core_admin_remove_sportszone_from_update_transient( $retval ) {
 	_deprecated_function( __FUNCTION__, '2.8' );
 
-	$loader = basename( constant( 'SZ_PLUGIN_DIR' ) ) . '/sz-loader.php';
+	$loader = basename( constant( 'SZ_PLUGIN_DIR' ) ) . '/sportszone.php';
 
 	// Remove BP from update plugins list.
 	if ( isset( $retval->response[ $loader ] ) ) {
@@ -94,7 +94,7 @@ function sz_core_admin_remove_sportszone_from_update_transient( $retval ) {
  * @since 2.7.0
  * @deprecated 2.8.0
  *
- * @param string $file        Plugin filename. sportszone/sz-loader.php.
+ * @param string $file        Plugin filename. sportszone/sportszone.php.
  * @param array  $plugin_data Data about the SportsZone plugin, as returned by the
  *                            plugins API.
  */

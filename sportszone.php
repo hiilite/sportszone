@@ -1,21 +1,12 @@
 <?php
 /**
- * The SportsZone Plugin.
- *
- * SportsZone is social networking software with a twist from the creators of WordPress.
- *
- * @package SportsZone
- * @subpackage Main
- * @since 1.0.0
- */
-
-/**
  * Plugin Name: SportsZone
  * Plugin URI:  https://sportszone.org/
  * Description: SportsZone adds community features to WordPress. Member Profiles, Activity Streams, Direct Messaging, Notifications, and more!
  * Author:      The SportsZone Community
  * Author URI:  https://sportszone.org/
- * Version:     3.1.1
+ * GitHub Plugin URI: https://github.com/hiilite/sportszone
+ * Version:     3.1.2
  * Text Domain: sportszone
  * Domain Path: /sz-languages/
  * License:     GPLv2 or later (license.txt)
@@ -25,11 +16,21 @@
  * This files should always remain compatible with the minimum version of
  * PHP supported by WordPress.
  */
+ 
+/**
+ * The SportsZone Plugin.
+ *
+ * SportsZone is social networking software with a twist from the creators of WordPress.
+ *
+ * @package SportsZone
+ * @subpackage Main
+ * @since 1.0.0
+ */
 
 // Exit if accessed directly
 defined( 'ABSPATH' ) || exit;
 
-// Required PHP version.
+// Required PHP version. 
 define( 'SZ_REQUIRED_PHP_VERSION', '5.3.0' );
 
 /**

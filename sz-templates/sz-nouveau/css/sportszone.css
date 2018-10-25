@@ -49,6 +49,7 @@ Hello, this is the SportsZone Nouveau stylesheet.
 
 6.0 - Forms  -  General
 	6.1 - Dir Search
+	6.2 - Group Settings 
 
 7.0 - Tables -  General
 
@@ -754,6 +755,7 @@ body.sportszone article.page > .entry-header .entry-title {
 .sportszone-wrap .subnav-filters > ul {
 	float: left;
 	list-style: none;
+	width:100%;
 }
 
 .sportszone-wrap .subnav-filters.sz-messages-filters ul {
@@ -865,6 +867,9 @@ body.sportszone article.page > .entry-header .entry-title {
 }
 
 @media screen and (min-width: 32em) {
+	.sportszone-wrap .subnav-filters > ul {
+		width: 100%;	
+	}
 	.sportszone-wrap .subnav-filters li {
 		margin-bottom: 0;
 	}
@@ -874,11 +879,11 @@ body.sportszone article.page > .entry-header .entry-title {
 	.sportszone-wrap .subnav-filters .dir-search,
 	.sportszone-wrap .subnav-filters .user-messages-bulk-actions,
 	.sportszone-wrap .subnav-filters .user-messages-search,
-	.sportszone-wrap .subnav-filters .group-invites-search,
-	.sportszone-wrap .subnav-filters .group-act-search {
+	.sportszone-wrap .subnav-filters .group-invites-search {
 		float: left;
 	}
-	.sportszone-wrap .subnav-filters .sz-search {
+	.sportszone-wrap .subnav-filters .sz-search,
+	.sportszone-wrap .subnav-filters .group-act-search {
 		float: right;
 		margin-right:4px;	
 	}
@@ -914,6 +919,7 @@ body.sportszone article.page > .entry-header .entry-title {
 	.sportszone-wrap .subnav-filters .component-filters {
 		float: right;
 		margin-top: 0;
+		margin-right:4px;
 		width: auto;
 	}
 	.sportszone-wrap .subnav-filters .last select,
@@ -4001,11 +4007,19 @@ body.no-js .single-item-header .js-self-profile-button {
 
 .sportszone .sz-invites-content ul.item-list li {
 	border: 1px solid #eaeaea;
+	border-radius: 7px;
 	margin: 0 0 1%;
 	padding-left: 5px;
 	padding-right: 5px;
 	position: relative;
 	width: auto;
+}
+
+.sportszone .members.sz-invites-content #members-list li > div {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	min-height: 100px;
 }
 
 .sportszone .sz-invites-content ul.item-list li .list-title {
@@ -4017,6 +4031,36 @@ body.no-js .single-item-header .js-self-profile-button {
 	position: absolute;
 	top: 10px;
 	right: 10px;
+}
+
+@media(max-width:748px) {
+	.sportszone .sz-invites-content ul.item-list {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-between;	
+	}
+	.sportszone .sz-invites-content ul.item-list li {
+		width:40%;
+		flex:1 1 40%;
+		padding-top:2rem;
+	}
+	.sportszone .sz-invites-content ul.item-list li .action {
+		position:static;	
+	}
+	.sportszone .members.sz-invites-content #members-list li > div {
+		min-height:50px;	
+	}
+	.sportszone .members.sz-invites-content #members-list li .item-avatar img.avatar {
+		width: 100px;
+		height: 100px;
+    	margin: auto;
+	}
+}
+@media(max-width:500px) {
+	.sportszone .sz-invites-content ul.item-list li {
+		width:100%;
+		flex:1 1 100%;
+	}
 }
 
 .sportszone .sz-invites-content ul.item-list li .action a.button.invite-button {
@@ -5392,6 +5436,15 @@ body.no-js .sportszone #messages-bulk-management #select-all-messages {
 		margin: 5px 8px 10px 8px;
 		border-radius: 7px;
 	}
+}
+
+/**
+*----------------------------------------------------------
+* @section 6.2 - Group Settings
+*----------------------------------------------------------
+*/
+#group-settings-form.standard-form label {
+	margin-top:0;
 }
 
 /**

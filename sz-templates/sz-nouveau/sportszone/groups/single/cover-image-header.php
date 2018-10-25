@@ -6,7 +6,9 @@
  * @version 3.1.0
  */
 ?>
-
+<?php
+$colours = groups_get_groupmeta(sz_get_group_id(), 'sz_group_colors');
+?>
 <div id="cover-image-container">
 	<div id="header-cover-image">
 		<?php sz_group_cover_image(); ?>
@@ -23,8 +25,8 @@
 			</div><!-- #item-header-avatar -->
 		<?php endif; ?>
 
-		<div id="item-header-content">
-			<div class="team-color-one">
+		<div id="item-header-content" <?php if($colours['color_one'] != '') { echo 'style="background-color:'.$colours['color_one'].'"'; } ?>>
+			<div class="team-color-one" <?php if($colours['color_one'] != '') { echo 'style="background-color:'.$colours['color_one'].'"'; } ?>>
 
 				<h2 class="highlight"><?php echo esc_attr( sz_get_group_name() ); ?></h2>
 				
@@ -33,9 +35,9 @@
 					<?php printf( __( 'active %s', 'sportszone' ), sz_get_group_last_active() );?></span>		 
 				</div>
 			</div>
-			<div class="team-color-two">
+			<div class="team-color-two" <?php if($colours['color_two'] != '') { echo 'style="background-color:'.$colours['color_two'].'"'; } ?>>
 			</div>
-			<div class="team-color-three">
+			<div class="team-color-three" <?php if($colours['color_three'] != '') { echo 'style="background-color:'.$colours['color_three'].'"'; } ?>>
 			</div>
 			
 			<div id="item-header-type"><?php echo sz_groups_get_group_type(sz_get_group_id(),true); ?></div>
