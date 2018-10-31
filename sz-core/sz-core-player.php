@@ -10,7 +10,66 @@
  * @category	Class
  * @author 		ThemeBoy
  */
-class SZ_Player extends SZ_Custom_Post {
+class SZ_Player {
+	/** @var int The post ID. */
+	public $ID;
+
+	/** @var object The actual post object. */
+	public $user;
+
+	/**
+	 * __construct function.
+	 *
+	 * @access public
+	 * @param mixed $post
+	 */
+	public function __construct( $user ) {
+		if ( $user instanceof WP_User ):
+			$this->ID   = absint( $user->ID );
+			$this->user = $user;
+		else:
+			$this->ID  = absint( $user );
+			$this->user = get_userdata( $this->ID );
+		endif;
+	}
+
+	/**
+	 * __isset function.
+	 *
+	 * @access public
+	 * @param mixed $key
+	 * @return bool
+	 */
+	public function __isset( $key ) {
+		return metadata_exists( 'post', $this->ID, 'sz_' . $key );
+	}
+
+	/**
+	 * __get function.
+	 *
+	 * @access public
+	 * @param mixed $key
+	 * @return bool
+	 */
+	public function __get( $key ) {
+		if ( ! isset( $key ) ):
+			return $this->post;
+		else:
+			$value = get_post_meta( $this->ID, 'sz_' . $key, true );
+		endif;
+
+		return $value;
+	}
+
+	/**
+	 * Get the post data.
+	 *
+	 * @access public
+	 * @return object
+	 */
+	public function get_post_data() {
+		return $this->post;
+	}
 
 	/**
 	 * Returns positions
@@ -158,7 +217,7 @@ class SZ_Player extends SZ_Custom_Post {
 			}
 			$has_checkboxes = false;
 		}
-
+		
 		$performance_labels = array();
 		$formats = array();
 		$sendoffs = array();
@@ -202,27 +261,25 @@ class SZ_Player extends SZ_Custom_Post {
 
 		$posts = get_posts( $args );
 		
-		if ( $manual_columns ) {
-			$usecolumns = array_merge( $usecolumns, (array) get_post_meta( $this->ID, 'sz_columns', true ) );
-			$usecolumns = array_filter( $usecolumns );
-		} else {
-			if ( is_array( $posts ) ) {
-				foreach ( $posts as $post ) {
-					// Get visibility
-					$visible = get_post_meta( $post->ID, 'sz_visible', true );
-					if ( '' === $visible || $visible ) {
-						$usecolumns[] = $post->post_name;
-					}
+		
+		if ( is_array( $posts ) ) {
+			foreach ( $posts as $post ) {
+				// Get visibility
+				$visible = get_post_meta( $post->ID, 'sz_visible', true );
+				
+				if ( '' === $visible || $visible ) {
+					$usecolumns[] = $post->post_name;
 				}
 			}
 		}
-
+		
+		
 		// Get labels from outcome variables
 		$outcome_labels = (array)sz_get_var_labels( 'sz_outcome' );
 
 		// Get labels from result variables
 		$result_labels = (array)sz_get_var_labels( 'sz_result' );
-
+		
 		// Generate array of all season ids and season names
 		$div_ids = array();
 		$season_names = array();
@@ -232,7 +289,7 @@ class SZ_Player extends SZ_Custom_Post {
 				$season_names[ $season->term_id ] = $season->name;
 			endif;
 		endforeach;
-
+		
 		$div_ids[] = 0;
 		$season_names[0] = __( 'Total', 'sportspress' );
 
@@ -246,11 +303,11 @@ class SZ_Player extends SZ_Custom_Post {
 
 		// Initialize placeholders array
 		$placeholders = array();
-
+		
 		foreach ( $div_ids as $div_id ):
 
 			$totals = array( 'eventsattended' => 0, 'eventsplayed' => 0, 'eventsstarted' => 0, 'eventssubbed' => 0, 'eventminutes' => 0, 'streak' => 0, 'last5' => null, 'last10' => null );
-
+			
 			foreach ( $performance_labels as $key => $value ):
 				$totals[ $key ] = 0;
 			endforeach;
@@ -269,7 +326,7 @@ class SZ_Player extends SZ_Custom_Post {
 			// Initialize last counters
 			$last5 = array();
 			$last10 = array();
-
+			
 			// Add outcome types to last counters
 			foreach( $outcome_labels as $key => $value ):
 				$last5[ $key ] = 0;
@@ -325,7 +382,7 @@ class SZ_Player extends SZ_Custom_Post {
 			$args = apply_filters( 'sportspress_player_data_event_args', $args );
 
 			$events = get_posts( $args );
-
+			
 			// Event loop
 			foreach( $events as $i => $event ):
 				$results = (array)get_post_meta( $event->ID, 'sz_results', true );
@@ -493,8 +550,8 @@ class SZ_Player extends SZ_Custom_Post {
 					endif;
 				endforeach;
 				$i++;
-			endforeach;
-
+			endforeach; 
+			
 			// Compile streaks counter and add to totals
 			$args = array(
 				'name' => $streak['name'],
@@ -503,7 +560,7 @@ class SZ_Player extends SZ_Custom_Post {
 				'posts_per_page' => 1
 			);
 			$outcomes = get_posts( $args );
-
+			
 			if ( $outcomes ):
 				$outcome = reset( $outcomes );
 				$abbreviation = sz_get_abbreviation( $outcome->ID );
@@ -514,22 +571,23 @@ class SZ_Player extends SZ_Custom_Post {
 			// Add last counters to totals
 			$totals['last5'] = $last5;
 			$totals['last10'] = $last10;
-
+			
 			// Add metrics to totals
 			$totals = array_merge( $metrics, $totals );
-
+			
 			// Generate array of placeholder values for each league
 			$placeholders[ $div_id ] = array();
 			foreach ( $equations as $key => $value ):
-				$placeholders[ $div_id ][ $key ] = sz_solve( $value['equation'], $totals, $value['precision'] );
+				// TODO: Solve for sz_solve
+				//$placeholders[ $div_id ][ $key ] = sz_solve( $value['equation'], $totals, $value['precision'] );
 			endforeach;
-
+			
 			foreach ( $performance_labels as $key => $label ):
 				$placeholders[ $div_id ][ $key ] = sz_array_value( $totals, $key, 0 );
 			endforeach;
-
+			
 		endforeach;
-
+		
 		// Get labels by section
 		$args = array(
 			'post_type' => 'sz_statistic',

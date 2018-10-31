@@ -2746,6 +2746,64 @@ function cmb2_groups_details_metaboxes() {
 	) );
 }
 
+
+/**
+ * sz_do_groups_carousel_shortcode function.
+ * 
+ * @access public
+ * @return void
+ * @since 3.1.3
+ */
+function sz_do_groups_carousel_shortcode( $atts ) {
+	
+	// TODO: accept all perameters for group types
+	extract( shortcode_atts( array(
+      'group_type'		=> false,
+      'max'				=> 6,
+      'type'			=> 'active',
+      'search_terms'	=> false,
+      'meta_query'		=> false,
+      'populate_extras'	=> true
+	), $atts ) );
+	
+	
+	$args = array(
+		'type'		=> $type,
+		'max'		=> $max
+	);
+	if($group_type) $args['group_type'] = array($group_type);
+	if ( sz_has_groups( $args ) ) : ?>
+	
+	<div class="card-deck">
+	<?php
+	while ( sz_groups() ) :
+		sz_the_group();
+
+				$group_id = sz_get_group_id();
+				$group = groups_get_group( array('group_id' => $group_id) );
+				$avatar = sz_core_fetch_avatar(array( 'item_id' => $group_id, 'object'=>'group', 'class'=>'card-img-top'));
+				$group_url = sz_get_group_permalink();
+
+				echo "<div class='card'>
+					<div class='card-body'>
+						<a href='$group_url'>$avatar</a>
+						<h5 class='card-title'><a href='$group_url'>{$group->name}</a></h5>
+					</div>
+					
+				</div>";	
+
+			
+			?>
+		
+
+	<?php endwhile;
+	echo '<div class="view-more"><a href="/members/groups/" class="vert-btn">View More</a></div>';
+	?>
+	</div>
+	<?php
+	endif; 
+}
+add_shortcode( 'sz-groups-carousel', 'sz_do_groups_carousel_shortcode' );
 /**
  *	
  * -------------- ADDITONAL GROUP FIELDS --------------------*

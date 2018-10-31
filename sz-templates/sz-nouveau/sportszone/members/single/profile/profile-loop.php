@@ -38,6 +38,7 @@ if ( sz_has_profile() ) :
  *
  */
 ?>
+<!-- sportszone > sz-templates > sz-nouveau > sportszone > members > single > profile > profile-loop -->
 	<div class="tab-content"> 
 	<?php
 	
@@ -91,37 +92,20 @@ if ( sz_has_profile() ) :
 				
 				<div class="profile-fields sz-player-statistics">
 					<?php
+					// TODO: Rewrite statistice to write to each user and pull data
 					$player_id = sz_displayed_user_id();
 					$player = new SZ_Player( $player_id );
 					
 					// Get performance labels
-					$args = array(
-						'post_type' => array( 'sz_performance' ),
-						'numberposts' => 20,
-						'posts_per_page' => 20,
-						'orderby' => 'menu_order',
-						'order' => 'DESC',
-						'meta_query' => array(
-			        		'relation' => 'OR',
-							array(
-								'key' => 'sz_format',
-								'value' => 'number',
-								'compare' => 'NOT EXISTS',
-							),
-							array(
-								'key' => 'sz_format',
-								'value' => array( 'equation', 'text' ),
-								'compare' => 'NOT IN',
-							),
-						),
-					);
-			
-					$posts = get_posts( $args );
 					sz_get_template( 'player-statistics-league.php', array(
 						'data' => $player->data( 0, false, -1 ),
 						'caption' => __( 'Career Total', 'sportspress' ),
 						'hide_teams' => true,
 					) );
+					
+					
+					
+					
 					?>
 				</div>
 

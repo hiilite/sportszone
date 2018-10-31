@@ -553,7 +553,7 @@ class SZ_Events_Component extends SZ_Component {
 
 			// Add the My Events nav item.
 			$sub_nav[] = array(
-				'name'            => __( 'Memberships', 'sportszone' ),
+				'name'            => __( 'My Events', 'sportszone' ),
 				'slug'            => 'my-events',
 				'parent_url'      => $events_link,
 				'parent_slug'     => $slug,

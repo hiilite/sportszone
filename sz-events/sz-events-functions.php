@@ -2973,7 +2973,7 @@ function sz_additional_fields_add_matches_event_extension() {
 			$args = array(
 				'slug' => 'matches',
 				'name' => 'Matches',
-				'nav_item_position'	=> 2,
+				'nav_item_position'	=> 10,
 				'screens'	=> array(
 					'create'	=> array(
 						'position'	=> 2
@@ -3085,21 +3085,12 @@ function sz_additional_fields_add_matches_event_extension() {
 						$match_id = get_the_id(  );
 						$slug = get_post_field( 'post_name', get_post() );
 						
-						$match_link = rtrim($event_link, '/') . '?match=' . get_the_id();
-						
 						$matche_info = events_get_eventmeta($event_id, 'sz_matches_group');
+						
+						$match_link = rtrim($event_link, '/') . '?match=' . $matche_info[$i]['match_id'];
 					
 						$team_one = $matche_info[$i]['match_team1']['team'];
 						$team_two = $matche_info[$i]['match_team2']['team'];
-
-						//echo '<pre>'.print_r($matche_info,true).'</pre>';
-						
-						// TODO: Style to match matches design
-						// TODO: Fix order of link for matches
-						
-						//echo '<li class="item-entry" data-sz-item-id="'.get_the_id(  ).'"><a href="'.$match_link.'">';
-						//the_title(  );
-						//echo '</a></li>';
 						?>
 						<li class="item-entry" data-sz-item-id="<?php get_the_id(); ?>">
 							<div class="sz-info-box">
@@ -3110,7 +3101,7 @@ function sz_additional_fields_add_matches_event_extension() {
 									$slug_one = $group_one->slug;	
 									?>
 									<div class="match-team-avatar">
-										<a href="<?php echo site_url(); ?>'/groups/<?php echo $slug_one; ?>/" class="lrg-avatar">
+										<a href="<?php echo site_url(); ?>/groups/<?php echo $slug_one; ?>/" class="lrg-avatar">
 											<?php echo sz_core_fetch_avatar ( array( "item_id" => $team_one, "object" => "group", "type" => "full" ) ); ?>
 											<h4><?php echo sz_get_team_name( $team_one, true ); ?></h4>
 										</a>
@@ -3125,7 +3116,7 @@ function sz_additional_fields_add_matches_event_extension() {
 									$slug_two = $group_two->slug;	
 									?>
 									<div class="match-team-avatar">
-										<a href="<?php echo site_url(); ?>'/groups/<?php echo $slug_two; ?>/" class="lrg-avatar">
+										<a href="<?php echo site_url(); ?>/groups/<?php echo $slug_two; ?>/" class="lrg-avatar">
 											<?php echo sz_core_fetch_avatar ( array( "item_id" => $team_two, "object" => "group", "type" => "full" ) ); ?>
 											<h4><?php echo sz_get_team_name( $team_two, true ); ?></h4>
 										</a>

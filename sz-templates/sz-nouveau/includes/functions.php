@@ -900,7 +900,7 @@ function sz_nouveau_theme_cover_image( $params = array() ) {
 		}
 		#sportszone div#item-header #item-header-cover-image #item-header-content .team-color-three {
 			border-radius: 0;
-			width: 20%;
+			width: calc(20% + 1px);
 			background: #' . $team_color_three . ';
 		}
 
@@ -1018,6 +1018,7 @@ function sz_nouveau_theme_cover_image( $params = array() ) {
 			}
 			#sportszone div#item-header-cover-image h2.user-nicename {
 				display:block;	
+				margin-left:0;
 			}
 			
 			#sportszone div#item-header-cover-image .item-meta {

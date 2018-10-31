@@ -918,6 +918,10 @@ function copyLink(link){
 		customSelect: function() {
 			$('select').wrap('<span class="select-container"></span>');
 			$('#settings-form .select-container').append('<span class="select-arrow"></span>');
+			$('.select2-container').wrap('<span class="select-container"></span>');
+			$('.cmb-td').each( function() {
+				$(this).children('.select-container').last().append('<span class="select-arrow"></span>');
+			});
 		},
 		
 		// Toggle internal nav menues

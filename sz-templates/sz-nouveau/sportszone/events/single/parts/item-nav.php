@@ -14,6 +14,10 @@ if(get_post_type( $post ) == 'sz_match'){
 
 <nav class="<?php sz_nouveau_single_item_nav_classes(); ?>" id="object-nav" role="navigation" aria-label="<?php esc_attr_e( 'Event menu', 'sportszone' ); ?>">
 	<?php if ( sz_nouveau_has_nav( array( 'object' => 'events' ) ) ) : ?>
+		<div class="internal-nav-mobile">
+			<i class="fa fa-bars"></i>
+		</div>
+	
 		<ul>
 
 			<?php

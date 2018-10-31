@@ -25,8 +25,8 @@ $colours = groups_get_groupmeta(sz_get_group_id(), 'sz_group_colors');
 			</div><!-- #item-header-avatar -->
 		<?php endif; ?>
 
-		<div id="item-header-content" <?php if($colours['color_one'] != '') { echo 'style="background-color:'.$colours['color_one'].'"'; } ?>>
-			<div class="team-color-one" <?php if($colours['color_one'] != '') { echo 'style="background-color:'.$colours['color_one'].'"'; } ?>>
+		<div id="item-header-content" <?php if(isset($colours['color_one']) && $colours['color_one'] != '') { echo 'style="background-color:'.$colours['color_one'].'"'; } ?>>
+			<div class="team-color-one" <?php if(isset($colours['color_one']) && $colours['color_one'] != '') { echo 'style="background-color:'.$colours['color_one'].'"'; } ?>>
 
 				<h2 class="highlight"><?php echo esc_attr( sz_get_group_name() ); ?></h2>
 				
@@ -35,9 +35,9 @@ $colours = groups_get_groupmeta(sz_get_group_id(), 'sz_group_colors');
 					<?php printf( __( 'active %s', 'sportszone' ), sz_get_group_last_active() );?></span>		 
 				</div>
 			</div>
-			<div class="team-color-two" <?php if($colours['color_two'] != '') { echo 'style="background-color:'.$colours['color_two'].'"'; } ?>>
+			<div class="team-color-two" <?php if(isset($colours['color_two']) && $colours['color_two'] != '') { echo 'style="background-color:'.$colours['color_two'].'"'; } ?>>
 			</div>
-			<div class="team-color-three" <?php if($colours['color_three'] != '') { echo 'style="background-color:'.$colours['color_three'].'"'; } ?>>
+			<div class="team-color-three" <?php if(isset($colours['color_three']) &&  $colours['color_three'] != '') { echo 'style="background-color:'.$colours['color_three'].'"'; } ?>>
 			</div>
 			
 			<div id="item-header-type"><?php echo sz_groups_get_group_type(sz_get_group_id(),true); ?></div>

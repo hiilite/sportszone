@@ -22,11 +22,7 @@ foreach ( $teams[0] as $team ):
 	$alt = sizeof( $teams ) == 2 && $i % 2;
 	// Add team name
 	if ( $show_team_names ) {
-		if ( $alt ) {
-			$logo .= ' <strong class="sz-team-name">' . sz_get_team_name( $team, $abbreviate_teams ) . '</strong>';
-		} else {
-			$logo = '<strong class="sz-team-name">' . sz_get_team_name( $team, $abbreviate_teams ) . '</strong> ' . $logo;
-		}
+		$logo = '<strong class="sz-team-name">' . sz_get_team_name( $team, $abbreviate_teams ) . '</strong> ' . $logo;
 	}
 
 	// Add link
