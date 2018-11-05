@@ -90,33 +90,34 @@ function groups_action_create_group() {
 					'date_created' => sz_core_current_time(), 
 					'status' => 'public' ) ) 
 				) {
+				
 				sz_core_add_message( __( 'There was an error saving group details. Please try again.', 'sportszone' ), 'error' );
 				sz_core_redirect( trailingslashit( sz_get_groups_directory_permalink() . 'create/step/' . sz_get_groups_current_create_step() ) );
 			}
 			
-			if ( isset( $_POST['group-email'] ) ) {
-				groups_update_groupmeta( $new_group_id, 'group_email', sanitize_text_field($_POST['group-email']) );
+			$new_group_id = $sz->groups->new_group_id; 
+
+			if ( isset( $_POST['sz_group_email'] ) ) {
+				groups_update_groupmeta( $new_group_id, 'sz_group_email', sanitize_text_field($_POST['sz_group_email']) );
 			}
-			if ( isset( $_POST['group-phone'] ) ) {
-				groups_update_groupmeta( $new_group_id, 'group_phone', sanitize_text_field($_POST['group-phone']) );
+			
+			if ( isset( $_POST['sz_group_country']['country'] ) ) {
+				groups_update_groupmeta( $new_group_id, 'sz_group_country', sanitize_text_field($_POST['sz_group_country']['country']) );
 			}
-			if ( isset( $_POST['group-country'] ) ) {
-				groups_update_groupmeta( $new_group_id, 'group_country', sanitize_text_field($_POST['group-country']) );
+			if ( isset( $_POST['sz_group_province']['province'] ) ) {
+				groups_update_groupmeta( $new_group_id, 'sz_group_province', sanitize_text_field($_POST['sz_group_province']['province']) );
 			}
-			if ( isset( $_POST['group-province'] ) ) {
-				groups_update_groupmeta( $new_group_id, 'group_province', sanitize_text_field($_POST['group-province']) );
+			if ( isset( $_POST['sz_group_facebook'] ) ) {
+				groups_update_groupmeta( $new_group_id, 'sz_group_facebook', sanitize_text_field($_POST['sz_group_facebook']) );
 			}
-			if ( isset( $_POST['group-facebook'] ) ) {
-				groups_update_groupmeta( $new_group_id, 'group_facebook', sanitize_text_field($_POST['group-facebook']) );
+			if ( isset( $_POST['sz_group_twitter'] ) ) {
+				groups_update_groupmeta( $new_group_id, 'sz_group_twitter', sanitize_text_field($_POST['sz_group_twitter']) );
 			}
-			if ( isset( $_POST['group-twitter'] ) ) {
-				groups_update_groupmeta( $new_group_id, 'group_twitter', sanitize_text_field($_POST['group-twitter']) );
+			if ( isset( $_POST['sz_group_website'] ) ) {
+				groups_update_groupmeta( $new_group_id, 'sz_group_website', sanitize_text_field($_POST['sz_group_website']) );
 			}
-			if ( isset( $_POST['group-website'] ) ) {
-				groups_update_groupmeta( $new_group_id, 'group_website', sanitize_text_field($_POST['group-website']) );
-			}
-			if ( isset( $_POST['group-colors'] ) ) {
-				groups_update_groupmeta( $new_group_id, 'group_colors', sanitize_text_field($_POST['group-colors']) );
+			if ( isset( $_POST['sz_group_colors'] ) ) {
+				groups_update_groupmeta( $new_group_id, 'sz_group_colors', serialize($_POST['sz_group_colors']) );
 			}
 			/*
 			 * Save group types.

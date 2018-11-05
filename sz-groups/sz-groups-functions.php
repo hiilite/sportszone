@@ -2808,119 +2808,328 @@ add_shortcode( 'sz-groups-carousel', 'sz_do_groups_carousel_shortcode' );
  *	
  * -------------- ADDITONAL GROUP FIELDS --------------------*
  *
+ */
+
+
+add_action( 'sz_init', 'sz_additional_fields_add_matches_group_extension' );
+
+/**
+ * Add the additional fields for the Matches tab when creating Events
  *
- 
-function sz_additional_fields_group_extension() {
+ * @since 3.1.0
+ *
+ * @param  int    $event_id   ID of the event.
+ * @param  string $event_type Event type.
+ * @return bool   Whether the event has the give event type.
+ */
+function sz_additional_fields_add_matches_group_extension() {
 	if ( class_exists( 'SZ_Group_Extension' ) ) :
 
-	class SZ_Additional_Fields_Group_Extension extends SZ_Group_Extension {
+	class SZ_Additional_Fields_Add_Matches_Group_Extension extends SZ_Group_Extension {
 
 		function __construct() {
-			$args = array(
-				'slug' => 'add-additional-info',
-				'name' => 'Additional Info',
-				'nav_item_position'	=> 2,
-				'screens'	=> array(
-					'create'	=> array(
-						'position'	=> 1
-					),	
-				),
-			);
-			parent::init( $args );
+
+			$group_type = sz_groups_get_group_type( sz_get_current_group_id() );
+			if($group_type == 'team'):
+				$args = array(
+					'slug' => 'matches',
+					'name' => 'Matches',
+					'nav_item_position'	=> 10,
+				);
+				parent::init( $args );
+			endif;
 		}
 
 		function display($group_id = NULL) {
-			$group_id = sz_get_group_id();
-			$email 		= groups_get_groupmeta( $group_id, 'group_email' );
-			$phone 		= groups_get_groupmeta( $group_id, 'group_phone' );
-			$location 	= groups_get_groupmeta( $group_id, 'group_location' );
-			$facebook	= groups_get_groupmeta( $group_id, 'group_facebook' );
-			$twitter 	= groups_get_groupmeta( $group_id, 'group_twitter' );
-			$website 	= groups_get_groupmeta( $group_id, 'group_website' );
-			$colors 	= groups_get_groupmeta( $group_id, 'group_colors' );
-			
-			
-			if($email) echo "<h5>$email<h5>";
-			if($phone) echo "<h5>$phone<h5>";
-			if($location) echo "<h5>$location<h5>";
-			if($facebook) echo "<h5>$facebook<h5>";
-			if($twitter) echo "<h5>$twitter<h5>";
-			if($website) echo "<h5>$website<h5>";
-			if($colors) echo "<h5>$colors<h5>";	
-			
-		}
-
-		function settings_screen( $group_id = NULL ) {
-			$email 		= groups_get_groupmeta( $group_id, 'group_email' );
-			$phone 		= groups_get_groupmeta( $group_id, 'group_phone' );
-			$location 	= groups_get_groupmeta( $group_id, 'group_location' );
-			$facebook	= groups_get_groupmeta( $group_id, 'group_facebook' );
-			$twitter 	= groups_get_groupmeta( $group_id, 'group_twitter' );
-			$website 	= groups_get_groupmeta( $group_id, 'group_website' );
-			$colors 	= groups_get_groupmeta( $group_id, 'group_colors' );
-			?>
-			<div>
-				Email:<br />
-				<input type="text" name="group_email" value="<?php echo $email; ?>">
-			</div>
-			<div>
-				Phone:<br />
-				<input type="text" name="group_phone" value="<?php echo $phone; ?>">
-			</div>
-			<div>
-				Location:<br />
-				<input type="text" name="group_location" value="<?php echo $location; ?>">
-			</div>
-			<div>
-				Facebook:<br />
-				<input type="text" name="group_facebook" value="<?php echo $facebook; ?>">
-			</div>
-			<div>
-				Twitter:<br />
-				<input type="text" name="group_twitter" value="<?php echo $twitter; ?>">
-			</div>
-			<div>
-				Website:<br />
-				<input type="text" name="group_website" value="<?php echo $website; ?>">
-			</div>
-			<div>
-				Colors:<br />
-				<input type="text" name="group_colors" value="<?php echo $colors; ?>">
-			</div>
-			<?php 
-		}
-
-		function settings_screen_save( $group_id = NULL ) {
+			$group_type = sz_groups_get_group_type($group_id);
+			if($group_type == 'team'):
+				echo '<!-- SZ-GROUPS-FUNCTIONS > SZ_Additional_Fields_Add_Matches_Group_Extension > display -->';
+				echo '<style>.sz-single-vert-nav .sz-wrap + #item-header + .sz-wrap { display: none; }</style>';
+				$group_link = '';
+				//$event_id = sz_get_event_id();
+				//$event_matches 		= events_get_eventmeta( $event_id, 'sz_matches_group' );
+				
+				// TODO: Change to display club name
+				// TODO: Add get request check to show single match.
+				$matches_args = array(
+					'post_type'	=> 'sz_match',
+					'posts_per_page'	=> -1,
+					'meta_query'	=> array(
+						array(
+							'key'	=> 'sz_team',
+							'value'	=> ":$group_id;",
+							'compare' => 'LIKE',
+						)
+					)
+				);
+				$matches = new WP_Query($matches_args);
+				
+				/*
+			 	 * Get list of nav items and pull just the matches link to be used as new link for matchs
+				 * REF: https://hotexamples.com/examples/-/-/bp_get_nav_menu_items/php-bp_get_nav_menu_items-function-examples.html			
+				 */
+				/*$group_nav = sz_get_nav_menu_items('groups');
+				foreach($group_nav as $item){
+					if('nav-matches' === $item->css_id) {
+						$group_link = $item->link;
+						break;
+					}
+				}*/
+				
+				if(isset($_GET['match'])):
+					// TODO: Secure to check if match is part of event line-up
+					/*
+					 * Output Single Match
+					 */
+					$match_id = $_GET['match'];
+					$match_query = new WP_Query(array(
+						'page_id' => $match_id,
+						'post_type' => 'sz_match'
+					));
+					
+					if($match_query->have_posts()):
+						while($match_query->have_posts()):
+							$match_query->the_post(  );
+							$event_id = get_post_meta( $match_id, 'sz_event', true );
+							$status = sz_get_status( get_the_ID() );
+							if ( 'results' == $status ) {
+								$caption = __( 'Recap', 'sportszone' );
+							} else {
+								$caption = __( 'Preview', 'sportszone' );
+							}
+							$content = get_the_content(  );
+							
+							$content = sz_nouveau()->add_content( $content, 'match', apply_filters( 'sportszone_match_content_priority', 10 ), $caption );
+							
+							echo $content;
+							
+							$user_id = get_current_user_id( );
+							// TODO: Also check if the user is a Mod
+							//$is_mod = SZ_Events_Member::get_is_mod_of( $user_id );
+							$is_admin_of = SZ_Groups_Member::get_is_admin_of( $user_id ); // Get list of all groups user is a admin of
+							
+							// if user is admin of any groups
+	
+							if(is_array($is_admin_of)){
+								$accepted_types = array('group');
+								$can_create = false;
+								
+								// Loop through each group and check its type
+								foreach($is_admin_of['groups'] as $event){
+									$event_id_to_check = $event->id;
+									if( $event_id == $event_id_to_check ) {
+										$can_create = true;
+									}
+								}
+								if($can_create) {
+									
+									echo do_shortcode( "[sz-match-results-form match_id='{$match_id}']"  );
+									
+								}
+							}
+						endwhile;
+					endif;
+					
+				else:
+					/*
+					 * Output Matches
+					 */
+					echo '<h2 class="sz-screen-title">Matches</h2>';
+					if($matches->have_posts()):
+						echo '<ul class="item-list matches-list sz-list" id="matches-list">';
+						$i = 0;
+						while($matches->have_posts(  )):
+							$matches->the_post(  );
+							$match_id = get_the_id(  );
+							$slug = get_post_field( 'post_name', get_post() );
+							
+							
+							
+							$match_teams = get_post_meta($match_id, 'sz_team', true);
+							
+							$match_link = rtrim($group_link, '/') . '?match=' . $match_id;
+						
+							$team_one = $match_teams[0];
+							$team_two = $match_teams[1];
+							?>
+							<li class="item-entry" data-sz-item-id="<?php get_the_id(); ?>">
+								<div class="sz-info-box">
+									
+									<div class="matches-teams">
+										<?php
+	
+										$group_one = groups_get_group( array( 'group_id' => $team_one ) );
+										$slug_one = $group_one->slug;	
+										?>
+										<div class="match-team-avatar">
+											<a href="<?php echo site_url(); ?>/groups/<?php echo $slug_one; ?>/" class="lrg-avatar">
+												<?php echo sz_core_fetch_avatar ( array( "item_id" => $team_one, "object" => "group", "type" => "full" ) ); ?>
+												<h4><?php echo sz_get_team_name( $team_one, true ); ?></h4>
+											</a>
+										</div>
+										
+										<div class="match-team-vs">
+											vs
+										</div>
+										
+										<?php
+										$group_two = groups_get_group( array( 'group_id' => $team_two ) );
+										$slug_two = $group_two->slug;	
+										?>
+										<div class="match-team-avatar">
+											<a href="<?php echo site_url(); ?>/groups/<?php echo $slug_two; ?>/" class="lrg-avatar">
+												<?php echo sz_core_fetch_avatar ( array( "item_id" => $team_two, "object" => "group", "type" => "full" ) ); ?>
+												<h4><?php echo sz_get_team_name( $team_two, true ); ?></h4>
+											</a>
+										</div>
+									</div>
 		
-			if ( isset( $_POST['group_email'] ) ) {
-				groups_update_groupmeta( $group_id, 'group_email', sanitize_text_field($_POST['group_email']) );
-			}
-			if ( isset( $_POST['group_phone'] ) ) {
-				groups_update_groupmeta( $group_id, 'group_phone', sanitize_text_field($_POST['group_phone']) );
-			}
-			if ( isset( $_POST['group_location'] ) ) {
-				groups_update_groupmeta( $group_id, 'group_location', sanitize_text_field($_POST['group_location']) );
-			}
-			if ( isset( $_POST['group_facebook'] ) ) {
-				groups_update_groupmeta( $group_id, 'group_facebook', sanitize_text_field($_POST['group_facebook']) );
-			}
-			if ( isset( $_POST['group_twitter'] ) ) {
-				groups_update_groupmeta( $group_id, 'group_twitter', sanitize_text_field($_POST['group_twitter']) );
-			}
-			if ( isset( $_POST['group_website'] ) ) {
-				groups_update_groupmeta( $group_id, 'group_website', sanitize_text_field($_POST['group_website']) );
-			}
-			if ( isset( $_POST['group_colors'] ) ) {
-				groups_update_groupmeta( $group_id, 'group_colors', sanitize_text_field($_POST['group_colors']) );
-			}
+		
+									<div class="match-info">
+										<div class="match-details">
+											<h6><?php echo __( 'Details', 'sportszone' ); ?></h6>
+											<p>
+												<strong><?php echo __( 'Type: ', 'sportszone' ); ?></strong>
+												<?php 
+													//echo $matche_info[$i]['match_type'];
+												?>
+											</p>
+											<p>
+												<strong><?php echo __( 'Date: ', 'sportszone' ); ?></strong>
+												<?php
+													echo date("F jS, Y", strtotime(get_post_meta($match_id, 'sz_day', true)));
+												?>
+											</p>
+											<p>
+												<strong><?php echo __( 'Time: ', 'sportszone' ); ?></strong>
+												<?php 
+													echo date("g:ia", strtotime(get_post_meta($match_id, 'sz_time', true)));
+												?>
+											</p>
+											<p>
+												<strong><?php echo __( 'Venue: ', 'sportszone' ); ?></strong>
+												<?php 
+													echo get_post_meta($match_id, 'sz_venue', true);
+												?>
+											</p>
+										</div>
+										
+										<div class="match-view">
+											<a href="<?php echo $match_link; ?>" class="button"><?php echo __( 'View Match', 'sportszone' ); ?></a>
+										</div>
+									</div>
+									
+								</div>
+							</li>
+							<?php
+	
+						endwhile;
+						echo '</ul>';
+					endif;
+				endif;
+			endif; // endif group_type is team
 		}
+
+		/*function settings_screen( $event_id = NULL ) {
+			$event_club 		= events_get_eventmeta( $event_id, 'event_club' );
+			$user_id = get_current_user_id( );
+				
+			//$is_mod = SZ_Groups_Member::get_is_mod_of( $user_id );
+			
+			$is_admin_of = SZ_Groups_Member::get_is_admin_of( $user_id ); // Get list of all groups user is a admin of
+			
+			// if user is admin of any groups
+			if(is_array($is_admin_of)){
+				$accepted_types = array('team', 'club', 'union');
+				$can_create = false;
+				
+				// Loop through each group and check its type
+				foreach($is_admin_of['groups'] as $group){
+					$type = sz_groups_get_group_type($group->id);
+					if(in_array($type, $accepted_types) ) {
+						$can_create = true;
+					}
+				}
+				if($can_create) {
+					
+					cmb2_metabox_form( 'matches_metabox', $event_id );
+					
+				} else {
+					echo '<h3>You must be a admin of a Team, Club, or Union to create an event.</h3>';
+				}
+			} else {
+				echo '<h3>You must be a admin of a Team, Club, or Union to create an event.</h3>';
+			}
+			
+		}*/
+		
+		/**
+		 * Save all Match Settings
+		 */
+		/*function settings_screen_save( $event_id = NULL ) {
+			if ( isset( $_POST['sz_matches_group'] ) ) {
+				$matches = $_POST['sz_matches_group'];
+
+				// Loop through each Match in returned CMB2 Array
+				foreach($matches as $key => $match) :
+					$match = array_merge(
+						array(
+							'match_date'	=> array('date' => '', 'time' => ''),
+							'match_venue'	=> '',
+							'match_team1'	=> array('team'	=> 0),
+							'match_team2'	=> array('team'	=> 0),
+							'sz_players1'	=> array(),
+							'sz_players2'	=> array()
+						),
+						$match
+					);
+					
+					$group_1 = groups_get_group( array( 'group_id' => $match['match_team1']['team']) );
+					$group_2 = groups_get_group( array( 'group_id' => $match['match_team2']['team']) );
+					
+					$match_title = $group_1->name . ' vs. ' . $group_2->name;
+					$sz_players = array([],[]);
+					if(isset($match['sz_players1'])) $sz_players[0] = $match['sz_players1'];
+					if(isset($match['sz_players2'])) $sz_players[1] = $match['sz_players2'];
+					//print_r($sz_players);
+					$match_data = array(
+						'post_type'		=> 'sz_match',
+						'post_title'	=> $match_title,
+						'post_status'	=> 'publish',
+						'post_author'	=> get_current_user_id(),
+						'meta_input'	=> array(
+							'sz_team'		=> array(
+								(int) $match['match_team1']['team'],
+								(int) $match['match_team2']['team']
+							),
+							'sz_day'		=>  $match['match_date']['date'],
+							'sz_event'		=>  $event_id,
+							'sz_venue'		=>	$match['match_venue'],
+							'sz_time'		=>	$match['match_date']['time'],
+							'sz_player'		=> 	$sz_players
+						)
+					);
+					if(!isset($match['match_id']) || empty($match['match_id']) || $match['match_id'] == ''):
+						$new_match_id = wp_insert_post( $match_data, true );
+						$matches[$key]['match_id'] = $new_match_id;
+					else:
+						$match_data['ID'] = $match['match_id'];
+						wp_update_post( $match_data, true );
+					endif;
+					
+					
+				endforeach;
+				
+				events_update_eventmeta( $event_id, 'sz_matches_group', $matches);
+				
+				// TODO: Loop through all the events current matches and delete matches no longer in the event
+				// Use the wordpress query for post__not_in
+			}
+		}*/
 	}
-	sz_register_group_extension( 'SZ_Additional_Fields_Group_Extension' );
+	sz_register_group_extension( 'SZ_Additional_Fields_Add_Matches_Group_Extension' );
 	
 	
 	
 	endif; // if ( class_exists( 'SZ_Group_Extension' ) )
 }
-//add_action('sz_init', 'sz_additional_fields_group_extension');
-
-*/

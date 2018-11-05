@@ -7,7 +7,7 @@
  */
 
 sz_nouveau_groups_create_hook( 'before', 'page' ); ?>
-
+	<!-- sz-templates > sz-nouveau > sportszone > groups > create -->
 	<h2 class="sz-subhead"><?php esc_html_e( 'Create A New Group', 'sportszone' ); ?></h2>
 
 	<?php sz_nouveau_groups_create_hook( 'before', 'content_template' ); ?>

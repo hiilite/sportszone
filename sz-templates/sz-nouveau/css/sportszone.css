@@ -3378,7 +3378,7 @@ body.members .screen-content {
 }
 
 .single-headers {
-	margin-bottom: 15px;
+	margin-bottom: 0;
 }
 
 .single-headers #item-header-avatar a {
@@ -7308,7 +7308,7 @@ body.no-js .sportszone #messages-bulk-management #select-all-messages {
 }
 
 .sz-single-vert-nav .sz-wrap {
-	margin-top: -70px;
+	margin-top: 0;
 	margin-bottom: 15px;
 	position: relative;
 	z-index: 10;
