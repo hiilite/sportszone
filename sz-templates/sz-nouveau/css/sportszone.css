@@ -7,6 +7,7 @@ Hello, this is the SportsZone Nouveau stylesheet.
 >>> TABLE OF CONTENTS:
 ----------------------------------------------------------------
 1.0 - BP Generic, Typography & Imagery
+	1.1 - Custom Icons
 
 2.0 - Navigation - General
 	2.1 - Navs - Object Nav / Sub Nav (item-list-tabs)
@@ -329,6 +330,40 @@ body.sportszone article.page > .entry-header .entry-title {
 	footer {
 		padding-bottom:60px;	
 	}
+}
+/**
+*-------------------------------------------------------------------------------
+* @section 1.1 - Custom Icons
+*-------------------------------------------------------------------------------
+*/
+@font-face {
+  font-family: 'icomoon';
+  src:  url('fonts/icomoon.eot?7dcwac');
+  src:  url('fonts/icomoon.eot?7dcwac#iefix') format('embedded-opentype'),
+    url('fonts/icomoon.ttf?7dcwac') format('truetype'),
+    url('fonts/icomoon.woff?7dcwac') format('woff'),
+    url('fonts/icomoon.svg?7dcwac#icomoon') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'icomoon' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-Rugby-Ball:before {
+  content: "\e900";
 }
 
 /**
@@ -2228,11 +2263,13 @@ body.activity #whats-new-submit {
 }
 
 .activity-list .activity-item .activity-meta.action .fav:before {
-	content: "\f154";
+	font-family: 'icomoon';
+	content: "\e900";
 }
 
 .activity-list .activity-item .activity-meta.action .unfav:before {
-	content: "\f155";
+	font-family: 'icomoon';
+	content: "\e900";
 	color:#20c1a1;
 }
 
@@ -7166,6 +7203,7 @@ body.no-js .sportszone #messages-bulk-management #select-all-messages {
 .sz-single-vert-nav .sz-navs.vertical ul,
 .events-type-navs ul.events-nav,
 .groups-type-navs ul.groups-nav,
+.activity-type-navs ul.activity-nav,
 .event-nav-tabs > ul {
 	border-radius:10px;
 	border-bottom: 0;
@@ -7181,13 +7219,15 @@ body.no-js .sportszone #messages-bulk-management #select-all-messages {
 	padding-top:1rem;	
 }
 .events-type-navs ul.events-nav,
-.groups-type-navs ul.groups-nav {
+.groups-type-navs ul.groups-nav,
+.activity-type-navs ul.activity-nav {
 	width: 100%;
 	padding-top:1rem;
 }
 .sz-single-vert-nav .sz-navs.vertical li,
 .events-type-navs ul.events-nav li,
 .groups-type-navs ul.groups-nav li,
+.activity-type-navs ul.activity-nav li,
 .event-nav-tabs > ul li {
 	float: none;
 	margin-right: 0;
@@ -7197,6 +7237,7 @@ body.no-js .sportszone #messages-bulk-management #select-all-messages {
 .sz-single-vert-nav .sz-navs.vertical li.selected,
 .events-type-navs ul.events-nav li.selected,
 .groups-type-navs ul.groups-nav li.selected,
+.activity-type-navs ul.activity-nav li.selected,
 .event-nav-tabs > ul li.selected {
 	border:none !important;
 	background:#f1f1f1 !important;
@@ -7204,6 +7245,7 @@ body.no-js .sportszone #messages-bulk-management #select-all-messages {
 .sz-single-vert-nav .sz-navs.vertical li.selected a,
 .events-type-navs ul.events-nav li.selected a,
 .groups-type-navs ul.groups-nav li.selected a,
+.activity-type-navs ul.activity-nav li.selected a,
 .event-nav-tabs > ul li.selected a {
 	background: none !important;
 	color: #848484 !important;
@@ -7214,6 +7256,8 @@ body.no-js .sportszone #messages-bulk-management #select-all-messages {
 .events-type-navs ul.events-nav li:hover,
 .groups-type-navs ul.groups-nav li:focus,
 .groups-type-navs ul.groups-nav li:hover,
+.activity-type-navs ul.activity-nav li:focus,
+.activity-type-navs ul.activity-nav li:hover,
 .event-nav-tabs > ul li:focus,
 .event-nav-tabs > ul li:hover {
 	background: #ccc;
@@ -7223,8 +7267,12 @@ body.no-js .sportszone #messages-bulk-management #select-all-messages {
 .events-type-navs ul.events-nav li.selected span,
 .groups-type-navs ul.groups-nav li span,
 .groups-type-navs ul.groups-nav li.selected span,
+.activity-type-navs ul.activity-nav li span,
+.activity-type-navs ul.activity-nav li.selected span,
 .event-nav-tabs > ul li span,
-.event-nav-tabs > ul li.selected span {
+.event-nav-tabs > ul li.selected span,
+.sportszone-wrap .sz-navs li.dynamic a .count,
+.sportszone-wrap .sz-navs li.dynamic a:hover .count {
 	margin-right: 2px;
 	background: #20c1a1;
 	color:#fff;
@@ -7234,12 +7282,14 @@ body.no-js .sportszone #messages-bulk-management #select-all-messages {
 .sz-single-vert-nav .sz-navs.vertical li:hover span,
 .events-type-navs ul.events-nav li:hover span,
 .groups-type-navs ul.groups-nav li:hover span,
+.activity-type-navs ul.activity-nav li:hover span,
 .event-nav-tabs > ul li:hover span {
 	border-color: none;
 }
 .sz-single-vert-nav .sz-navs.vertical li a::before,
 .events-type-navs ul.events-nav li a::before,
 .groups-type-navs ul.groups-nav li a::before,
+.activity-type-navs ul.activity-nav li a::before,
 .event-nav-tabs > ul li a::before {
 	font: normal normal normal 14px/1 FontAwesome;	
 	display: inline-block;
@@ -7305,6 +7355,22 @@ body.no-js .sportszone #messages-bulk-management #select-all-messages {
 }
 .event-nav-tabs > ul #admin-events-li a:before {
 	content: '\f0b1';
+}
+.activity-type-navs ul #activity-all a::before {
+	content: '\f0ac';
+}
+.activity-type-navs ul #activity-friends a::before {
+	content: '\f1ae';
+}
+.activity-type-navs ul #activity-groups a::before {
+	content: '\f0c0';
+}
+.activity-type-navs ul #activity-favorites a::before {
+	font-family: 'icomoon';
+	content: '\e900';
+}
+.activity-type-navs ul #activity-mentions a::before {
+	content: '\f1fa';
 }
 
 .sz-single-vert-nav .sz-wrap {

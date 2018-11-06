@@ -22,6 +22,8 @@
 		<?php sz_get_template_part( 'common/nav/directory-nav' ); ?>
 
 	<?php endif; ?>
+	
+	<?php sz_get_template_part( 'common/nav/directory-nav' ); ?>
 
 	<div class="screen-content">
 

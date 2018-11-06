@@ -316,14 +316,14 @@ class SportsZone {
 	/**
 	 * Component global variables.
 	 *
-	 * @since 1.6.0
+	 * @since 3.1.4
 	 *
 	 */
 	private function setup_globals() {
 
 		/** Versions **********************************************************/
 
-		$this->version    = '3.1.0';
+		$this->version    = '3.1.4';
 		$this->db_version = 11105;
 
 		/** Loading ***********************************************************/
