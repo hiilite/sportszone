@@ -79,8 +79,14 @@ function groups_action_create_group() {
 				sz_core_add_message( __( 'Please fill in all of the required fields', 'sportszone' ), 'error' );
 				sz_core_redirect( trailingslashit( sz_get_groups_directory_permalink() . 'create/step/' . sz_get_groups_current_create_step() ) );
 			}
-
-			$new_group_id = isset( $sz->groups->new_group_id ) ? $sz->groups->new_group_id : 0;
+			if( isset( $sz->groups->new_group_id ) ) {
+				$new_group_id = $sz->groups->new_group_id;
+			}
+			elseif( isset( $_SESSION['new_group_id'] ) ) {
+				$new_group_id = $_SESSION['new_group_id'];
+			} else {
+				$new_group_id = 0;
+			}
 
 			if ( !$sz->groups->new_group_id = groups_create_group( array( 
 					'group_id' => $new_group_id, 
@@ -101,11 +107,11 @@ function groups_action_create_group() {
 				groups_update_groupmeta( $new_group_id, 'sz_group_email', sanitize_text_field($_POST['sz_group_email']) );
 			}
 			
-			if ( isset( $_POST['sz_group_country']['country'] ) ) {
-				groups_update_groupmeta( $new_group_id, 'sz_group_country', sanitize_text_field($_POST['sz_group_country']['country']) );
+			if ( isset( $_POST['sz_group_country'] ) ) {
+				groups_update_groupmeta( $new_group_id, 'sz_group_country', $_POST['sz_group_country'] );
 			}
-			if ( isset( $_POST['sz_group_province']['province'] ) ) {
-				groups_update_groupmeta( $new_group_id, 'sz_group_province', sanitize_text_field($_POST['sz_group_province']['province']) );
+			if ( isset( $_POST['sz_group_province'] ) ) {
+				groups_update_groupmeta( $new_group_id, 'sz_group_province', $_POST['sz_group_province'] );
 			}
 			if ( isset( $_POST['sz_group_facebook'] ) ) {
 				groups_update_groupmeta( $new_group_id, 'sz_group_facebook', sanitize_text_field($_POST['sz_group_facebook']) );
@@ -117,7 +123,7 @@ function groups_action_create_group() {
 				groups_update_groupmeta( $new_group_id, 'sz_group_website', sanitize_text_field($_POST['sz_group_website']) );
 			}
 			if ( isset( $_POST['sz_group_colors'] ) ) {
-				groups_update_groupmeta( $new_group_id, 'sz_group_colors', serialize($_POST['sz_group_colors']) );
+				groups_update_groupmeta( $new_group_id, 'sz_group_colors', $_POST['sz_group_colors'] );
 			}
 			/*
 			 * Save group types.

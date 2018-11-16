@@ -18,7 +18,7 @@ defined( 'ABSPATH' ) || exit;
  * The following function will take into account any cookies set in the JS and
  * allow us to override the parameters sent. That way we can change the results
  * returned without reloading the page.
- *
+ * 
  * By using cookies we can also make sure that user settings are retained
  * across page loads.
  *
@@ -806,7 +806,7 @@ function sz_nouveau_theme_cover_image( $params = array() ) {
 	// Header content offset + spacing.
 	$top_offset  = sz_core_avatar_full_height() - 60;
 	$left_offset = sz_core_avatar_full_width() + 20;
-	$cover_image = isset( $params['cover_image'] ) ? 'background-image: url( ' . $params['cover_image'] . ' );' : '';
+	$cover_image = ( isset( $params['cover_image'] ) && $params['cover_image'] != '' )? 'background-image: url( ' . $params['cover_image'] . ' );' : 'background-image: url('.sportszone()->plugin_url.'/sz-core/images/rugby-group.jpg)';
 	$hide_avatar_style = '';
 	$team_color_one = '2a2843';
 	$team_color_two = '2a2843';
@@ -1011,10 +1011,12 @@ function sz_nouveau_theme_cover_image( $params = array() ) {
 				text-rendering: optimizelegibility;
 				text-shadow: 0px 0px 3px rgba( 0, 0, 0, 0.8 );
 				text-transform:uppercase;
-				margin: 2em 0 0.2em .6em;
+				margin: 2em 0 0.2em 0;
 				font-size:1.5rem;
 				display:inline-block;
 				width:100%;
+				padding-left: 0.5rem;
+			    padding-right: 0.5rem;
 			}
 			#sportszone div#item-header-cover-image h2.user-nicename {
 				display:block;	

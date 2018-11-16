@@ -22,12 +22,11 @@
 			<?php else : ?>
 				<p>
 					<?php
-					echo esc_html(
+					echo 
 						sprintf(
-							__( 'Your account was activated successfully! You can now <a href="%s">log in</a> with the username and password you provided when you signed up.', 'sportszone' ),
+							__( 'Your account was activated successfully! You can now <a href="%s" class="button">log in</a> with the username and password you provided when you signed up.', 'sportszone' ),
 							wp_login_url( sz_get_root_domain() )
-						)
-					);
+						);
 					?>
 				</p>
 			<?php endif; ?>

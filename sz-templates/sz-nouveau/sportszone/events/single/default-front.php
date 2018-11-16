@@ -180,7 +180,7 @@ if(count($data['sponsors']) > 0):
 		$s = 1;
 		foreach($data['sponsors'] as $sponsor_id){
 			$sponsor = groups_get_group( array('group_id' => $sponsor_id) );
-			$avatar = sz_core_fetch_avatar(array( 'item_id' => $sponsor_id, 'object'=>'group', 'class'=>'card-img-top'));
+			$avatar = sz_core_fetch_avatar(array( 'item_id' => $sponsor_id, 'object'=>'group','type'=>'full', 'class'=>'card-img-top'));
 			$group_url = sz_get_group_permalink($sponsor);
 
 			echo "<div class='card'>

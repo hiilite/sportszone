@@ -119,7 +119,7 @@ function cmb2_render_callback_for_select_country( $field, $value, $object_id, $o
 		$default_value = '';
 	}
 	echo $field_type->select( array(
-			'class'            => 'crs-country',
+			'class'            => 'crs-country pw_select2 pw_select',
 			'name' 		=> $field_type->_name('[country]'),
 			'id' 		=> $field_type->_id('_country'),	
 			'data-placeholder' => $field->args( 'attributes', 'placeholder' ) ? $field->args( 'attributes', 'placeholder' ) : $field->args( 'description' ),
@@ -143,7 +143,7 @@ function cmb2_render_callback_for_select_province( $field, $value, $object_id, $
 	$default_value = (isset($value['province'])) ? $value['province'] : '';
 	
 	echo $field_type->select( array(
-			'class'            => 'province',
+			'class'            => 'province pw_select2 pw_select',
 			'name' 		=> $field_type->_name('[province]'),
 			'id' 		=> $field_type->_id(),	
 			'data-placeholder' => $field->args( 'attributes', 'placeholder' ) ? $field->args( 'attributes', 'placeholder' ) : $field->args( 'description' ),

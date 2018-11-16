@@ -199,7 +199,6 @@ div.sz-cover-image-nav {
 	clear: left;
 	overflow: hidden;
 	padding-top: 20px;
-	text-align: center;
 }
 
 #sz-webcam-cover-image .cover-image-crop-management {
@@ -213,6 +212,7 @@ div.sz-cover-image-nav {
 #cover-image-crop-pane {
 	margin: 0 auto;
 	overflow: hidden;
+	zoom: 0.5;
 }
 
 #sz-webcam-cover-image #cover-image-to-crop {

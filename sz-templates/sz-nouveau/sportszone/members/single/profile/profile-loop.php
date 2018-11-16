@@ -16,22 +16,26 @@
  *
  */
 if ( sz_has_profile() ) :
-	echo "<div class='sz-tabs'>
+	$profile_tabs = "<div class='sz-tabs'>
 		<ul class='sz-tab-navigation nav nav-pills' role='tablist'>";
 	$tab_index = 0;
 	while ( sz_profile_groups() ) : 
 		sz_the_profile_group();
+
+			$tab_id = "sz-".sz_get_the_profile_group_slug()."-profile";
+			$active = ($tab_index == 0)?'active':'';
+			if ( sz_profile_group_has_fields() ) :
+				$profile_tabs .= '<li class="nav-item">
+						<a href="#'.$tab_id.'" data-tab-index="'.$tab_index.'" class="nav-link '.$active.'" data-toggle="pill" role="tab" aria-controls="'.$tab_id.'" aria-selected="true">'.sz_get_the_profile_group_name().' Profile</a>
+					</li>';
+				$tab_index++;
+			endif;
+
 		
-		$tab_id = "sz-".sz_get_the_profile_group_slug()."-profile";
-		$active = ($tab_index == 0)?'active':'';
-		if ( sz_profile_group_has_fields() ) :
-			echo '<li class="nav-item">
-					<a href="#'.$tab_id.'" data-tab-index="'.$tab_index.'" class="nav-link '.$active.'" data-toggle="pill" role="tab" aria-controls="'.$tab_id.'" aria-selected="true">'.sz_get_the_profile_group_name().' Profile</a>
-				</li>';
-			$tab_index++;
-		endif;
-	endwhile;
-	echo '</ul>';
+		endwhile;
+	$profile_tabs .= '</ul>';
+	
+	echo ($tab_index > 1) ? $profile_tabs :'';
 
 /*
  *	Profile Content Tabs
@@ -153,7 +157,7 @@ if ( sz_has_profile() ) :
 						$g = 1;
 						foreach($teams as $group_id){
 							$group = groups_get_group( array('group_id' => $group_id) );
-							$avatar = sz_core_fetch_avatar(array( 'item_id' => $group_id, 'object'=>'group', 'class'=>'card-img-top'));
+							$avatar = sz_core_fetch_avatar(array( 'item_id' => $group_id, 'object'=>'group','type'=>'full', 'class'=>'card-img-top'));
 							$group_url = sz_get_group_permalink($group);
 
 							echo "<div class='card'>
@@ -180,7 +184,7 @@ if ( sz_has_profile() ) :
 						$g = 1;
 						foreach($clubs as $group_id){
 							$group = groups_get_group( array('group_id' => $group_id) );
-							$avatar = sz_core_fetch_avatar(array( 'item_id' => $group_id, 'object'=>'group', 'class'=>'card-img-top'));
+							$avatar = sz_core_fetch_avatar(array( 'item_id' => $group_id, 'object'=>'group','type'=>'full', 'class'=>'card-img-top'));
 							$group_url = sz_get_group_permalink($group);
 
 							echo "<div class='card'>
@@ -206,7 +210,7 @@ if ( sz_has_profile() ) :
 						$g = 1;
 						foreach($unions as $group_id){
 							$group = groups_get_group( array('group_id' => $group_id) );
-							$avatar = sz_core_fetch_avatar(array( 'item_id' => $group_id, 'object'=>'group', 'class'=>'card-img-top'));
+							$avatar = sz_core_fetch_avatar(array( 'item_id' => $group_id, 'object'=>'group','type'=>'full', 'class'=>'card-img-top'));
 							$group_url = sz_get_group_permalink($group);
 
 							echo "<div class='card'>
@@ -232,7 +236,7 @@ if ( sz_has_profile() ) :
 						$g = 1;
 						foreach($organizatons as $group_id){
 							$group = groups_get_group( array('group_id' => $group_id) );
-							$avatar = sz_core_fetch_avatar(array( 'item_id' => $group_id, 'object'=>'group', 'class'=>'card-img-top'));
+							$avatar = sz_core_fetch_avatar(array( 'item_id' => $group_id, 'object'=>'group','type'=>'full', 'class'=>'card-img-top'));
 							$group_url = sz_get_group_permalink($group);
 
 							echo "<div class='card'>
@@ -258,7 +262,7 @@ if ( sz_has_profile() ) :
 						$g = 1;
 						foreach($societies as $group_id){
 							$group = groups_get_group( array('group_id' => $group_id) );
-							$avatar = sz_core_fetch_avatar(array( 'item_id' => $group_id, 'object'=>'group', 'class'=>'card-img-top'));
+							$avatar = sz_core_fetch_avatar(array( 'item_id' => $group_id, 'object'=>'group','type'=>'full', 'class'=>'card-img-top'));
 							$group_url = sz_get_group_permalink($group);
 
 							echo "<div class='card'>

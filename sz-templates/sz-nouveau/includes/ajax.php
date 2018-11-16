@@ -20,11 +20,11 @@ function sz_nouveau_ajax_object_template_loader() {
 	if ( ! sz_is_post_request() ) {
 		wp_send_json_error();
 	}
-
+	
 	if ( empty( $_POST['object'] ) ) {
 		wp_send_json_error();
 	}
-
+	
 	$object = sanitize_title( $_POST['object'] );
 
 	// Bail if object is not an active component to prevent arbitrary file inclusion.
@@ -52,6 +52,9 @@ function sz_nouveau_ajax_object_template_loader() {
 				break;
 			case 'groups':
 				$feed_url = sz_loggedin_user_domain() . sz_get_activity_slug() . '/groups/feed/';
+				break;
+			case 'events':
+				$feed_url = sz_loggedin_user_domain() . sz_get_activity_slug() . '/events/feed/';
 				break;
 			case 'favorites':
 				$feed_url = sz_loggedin_user_domain() . sz_get_activity_slug() . '/favorites/feed/';
@@ -120,7 +123,8 @@ function sz_nouveau_ajax_object_template_loader() {
 	}
 
 	ob_start();
-
+	echo '<!-- sportszone > sz-tempaltes > sz-nouveau > includes > ajax -->';
+	
 	$template_path = sz_locate_template( array( $template_part ), false );
 
 	/**
@@ -133,7 +137,7 @@ function sz_nouveau_ajax_object_template_loader() {
 	$template_path = apply_filters( 'sz_nouveau_object_template_path', $template_path );
 
 	load_template( $template_path );
-	$result['contents'] = ob_get_contents();
+	$result['contents'] .= ob_get_contents();
 	ob_end_clean();
 
 	// Locate the object template.

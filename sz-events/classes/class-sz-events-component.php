@@ -598,7 +598,7 @@ class SZ_Events_Component extends SZ_Component {
 
 			// Add the "Home" subnav item, as this will always be present.
 			$sub_nav[] = array(
-				'name'            =>  _x( 'Home', 'Event screen navigation title', 'sportszone' ),
+				'name'            =>  _x( 'Event Activity', 'Event screen navigation title', 'sportszone' ),
 				'slug'            => 'home',
 				'parent_url'      => $event_link,
 				'parent_slug'     => $this->current_event->slug,

@@ -246,6 +246,7 @@ add_filter( 'sz_activity_prefetch_object_data', 'sz_events_prefetch_activity_obj
  */
 function sz_events_filter_activity_scope( $retval = array(), $filter = array() ) {
 
+
 	// Determine the user_id.
 	if ( ! empty( $filter['user_id'] ) ) {
 		$user_id = $filter['user_id'];

@@ -606,7 +606,7 @@ class SZ_Groups_Component extends SZ_Component {
 
 			// Add the "Home" subnav item, as this will always be present.
 			$sub_nav[] = array(
-				'name'            =>  _x( 'Home', 'Group screen navigation title', 'sportszone' ),
+				'name'            =>  _x( 'Group Activity', 'Group screen navigation title', 'sportszone' ),
 				'slug'            => 'home',
 				'parent_url'      => $group_link,
 				'parent_slug'     => $this->current_group->slug,

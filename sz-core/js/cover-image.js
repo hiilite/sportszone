@@ -533,7 +533,7 @@ window.bp = window.bp || {};
 
 		addItemView: function( item ) {
 			// Defaults to 150
-			var full_d = { full_h: 150, full_w: 150 };
+			var full_d = { full_h: 315, full_w: 1300 };
 
 			// Make sure to take in account sz_core_cover_image_full_height or sz_core_cover_image_full_width php filters
 			if ( ! _.isUndefined( SZ_Uploader.settings.crop.full_h ) && ! _.isUndefined( SZ_Uploader.settings.crop.full_w ) ) {
@@ -553,7 +553,7 @@ window.bp = window.bp || {};
 		}
 	} );
 
-	// Avatar view
+	// Cover Image view
 	bp.Views.CoverImage = bp.View.extend( {
 		className: 'item',
 		template: bp.template( 'sz-cover-image-item' ),
@@ -561,19 +561,19 @@ window.bp = window.bp || {};
 		events: {
 			'click .cover-image-crop-submit': 'cropCoverImage'
 		},
-
+		
 		initialize: function() {
 			_.defaults( this.options, {
 				full_h:  SZ_Uploader.settings.crop.full_h,
 				full_w:  SZ_Uploader.settings.crop.full_w,
-				aspectRatio : 1
+				aspectRatio : 4.126984126984127
 			} );
-
+			
 			// Display a warning if the image is smaller than minimum advised
 			if ( false !== this.model.get( 'feedback' ) ) {
 				bp.CoverImage.displayWarning( this.model.get( 'feedback' ) );
 			}
-
+			console.log(this.options);
 			this.on( 'ready', this.initCropper );
 		},
 
@@ -582,37 +582,31 @@ window.bp = window.bp || {};
 				tocrop = this.$el.find( '#cover-image-to-crop img' ),
 				availableWidth = this.$el.width(),
 				selection = {}, crop_top, crop_bottom, crop_left, crop_right, nh, nw;
+				
 
 			if ( ! _.isUndefined( this.options.full_h ) && ! _.isUndefined( this.options.full_w ) ) {
 				this.options.aspectRatio = this.options.full_w / this.options.full_h;
 			}
 
-			selection.w = this.model.get( 'width' );
-			selection.h = this.model.get( 'height' );
+			selection.w = $('#cover-image-to-crop').width();//(this.model.get( 'width' ) );
+			selection.h = selection.w * 0.2423;//(this.model.get( 'height' ) );
 
-			/**
-			 * Make sure the crop preview is at the right of the cover_image
-			 * if the available width allowes it.
-			 */
-			if ( this.options.full_w + selection.w + 20 < availableWidth ) {
-				$( '#cover-image-to-crop' ).addClass( 'adjust' );
-				this.$el.find( '.cover-image-crop-management' ).addClass( 'adjust' );
-			}
-
+			console.log(this);
+			console.log(selection);
 			if ( selection.h <= selection.w ) {
-				crop_top    = Math.round( selection.h / 4 );
+				crop_top    = 0; //Math.round( selection.h / 4 );
 				nh = nw     = Math.round( selection.h / 2 );
 				crop_bottom = nh + crop_top;
-				crop_left   = ( selection.w - nw ) / 2;
+				crop_left   = 0; //( selection.w - nw ) / 2;
 				crop_right  = nw + crop_left;
 			} else {
-				crop_left   = Math.round( selection.w / 4 );
+				crop_left   = 0;//Math.round( selection.w / 4 );
 				nh = nw     = Math.round( selection.w / 2 );
 				crop_right  = nw + crop_left;
-				crop_top    = ( selection.h - nh ) / 2;
+				crop_top    = 0;//( selection.h - nh ) / 2;
 				crop_bottom = nh + crop_top;
 			}
-
+			console.log(crop_left, crop_top, crop_right, crop_bottom);
 			// Add the cropping interface
 			tocrop.Jcrop( {
 				onChange: _.bind( self.showPreview, self ),
@@ -635,22 +629,24 @@ window.bp = window.bp || {};
 			if ( ! coords.w || ! coords.h ) {
 				return;
 			}
-
+			//console.log(coords);
 			if ( parseInt( coords.w, 10 ) > 0 ) {
-				var fw = this.options.full_w;
-				var fh = this.options.full_h;
+				var fw = $('#cover-image-to-crop').width(); // this.options.full_w;
+				var fh = fw * 0.2423;//this.options.full_h;
 				var rx = fw / coords.w;
 				var ry = fh / coords.h;
 
 				// Update the model
+				console.log(coords.x, coords.y, coords.w, coords.h);
 				this.model.set( { x: coords.x, y: coords.y, w: coords.w, h: coords.h } );
+				
 
 				$( '#cover-image-crop-preview' ).css( {
-					maxWidth:'none',
-					width: Math.round( rx *  this.model.get( 'width' ) )+ 'px',
-					height: Math.round( ry * this.model.get( 'height' ) )+ 'px',
-					marginLeft: '-' + Math.round( rx * this.model.get( 'x' ) ) + 'px',
-					marginTop: '-' + Math.round( ry * this.model.get( 'y' ) ) + 'px'
+					maxWidth: 'none',
+					width: Math.round( rx *  (this.model.get( 'width' ))  )+ 'px',
+					height: Math.round( ry * (this.model.get( 'height' ))  )+ 'px',
+					marginLeft: '-' + Math.round( (rx * this.model.get( 'x' )) ) + 'px',
+					marginTop: '-' + Math.round( (ry * this.model.get( 'y' )) ) + 'px'
 				} );
 			}
 		}

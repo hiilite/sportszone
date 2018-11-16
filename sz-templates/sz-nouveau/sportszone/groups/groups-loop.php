@@ -83,6 +83,9 @@ if ( sz_get_current_group_directory_type() ) : ?>
 					</div>
 					<?php endif; ?>
 					
+					<?php sz_nouveau_groups_loop_item(); ?>
+					<?php sz_nouveau_groups_loop_buttons(); ?>
+					
 					
 					<?php 
 					if(sz_groups_get_group_type(sz_get_group_id(),true) != '') {
@@ -94,10 +97,6 @@ if ( sz_get_current_group_directory_type() ) : ?>
 					}
 					?>
 
-				</div>
-				<div>
-					<?php sz_nouveau_groups_loop_item(); ?>
-					<?php sz_nouveau_groups_loop_buttons(); ?>
 				</div>
 
 

@@ -426,7 +426,7 @@ function sz_nouveau_ajax_get_activity_objects() {
 	if ( empty( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'sz_nouveau_activity' ) ) {
 		wp_send_json_error( $response );
 	}
-
+	
 	if ( 'group' === $_POST['type'] ) {
 		$groups = groups_get_groups(
 			array(

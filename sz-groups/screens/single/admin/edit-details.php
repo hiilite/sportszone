@@ -73,7 +73,15 @@ function groups_screen_group_admin_edit_details() {
 			/*
 			 * Save Additinal Info Fields
 			 */
-			 $group_id = sz_get_current_group_id();
+			$group_id = sz_get_current_group_id();
+			
+			if(sz_get_current_group_id()) {
+				$group_id = sz_get_current_group_id();
+			}
+			elseif( isset( $_SESSION['new_group_id'] ) ) {
+				$group_id = $_SESSION['new_group_id'];
+			}
+			
 			// New set
 			if ( isset( $_POST['sz_group_email'] ) ) {
 				groups_update_groupmeta( $group_id, 'sz_group_email', sanitize_text_field($_POST['sz_group_email']) );

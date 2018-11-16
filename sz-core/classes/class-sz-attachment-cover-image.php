@@ -439,9 +439,10 @@ class SZ_Attachment_Cover_Image extends SZ_Attachment {
 
 			// Set feedback messages.
 			$script_data['feedback_messages'] = array(
-				1 => __( 'The group cover image was uploaded successfully.', 'sportszone' ),
-				2 => __( 'There was a problem deleting the group cover image. Please try again.', 'sportszone' ),
-				3 => __( 'The group cover image was deleted successfully!', 'sportszone' ),
+				1 => __( 'There was a problem cropping the group profile photo.', 'sportszone' ),
+				2 => __( 'The group profile photo was uploaded successfully.', 'sportszone' ),
+				3 => __( 'There was a problem deleting the group profile photo. Please try again.', 'sportszone' ),
+				4 => __( 'The group profile photo was deleted successfully!', 'sportszone' ),
 			);
 		} else {
 

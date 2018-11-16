@@ -174,7 +174,22 @@ sz_nouveau_before_loop(); ?>
 				<div class="item">
 
 					<div class="item-block">
-						<div class="event-breif-featured-img" style="background-image:url('/wp-content/uploads/2018/10/The-Rugby-Zone-Events.jpg');">
+						<?php
+							$bg = '/wp-content/uploads/2018/11/Rugby-Zone-Extra.jpg';
+							
+							if(isset($event_type)) {
+								if($event_type == 'tour') {
+									$bg = '/wp-content/uploads/2018/11/Rugby-Zone-Events-Tour.jpg';
+								}
+								elseif($event_type == 'tournament') {
+									$bg = '/wp-content/uploads/2018/11/Rugby-Zone-Events-Tournament.jpg';
+								}
+								elseif($event_type == 'season') {
+									$bg = '/wp-content/uploads/2018/11/Rugby-Zone-Events-Season.jpg';
+								}
+							}
+						?>
+						<div class="event-breif-featured-img" style="background-image:url(<?php echo $bg; ?>);">
 							<?php
 							/*if(sz_get_event_has_cover_image()) {
 								sz_get_event_cover_image();

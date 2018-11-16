@@ -30,6 +30,7 @@ function sz_dtheme_register_actions() {
 		'blogs_filter'    => 'sz_dtheme_object_template_loader',
 		'forums_filter'   => 'sz_dtheme_object_template_loader',
 		'groups_filter'   => 'sz_dtheme_object_template_loader',
+		'events_filter'   => 'sz_dtheme_object_template_loader',
 		'members_filter'  => 'sz_dtheme_object_template_loader',
 		'messages_filter' => 'sz_dtheme_messages_template_loader',
 
@@ -233,6 +234,9 @@ function sz_dtheme_activity_template_loader() {
 		case 'groups':
 			$feed_url = sz_loggedin_user_domain() . sz_get_activity_slug() . '/groups/feed/';
 			break;
+		case 'events':
+			$feed_url = sz_loggedin_user_domain() . sz_get_activity_slug() . '/events/feed/';
+			break;
 		case 'favorites':
 			$feed_url = sz_loggedin_user_domain() . sz_get_activity_slug() . '/favorites/feed/';
 			break;
@@ -285,6 +289,10 @@ function sz_dtheme_post_update() {
 	} elseif ( $_POST['object'] == 'groups' ) {
 		if ( ! empty( $_POST['item_id'] ) && sz_is_active( 'groups' ) )
 			$activity_id = groups_post_update( array( 'content' => $_POST['content'], 'group_id' => $_POST['item_id'], 'error_type' => 'wp_error' ) );
+
+	} elseif ( $_POST['object'] == 'events' ) {
+		if ( ! empty( $_POST['item_id'] ) && sz_is_active( 'events' ) )
+			$activity_id = events_post_update( array( 'content' => $_POST['content'], 'event_id' => $_POST['item_id'], 'error_type' => 'wp_error' ) );
 
 	} else {
 		$activity_id = apply_filters( 'sz_activity_custom_update', $_POST['object'], $_POST['item_id'], $_POST['content'] );

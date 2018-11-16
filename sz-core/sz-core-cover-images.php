@@ -20,10 +20,10 @@ function sz_core_set_cover_image_constants() {
 	$sz = sportszone();
 
 	if ( !defined( 'SZ_COVER_IMAGE_THUMB_WIDTH' ) )
-		define( 'SZ_COVER_IMAGE_THUMB_WIDTH', 414 );
+		define( 'SZ_COVER_IMAGE_THUMB_WIDTH', 650 );
 
 	if ( !defined( 'SZ_COVER_IMAGE_THUMB_HEIGHT' ) )
-		define( 'SZ_COVER_IMAGE_THUMB_HEIGHT', 155 );
+		define( 'SZ_COVER_IMAGE_THUMB_HEIGHT', 157 );
 
 	if ( !defined( 'SZ_COVER_IMAGE_FULL_WIDTH' ) )
 		define( 'SZ_COVER_IMAGE_FULL_WIDTH', 1300 );
@@ -1698,7 +1698,7 @@ function sz_core_cover_image_default( $type = 'local', $params = array() ) {
 		$cover_image = SZ_COVER_IMAGE_DEFAULT;
 
 	// Use the local default image.
-	} elseif ( 'local' === $type ) {
+	} elseif ( 'local' === $type ) { 
 		$size = '';
 		if (
 			( isset( $params['type'] ) && 'thumb' === $params['type'] && sz_core_cover_image_thumb_width() <= 50 ) ||
@@ -1708,7 +1708,7 @@ function sz_core_cover_image_default( $type = 'local', $params = array() ) {
 			$size = '-50';
 		}
 
-		$cover_image = sportszone()->plugin_url . "sz-core/images/mystery-man{$size}.jpg";
+		$cover_image = sportszone()->plugin_url . "sz-core/images/rugby-group.jpg";
 	} 
 
 	/**

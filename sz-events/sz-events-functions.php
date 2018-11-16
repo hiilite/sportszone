@@ -2730,7 +2730,7 @@ function cmb2_events_details_metaboxes() {
 	 */
 	$cmb = new_cmb2_box( array(
 		'id'            => 'event_details_metabox',
-		'title'         => __( 'Event Detials Metabox', 'cmb2' ),
+		'title'         => __( 'Event Details Metabox', 'cmb2' ),
 		'object_types'  => array( 'event', ), // Post type
 		'context'       => 'normal',
 		'priority'      => 'high',
@@ -2977,11 +2977,11 @@ function sz_additional_fields_add_matches_event_extension() {
 												echo $matche_info[$i]['match_venue'];
 											?>
 										</p>
-									</div>
-									
-									<div class="match-view">
+										<div class="match-view">
 										<a href="<?php echo $match_link; ?>" class="button"><?php echo __( 'View Match', 'sportszone' ); ?></a>
 									</div>
+									</div>
+									
 								</div>
 								
 							</div>
