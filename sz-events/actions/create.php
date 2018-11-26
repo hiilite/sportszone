@@ -70,7 +70,8 @@ function events_action_create_event() {
 
 	// If the save, upload or skip button is hit, lets calculate what we need to save.
 	if ( isset( $_POST['save'] ) ) {
-
+//echo '<pre>'.print_r($_POST,true).'</pre>';
+//exit;
 		// Check the nonce.
 		check_admin_referer( 'events_create_save_' . sz_get_events_current_create_step() );
 
@@ -80,7 +81,16 @@ function events_action_create_event() {
 				sz_core_redirect( trailingslashit( sz_get_events_directory_permalink() . 'create/step/' . sz_get_events_current_create_step() ) );
 			}
 
-			$new_event_id = isset( $sz->events->new_event_id ) ? $sz->events->new_event_id : 0;
+			//$new_event_id = isset( $sz->events->new_event_id ) ? $sz->events->new_event_id : 0;
+
+			if( isset( $sz->events->new_event_id ) ) {
+				$new_event_id = $sz->events->new_event_id;
+			}
+			elseif( isset( $_SESSION['new_event_id'] ) ) {
+				$new_event_id = $_SESSION['new_event_id'];
+			} else {
+				$new_event_id = 0;
+			}
 
 			if ( !$sz->events->new_event_id = events_create_event( array( 
 					'event_id' => $new_event_id, 
@@ -93,6 +103,8 @@ function events_action_create_event() {
 				sz_core_add_message( __( 'There was an error saving event details. Please try again.', 'sportszone' ), 'error' );
 				sz_core_redirect( trailingslashit( sz_get_events_directory_permalink() . 'create/step/' . sz_get_events_current_create_step() ) );
 			}
+			
+			$new_event_id = $sz->events->new_event_id; 
 			
 			if ( isset( $_POST['event-club'] ) ) {
 				events_update_eventmeta( $new_event_id, 'event_club', $_POST['event-club'] );
@@ -121,6 +133,26 @@ function events_action_create_event() {
 	
 				// Set event types.
 				sz_events_set_event_type( $new_event_id, $current_types );
+			}
+			
+			/*
+			 * Save Additinal Info Fields
+			 */
+			 
+			if ( isset( $_POST['event-main-team'] ) ) {
+				events_update_eventmeta( $new_event_id, 'event-main-team', $_POST['event-main-team'] );
+			}
+			if ( isset( $_POST['sz_event_country'] ) ) {
+				events_update_eventmeta( $new_event_id, 'sz_event_country', $_POST['sz_event_country'] );
+			}
+			if ( isset( $_POST['sz_event_province'] ) ) {
+				events_update_eventmeta( $new_event_id, 'sz_event_province', $_POST['sz_event_province'] );
+			}
+			if ( isset( $_POST['sz_event_city'] ) ) {
+				events_update_eventmeta( $new_event_id, 'sz_event_city', $_POST['sz_event_city'] );
+			}
+			if ( isset( $_POST['sz_rules_regulations'] ) ) {
+				events_update_eventmeta( $new_event_id, 'sz_rules_regulations', $_POST['sz_rules_regulations'] );
 			}
 		}
 

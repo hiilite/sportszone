@@ -242,17 +242,13 @@ class SZ_Add_Group_Types_Public {
 				<select id="groups-types-select" name="type">
 					<option value="<?php echo _('all'); ?>" <?php echo ($type == 'all' ? 'selected' : ''); ?>><?php echo _('All Groups'); ?></option>
 		<?php
-		if ( ! empty( $display_group_types ) && is_array( $display_group_types ) ) {
 			foreach ( $group_types as $key => $group_type ) :
-				if ( in_array( $key, $display_group_types, true ) ) {
 					?>
 			<option value="<?php echo esc_attr( $group_type->name ); ?>" <?php echo ($type == esc_attr( $group_type->name ) ? 'selected' : ''); ?>>
 				<?php printf( '%s', esc_attr( $group_type->labels['name'] ) ); ?>
 			</option>
 				<?php
-				}
 			endforeach;
-		}
 		?>
 		</select>
 		<span class="select-arrow" aria-hidden="true"></span>

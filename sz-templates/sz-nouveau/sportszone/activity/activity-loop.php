@@ -5,7 +5,10 @@
  * @version 3.1.0
  */
 
-sz_nouveau_before_loop(); ?>
+sz_nouveau_before_loop(); 
+
+echo '<h2>'.__('Activity Zone').'</h2>';
+?>
 
 <?php if ( sz_has_activities( sz_ajax_querystring( 'activity' ) ) ) : ?>
 

@@ -32,7 +32,7 @@ class SZ_Attachment_Cover_Image extends SZ_Attachment {
 			'action'                => 'sz_cover_image_upload',
 			'file_input'            => 'file',
 			'original_max_filesize' => sz_core_cover_image_original_max_filesize(),
-			//'base_dir'              => sz_attachments_uploads_dir_get( 'dir' ),
+			'base_dir'              => sz_attachments_uploads_dir_get( 'dir' ),
 			'required_wp_files'     => array( 'file', 'image' ),
 
 			// Specific errors for cover images.
@@ -202,32 +202,37 @@ class SZ_Attachment_Cover_Image extends SZ_Attachment {
 	public function crop( $args = array() ) {
 		// Bail if the original file is missing.
 		
-		
 		if ( empty( $args['original_file'] ) ) {
-			return false;
+			return 'false: args_empty';
 		}
 		
 		if ( ! sz_attachments_current_user_can( 'edit_cover_image', $args ) ) {
-			return false;
+			return 'false: user cant';
 		}
 		
 		if ( 'user' === $args['object'] ) {
-			$cover_image_dir = 'cover-images';
+			
+			$cover_image_dir = 'members';
+			$args['item_id'] = (int) $args['item_id'];
+			$relative_path = sprintf( '/%s/%s/cover-images/%s', $cover_image_dir, $args['item_id'],  basename( $args['original_file'] ) );
 		} else {
+			
 			$cover_image_dir = sanitize_key( $args['object'] ) . '-cover-images';
+			$args['item_id'] = (int) $args['item_id'];
+			$relative_path = sprintf( '/%s/%s/%s', $cover_image_dir, $args['item_id'], basename( $args['original_file'] ) );
 		}
 		
-		$args['item_id'] = (int) $args['item_id'];
+		
 		
 		/**
 		 * Original file is a relative path to the image
 		 * eg: /cover-images/1/cover_image.jpg
 		 */
-		$relative_path = sprintf( '/%s/%s/%s', $cover_image_dir, $args['item_id'], basename( $args['original_file'] ) );
+		
 		$absolute_path = $this->upload_path . $relative_path;
 		// Bail if the cover_image is not available.
 		if ( ! file_exists( $absolute_path ) )  {
-			return false;
+			return 'false: no path ' . $this->upload_path . ' ' . $relative_path;
 		}
 		
 		if ( empty( $args['item_id'] ) ) {
@@ -237,12 +242,17 @@ class SZ_Attachment_Cover_Image extends SZ_Attachment {
 		} else {
 
 			/** This filter is documented in sz-core/sz-core-cover-images.php */
-			$cover_image_folder_dir = apply_filters( 'sz_core_cover_image_folder_dir', $this->upload_path . '/' . $args['cover_image_dir'] . '/' . $args['item_id'], $args['item_id'], $args['object'], $args['cover_image_dir'] );
+			if ( 'user' === $args['object'] ) {
+				$cover_image_folder_dir = apply_filters( 'sz_core_cover_image_folder_dir', $this->upload_path . '/' . $cover_image_dir . '/' . $args['item_id'] .'/cover-images', $args['item_id'], $args['object'], $args['cover_image_dir'] );
+			} else {
+				$cover_image_folder_dir = apply_filters( 'sz_core_cover_image_folder_dir', $this->upload_path . '/' . $args['cover_image_dir'] . '/' . $args['item_id'], $args['item_id'], $args['object'], $args['cover_image_dir'] );
+			}
+			
 		}
 
 		// Bail if the cover_image folder is missing for this item_id.
 		if ( ! file_exists( $cover_image_folder_dir ) ) {
-			return false;
+			return 'false: no image dir' . $cover_image_folder_dir;
 		}
 		
 		// Delete the existing cover_image files for the object.
@@ -420,9 +430,10 @@ class SZ_Attachment_Cover_Image extends SZ_Attachment {
 
 			// Set feedback messages.
 			$script_data['feedback_messages'] = array(
-				1 => __( 'Your new cover image was uploaded successfully.', 'sportszone' ),
-				2 => __( 'There was a problem deleting your cover image. Please try again.', 'sportszone' ),
-				3 => __( 'Your cover image was deleted successfully!', 'sportszone' ),
+				1 => __( 'There was a problem cropping the profile photo.', 'sportszone' ),
+				2 => __( 'Your new cover image was uploaded successfully.', 'sportszone' ),
+				3 => __( 'There was a problem deleting your cover image. Please try again.', 'sportszone' ),
+				4 => __( 'Your cover image was deleted successfully!', 'sportszone' ),
 			);
 		} elseif ( sz_is_group() ) {
 			$item_id = sz_get_current_group_id();

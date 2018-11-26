@@ -9,6 +9,7 @@
  */
 
 ?>
+<!-- sportszone > sz-templates > sz-nouveau > sportszone > assets > _attachments > uploader -->
 <script type="text/html" id="tmpl-upload-window">
 	<?php if ( ! _device_can_upload() ) : ?>
 		<h3 class="upload-instructions"><?php esc_html_e( 'The web browser on your device cannot be used to upload files.', 'sportszone' ); ?></h3>

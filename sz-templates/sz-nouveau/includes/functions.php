@@ -838,7 +838,6 @@ function sz_nouveau_theme_cover_image( $params = array() ) {
 	return '
 		/* Cover image */
 		#sportszone #item-header-cover-image {
-			min-height: ' . $params['height'] . 'px;
 			margin-bottom: 1em;
 		}
 
@@ -849,7 +848,6 @@ function sz_nouveau_theme_cover_image( $params = array() ) {
 		}
 
 		#sportszone #header-cover-image {
-			height: ' . $params['height'] . 'px;
 			' . $cover_image . '
 		}
 
@@ -863,7 +861,7 @@ function sz_nouveau_theme_cover_image( $params = array() ) {
 		}
 
 		#sportszone #item-header-cover-image #item-header-avatar {
-			margin-top: ' . $avatar_offset . 'px;
+			margin-top: -80px;
 			padding: 0 1em;
 			float: left;
 			overflow: visible;
@@ -968,7 +966,7 @@ function sz_nouveau_theme_cover_image( $params = array() ) {
 		}
 		@media screen and (max-width: 782px) {
 			#sportszone #item-header-cover-image #item-header-avatar {
-				margin-top:	165px;
+				margin-top:	-150px;
 			}
 			#sportszone #item-header-cover-image #item-header-avatar,
 			.sz-user #sportszone #item-header #item-header-cover-image #item-header-avatar,

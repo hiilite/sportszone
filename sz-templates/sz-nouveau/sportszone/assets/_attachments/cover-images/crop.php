@@ -9,6 +9,7 @@
  */
 
 ?>
+<!-- sportszone > sz-templates > sz-nouveau > sportszone > assets > _attachments > cover-images > crop -->
 <script id="tmpl-sz-cover-image-item" type="text/html">
 	<div id="cover-image-to-crop">
 		<img src="{{data.url}}"/>

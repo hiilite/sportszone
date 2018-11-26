@@ -7,6 +7,8 @@
  */
 
 sz_nouveau_before_loop();
+
+echo '<h2>'.__('Members').'</h2>';
 ?>
 
 <?php if ( sz_get_current_member_type() ) : ?>

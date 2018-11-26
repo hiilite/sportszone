@@ -13,6 +13,7 @@
 
 do_action( 'sz_attachments_cover_image_check_template' );
 ?>
+<!-- sportszone > sz-templates > sz-nouveau > sportszone > assets > _attachments > cover-images > index -->
 <div class="sz-cover-image-nav"></div>
 <div class="sz-cover-image"></div>
 <div class="sz-cover-image-status"></div>

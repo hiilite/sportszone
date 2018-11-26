@@ -143,7 +143,10 @@ function sz_get_event_brief_data($id, $type) {
 }
 
 
-sz_nouveau_before_loop(); ?>
+sz_nouveau_before_loop(); 
+
+echo '<h2>'.__('Events').'</h2>';
+?>
 <!--sportszone > sz-templates > sz-nouveau > sportszone > events > events-loop-->
 <?php if ( sz_get_current_event_directory_type() ) : ?>
 	<p class="current-event-type"><?php sz_current_event_directory_type_message(); ?></p>

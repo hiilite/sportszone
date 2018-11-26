@@ -36,7 +36,7 @@ function sz_attachments_is_wp_version_supported() {
  * @return string|array The needed Upload dir data.
  */
 function sz_attachments_uploads_dir_get( $data = '' ) {
-	$attachments_dir = 'sportszone';
+	$attachments_dir = '';
 	$retval          = '';
 
 	if ( 'dir' === $data ) {
@@ -114,7 +114,7 @@ function sz_attachments_cover_image_upload_dir( $args = array() ) {
 
 
 	// Set the subdir.
-	$subdir  = '/' . $r['object_directory'] . '/' . $r['object_id'] . '/cover-image';
+	$subdir  = '/' . $r['object_directory'] . '/' . $r['object_id'] . '/cover-images';
 
 	$upload_dir = sz_attachments_uploads_dir_get();
 
@@ -463,7 +463,8 @@ function sz_attachments_create_item_type( $type = 'avatar', $args = array() ) {
 			'crop_w'        => $r['crop_w'],
 			'crop_h'        => $r['crop_h'],
 			'crop_x'        => $r['crop_x'],
-			'crop_y'        => $r['crop_y']
+			'crop_y'        => $r['crop_y'],
+			'debug'			=> $attachment_data,
 		) );
 	}
 

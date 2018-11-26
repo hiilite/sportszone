@@ -29,6 +29,7 @@ window.bp = window.bp || {};
 	 * This is an adapted version of wp.Uploader
 	 */
 	bp.Uploader.uploader = function() {
+		
 		var self = this,
 			isIE = navigator.userAgent.indexOf('Trident/') !== -1 || navigator.userAgent.indexOf('MSIE ') !== -1;
 
@@ -120,6 +121,7 @@ window.bp = window.bp || {};
 		 * @param  {plupload.File} file     File that was uploaded.
 		 */
 		this.feedback = function( message, data, file ) {
+			console.log( 'feedback', message, data, file );
 			if ( ! _.isNull( file ) && file.item ) {
 				file.item.clear();
 			}
@@ -139,7 +141,7 @@ window.bp = window.bp || {};
 		 * @param {Array}             files    Array of file objects that were added to queue by the user.
 		 */
 		this.uploader.bind( 'FilesAdded', function( uploader, files ) {
-			console.log(uploader);
+			console.log( 'FilesAdded', files );
 			var hundredmb = 100 * 1024 * 1024, max = parseInt( uploader.settings.max_file_size, 10 ),
 			    _this = this;
 
@@ -206,7 +208,7 @@ window.bp = window.bp || {};
 		 * @return {mixed}
 		 */
 		this.uploader.bind( 'FileUploaded', function( uploader, file, response ) {
-			console.log(uploader);
+			console.log( 'FileUploaded', response );
 			var message = self.strings.default_error;
 
 			try {
@@ -257,6 +259,7 @@ window.bp = window.bp || {};
 		 * @param {Array}             files    Array of file objects that were added to queue by the user.
 		 */
 		this.uploader.bind( 'UploadComplete', function( uploader, files ) {
+			console.log( 'UploadComplete', files );
 			$( self ).trigger( 'sz-uploader-upload-complete', uploader, files );
 			bp.Uploader.filesQueue.reset();
 		} );
@@ -269,6 +272,7 @@ window.bp = window.bp || {};
 		 * @param {Object}            pluploadError Plupload error
 		 */
 this.uploader.bind( 'Error', function( uploader, pluploadError ) {
+			console.log('Error', pluploadError);
 			var message = self.strings.default_error,
 				key,
 				errors = {
@@ -410,6 +414,7 @@ this.uploader.bind( 'Error', function( uploader, pluploadError ) {
 		},
 
 		feedback: function( model ) {
+			console.log(model);
 			if ( ! _.isUndefined( model.get( 'message' ) ) && ! _.isUndefined( model.get( 'file' ) ) ) {
 				$( '#' + model.get( 'file' ).id ).html( model.get( 'message' ) ).addClass( 'error' );
 			}

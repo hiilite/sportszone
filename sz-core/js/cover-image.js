@@ -197,18 +197,21 @@ window.bp = window.bp || {};
 
 		uploadProgress: function() {
 			// Create the Uploader status view
+			
+			
 			var coverImageStatus = new bp.Views.uploaderStatus( { collection: bp.Uploader.filesQueue } );
 			if ( ! _.isUndefined( this.views.get( 'status' ) ) ) {
 				this.views.set( { id: 'status', view: coverImageStatus } );
 			} else {
 				this.views.add( { id: 'status', view: coverImageStatus } );
 			}
-
+			console.log( 'uploadProgress' );
 			// Display it
 			coverImageStatus.inject( '.sz-cover-image-status' );
 		},
 		
 		cropView: function() {
+			console.log( 'cropView' );
 			var status;
 
 			// Bail there was an error during the Upload
@@ -226,11 +229,12 @@ window.bp = window.bp || {};
 			// Create the Avatars view
 			var cover_image = new bp.Views.CoverImages( { collection: this.coverImages } );
 			this.views.add( { id: 'crop', view: cover_image } );
-
+			
 			cover_image.inject( '.sz-cover-image' );
 		},
 		
 		setCoverImage: function( cover_image ) {
+			console.log( 'setCoverImage', cover_image );
 			var self = this,
 				crop;
 			// Remove the crop view
@@ -258,6 +262,7 @@ window.bp = window.bp || {};
 				type:          _.isUndefined( cover_image.get( 'type' ) ) ? 'crop' : cover_image.get( 'type' ),
 				nonce:         cover_image.get( 'nonces' ).set
 			} ).done( function( response ) {
+				console.log('sz_cover_image_set.done', response);
 				var coverImageStatus = new bp.Views.CoverImageStatus( {
 					value : SZ_Uploader.strings.feedback_messages[ response.feedback_code ],
 					type : 'success'
@@ -294,6 +299,7 @@ window.bp = window.bp || {};
 				) );
 
 			} ).fail( function( response ) {
+				console.log( 'sz_cover_image_set.fail', response );
 				var feedback = SZ_Uploader.strings.default_error;
 				if ( ! _.isUndefined( response ) ) {
 					feedback = SZ_Uploader.strings.feedback_messages[ response.feedback_code ];
@@ -387,6 +393,8 @@ window.bp = window.bp || {};
 				) );
 
 			} ).fail( function( response ) {
+				console.log( response );
+				
 				var feedback = SZ_Uploader.strings.default_error;
 				if ( ! _.isUndefined( response ) ) {
 					feedback = SZ_Uploader.strings.feedback_messages[ response.feedback_code ];
@@ -408,12 +416,14 @@ window.bp = window.bp || {};
 		},
 
 		removeWarning: function() {
+			// console.log( 'removeWarning' );
 			if ( ! _.isNull( this.warning ) ) {
 				this.warning.remove();
 			}
 		},
 
 		displayWarning: function( message ) {
+			// console.log( 'displayWarning', message );
 			this.removeWarning();
 
 			this.warning = new bp.Views.uploaderWarning( {
@@ -532,6 +542,7 @@ window.bp = window.bp || {};
 		},
 
 		addItemView: function( item ) {
+			// console.log( 'addItemView', item );
 			// Defaults to 150
 			var full_d = { full_h: 315, full_w: 1300 };
 
@@ -563,6 +574,7 @@ window.bp = window.bp || {};
 		},
 		
 		initialize: function() {
+			console.log( 'bp.Views.CoverImage', this.options );
 			_.defaults( this.options, {
 				full_h:  SZ_Uploader.settings.crop.full_h,
 				full_w:  SZ_Uploader.settings.crop.full_w,
@@ -573,11 +585,12 @@ window.bp = window.bp || {};
 			if ( false !== this.model.get( 'feedback' ) ) {
 				bp.CoverImage.displayWarning( this.model.get( 'feedback' ) );
 			}
-			console.log(this.options);
+
 			this.on( 'ready', this.initCropper );
 		},
 
 		initCropper: function() {
+			// console.log( 'initCropper' );
 			var self = this,
 				tocrop = this.$el.find( '#cover-image-to-crop img' ),
 				availableWidth = this.$el.width(),
@@ -589,10 +602,10 @@ window.bp = window.bp || {};
 			}
 
 			selection.w = $('#cover-image-to-crop').width();//(this.model.get( 'width' ) );
-			selection.h = selection.w * 0.2423;//(this.model.get( 'height' ) );
+			selection.h = selection.w * 0.2423; //(this.model.get( 'height' ) );
 
-			console.log(this);
-			console.log(selection);
+
+
 			if ( selection.h <= selection.w ) {
 				crop_top    = 0; //Math.round( selection.h / 4 );
 				nh = nw     = Math.round( selection.h / 2 );
@@ -606,7 +619,7 @@ window.bp = window.bp || {};
 				crop_top    = 0;//( selection.h - nh ) / 2;
 				crop_bottom = nh + crop_top;
 			}
-			console.log(crop_left, crop_top, crop_right, crop_bottom);
+
 			// Add the cropping interface
 			tocrop.Jcrop( {
 				onChange: _.bind( self.showPreview, self ),
@@ -626,20 +639,25 @@ window.bp = window.bp || {};
 		},
 
 		showPreview: function( coords ) {
+			// console.log( 'showPreview', coords );
 			if ( ! coords.w || ! coords.h ) {
 				return;
 			}
-			//console.log(coords);
+
 			if ( parseInt( coords.w, 10 ) > 0 ) {
 				var fw = $('#cover-image-to-crop').width(); // this.options.full_w;
-				var fh = fw * 0.2423;//this.options.full_h;
+				var fh = fw * 0.2423; // this.options.full_h;
 				var rx = fw / coords.w;
 				var ry = fh / coords.h;
-
-				// Update the model
-				console.log(coords.x, coords.y, coords.w, coords.h);
-				this.model.set( { x: coords.x, y: coords.y, w: coords.w, h: coords.h } );
 				
+				// Update the model
+
+				this.model.set( { 
+					x: coords.x * 1.642228739, 
+					y: coords.y * 1.642228739, 
+					w:  coords.w * 1.642228739, 
+					h:  coords.h * 1.642228739 
+				} );
 
 				$( '#cover-image-crop-preview' ).css( {
 					maxWidth: 'none',
@@ -648,6 +666,9 @@ window.bp = window.bp || {};
 					marginLeft: '-' + Math.round( (rx * this.model.get( 'x' )) ) + 'px',
 					marginTop: '-' + Math.round( (ry * this.model.get( 'y' )) ) + 'px'
 				} );
+				
+				
+				
 			}
 		}
 	} );

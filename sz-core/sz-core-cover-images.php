@@ -281,7 +281,7 @@ function sz_core_fetch_cover_image( $args = '' ) {
 
 			case 'user'  :
 			default      :
-				$params['cover_image_dir'] = 'cover-images';
+				$params['cover_image_dir'] = 'user-cover-images';
 				break;
 		}
 
@@ -658,7 +658,7 @@ function sz_core_delete_existing_cover_image( $args = '' ) {
 
 	if ( empty( $cover_image_dir ) ) {
 		if ( 'user' == $object )
-			$cover_image_dir = 'cover-images';
+			$cover_image_dir = 'user-cover-images';
 		elseif ( 'group' == $object )
 			$cover_image_dir = 'group-cover-images';
 		elseif ( 'blog' == $object )
@@ -870,17 +870,26 @@ function sz_cover_image_ajax_upload() {
 	if ( ! empty( $_POST['sz_params' ] ) ) {
 		$sz_params = $_POST['sz_params' ];
 	} else {
-		sz_attachments_json_response( false, $is_html4 );
+		sz_attachments_json_response( false, $is_html4, array(
+			'type'	=> 'upload_error',
+			'message'	=> 'params empty'
+		)  );
 	}
 
 	// We need the object to set the uploads dir filter.
 	if ( empty( $sz_params['object'] ) ) {
-		sz_attachments_json_response( false, $is_html4 );
+		sz_attachments_json_response( false, $is_html4, array(
+			'type'	=> 'upload_error',
+			'message'	=> 'empty object'
+		)  );
 	}
 
 	// Capability check.
 	if ( ! sz_attachments_current_user_can( 'edit_cover_image', $sz_params ) ) {
-		sz_attachments_json_response( false, $is_html4 );
+		sz_attachments_json_response( false, $is_html4, array(
+			'type'	=> 'upload_error',
+			'message'	=> 'edit cover image'
+		)  );
 	}
 
 	$sz = sportszone();
@@ -888,7 +897,7 @@ function sz_cover_image_ajax_upload() {
 	$needs_reset = array();
 
 	if ( 'user' === $sz_params['object'] && sz_is_active( 'xprofile' ) ) {
-		$sz_params['upload_dir_filter'] = 'xprofile_cover_image_upload_dir';
+		$sz_params['upload_dir_filter'] = 'sz_attachments_cover_image_upload_dir';
 
 		if ( ! sz_displayed_user_id() && ! empty( $sz_params['item_id'] ) ) {
 			$needs_reset = array( 'key' => 'displayed_user', 'value' => $sz->displayed_user );
@@ -968,7 +977,11 @@ function sz_cover_image_ajax_upload() {
 	}
 
 	if ( empty( $sz->cover_image_admin->image->file ) ) {
-		sz_attachments_json_response( false, $is_html4 );
+		sz_attachments_json_response( false, $is_html4, array(
+			'type'	=> 'upload_error',
+			'message'	=> 'file empty',
+			'file'		=> $sz->cover_image_admin->image
+		) );
 	}
 
 	$uploaded_image = @getimagesize( $sz->cover_image_admin->image->file );
@@ -985,6 +998,7 @@ function sz_cover_image_ajax_upload() {
 		'width'     => $uploaded_image[0],
 		'height'    => $uploaded_image[1],
 		'feedback'  => $feedback_message,
+		'image'		=> $sz->cover_image_admin->image,
 	) );
 }
 add_action( 'wp_ajax_sz_cover_image_upload', 'sz_cover_image_ajax_upload' );
@@ -1117,7 +1131,7 @@ function sz_core_cover_image_handle_crop( $args = '' ) {
 	
 	// Check for errors.
 	if ( empty( $cropped['full'] ) || empty( $cropped['thumb'] ) || is_wp_error( $cropped['full'] ) || is_wp_error( $cropped['thumb'] ) ) {
-		return false;
+		return $cropped;
 	}
 
 	return true;
@@ -1205,7 +1219,7 @@ function sz_cover_image_ajax_set() {
 
 	// Set cover_images dir & feedback part.
 	if ( 'user' === $cover_image_data['object'] ) {
-		$cover_image_dir = 'cover_images';
+		$cover_image_dir = sanitize_key( $cover_image_data['object'] ) . '-cover-images';
 
 	// Defaults to object-cover-images dir.
 	} else {
@@ -1235,6 +1249,7 @@ function sz_cover_image_ajax_set() {
 			) ) ),
 			'feedback_code' => 2,
 			'item_id'       => $cover_image_data['item_id'],
+			'crop_return'	=> sz_core_cover_image_handle_crop( $r )
 		);
 
 		if ( 'user' === $cover_image_data['object'] ) {
@@ -1451,8 +1466,8 @@ function sz_core_get_cover_image_upload_dir( $type = 'upload_path' ) {
 
 			// Directory does not exist and cannot be created.
 			if ( ! empty( $upload_dir['error'] ) ) {
-				$retval = '';
-
+				$retval = 'dir_error';
+				
 			} else {
 				$retval = $upload_dir[$key];
 

@@ -217,11 +217,11 @@ function sz_has_activities( $args = '' ) {
 		$object      = $sz->groups->id;
 		$primary_id  = sz_get_current_group_id();
 		$show_hidden = (bool) ( groups_is_user_member( sz_loggedin_user_id(), $primary_id ) || sz_current_user_can( 'sz_moderate' ) );
-	} /*elseif ( sz_is_event() ) {
+	} elseif ( sz_is_event() ) {
 		$object      = $sz->events->id;
 		$primary_id  = sz_get_current_event_id();
 		$show_hidden = (bool) ( events_is_user_member( sz_loggedin_user_id(), $primary_id ) || sz_current_user_can( 'sz_moderate' ) );
-	}*/ else {
+	} else {
 		$object      = false;
 		$primary_id  = false;
 		$show_hidden = false;

@@ -9,6 +9,8 @@
 sz_nouveau_before_loop(); 
 echo '<!--sz-templates/sz-nouveau/sportszone/groups/groups-loop-->';
 
+echo '<h2>'.__('Groups').'</h2>';
+
 if ( sz_get_current_group_directory_type() ) : ?>
 	<p class="current-group-type"><?php sz_current_group_directory_type_message(); ?></p>
 <?php endif; ?>

@@ -6,7 +6,7 @@
  * @version 3.1.0
  */
 ?>
-
+<!-- sportszone > sz-templates > sz-nouveau > sportszone > groups > single > admin > group-cover-image -->
 <?php if ( sz_is_group_create() ) : ?>
 
 	<h3 class="sz-screen-title creation-step-name">
