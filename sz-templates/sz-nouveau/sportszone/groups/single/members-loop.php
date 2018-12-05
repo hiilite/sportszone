@@ -6,7 +6,7 @@
  * @version 3.0.0
  */
 ?>
-
+<!-- sz-templates > sz-nouveau > sportszone > groups > single > members-loop -->
 <?php if ( sz_group_has_members( sz_ajax_querystring( 'group_members' ) ) ) : ?>
 
 	<?php sz_nouveau_group_hook( 'before', 'members_content' ); ?>
@@ -62,9 +62,7 @@
 
 	<?php sz_nouveau_group_hook( 'after', 'members_content' ); ?>
 
-<?php else : ?>
+<?php else : 
+	sz_nouveau_user_feedback( 'group-members-none' );
 
-		sz_nouveau_user_feedback( 'group-members-none' );
-
-<?php
 endif;

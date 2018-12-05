@@ -7,14 +7,12 @@
  */
 ?>
 
-<?php sz_get_template_part( 'events/single/parts/header-item-actions' ); ?>
-
 
 <div id="item-header-content">
 
 	<p class="highlight event-status"><strong><?php echo esc_html( sz_nouveau_event_meta()->status ); ?></strong></p>
 
-	<p class="activity" data-livestamp="<?php sz_core_iso8601_date( sz_get_event_last_active( 0, array( 'relative' => false ) ) ); ?>">
+	<!--p class="activity" data-livestamp="<?php sz_core_iso8601_date( sz_get_event_last_active( 0, array( 'relative' => false ) ) ); ?>">
 		<?php
 		echo esc_html(
 			sprintf(
@@ -24,7 +22,7 @@
 			)
 		);
 		?>
-	</p>
+	</p-->
 
 	<?php sz_nouveau_event_hook( 'before', 'header_meta' ); ?>
 
@@ -37,5 +35,7 @@
 	<?php endif; ?>
 
 </div><!-- #item-header-content -->
+
+<?php sz_get_template_part( 'events/single/parts/header-item-actions' ); ?>
 
 <?php sz_nouveau_event_header_buttons(); ?>

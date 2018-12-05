@@ -99,7 +99,7 @@ function sz_attachments_cover_image_upload_dir( $args = array() ) {
 		$object_id = sz_loggedin_user_id();
 	}
 
-	$object_directory = 'members';
+	$object_directory = 'users';
 
 	// We're in a group, edit default values.
 	if ( sz_is_group() || sz_is_group_create() ) {
@@ -497,7 +497,7 @@ function sz_attachments_get_attachment( $data = 'url', $args = array() ) {
 	$attachment_data = false;
 
 	$r = sz_parse_args( $args, array(
-		'object_dir' => 'members',
+		'object_dir' => 'user',
 		'item_id'    => sz_loggedin_user_id(),
 		'type'       => 'cover-image',
 		'file'       => '',
@@ -1353,7 +1353,8 @@ function sz_attachments_cover_image_ajax_upload() {
 		$object_data = array( 'dir' => 'members', 'component' => 'xprofile' );
 
 		if ( ! sz_displayed_user_id() && ! empty( $sz_params['item_id'] ) ) {
-			$needs_reset = array( 'key' => 'displayed_user', 'value' => $sz->displayed_user );
+			$needs_reset = array( 'component' => 'xprofile', 'key' => 'displayed_user', 'value' => $sz->displayed_user );
+			
 			$sz->displayed_user->id = $sz_params['item_id'];
 		}
 
@@ -1417,7 +1418,7 @@ function sz_attachments_cover_image_ajax_upload() {
 
 	$sz_attachments_uploads_dir = sz_attachments_cover_image_upload_dir();
 
-	// The BP Attachments Uploads Dir is not set, stop.
+	// The SZ Attachments Uploads Dir is not set, stop.
 	if ( ! $sz_attachments_uploads_dir ) {
 		sz_attachments_json_response( false, $is_html4, array(
 			'type'    => 'upload_error',

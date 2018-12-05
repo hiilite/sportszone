@@ -108,9 +108,19 @@ function sz_nouveau_ajax_object_template_loader() {
 		case 'groups/single/members' :
 			$template_part = 'groups/single/members-loop.php';
 		break;
+		
+		case 'event_members' :
+		case 'events/single/members' :
+			$template_part = 'events/single/members-loop.php';
+		break;
 
+		
 		case 'group_requests' :
 			$template_part = 'groups/single/requests-loop.php';
+		break;
+		
+		case 'event_requests' :
+			$template_part = 'events/single/requests-loop.php';
 		break;
 
 		case 'member_notifications' :

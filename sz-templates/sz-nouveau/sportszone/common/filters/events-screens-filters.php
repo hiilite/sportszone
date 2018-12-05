@@ -1,12 +1,12 @@
 <?php
 /**
- * BP Nouveau User screens filters
+ * BP Nouveau Groups screens filters
  *
  * @since 3.0.0
  * @version 3.0.0
  */
 ?>
-<!-- sz-templates > sz-nouveau > sportszone > common > filters > user-screens-filters -->
+<!-- sz-templates > sz-nouveau > sportszone > common > filters > events-screens-filters -->
 <div id="comp-filters" class="component-filters clearfix">
 		<div id="<?php sz_nouveau_filter_container_id(); ?>" class="last filter">
 			<label for="<?php sz_nouveau_filter_id(); ?>" class="sz-screen-reader-text">

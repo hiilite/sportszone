@@ -49,11 +49,11 @@ if ( sz_get_current_group_directory_type() ) : ?>
 							<?php	
 							$country = groups_get_groupmeta( sz_get_group_id(), 'sz_group_country');
 							$province = groups_get_groupmeta( sz_get_group_id(), 'sz_group_province');
-							if(isset($country['country'])) {
-								echo $country['country'];
+							if(isset($province['province']) && $province['province'] != '') {
+								echo $province['province'];
 							}
-							if(isset($province['province'])) {
-								echo ', '.$province['province'];
+							if(isset($country['country']) && $country['country'] != '') {
+								echo ', '.$country['country'];
 							}
 							?>	
 						</p>

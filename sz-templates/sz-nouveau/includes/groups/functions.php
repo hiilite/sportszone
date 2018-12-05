@@ -892,10 +892,11 @@ function sz_nouveau_group_reset_front_template( $templates = array(), $group = n
 		$use_default_front = sz_nouveau_get_temporary_setting( 'group_front_page', $use_default_front );
 	}
 
-	if ( ! empty( $use_default_front ) ) {
+	/*if ( ! empty( $use_default_front ) ) {
 		array_push( $templates, 'groups/single/default-front.php' );
-	}
-
+	}*/
+	
+	array_push( $templates, 'groups/single/default-front.php' );
 	/**
 	 * Filters the SportsZone Nouveau template hierarchy after resetting front template for groups.
 	 *

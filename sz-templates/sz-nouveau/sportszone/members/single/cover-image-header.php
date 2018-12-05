@@ -8,7 +8,9 @@
 ?>
 
 <div id="cover-image-container">
-	<div id="header-cover-image"></div>
+	<div id="header-cover-image">
+		<?php sz_displayed_user_cover_image(); ?>
+	</div>
 
 	<div id="item-header-cover-image">
 		<div id="item-header-avatar">
@@ -40,6 +42,7 @@
 				<div class="team-color-two">
 				</div>
 				<div class="team-color-three">
+					<?php sz_add_friend_button(sz_displayed_user_id()); ?>
 				</div>
 			<?php endif; ?>
 		</div><!-- #item-header-content -->

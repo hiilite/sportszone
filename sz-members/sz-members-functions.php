@@ -1244,6 +1244,49 @@ function sz_core_delete_avatar_on_user_delete( $user_id ) {
 add_action( 'wpmu_delete_user', 'sz_core_delete_avatar_on_user_delete' );
 add_action( 'delete_user', 'sz_core_delete_avatar_on_user_delete' );
 
+
+/** Group Cover Images *************************************************************/
+
+/**
+ * Generate the avatar upload directory path for a given group.
+ *
+ * @since 1.1.0
+ *
+ * @param int $group_id Optional. ID of the group. Default: ID of the current group.
+ * @return string
+ */
+function user_cover_image_upload_dir( $user_id = 0 ) {
+
+	if ( empty( $user_id ) ) {
+		$user_id = sz_displayed_user_id();
+	}
+
+	$directory = 'user-cover-images';
+	$path      = sz_core_cover_image_upload_path() . '/' . $directory . '/' . $user_id;
+	$newbdir   = $path;
+	$newurl    = sz_core_cover_image_url() . '/' . $directory . '/' . $user_id;
+	$newburl   = $newurl;
+	$newsubdir = '/' . $directory . '/' . $user_id;
+
+	/**
+	 * Filters the avatar upload directory path for a given group.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param array $value Array of parts related to the groups avatar upload directory.
+	 */
+	return apply_filters( 'user_cover_image_upload_dir', array(
+		'path'    => $path,
+		'url'     => $newurl,
+		'subdir'  => $newsubdir,
+		'basedir' => $newbdir,
+		'baseurl' => $newburl,
+		'error'   => false
+	) );
+}
+
+
+
 /**
  * Multibyte-safe ucfirst() support.
  *

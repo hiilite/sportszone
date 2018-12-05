@@ -7,7 +7,7 @@
  */
 ?>
 
-
+<!-- sz-templates > sz-nouveau > sportszone > matches > single > members -->
 <div class="subnav-filters filters clearfix no-subnav">
 
 	<?php sz_nouveau_search_form(); ?>

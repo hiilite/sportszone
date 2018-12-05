@@ -285,7 +285,9 @@ function copyLink(link){
 
 			$( this.objectNavParent + ' [data-sz-scope="' + data.scope + '"], #object-nav li.current' ).addClass( 'selected loading' );
 			$( '#sportszone [data-sz-filter="' + data.object + '"] option[value="' + data.filter + '"]' ).prop( 'selected', true );
-
+			
+			console.log(postdata, data.object);
+			
 			if ( 'friends' === data.object || 'group_members' === data.object ) {
 				data.template = data.object;
 				data.object   = 'members';
@@ -306,12 +308,12 @@ function copyLink(link){
 			postdata = $.extend( {
 				action: data.object + '_filter'
 			}, data );
-			console.log(postdata, data.object);
+			
 			return this.ajax( postdata, data.object ).done( function( response ) {
 				if ( false === response.success ) {
 					return;
 				}
-
+				console.log(response);
 				$( self.objectNavParent + ' [data-sz-scope="' + data.scope + '"]' ).removeClass( 'loading' );
 
 				if ( 'reset' !== data.method ) {

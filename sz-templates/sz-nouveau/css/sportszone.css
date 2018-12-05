@@ -3650,7 +3650,15 @@ body.members .screen-content {
 
 .single-headers div.generic-button,
 .single-headers a.button {
-	margin: 10px 10px 0 0;
+	margin: 7px;
+}
+
+@media screen and (max-width: 782px) {
+	.single-headers div.generic-button,
+	.single-headers a.button {
+		margin-top: 6px;
+		float: none;
+	}
 }
 
 .single-headers li.generic-button {
@@ -3821,6 +3829,22 @@ body.no-js .single-item-header .js-self-profile-button {
 * Events Specific Item Header
 *-----------------------------------------------------
 */
+.events-header {
+	position:relative;	
+	min-height: 260px;
+	background-size: cover;
+	background-position: center center;
+	margin-bottom:2rem;
+}
+
+h2.event-title {
+	color:#fff;	
+	text-align: center;
+    margin: 2rem 1rem 1rem 1rem !important;
+}
+.events-header div#item-header-content {
+	text-align:center;	
+}
 .events-header .sz-event-type-list {
 	margin: 0;
 }
@@ -3829,23 +3853,50 @@ body.no-js .single-item-header .js-self-profile-button {
 	clear: both;
 }
 
-.events-header .event-item-actions {
+.events-header .events-meta {
+	padding:1rem;
+	position: absolute;
+    right: 0;
+    bottom: 0;
+} 
+
+/*.events-header .event-item-actions {
 	float: left;
 	margin: 0 0 15px 15px;
 	padding-top: 0;
 	width: 100%;
+}*/
+
+
+.events-header .event-item-actions {
+	padding:1rem;
+	color:#fff;
+	position: absolute;
+    left: 0;
+    bottom: 0;
 }
 
 .events-header .moderators-lists {
 	margin-top: 0;
 }
 
+.events-header .event-item-actions .user-list {
+	text-align: center;	
+}
+
 .events-header .moderators-lists .moderators-title {
 	font-size: 14px;
+	font-weight: 700;
+	text-align: center;
 }
 
 .events-header .moderators-lists .user-list {
 	margin: 0 0 5px;
+}
+
+.events-header .event-item-actions .user-list ul {
+	margin:0;
+	padding:0;	
 }
 
 .events-header .moderators-lists .user-list ul:after {
@@ -3857,7 +3908,6 @@ body.no-js .single-item-header .js-self-profile-button {
 .events-header .moderators-lists .user-list li {
 	display: inline-block;
 	float: none;
-	margin-left: 4px;
 	padding: 4px;
 }
 
@@ -3870,24 +3920,29 @@ body.no-js .single-item-header .js-self-profile-button {
 	margin: 0;
 	max-width: 100%;
 	width: 30px;
+	border:1px solid #fff;
+}
+.events-header button {
+	background: #fff;
+    color: #2a2744;
+    border-radius: 0;
+    border: none;
+}
+.events-header button:hover {
+	border: none;
 }
 
-@media screen and (min-width: 46.8em) {
-	.events-header div#item-header-content {
-		float: left;
-		margin-left: 10%;
-		text-align: left;
-		padding-top: 15px;
-		width: 42%;
-	}
-	.events-header .event-item-actions {
-		float: right;
-		margin: 0 0 15px 15px;
-		text-align: right;
-		width: 20%;
+@media screen and (max-width: 450px) {
+	.events-header .event-item-actions,
+	.events-header .events-meta {
+		position: inherit;
+		width:100%;
 	}
 	.events-header .events-meta {
-		clear: both;
+		padding:0;	
+	}
+	.events-header .events-meta button {
+		margin:0;	
 	}
 }
 
@@ -3976,6 +4031,9 @@ body.no-js .single-item-header .js-self-profile-button {
 
 .single-item.group-members .item-body .filters {
 	margin-top: 0;
+}
+.single-item .item-body .group-social {
+	font-size: 1.5rem;	
 }
 /**
 *----------------------------------------------------
@@ -7517,10 +7575,22 @@ body.no-js .sportszone #messages-bulk-management #select-all-messages {
 	content: '\f074';
 }
 .group-nav-tabs ul #home-groups-li a::before {
+	content: '\f129';
+}
+.group-nav-tabs ul #activity-groups-li a::before {
 	content: '\f2bd';
+}
+.group-nav-tabs ul #request-membership-groups-li a {
+	background: #20c1a1;
+    color: #fff;
+    font-weight: 700;
+    text-align: center;
 }
 .group-nav-tabs ul #members-groups-li a::before {
 	content: '\f0c0';
+}
+.group-nav-tabs ul #nav-hierarchy-groups-li a::before {
+	content: '\f0e8';
 }
 .group-nav-tabs ul #invite-groups-li a::before {
 	content: '\f0e0';

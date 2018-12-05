@@ -263,6 +263,7 @@ window.bp = window.bp || {};
 				nonce:         cover_image.get( 'nonces' ).set
 			} ).done( function( response ) {
 				console.log('sz_cover_image_set.done', response);
+				
 				var coverImageStatus = new bp.Views.CoverImageStatus( {
 					value : SZ_Uploader.strings.feedback_messages[ response.feedback_code ],
 					type : 'success'
@@ -278,6 +279,7 @@ window.bp = window.bp || {};
 				
 				// Update each cover_images of the page
 				$( '.' + cover_image.get( 'object' ) + '-' + response.item_id + '-cover-image' ).each( function() {
+					
 					$(this).prop( 'src', response.cover_image );
 				} );
 

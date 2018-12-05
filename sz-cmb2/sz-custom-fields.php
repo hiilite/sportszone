@@ -1,12 +1,14 @@
 <?php 
 	
-function get_user_teams($value = false, $array = false){
-	
+function get_user_teams($value = false, $array = false, $get_all = false){
+
 	$teams_args = array(
-		'user_id'		=> get_current_user_id( ),
 		'group_type'	=> 'team'
 	);
 	
+	if(!$get_all) {
+		$teams_args['user_id']		= get_current_user_id( );
+	}
 	if($array):
 		if(sz_has_groups($teams_args)):
 			$teams = '<option value="0" disabled selected>Select Team</option>';
@@ -31,13 +33,14 @@ function get_user_teams($value = false, $array = false){
 	return $teams;
 }
 
-function get_user_clubs($value = false, $array = false){
+function get_user_clubs($value = false, $array = false,  $get_all = true){
 	
 	$clubs_args = array(
-		'user_id'		=> get_current_user_id( ),
 		'group_type'	=> 'club'
 	);
-	
+	if(!$get_all) {
+		$clubs_args['user_id']		= get_current_user_id( );
+	}
 	if($array):
 		if(sz_has_groups($clubs_args)):
 			$clubs = '<option value="0" disabled selected>Select Club</option>';
@@ -89,7 +92,7 @@ function cmb2_render_callback_for_select_team( $field, $value, $object_id, $obje
 		'team' => '',
 	) );
 	
-	$options = get_user_teams($value['team'], true);
+	$options = get_user_teams($value['team'], true, true);
 	$option_cat = $field_type->concat_items();
 	//print_r($option_cat);
 	echo $field_type->select( array(

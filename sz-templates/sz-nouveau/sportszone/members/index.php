@@ -6,7 +6,7 @@
  */
 
 ?>
-
+<!-- sz-templates > sz-nouveau > sportszone > members > index -->
 	<?php sz_nouveau_before_members_directory_content(); ?>
 
 	<?php if ( ! sz_nouveau_is_object_nav_in_sidebar() ) : ?>

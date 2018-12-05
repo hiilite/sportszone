@@ -906,8 +906,9 @@ var localized_strings = {"none":"None","remove_text":"\u2014 Remove \u2014","day
 					if(response.data.players.length) {
 						$target.eq(i).append("<li class=\"sz-select-all-container\" style=\"display:none;\"><label class=\"selectit\"><input type=\"checkbox\" class=\"sz-select-all\"><strong>" + localized_strings.select_all + "</strong></li>");
 						$(response.data.players).each(function( key, value ) {
-							if (response.data.selected.indexOf( value.ID + "") != -1) {
-								is_checked = 'checked=checked';
+							console.log(value);
+							if ( response.data.selected != null) {
+								if (response.data.selected.indexOf( value.ID + "") != -1) is_checked = 'checked=checked';
 							} else {
 								is_checked = '';
 							}

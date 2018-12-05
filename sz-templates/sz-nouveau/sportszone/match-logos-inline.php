@@ -15,7 +15,7 @@ foreach ( $teams[0] as $team ):
 	if ( sz_has_groups( array('id' => $team )) ) :
 	while ( sz_groups() ) :
 			sz_the_group();
-			$logo = sz_get_group_avatar();
+			$logo = sz_core_fetch_avatar( array( "item_id" => $team, "object" => "group", "type" => "full" ) );
 	endwhile;
 	endif;
 	

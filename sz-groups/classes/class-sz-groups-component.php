@@ -604,9 +604,20 @@ class SZ_Groups_Component extends SZ_Component {
 
 			$group_link = sz_get_group_permalink( $this->current_group );
 
+			// Add the "Homepage" subnav item, as this will always be present.
+			/*$sub_nav[] = array(
+				'name'            =>  _x( 'About', 'Group screen navigation title', 'sportszone' ),
+				'slug'            => 'about',
+				'parent_url'      => $group_link,
+				'parent_slug'     => $this->current_group->slug,
+				'screen_function' => 'groups_screen_group_about',
+				'position'        => 1,
+				'item_css_id'     => 'about'
+			);*/
+
 			// Add the "Home" subnav item, as this will always be present.
 			$sub_nav[] = array(
-				'name'            =>  _x( 'Group Activity', 'Group screen navigation title', 'sportszone' ),
+				'name'            =>  _x( 'About', 'Group screen navigation title', 'sportszone' ),
 				'slug'            => 'home',
 				'parent_url'      => $group_link,
 				'parent_slug'     => $this->current_group->slug,
@@ -626,7 +637,7 @@ class SZ_Groups_Component extends SZ_Component {
 					'parent_url'      => $group_link,
 					'parent_slug'     => $this->current_group->slug,
 					'screen_function' => 'groups_screen_group_request_membership',
-					'position'        => 30
+					'position'        => 1
 				);
 			}
 
@@ -636,7 +647,7 @@ class SZ_Groups_Component extends SZ_Component {
 				 */
 				if ( $this->current_group->front_template && sz_is_active( 'activity' ) ) {
 					$sub_nav[] = array(
-						'name'            => _x( 'Activity', 'My Group screen nav', 'sportszone' ),
+						'name'            => _x( 'Group Activity', 'My Group screen nav', 'sportszone' ),
 						'slug'            => 'activity',
 						'parent_url'      => $group_link,
 						'parent_slug'     => $this->current_group->slug,

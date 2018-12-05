@@ -899,7 +899,11 @@ function sz_nouveau_theme_cover_image( $params = array() ) {
 		#sportszone div#item-header #item-header-cover-image #item-header-content .team-color-three {
 			border-radius: 0;
 			width: calc(20% + 1px);
+			min-width:203px;
 			background: #' . $team_color_three . ';
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
 		}
 
 		body.single-item.groups #sportszone div#item-header #item-header-cover-image #item-header-content,

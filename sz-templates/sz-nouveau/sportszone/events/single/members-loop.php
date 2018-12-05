@@ -6,7 +6,7 @@
  * @version 3.0.0
  */
 ?>
-
+<!-- sz-templates > sz-nouveau > sportszone > events > single > members-loop -->
 <?php if ( sz_event_has_members( sz_ajax_querystring( 'event_members' ) ) ) : ?>
 
 	<?php sz_nouveau_event_hook( 'before', 'members_content' ); ?>
@@ -62,9 +62,7 @@
 
 	<?php sz_nouveau_event_hook( 'after', 'members_content' ); ?>
 
-<?php else : ?>
+<?php else :
 
 		sz_nouveau_user_feedback( 'event-members-none' );
-
-<?php
 endif;

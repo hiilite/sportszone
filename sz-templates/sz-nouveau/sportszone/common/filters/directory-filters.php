@@ -6,6 +6,7 @@
  * @version 3.0.0
  */
 ?>
+<!-- sz-templates > sz-nouveau > sportszone > common > filters > directory-filters -->
 <div id="dir-filters" class="component-filters clearfix">
 	<div id="<?php sz_nouveau_filter_container_id(); ?>" class="last filter">
 		<label class="sz-screen-reader-text" for="<?php sz_nouveau_filter_id(); ?>">

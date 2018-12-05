@@ -5,13 +5,14 @@
  * @since 3.0.0
  * @version 3.0.0
  */
-
+?>
+<!-- sz-templates > sz-nouveau > sportszone > members > members-loop -->
+<?php 
 sz_nouveau_before_loop();
 
-echo '<h2>'.__('Members').'</h2>';
-?>
+//echo '<h2>'.__('Members').'</h2>';
 
-<?php if ( sz_get_current_member_type() ) : ?>
+if ( sz_get_current_member_type() ) : ?>
 	<p class="current-member-type"><?php sz_current_member_type_message(); ?></p>
 <?php endif; ?>
 

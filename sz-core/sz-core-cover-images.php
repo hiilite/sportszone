@@ -203,7 +203,7 @@ function sz_core_fetch_cover_image( $args = '' ) {
 		'item_id'       => false,
 		'object'        => 'user',
 		'type'          => 'thumb',
-		'cover_image_dir'    => false,
+		'cover_image_dir'	=> false,
 		'width'         => false,
 		'height'        => false,
 		'class'         => 'cover_image',
@@ -474,12 +474,13 @@ function sz_core_fetch_cover_image( $args = '' ) {
 	$legacy_user_cover_image_name  = ( 'full' == $params['type'] ) ? '-cover-image2' : '-cover-image1';
 	$legacy_group_cover_image_name = ( 'full' == $params['type'] ) ? '-groupcover-image-full' : '-groupcover-image-thumb';
 
+	
 	// Check for directory.
 	if ( file_exists( $cover_image_folder_dir ) ) {
 
 		// Open directory.
 		if ( $av_dir = opendir( $cover_image_folder_dir ) ) {
-
+			
 			// Stash files in an array once to check for one that matches.
 			$cover_image_files = array();
 			while ( false !== ( $cover_image_file = readdir( $av_dir ) ) ) {
@@ -488,7 +489,7 @@ function sz_core_fetch_cover_image( $args = '' ) {
 					$cover_image_files[] = $cover_image_file;
 				}
 			}
-
+			
 			// Check for array.
 			if ( 0 < count( $cover_image_files ) ) {
 
@@ -498,7 +499,7 @@ function sz_core_fetch_cover_image( $args = '' ) {
 						$cover_image_url = $cover_image_folder_url . '/' . $cover_image_files[$key];
 					}
 				}
-
+				
 				// Legacy cover-image check.
 				if ( !isset( $cover_image_url ) ) {
 					foreach( $cover_image_files as $key => $value ) {
@@ -525,6 +526,7 @@ function sz_core_fetch_cover_image( $args = '' ) {
 		// If we found a locally uploaded cover-image.
 		if ( isset( $cover_image_url ) ) {
 			// Support custom scheme.
+			
 			$cover_image_url = set_url_scheme( $cover_image_url, $params['scheme'] );
 
 			// Return it wrapped in an <img> element.
@@ -897,10 +899,12 @@ function sz_cover_image_ajax_upload() {
 	$needs_reset = array();
 
 	if ( 'user' === $sz_params['object'] && sz_is_active( 'xprofile' ) ) {
-		$sz_params['upload_dir_filter'] = 'sz_attachments_cover_image_upload_dir';
+		//$sz_params['upload_dir_filter'] = 'sz_attachments_cover_image_upload_dir';
+		
+		$sz_params['upload_dir_filter'] = 'user_cover_image_upload_dir';
 
 		if ( ! sz_displayed_user_id() && ! empty( $sz_params['item_id'] ) ) {
-			$needs_reset = array( 'key' => 'displayed_user', 'value' => $sz->displayed_user );
+			$needs_reset = array( 'component' => 'members', 'key' => 'displayed_user', 'value' => $sz->displayed_user );
 			$sz->displayed_user->id = $sz_params['item_id'];
 		}
 	} elseif ( 'group' === $sz_params['object'] && sz_is_active( 'groups' ) ) {
@@ -1255,6 +1259,7 @@ function sz_cover_image_ajax_set() {
 		if ( 'user' === $cover_image_data['object'] ) {
 			/** This action is documented in sz-core/sz-core-cover-images.php */
 			do_action( 'xprofile_cover_image_uploaded', (int) $cover_image_data['item_id'], $cover_image_data['type'], $r );
+			//do_action( 'user_cover_image_uploaded', (int) $cover_image_data['item_id'], $cover_image_data['type'], $r );
 		} elseif ( 'group' === $cover_image_data['object'] ) {
 			/** This action is documented in sz-groups/sz-groups-screens.php */
 			do_action( 'groups_cover_image_uploaded', (int) $cover_image_data['item_id'], $cover_image_data['type'], $r );

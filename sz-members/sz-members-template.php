@@ -1659,6 +1659,164 @@ function sz_displayed_user_email() {
 		return apply_filters( 'sz_get_displayed_user_email', esc_attr( $retval ) );
 	}
 
+
+
+/*--------------------------------*/
+
+
+
+
+
+
+
+
+
+/**
+ * Output the group cover_image while in the groups loop.
+ *
+ * @since 1.0.0
+ *
+ * @param array|string $args {
+ *      See {@link sz_get_group_cover_image()} for description of arguments.
+ * }
+ */
+function sz_displayed_user_cover_image( $args = '' ) {
+	echo sz_get_displayed_user_cover_image( $args );
+}
+	/**
+	 * Get a group's cover_image.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @see sz_core_fetch_cover_image() For a description of arguments and return values.
+	 *
+	 * @param array|string $args {
+	 *     Arguments are listed here with an explanation of their defaults.
+	 *     For more information about the arguments, see {@link sz_core_fetch_cover_image()}.
+	 *
+	 *     @type string   $alt     Default: 'Group logo of [group name]'.
+	 *     @type string   $class   Default: 'avatar'.
+	 *     @type string   $type    Default: 'full'.
+	 *     @type int|bool $width   Default: false.
+	 *     @type int|bool $height  Default: false.
+	 *     @type bool     $id      Passed to `$css_id` parameter.
+	 * }
+	 * @return string Group avatar string.
+	 */
+	function sz_get_displayed_user_cover_image( $args = '' ) {
+		global $sz;
+		// Bail if avatars are turned off.
+		//var_dump(sportszone()->cover_image->show_cover_images);
+		/*if ( sz_disable_group_cover_image_uploads() || ! sportszone()->cover_image->show_cover_images ) {
+			return false;
+		}*/
+
+		// Parse the arguments.
+		$r = sz_parse_args( $args, array(
+			'type'   => 'full',
+			'width'  => false,
+			'height' => false,
+			'class'  => 'cover-image',
+			'id'     => false,
+			'alt'    => sprintf( __( 'User cover of %s', 'sportszone' ), $groups_template->group->name )
+		) );
+
+		// Fetch the cover_image from the folder.
+		$cover_image = sz_core_fetch_cover_image( array(
+			'item_id'    => $sz->displayed_user->id,
+			'cover_image_dir' => 'user-cover-images',
+			'object'     => 'user',
+			'type'       => $r['type'],
+			'alt'        => $r['alt'],
+			'css_id'     => $r['id'],
+			'class'      => $r['class'],
+			'width'      => $r['width'],
+			'height'     => $r['height'],
+		) );
+
+		// If No avatar found, provide some backwards compatibility.
+		if ( empty( $cover_image ) ) {
+			$cover_image = '<img src="' . esc_url( $sz->displayed_user->cover_image_thumb ) . '" class="cover-image" alt="' . esc_attr( $sz->displayed_user->name ) . '" />';
+		}
+
+		/**
+		 * Filters the group cover_image while in the groups loop.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param string $avatar HTML image element holding the group cover_image.
+		 * @param array  $r      Array of parsed arguments for the group cover_image.
+		 */
+		return apply_filters( 'sz_get_displayed_user_cover_image', $cover_image, $r );
+	}
+
+/**
+ * Output the group cover_image thumbnail while in the groups loop.
+ *
+ * @since 1.0.0
+ *
+ * @param object|bool $group Optional. Group object.
+ *                           Default: current group in loop.
+ */
+function sz_displayed_user_cover_image_thumb( $member = false ) {
+	echo sz_get_displayed_user_cover_image_thumb( $member );
+}
+	/**
+	 * Return the group cover_image thumbnail while in the groups loop.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param object|bool $group Optional. Group object.
+	 *                           Default: current group in loop.
+	 * @return string
+	 */
+	function sz_get_displayed_user_cover_image_thumb( $member = false ) {
+		return sz_get_displayed_user_cover_image( array(
+			'type' => 'thumb',
+			'id'   => ! empty( $member->id ) ? $member->id : false
+		) );
+	}
+
+
+
+/**
+ * Return whether a group has an avatar.
+ *
+ * @since 1.1.0
+ *
+ * @param int|bool $group_id Group ID to check.
+ * @return boolean
+ */
+function sz_get_displayed_user_has_cover_image( $displayed_user_id = false ) {
+
+	if ( false === $displayed_user_id ) {
+		$displayed_user_id = sz_displayed_user_id();
+	}
+
+	$cover_image_args = array(
+		'item_id' => $displayed_user_id,
+		'object'  => 'member',
+		'no_grav' => true,
+		'html'    => false,
+		'type'    => 'thumb',
+	);
+
+	$displayed_user_cover_image = sz_core_fetch_displayed_user_image( $cover_image_args ); 
+	if ( sz_core_cover_image_default( 'local', $cover_image_args ) === $displayed_user_cover_image ) {
+		return false;
+	}
+
+	return true;
+}
+
+
+
+
+
+
+/*--------------------------------*/
+
+
 /**
  * Output the "active [x days ago]" string for a user.
  *

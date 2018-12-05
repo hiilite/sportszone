@@ -212,9 +212,9 @@ class SZ_Attachment_Cover_Image extends SZ_Attachment {
 		
 		if ( 'user' === $args['object'] ) {
 			
-			$cover_image_dir = 'members';
+			$cover_image_dir  = sanitize_key( $args['object'] ) . '-cover-images';
 			$args['item_id'] = (int) $args['item_id'];
-			$relative_path = sprintf( '/%s/%s/cover-images/%s', $cover_image_dir, $args['item_id'],  basename( $args['original_file'] ) );
+			$relative_path = sprintf( '/%s/%s/%s', $cover_image_dir, $args['item_id'], basename( $args['original_file'] ) );
 		} else {
 			
 			$cover_image_dir = sanitize_key( $args['object'] ) . '-cover-images';
@@ -243,7 +243,7 @@ class SZ_Attachment_Cover_Image extends SZ_Attachment {
 
 			/** This filter is documented in sz-core/sz-core-cover-images.php */
 			if ( 'user' === $args['object'] ) {
-				$cover_image_folder_dir = apply_filters( 'sz_core_cover_image_folder_dir', $this->upload_path . '/' . $cover_image_dir . '/' . $args['item_id'] .'/cover-images', $args['item_id'], $args['object'], $args['cover_image_dir'] );
+				$cover_image_folder_dir = apply_filters( 'sz_core_cover_image_folder_dir', $this->upload_path . '/' . $args['cover_image_dir'] . '/' . $args['item_id'], $args['item_id'], $args['object'], $args['cover_image_dir'] );
 			} else {
 				$cover_image_folder_dir = apply_filters( 'sz_core_cover_image_folder_dir', $this->upload_path . '/' . $args['cover_image_dir'] . '/' . $args['item_id'], $args['item_id'], $args['object'], $args['cover_image_dir'] );
 			}

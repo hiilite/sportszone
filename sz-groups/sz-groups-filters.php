@@ -211,6 +211,8 @@ function sz_groups_default_cover_image( $cover_image, $params ) {
 		}
 
 		$cover_image = sportszone()->plugin_url . "sz-core/images/$file";
+	} else {
+		$cover_image = sportszone()->plugin_url . "sz-core/images/rugby-group.jpg";
 	}
 
 	return $cover_image;
