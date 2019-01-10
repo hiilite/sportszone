@@ -425,6 +425,7 @@ class SZ_Events_Component extends SZ_Component {
 		$this->valid_status = apply_filters( 'events_valid_status', array(
 			'public',
 			'private',
+			'paid',
 			'hidden'
 		) );
 

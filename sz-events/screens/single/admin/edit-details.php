@@ -10,7 +10,7 @@
 /**
  * Handle the display of a event's admin/edit-details page.
  *
- * @since 1.0.0
+ * @since 3.1.5
  */
 function events_screen_event_admin_edit_details() {
 
@@ -42,7 +42,7 @@ function events_screen_event_admin_edit_details() {
 				sz_core_add_message( __( 'There was an error updating event details. Please try again.', 'sportszone' ), 'error' );
 			} else {
 				sz_core_add_message( __( 'Event details were successfully updated.', 'sportszone' ) );
-			}
+			} 
 			
 			/*
 			 * Save event types.
@@ -93,6 +93,7 @@ function events_screen_event_admin_edit_details() {
 			if ( isset( $_POST['sz_rules_regulations'] ) ) {
 				events_update_eventmeta( $event_id, 'sz_rules_regulations', $_POST['sz_rules_regulations'] );
 			}
+		
 			
 			/**
 			 * Fires before the redirect if a event details has been edited and saved.

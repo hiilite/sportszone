@@ -10,13 +10,13 @@
 /**
  * Handle the display of a event's admin/event-settings page.
  *
- * @since 1.0.0
+ * @since 3.1.5
  */
 function events_screen_event_admin_settings() {
 
 	if ( 'event-settings' != sz_get_event_current_admin_tab() )
 		return false;
-
+ 
 	if ( ! sz_is_item_admin() )
 		return false;
 
@@ -28,13 +28,17 @@ function events_screen_event_admin_settings() {
 
 		// Checked against a whitelist for security.
 		/** This filter is documented in sz-events/sz-events-admin.php */
-		$allowed_status = apply_filters( 'events_allowed_status', array( 'public', 'private', 'hidden' ) );
+		$allowed_status = apply_filters( 'events_allowed_status', array( 'public', 'private', 'hidden', 'paid' ) );
 		$status         = ( in_array( $_POST['event-status'], (array) $allowed_status ) ) ? $_POST['event-status'] : 'public';
 
 		// Checked against a whitelist for security.
 		/** This filter is documented in sz-events/sz-events-admin.php */
 		$allowed_invite_status = apply_filters( 'events_allowed_invite_status', array( 'members', 'mods', 'admins' ) );
 		$invite_status	       = isset( $_POST['event-invite-status'] ) && in_array( $_POST['event-invite-status'], (array) $allowed_invite_status ) ? $_POST['event-invite-status'] : 'members';
+		
+		// If Paid event, save price and email
+		$event_args['sz_event_cost'] = isset( $_POST['sz_event_cost'] ) ? $_POST['sz_event_cost'] : 0;
+		$event_args['sz_event_paypal_email'] = isset( $_POST['sz_event_paypal_email'] ) ? $_POST['sz_event_paypal_email'] : '';
 
 		// Check the nonce.
 		if ( !check_admin_referer( 'events_edit_event_settings' ) )
@@ -66,7 +70,7 @@ function events_screen_event_admin_settings() {
 			sz_events_set_event_type( sz_get_current_event_id(), $current_types );
 		}
 
-		if ( !events_edit_event_settings( $_POST['event-id'], $enable_forum, $status, $invite_status ) ) {
+		if ( !events_edit_event_settings( $_POST['event-id'], $enable_forum, $status, $invite_status, $event_args ) ) {
 			sz_core_add_message( __( 'There was an error updating event settings. Please try again.', 'sportszone' ), 'error' );
 		} else {
 			sz_core_add_message( __( 'Event settings were successfully updated.', 'sportszone' ) );

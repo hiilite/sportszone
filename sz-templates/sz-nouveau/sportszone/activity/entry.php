@@ -20,53 +20,58 @@ sz_nouveau_activity_hook( 'before', 'entry' ); ?>
 			<?php sz_activity_avatar( array( 'type' => 'full' ) ); ?>
 
 		</a>
-		<div class="act-meta">
-		<?php
-			echo '<span class="act-user">';
-			sz_activity_member_display_name();
-			echo '</span>';
-			echo '<span class="time-since">'.sz_core_time_since( sz_nouveau_get_activity_timestamp() ).'</span>'
-		?>
-		</div>
-
 	</div>
-
-	<div class="activity-content">
-
-		<div class="activity-header">
-			<?php sz_activity_action(); ?> 
-		</div>
-
-		<?php if ( sz_nouveau_activity_has_content() ) : ?>
-
-			<div class="activity-inner">
-
-				<?php sz_nouveau_activity_content(); ?>
-
+	
+	<div class="activity-main">
+		<div class="activity-avatar">
+			<div class="act-meta">
+			<?php
+				echo '<span class="act-user">';
+				sz_activity_member_display_name();
+				echo '</span>';
+				echo '<span class="time-since">'.sz_core_time_since( sz_nouveau_get_activity_timestamp() ).'</span>'
+			?>
 			</div>
-
-		<?php endif; ?>
-
-		<?php sz_nouveau_activity_entry_buttons(); ?>
-
-	</div>
-
-	<?php sz_nouveau_activity_hook( 'before', 'entry_comments' ); ?>
-
-	<?php if ( sz_activity_get_comment_count() || ( is_user_logged_in() && ( sz_activity_can_comment() || sz_is_single_activity() ) ) ) : ?>
-
-		<div class="activity-comments">
-
-			<?php sz_activity_comments(); ?>
-
-			<?php sz_nouveau_activity_comment_form(); ?>
-
+	
 		</div>
-
-	<?php endif; ?>
-
-	<?php sz_nouveau_activity_hook( 'after', 'entry_comments' ); ?>
-
+	
+		<div class="activity-content">
+	
+			<div class="activity-header">
+				<?php sz_activity_action(); ?> 
+			</div>
+	
+			<?php if ( sz_nouveau_activity_has_content() ) : ?>
+	
+				<div class="activity-inner">
+	
+					<?php sz_nouveau_activity_content(); ?>
+	
+				</div>
+	
+			<?php endif; ?>
+	
+			<?php //sz_nouveau_activity_entry_buttons(); ?>
+	
+		</div>
+	</div>
+		<?php sz_nouveau_activity_entry_buttons(); ?>
+	
+		<?php sz_nouveau_activity_hook( 'before', 'entry_comments' ); ?>
+	
+		<?php if ( sz_activity_get_comment_count() || ( is_user_logged_in() && ( sz_activity_can_comment() || sz_is_single_activity() ) ) ) : ?>
+	
+			<div class="activity-comments">
+	
+				<?php sz_activity_comments(); ?>
+	
+				<?php sz_nouveau_activity_comment_form(); ?>
+	
+			</div>
+	
+		<?php endif; ?>
+	
+		<?php sz_nouveau_activity_hook( 'after', 'entry_comments' ); ?>
 </li>
 
 <?php

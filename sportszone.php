@@ -6,7 +6,7 @@
  * Author:      The SportsZone Community
  * Author URI:  https://sportszone.org/
  * GitHub Plugin URI: https://github.com/hiilite/sportszone
- * Version:     3.1.4
+ * Version:     3.1.5
  * Text Domain: sportszone
  * Domain Path: /sz-languages/
  * License:     GPLv2 or later (license.txt)

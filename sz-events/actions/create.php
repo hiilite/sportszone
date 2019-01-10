@@ -10,7 +10,7 @@
 /**
  * Catch and process event creation form submissions.
  *
- * @since 1.2.0
+ * @since 3.1.5
  *
  * @return bool
  */
@@ -154,6 +154,15 @@ function events_action_create_event() {
 			if ( isset( $_POST['sz_rules_regulations'] ) ) {
 				events_update_eventmeta( $new_event_id, 'sz_rules_regulations', $_POST['sz_rules_regulations'] );
 			}
+			if ( isset( $_POST['sz_is_paid_event'] ) ) {
+				events_update_eventmeta( $new_event_id, 'sz_is_paid_event', $_POST['sz_is_paid_event'] );
+			}
+			if ( isset( $_POST['sz_event_cost'] ) ) {
+				events_update_eventmeta( $new_event_id, 'sz_event_cost', $_POST['sz_event_cost'] );
+			}
+			if ( isset( $_POST['sz_event_paypal_email'] ) ) {
+				events_update_eventmeta( $new_event_id, 'sz_event_paypal_email', $_POST['sz_event_paypal_email'] );
+			}
 		}
 
 		if ( 'event-settings' == sz_get_events_current_create_step() ) {
@@ -168,6 +177,8 @@ function events_action_create_event() {
 				$event_status = 'private';
 			elseif ( 'hidden' == $_POST['event-status'] )
 				$event_status = 'hidden';
+			elseif ( 'paid' == $_POST['event-status'] )
+				$event_status = 'paid';
 
 			if ( !$sz->events->new_event_id = events_create_event( array( 'event_id' => $sz->events->new_event_id, 'status' => $event_status, 'enable_forum' => $event_enable_forum ) ) ) {
 				sz_core_add_message( __( 'There was an error saving event details. Please try again.', 'sportszone' ), 'error' );
@@ -190,7 +201,10 @@ function events_action_create_event() {
 			 */
 			$allowed_invite_status = apply_filters( 'events_allowed_invite_status', array( 'members', 'mods', 'admins' ) );
 			$invite_status	       = !empty( $_POST['event-invite-status'] ) && in_array( $_POST['event-invite-status'], (array) $allowed_invite_status ) ? $_POST['event-invite-status'] : 'members';
-
+			
+			events_update_eventmeta( $sz->events->new_event_id, 'sz_event_cost', $_POST['sz_event_cost'] );
+			events_update_eventmeta( $sz->events->new_event_id, 'sz_event_paypal_email', $_POST['sz_event_paypal_email'] );
+	
 			events_update_eventmeta( $sz->events->new_event_id, 'invite_status', $invite_status );
 		}
 

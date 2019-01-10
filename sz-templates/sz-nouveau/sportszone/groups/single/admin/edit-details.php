@@ -31,6 +31,33 @@ if ( $group_types ) : ?>
 		<p tabindex="0"><?php esc_html_e( 'Select the type of Group you are creating.', 'sportszone' ); ?></p>
 
 		<?php foreach ( $group_types as $type ) : ?>
+		
+			<?php
+			// if type is resource
+			if($type->name == 'resource') {
+				// if user is admin	
+				$user = wp_get_current_user();
+			    $role = ( array ) $user->roles;
+			    if(current_user_can('administrator')) {
+				?>
+				
+				<div class="radiogroup">
+				<label for="<?php printf( 'group-type-%s', $type->name ); ?>">
+					<input type="radio" name="group-types[]" id="<?php printf( 'group-type-%s', $type->name ); ?>" value="<?php echo esc_attr( $type->name ); ?>" <?php checked( sz_groups_has_group_type( sz_get_current_group_id(), $type->name ) ); ?>/> <?php echo esc_html( $type->labels['name'] ); ?>
+					<?php
+					if ( ! empty( $type->description ) ) {
+						printf( '&ndash; %s', '<span class="sz-group-type-desc">' . esc_html( $type->description ) . '</span>' );
+					}
+					?>
+				</label>
+			</div>
+				    
+				<?php
+				}
+			}
+			else {	
+			?>
+		
 			<div class="radiogroup">
 				<label for="<?php printf( 'group-type-%s', $type->name ); ?>">
 					<input type="radio" name="group-types[]" id="<?php printf( 'group-type-%s', $type->name ); ?>" value="<?php echo esc_attr( $type->name ); ?>" <?php checked( sz_groups_has_group_type( sz_get_current_group_id(), $type->name ) ); ?>/> <?php echo esc_html( $type->labels['name'] ); ?>
@@ -42,7 +69,10 @@ if ( $group_types ) : ?>
 				</label>
 			</div>
 
-		<?php endforeach; ?>
+		<?php 
+			}
+		endforeach; 
+		?>
 
 	</fieldset>
 

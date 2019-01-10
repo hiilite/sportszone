@@ -1540,12 +1540,12 @@ function sz_insert_activity_meta( $content = '' ) {
 		 * @param array $value Array containing the html markup for the activity permalink, after being parsed by
 		 *                     sprintf and current activity component.
 		 */
-		$new_content = apply_filters_ref_array( 'sz_activity_permalink', array(
+		/*$new_content = apply_filters_ref_array( 'sz_activity_permalink', array(
 			$activity_meta,
 			&$activities_template->activity
-		) );
+		) );*/
 	} else {
-		$new_content .= str_pad( $time_since, strlen( $time_since ) + 2, ' ', STR_PAD_BOTH );
+		//$new_content .= str_pad( $time_since, strlen( $time_since ) + 2, ' ', STR_PAD_BOTH );
 	}
 
 	/**

@@ -20,7 +20,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 1.5.0
  *
- * @return bool True if set, False if empty.
+ * @return bool True if set, False if empty. 
  */
 function sz_events_has_directory() {
 	$sz = sportszone();
@@ -319,7 +319,7 @@ function events_edit_base_event_details( $args = array() ) {
  * These are the settings that appear on the Settings page of the event's Admin
  * section (privacy settings, "enable forum", invitation status).
  *
- * @since 1.0.0
+ * @since 3.1.5
  *
  * @param int         $event_id      ID of the event.
  * @param bool        $enable_forum  Whether to enable a forum for the event.
@@ -329,11 +329,16 @@ function events_edit_base_event_details( $args = array() ) {
  * @param int|bool    $parent_id     Parent event ID.
  * @return bool True on success, false on failure.
  */
-function events_edit_event_settings( $event_id, $enable_forum, $status, $invite_status = false, $parent_id = false ) {
+function events_edit_event_settings( $event_id, $enable_forum, $status, $invite_status = false, $atts = array(), $parent_id = false ) {
 
 	$event = events_get_event( $event_id );
 	$event->enable_forum = $enable_forum;
-
+	
+	$args = array(
+      'sz_event_cost'			=> 0,
+      'sz_event_paypal_email'	=> '',
+    );
+    extract( shortcode_atts( $args, $atts ) );
 	/**
 	 * Before we potentially switch the event status, if it has been changed to public
 	 * from private and there are outstanding membership requests, auto-accept those requests.
@@ -356,6 +361,9 @@ function events_edit_event_settings( $event_id, $enable_forum, $status, $invite_
 	if ( $invite_status )
 		events_update_eventmeta( $event->id, 'invite_status', $invite_status );
 
+	events_update_eventmeta( $event->id, 'sz_event_cost', $sz_event_cost );
+	events_update_eventmeta( $event->id, 'sz_event_paypal_email', $sz_event_paypal_email );
+		
 	events_update_eventmeta( $event->id, 'last_activity', sz_core_current_time() );
 
 	/**
@@ -2719,6 +2727,10 @@ add_action( 'cmb2_init', 'cmb2_events_details_metaboxes' );
 
 /**
  * Define the metabox and field configurations.
+ * 
+ * @since 3.1.5
+ *
+ * @return object
  */
 function cmb2_events_details_metaboxes() {
 	global $sz;
@@ -2775,6 +2787,8 @@ function cmb2_events_details_metaboxes() {
 		'type'        => 'textarea',
 		'name'		  => __('Rules &amp; Regulations', 'cmb2' ),
 	) );
+	
+
 }
 
  

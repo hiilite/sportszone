@@ -193,6 +193,7 @@ function sz_nouveau_ajax_button( $output = '', $button = null, $before = '', $af
 			'join-group',
 			'leave-event',
 			'join-event',
+			'pay-event',
 			'accept-invite',
 			'membership-requested',
 			'request-membership',

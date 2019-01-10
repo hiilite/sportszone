@@ -19,6 +19,14 @@ function copyLink(link){
 		return;
 	}
 	
+	$('#event-settings-form, #create-event-form').on('change', '[name=event-status]', function(e){
+		if($(this).val() == 'paid') {
+			$('.event-payment-details').slideDown();
+		} else {
+			$('.event-payment-details').slideUp();
+		}
+	});
+	
 	/**
 	 * Activate jQuery-Tabs
 	 */
@@ -764,59 +772,67 @@ function copyLink(link){
 
 			// Add a pending class to prevent queries while we're processing the action
 			target.addClass( 'pending loading' );
-
-			self.ajax( {
-				action   : object + '_' + action,
-				item_id  : item_id,
-				_wpnonce : nonce
-			}, object ).done( function( response ) {
-				if ( false === response.success ) {
-					item_inner.prepend( response.data.feedback );
-					target.removeClass( 'pending loading' );
-					item.find( '.sz-feedback' ).fadeOut( 6000 );
-				} else {
-					// Specific cases for groups
-					if ( 'groups' === object ) {
-
-						// Group's header button
-						if ( undefined !== response.data.is_group && response.data.is_group ) {
-							return window.location.reload();
+			
+			if(action == 'pay_event'){
+				console.log(nonceUrl);
+				window.location.href = nonceUrl + '?action=team-select';
+			} else {
+				self.ajax( {
+					action   : object + '_' + action,
+					item_id  : item_id,
+					_wpnonce : nonce
+				}, object ).done( function( response ) {
+					if ( false === response.success ) {
+						item_inner.prepend( response.data.feedback );
+						target.removeClass( 'pending loading' );
+						item.find( '.sz-feedback' ).fadeOut( 6000 );
+					} else {
+						// Specific cases for groups
+						if ( 'groups' === object ) {
+	
+							// Group's header button
+							if ( undefined !== response.data.is_group && response.data.is_group ) {
+								return window.location.reload();
+							}
+						} else if ( 'events' === object ) {
+	
+							// Events's header button
+							if ( undefined !== response.data.is_event && response.data.is_event ) {
+								return window.location.reload();
+							}
 						}
-					} else if ( 'events' === object ) {
-
-						// Events's header button
-						if ( undefined !== response.data.is_event && response.data.is_event ) {
-							return window.location.reload();
+	
+						// User's groups invitations screen & User's friend screens
+						if ( undefined !== response.data.is_user && response.data.is_user ) {
+							target.parent().html( response.data.feedback );
+							item.fadeOut( 1500 );
+							return;
 						}
+	
+						// Update count
+						if ( $( self.objectNavParent + ' [data-sz-scope="personal"]' ).length ) {
+							var personal_count = Number( $( self.objectNavParent + ' [data-sz-scope="personal"] span' ).html() ) || 0;
+	
+							if ( -1 !== $.inArray( action, ['leave_group', 'remove_friend', 'leave_event'] ) ) {
+								personal_count -= 1;
+							} else if ( -1 !== $.inArray( action, ['join_group', 'join_event', 'pay_event'] ) ) {
+								personal_count += 1;
+							}
+							
+	
+							if ( personal_count < 0 ) {
+								personal_count = 0;
+							}
+	
+							$( self.objectNavParent + ' [data-sz-scope="personal"] span' ).html( personal_count );
+						}
+	
+						target.parent().replaceWith( response.data.contents );
 					}
-
-					// User's groups invitations screen & User's friend screens
-					if ( undefined !== response.data.is_user && response.data.is_user ) {
-						target.parent().html( response.data.feedback );
-						item.fadeOut( 1500 );
-						return;
-					}
-
-					// Update count
-					if ( $( self.objectNavParent + ' [data-sz-scope="personal"]' ).length ) {
-						var personal_count = Number( $( self.objectNavParent + ' [data-sz-scope="personal"] span' ).html() ) || 0;
-
-						if ( -1 !== $.inArray( action, ['leave_group', 'remove_friend'] ) ) {
-							personal_count -= 1;
-						} else if ( -1 !== $.inArray( action, ['join_group'] ) ) {
-							personal_count += 1;
-						}
-
-						if ( personal_count < 0 ) {
-							personal_count = 0;
-						}
-
-						$( self.objectNavParent + ' [data-sz-scope="personal"] span' ).html( personal_count );
-					}
-
-					target.parent().replaceWith( response.data.contents );
-				}
-			} );
+				} );
+			}
+			
+			
 		},
 
 		/**

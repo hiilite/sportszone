@@ -13,6 +13,7 @@ add_action( 'admin_init', function() {
 	$ajax_actions = array(
 		array( 'events_filter'                      => array( 'function' => 'sz_nouveau_ajax_object_template_loader', 'nopriv' => true  ) ),
 		array( 'events_join_event'                  => array( 'function' => 'sz_nouveau_ajax_joinleave_event', 'nopriv' => false ) ),
+		array( 'events_pay_event'                  	=> array( 'function' => 'sz_nouveau_ajax_joinleave_event', 'nopriv' => false ) ),
 		array( 'events_leave_event'                 => array( 'function' => 'sz_nouveau_ajax_joinleave_event', 'nopriv' => false ) ),
 		array( 'events_accept_invite'               => array( 'function' => 'sz_nouveau_ajax_joinleave_event', 'nopriv' => false ) ),
 		array( 'events_reject_invite'               => array( 'function' => 'sz_nouveau_ajax_joinleave_event', 'nopriv' => false ) ),
@@ -50,10 +51,22 @@ function sz_nouveau_ajax_joinleave_event() {
 
 	// Bail if not a POST action.
 	if ( ! sz_is_post_request() || empty( $_POST['action'] ) ) {
+		$response = array(
+			'feedback' => sprintf(
+				'<div class="sz-feedback error"><span class="sz-icon" aria-hidden="true"></span><p>%s</p></div>',
+				esc_html__( 'There was a problem performing this post action. Please try again.', 'sportszone' )
+			),
+		);
 		wp_send_json_error( $response );
 	}
 
 	if ( empty( $_POST['nonce'] ) || empty( $_POST['item_id'] ) || ! sz_is_active( 'events' ) ) {
+		$response = array(
+			'feedback' => sprintf(
+				'<div class="sz-feedback error"><span class="sz-icon" aria-hidden="true"></span><p>%s</p></div>',
+				esc_html__( 'There was a problem performing getting this actions data. Please try again.', 'sportszone' )
+			),
+		);
 		wp_send_json_error( $response );
 	}
 
@@ -69,6 +82,12 @@ function sz_nouveau_ajax_joinleave_event() {
 
 	// Nonce check!
 	if ( empty( $nonce ) || ! wp_verify_nonce( $nonce, $check ) ) {
+		$response = array(
+			'feedback' => sprintf(
+				'<div class="sz-feedback error"><span class="sz-icon" aria-hidden="true"></span><p>%s</p></div>',
+				esc_html__( 'There was a problem performing verifying this action. Please try again.', 'sportszone' )
+			),
+		);
 		wp_send_json_error( $response );
 	}
 
@@ -95,6 +114,104 @@ function sz_nouveau_ajax_joinleave_event() {
 
 	// Manage all button's possible actions here.
 	switch ( $_POST['action'] ) {
+		case 'events_pay_event':
+			// TODO: add actions for paying for event.
+			
+			if ( events_is_user_member( sz_loggedin_user_id(), $event->id ) ) {
+				$response = array(
+					'feedback' => $errors['member'],
+					'type'     => 'error',
+				);
+			} elseif ( 'paid' !== $event->status ) {
+				$response = array(
+					'feedback' => $errors['cannot'],
+					'type'     => 'error',
+				);
+			} elseif ( events_join_event( $event->id ) ) {
+				// TODO : create new transaction post in database to store all info.
+				$event_team_select = isset($_POST['event_team_select'])?intval($_POST['event_team_select']):0;
+				$requesting_user_id = get_current_user_id();
+				$post_id = wp_insert_post(array(
+					'post_type'		=> 'sz_orders',
+					'post_status'	=> 'publish',
+					'post_title'	=> 'Order',
+					'meta_input'	=> array(
+						'order_amount'		=> isset($_POST['event_purchase_total'])?$_POST['event_purchase_total']:0,
+						'item_id'			=> isset($_POST['item_id'])?$_POST['item_id']:0,
+						'item_type'			=> 'event',
+						'team_id'			=> $event_team_select,
+						'paypal_email'		=> isset($_POST['event_paypal_email'])?$_POST['event_paypal_email']:'',
+						'user_id'			=> $requesting_user_id,
+						'orderID' 			=> isset($_POST['orderID'])?$_POST['orderID']:'',
+						'payerID'			=> isset($_POST['payerID'])?$_POST['payerID']:'',
+						'paymentID' 		=> isset($_POST['paymentID'])?$_POST['paymentID']:'',
+						'paymentToken'		=> isset($_POST['paymentToken'])?$_POST['paymentToken']:'',
+					) 
+				));
+				if(!is_wp_error($post_id)){
+				  //the post is valid
+				  wp_update_post(array(
+						'ID'			=> $post_id,
+						'post_title'	=> 'Order #'.$post_id,
+					) );
+					
+					 // Ajax add all members of team to event
+					 
+			        // Add teams to a "approved_teams" meta for selection by the event.
+			        $approved_teams = events_get_eventmeta( $event->id, 'approved_teams');
+					if(!is_array($approved_teams))$approved_teams = array();
+			        $new_approved_teams = array_unique( array_merge( $approved_teams, array( $event_team_select ) ) );
+
+			        events_update_eventmeta( $event->id, 'approved_teams', $new_approved_teams );
+			        
+			        // Send notification to event creator that team has been added to event
+			        $admins = events_get_event_admins( $event->id );
+					
+					
+					// Saved okay, now send the email notification.
+					for ( $i = 0, $count = count( $admins ); $i < $count; ++$i )
+						events_notification_team_joined( $requesting_user_id, $admins[$i]->user_id, $event->id, $requesting_user_id );
+						
+
+					
+					
+					$event->is_member = '1';
+
+					$response = array(
+						'contents' => sz_get_event_join_button( $event ),
+						'is_event' => sz_is_event(),
+						'type'     => 'success',
+					);
+				}else{
+				  //there was an error in the post insertion, 
+				  
+				  $response = array(
+						'feedback' => sprintf(
+							'<div class="sz-feedback error"><span class="sz-icon" aria-hidden="true"></span><p>%s</p></div>',
+							esc_html__( $post_id->get_error_message() , 'sportszone' )
+						),
+						'type'     => 'error',
+					);
+				}
+				
+				        
+				 
+				
+		       
+		        
+				
+			} else {
+				// User is now a member of the event
+				
+				$event->is_member = '1';
+
+				$response = array(
+					'contents' => sz_get_event_join_button( $event ),
+					'is_event' => sz_is_event(),
+					'type'     => 'success',
+				);
+			}
+			break;
 
 		case 'events_accept_invite':
 			if ( ! events_accept_invite( sz_loggedin_user_id(), $event_id ) ) {

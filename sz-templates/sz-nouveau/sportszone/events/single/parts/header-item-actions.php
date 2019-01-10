@@ -6,6 +6,7 @@
  * @version 3.1.0
  */
 ?>
+<!-- sz-templates > sz-nouveau > sportszone > events > single > parts > header-item-actions -->
 <div id="item-actions" class="event-item-actions">
 
 	<?php if ( sz_current_user_can( 'events_access_event' ) ) : ?>

@@ -102,6 +102,7 @@ class SZ_Nouveau_Events {
 		$buttons = array(
 			'events_leave_event',
 			'events_join_event',
+			'events_pay_event',
 			'events_accept_invite',
 			'events_reject_invite',
 			'events_membership_requested',

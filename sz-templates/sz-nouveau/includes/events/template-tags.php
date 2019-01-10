@@ -1222,6 +1222,8 @@ function sz_nouveau_event_template_part() {
 			$template = 'send-invites';
 		} elseif ( sz_is_event_membership_request() ) {
 			$template = 'request-membership';
+		} elseif ( sz_is_event_paid_team_request() ) {
+			$template = 'select-team';
 		}
 
 		sz_nouveau_event_get_template_part( $template );

@@ -177,6 +177,7 @@ function events_clear_event_user_object_cache( $event_id, $user_id ) {
 	wp_cache_delete( 'sz_total_events_for_user_' . $user_id, 'sz' );
 }
 add_action( 'events_join_event',    'events_clear_event_user_object_cache', 10, 2 );
+add_action( 'events_pay_event',    	'events_clear_event_user_object_cache', 10, 2 );
 add_action( 'events_leave_event',   'events_clear_event_user_object_cache', 10, 2 );
 add_action( 'events_ban_member',    'events_clear_event_user_object_cache', 10, 2 );
 add_action( 'events_unban_member',  'events_clear_event_user_object_cache', 10, 2 );

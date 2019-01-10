@@ -20,7 +20,7 @@ if ( !class_exists( 'WP_List_Table' ) ) require( ABSPATH . 'wp-admin/includes/cl
 if ( is_admin() && ! empty( $_REQUEST['page'] ) && 'sz-events' == $_REQUEST['page'] )
 	add_filter( 'set-screen-option', 'sz_events_admin_screen_options', 10, 3 );
 
-/**
+/** 
  * Register the Events component admin screen.
  *
  * @since 1.7.0
@@ -275,11 +275,11 @@ function sz_events_admin_load() {
 		/**
 		 * Filters the allowed status values for the event.
 		 *
-		 * @since 1.0.2
+		 * @since 3.1.5 
 		 *
 		 * @param array $value Array of allowed event statuses.
 		 */
-		$allowed_status = apply_filters( 'events_allowed_status', array( 'public', 'private', 'hidden' ) );
+		$allowed_status = apply_filters( 'events_allowed_status', array( 'public', 'private', 'hidden', 'paid' ) );
 		$status         = ( in_array( $_POST['event-status'], (array) $allowed_status ) ) ? $_POST['event-status'] : 'public';
 
 		/**
@@ -292,7 +292,11 @@ function sz_events_admin_load() {
 		$allowed_invite_status = apply_filters( 'events_allowed_invite_status', array( 'members', 'mods', 'admins' ) );
 		$invite_status	       = in_array( $_POST['event-invite-status'], (array) $allowed_invite_status ) ? $_POST['event-invite-status'] : 'members';
 
-		if ( !events_edit_event_settings( $event_id, $enable_forum, $status, $invite_status ) ) {
+		// If Paid event, save price and email
+		$event_args['sz_event_cost'] = isset( $_POST['sz_event_cost'] ) ? $_POST['sz_event_cost'] : 0;
+		$event_args['sz_event_paypal_email'] = isset( $_POST['sz_event_paypal_email'] ) ? $_POST['sz_event_paypal_email'] : '';
+		
+		if ( !events_edit_event_settings( $event_id, $enable_forum, $status, $invite_status, $event_args ) ) {
 			$error = $event_id;
 		}
 
@@ -826,7 +830,7 @@ function sz_events_admin_index() {
 /**
  * Markup for the single event's Settings metabox.
  *
- * @since 1.7.0
+ * @since 3.1.5
  *
  * @param object $item Information about the current event.
  */
@@ -845,6 +849,9 @@ function sz_events_admin_edit_metabox_settings( $item ) {
 			<legend><?php _e( 'Privacy', 'sportszone' ); ?></legend>
 
 			<label for="sz-event-status-public"><input type="radio" name="event-status" id="sz-event-status-public" value="public" <?php checked( $item->status, 'public' ) ?> /><?php _e( 'Public', 'sportszone' ) ?></label>
+			
+			<label for="sz-event-status-paid"><input type="radio" name="event-status" id="sz-event-status-paid" value="paid" <?php checked( $item->status, 'paid' ) ?> /><?php _e( 'Paid', 'sportszone' ) ?></label>
+			
 			<label for="sz-event-status-private"><input type="radio" name="event-status" id="sz-event-status-private" value="private" <?php checked( $item->status, 'private' ) ?> /><?php _e( 'Private', 'sportszone' ) ?></label>
 			<label for="sz-event-status-hidden"><input type="radio" name="event-status" id="sz-event-status-hidden" value="hidden" <?php checked( $item->status, 'hidden' ) ?> /><?php _e( 'Hidden', 'sportszone' ) ?></label>
 		</fieldset>

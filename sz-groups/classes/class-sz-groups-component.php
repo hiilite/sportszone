@@ -462,7 +462,7 @@ class SZ_Groups_Component extends SZ_Component {
 		 * @param string $value SZ_GROUPS_DEFAULT_EXTENSION constant if defined,
 		 *                      else 'home'.
 		 */
-		$this->default_extension = apply_filters( 'sz_groups_default_extension', defined( 'SZ_GROUPS_DEFAULT_EXTENSION' ) ? SZ_GROUPS_DEFAULT_EXTENSION : 'home' );
+		$this->default_extension = apply_filters( 'sz_groups_default_extension', defined( 'SZ_GROUPS_DEFAULT_EXTENSION' ) ? SZ_GROUPS_DEFAULT_EXTENSION : 'activity' );
 
 		$sz = sportszone();
 
@@ -622,7 +622,7 @@ class SZ_Groups_Component extends SZ_Component {
 				'parent_url'      => $group_link,
 				'parent_slug'     => $this->current_group->slug,
 				'screen_function' => 'groups_screen_group_home',
-				'position'        => 10,
+				'position'        => 11,
 				'item_css_id'     => 'home'
 			);
 
@@ -652,7 +652,7 @@ class SZ_Groups_Component extends SZ_Component {
 						'parent_url'      => $group_link,
 						'parent_slug'     => $this->current_group->slug,
 						'screen_function' => 'groups_screen_group_activity',
-						'position'        => 11,
+						'position'        => 10,
 						'user_has_access' => $this->current_group->user_has_access,
 						'item_css_id'     => 'activity',
 						'no_access_url'   => $group_link,

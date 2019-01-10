@@ -3667,6 +3667,19 @@ function sz_is_event_membership_request() {
 }
 
 /**
+ * Is the current page a event's Request Membership page?
+ *
+ * Eg http://example.com/events/myevent/request-membership/.
+ *
+ * @since 1.2.0
+ *
+ * @return bool True if the current page is a event's Request Membership page.
+ */
+function sz_is_event_paid_team_request() {
+	return (bool) ( sz_is_events_component() && sz_is_current_action( 'select-team' ) );
+}
+
+/**
  * Is the current page a leave event attempt?
  *
  * @since 1.1.0

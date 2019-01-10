@@ -238,6 +238,29 @@ function sz_events_user_can_filter( $retval, $user_id, $capability, $site_id, $a
 	}
 
 	switch ( $capability ) {
+		case 'events_pay_event':
+			// Return early if the user isn't logged in or the event ID is unknown.
+			if ( ! $user_id || ! $event_id ) {
+				break;
+			}
+
+			// Set to false to begin with.
+			$retval = false;
+
+			// The event must allow joining, and the user should not currently be a member.
+			$event = events_get_event( $event_id );
+			// TODO: Check for Team Management status
+			if ( ( 'paid' === sz_get_event_status( $event )
+				&& ! events_is_user_member( $user_id, $event->id )
+				&& ! events_is_user_banned( $user_id, $event->id ) )
+				// Site admins can join any event they are not a member of.
+				|| ( sz_user_can( $user_id, 'sz_moderate' )
+				&& ! events_is_user_member( $user_id, $event->id ) )
+			) {
+				$retval = true;
+			}
+			break;
+			
 		case 'events_join_event':
 			// Return early if the user isn't logged in or the event ID is unknown.
 			if ( ! $user_id || ! $event_id ) {

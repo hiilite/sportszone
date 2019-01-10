@@ -1704,7 +1704,7 @@ function sz_displayed_user_cover_image( $args = '' ) {
 	 * @return string Group avatar string.
 	 */
 	function sz_get_displayed_user_cover_image( $args = '' ) {
-		global $sz;
+		global $sz, $groups_template;
 		// Bail if avatars are turned off.
 		//var_dump(sportszone()->cover_image->show_cover_images);
 		/*if ( sz_disable_group_cover_image_uploads() || ! sportszone()->cover_image->show_cover_images ) {
@@ -1718,7 +1718,7 @@ function sz_displayed_user_cover_image( $args = '' ) {
 			'height' => false,
 			'class'  => 'cover-image',
 			'id'     => false,
-			'alt'    => sprintf( __( 'User cover of %s', 'sportszone' ), $groups_template->group->name )
+			'alt'	=> '',
 		) );
 
 		// Fetch the cover_image from the folder.

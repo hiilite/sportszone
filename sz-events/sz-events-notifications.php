@@ -162,6 +162,57 @@ function events_notification_new_membership_request( $requesting_user_id = 0, $a
 }
 
 /**
+ * Notify event admin about new membership request.
+ *
+ * @since 1.0.0
+ *
+ * @param int $requesting_user_id ID of the user requesting event membership.
+ * @param int $admin_id           ID of the event admin.
+ * @param int $event_id           ID of the event.
+ * @param int $membership_id      ID of the event membership object.
+ */
+function events_notification_team_joined( $requesting_user_id = 0, $admin_id = 0, $event_id = 0, $membership_id = 0 ) {
+
+	// Trigger a SportsZone Notification.
+	if ( sz_is_active( 'notifications' ) ) {
+		sz_notifications_add_notification( array(
+			'user_id'           => $admin_id,
+			'item_id'           => $event_id,
+			'secondary_item_id' => $requesting_user_id,
+			'component_name'    => sportszone()->events->id,
+			'component_action'  => 'new_membership_request',
+		) );
+	}
+
+	// Bail if member opted out of receiving this email.
+	if ( 'no' === sz_get_user_meta( $admin_id, 'notification_events_membership_request', true ) ) {
+		return;
+	}
+
+	$unsubscribe_args = array(
+		'user_id'           => $admin_id,
+		'notification_type' => 'events-membership-request',
+	);
+
+	$event = events_get_event( $event_id );
+	$args  = array(
+		'tokens' => array(
+			'admin.id'             => $admin_id,
+			'event'                => $event,
+			'event.name'           => $event->name,
+			'event.id'             => $event_id,
+			'event-requests.url'   => esc_url( sz_get_event_permalink( $event ) . 'admin/membership-requests' ),
+			'membership.id'        => $membership_id,
+			'profile.url'          => esc_url( sz_core_get_user_domain( $requesting_user_id ) ),
+			'requesting-user.id'   => $requesting_user_id,
+			'requesting-user.name' => sz_core_get_user_displayname( $requesting_user_id ),
+			'unsubscribe'          => esc_url( sz_email_get_unsubscribe_link( $unsubscribe_args ) ),
+		),
+	);
+	sz_send_email( 'events-membership-request', (int) $admin_id, $args );
+}
+
+/**
  * Notify member about their event membership request.
  *
  * @since 1.0.0

@@ -6,9 +6,7 @@ function get_user_teams($value = false, $array = false, $get_all = false){
 		'group_type'	=> 'team'
 	);
 	
-	if(!$get_all) {
-		$teams_args['user_id']		= get_current_user_id( );
-	}
+	
 	if($array):
 		if(sz_has_groups($teams_args)):
 			$teams = '<option value="0" disabled selected>Select Team</option>';
@@ -29,6 +27,28 @@ function get_user_teams($value = false, $array = false, $get_all = false){
 			endwhile;
 		endif;
 	endif;
+	
+	return $teams;
+}
+
+function get_approved_teams($value = false, $approved_teams){
+
+	$teams = '<option value="0" disabled selected>Select Team</option>';
+	foreach($approved_teams as $approved_team) {
+		if($approved_team == 0) continue;
+		$teams_args = array(
+			'group_type'	=> 'team',
+			'group_id'		=> intval($approved_team),
+		);
+		if($team = groups_get_group($teams_args)):
+			$group_id = $team->id;
+			$teams .= '<option value="'.$group_id.'" '.selected( $value, $group_id, false ) .'>'.$team->name.'</option>';
+	
+			if(!is_numeric($value)){
+				$teams .= '<option value="'.$value.'" '.selected( $value, $value, false ) .'>'.$value.'</option>';
+			}
+		endif;
+	}
 	
 	return $teams;
 }
@@ -92,16 +112,36 @@ function cmb2_render_callback_for_select_team( $field, $value, $object_id, $obje
 		'team' => '',
 	) );
 	
-	$options = get_user_teams($value['team'], true, true);
-	$option_cat = $field_type->concat_items();
-	//print_r($option_cat);
-	echo $field_type->select( array(
-			'class'            => 'pw_select2 pw_select',
-			'name' 		=> $field_type->_name('[team]'),
-			'id' 		=> $field_type->_id('_team'),	
-			'options'	=>  $options,
-			'data-placeholder' => $field->args( 'attributes', 'placeholder' ) ? $field->args( 'attributes', 'placeholder' ) : $field->args( 'description' ),
-	) );
+	// TODO: if event_type is paid
+	$event =  events_get_event( array( 'event_id' => $event_id) );
+	$event_type = sz_get_event_type($event);
+
+	if ($event_type == 'Paid Event'):
+		//		Get approved_teams
+		$approved_teams = events_get_eventmeta( $event_id, 'approved_teams');
+		$options = get_approved_teams($value['team'], $approved_teams);
+		
+		$option_cat = $field_type->concat_items();
+		//print_r($option_cat);
+		echo $field_type->select( array(
+				'class'            => 'pw_select2 pw_select',
+				'name' 		=> $field_type->_name('[team]'),
+				'id' 		=> $field_type->_id('_team'),	
+				'options'	=>  $options,
+				'data-placeholder' => $field->args( 'attributes', 'placeholder' ) ? $field->args( 'attributes', 'placeholder' ) : $field->args( 'description' ),
+		) );
+	else:
+		$options = get_user_teams($value['team'], true, true);
+		$option_cat = $field_type->concat_items();
+		//print_r($option_cat);
+		echo $field_type->select( array(
+				'class'            => 'pw_select2 pw_select',
+				'name' 		=> $field_type->_name('[team]'),
+				'id' 		=> $field_type->_id('_team'),	
+				'options'	=>  $options,
+				'data-placeholder' => $field->args( 'attributes', 'placeholder' ) ? $field->args( 'attributes', 'placeholder' ) : $field->args( 'description' ),
+		) );
+	endif;
 
 }
 add_action( 'cmb2_render_select_team', 'cmb2_render_callback_for_select_team', 10, 5 );

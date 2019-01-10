@@ -3465,6 +3465,20 @@ function sz_event_join_button( $event = false ) {
 						'link_class'        => 'event-button join-event',
 					);
 					break;
+					
+				case 'paid':
+					$button = array(
+						'id'                => 'pay_event',
+						'component'         => 'events',
+						'must_be_logged_in' => true,
+						'block_self'        => false,
+						'wrapper_class'     => 'event-button ' . $event->status,
+						'wrapper_id'        => 'eventbutton-' . $event->id,
+						'link_href'         => trailingslashit( sz_get_event_permalink( $event ) ),
+						'link_text'         => __( 'Attend Event', 'sportszone' ),
+						'link_class'        => 'event-button pay-event',
+					);
+					break;
 
 				case 'private' :
 

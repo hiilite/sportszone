@@ -387,6 +387,36 @@ class SZ_Core extends SZ_Component {
 			)
 		);
 		
+		register_post_type( 'sz_orders',
+			apply_filters( 'sportszone_register_post_type_orders',
+				array(
+					'labels' => array(
+						'name' 					=> __( 'Orders', 'sportszone' ),
+						'singular_name' 		=> __( 'Order', 'sportszone' ),
+						'add_new_item' 			=> __( 'Add New Order', 'sportszone' ),
+						'edit_item' 			=> __( 'Edit Order', 'sportszone' ),
+						'new_item' 				=> __( 'New', 'sportszone' ),
+						'view_item' 			=> __( 'View', 'sportszone' ),
+						'search_items' 			=> __( 'Search', 'sportszone' ),
+						'not_found' 			=> __( 'No results found.', 'sportszone' ),
+						'not_found_in_trash' 	=> __( 'No results found.', 'sportszone' ),
+					),
+					'public' 				=> true,
+					'show_ui' 				=> true,
+					//'capability_type' 		=> 'sz_config',
+					'map_meta_cap' 			=> true,
+					'publicly_queryable' 	=> false,
+					'exclude_from_search' 	=> true,
+					'hierarchical' 			=> false,
+					'supports' 				=> array( 'title', 'custom-fields', 'author' ),
+					'has_archive' 			=> false,
+					'show_in_nav_menus' 	=> false,
+					'can_export' 			=> true,
+					'show_in_menu' 			=> true,
+				)
+			)
+		);
+		
 		// Match Outcomes
 		register_post_type( 'sz_outcome',
 			apply_filters( 'sportszone_register_post_type_outcome',

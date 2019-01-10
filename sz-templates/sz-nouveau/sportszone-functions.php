@@ -360,7 +360,9 @@ class SZ_Nouveau extends SZ_Theme_Compat {
 		 * @param SZ_Nouveau $this Current SZ_Nouveau instance.
 		 */
 		do_action_ref_array( 'sz_theme_compat_actions', array( &$this ) );
+
 	}
+	
 
 	/**
 	 * Enqueue the template pack css files

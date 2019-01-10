@@ -250,6 +250,8 @@ body.sportszone article.page > .entry-header .entry-title {
 
 .sportszone-wrap .activity-inner {
 	font-size: 15px;
+	padding:0 1rem;
+	margin-bottom:0;
 }
 
 @media screen and (min-width: 46.8em) {
@@ -2096,6 +2098,8 @@ body.activity #whats-new-submit {
 .activity-list .activity-item {
 	list-style: none;
 	padding: 0;
+	display: flex;
+	flex-wrap: wrap;
 }
 
 .activity-list .activity-item.has-comments {
@@ -2104,7 +2108,6 @@ body.activity #whats-new-submit {
 
 .activity-list .activity-item div.item-avatar {
 	text-align: center;
-	width: 100%;
 }
 
 .activity-list .activity-item div.item-avatar img {
@@ -2113,7 +2116,8 @@ body.activity #whats-new-submit {
 }
 
 .activity-list .activity-item iframe {
-	height:auto;	
+	/*height:auto;*/
+	display: block;	
 }
 
 @media screen and (min-width: 46.8em) {
@@ -2133,9 +2137,11 @@ body.activity #whats-new-submit {
 .activity-list .activity-item.mini .activity-avatar {
 	margin-left: 0 auto;
 	margin-bottom:15px;
+	margin-top:10px;
 	text-align: center;
-	display: flex;
-	width:100%;
+	/*display: flex;*/
+	display: inline-block;
+	width:auto !important;
 }
 
 .activity-list .activity-item.mini .activity-avatar a {
@@ -2151,22 +2157,31 @@ body.activity #whats-new-submit {
 	max-width: 100%;
 }
 
-.activity-list .activity-item.mini .activity-avatar .act-meta {
+.activity-list .activity-item .activity-main {
+	display: inline-block;
+	margin-top:10px;
+}
+.activity-list .activity-item .activity-main .activity-avatar {
+	margin-top:0;	
+}
+.activity-list .activity-item.mini .act-meta {
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
 	flex: 1 1 400px;	
 }
-.activity-list .activity-item.mini .activity-avatar .act-meta span {
+.activity-list .activity-item.mini .act-meta span {
 	display: block;	
 	color:#2a2843;
 	font-size:14px;
 }
-.activity-list .activity-item.mini .activity-avatar .act-meta .act-user {
+.activity-list .activity-item.mini .act-meta .act-user {
 	font-weight: 600;	
 }
-.activity-list .activity-item.mini .activity-avatar .act-meta .time-since {
+.activity-list .activity-item.mini .act-meta .time-since {
 	font-style: italic;
+	font-size:0.9rem;
+	color:#767676;
 }
 
 @media screen and (min-width: 46.8em) {
@@ -2254,9 +2269,9 @@ body.activity #whats-new-submit {
 .activity-list .activity-item .activity-content .activity-inner,
 .activity-list .activity-item .activity-content blockquote {
 	background: #fafafa;
-	margin: 15px 0 10px;
+	margin: 0;
 	overflow: hidden;
-	padding: 1em;
+	padding: 0 1em;
 }
 
 .activity-list .activity-item .activity-content p {
@@ -2286,6 +2301,7 @@ body.activity #whats-new-submit {
 	padding: 2px;
 	position: relative;
 	text-align: left;
+	flex: 1 1 100%;
 }
 
 .activity-list .activity-item .activity-meta.action div.generic-button {
@@ -2419,9 +2435,10 @@ body.activity-permalink .activity-list li.has-comments {
 body.activity-permalink .activity-list .activity-avatar,
 .activity-list .activity-avatar {
 	margin-bottom: 15px;
+	margin-top:10px;
     text-align: left;
     display: flex;
-    width: 100%;
+    /*width: 100%;*/
 }
 
 body.activity-permalink .activity-list .activity-avatar a,
@@ -2436,24 +2453,26 @@ body.activity-permalink .activity-list .activity-avatar img,
 	max-width: 50px;
 }
 
-.activity-list .activity-avatar .act-meta {
+.activity-list .act-meta {
 	display: flex;
     flex-direction: column;
     justify-content: center;
     flex: 1 1 400px;
 }
 
-.activity-list .activity-avatar .act-meta span {
+.activity-list .act-meta span {
 	display: block;
     color: #2a2843;
 }
 
-.activity-list .activity-avatar .act-meta .act-user {
+.activity-list .act-meta .act-user {
 	font-weight: 600;
 }
 
-.activity-list .activity-avatar .act-meta .time-since {
+.activity-list .act-meta .time-since {
 	font-style: italic;
+	font-size:0.9rem;
+	color:#767676;
 }
 
 body.activity-permalink .activity-list .activity-content {
@@ -2513,7 +2532,7 @@ body.activity-permalink .activity-list .activity-comments {
 	margin: 0 5%;
 	overflow: hidden;
 	position: relative;
-	width: auto;
+	width: 100%;
 }
 
 .sportszone-wrap .activity-comments ul {
